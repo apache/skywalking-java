@@ -17,7 +17,8 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.apache.skywalking</groupId>
@@ -28,22 +29,24 @@
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
         <version>21</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <modules>
         <module>apm-commons</module>
         <module>apm-protocol</module>
+        <module>apm-sniffer</module>
+        <module>apm-application-toolkit</module>
     </modules>
     <packaging>pom</packaging>
 
-    <name>apm</name>
-    <url>https://github.com/apache/skywalking</url>
+    <name>java-agent</name>
+    <url>https://github.com/apache/skywalking-java</url>
 
     <scm>
-        <url>https://github.com/apache/skywalking</url>
-        <connection>scm:git:https://github.com/apache/skywalking.git</connection>
-        <developerConnection>scm:git:https://github.com/apache/skywalking.git</developerConnection>
+        <url>https://github.com/apache/skywalking-java</url>
+        <connection>scm:git:https://github.com/apache/skywalking-java.git</connection>
+        <developerConnection>scm:git:https://github.com/apache/skywalking-java.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
@@ -55,7 +58,7 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
@@ -73,79 +76,6 @@
             <unsubscribe>commits-unsubscribe@skywalking.apache.org</unsubscribe>
         </mailingList>
     </mailingLists>
-
-    <profiles>
-        <profile>
-            <id>agent</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>apm-sniffer</module>
-                <module>apm-application-toolkit</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>all</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <modules>
-                <module>apm-sniffer</module>
-                <module>apm-application-toolkit</module>
-            </modules>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>${exec-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>git submodule update</id>
-                                <phase>initialize</phase>
-                                <inherited>false</inherited>
-                                <configuration>
-                                    <executable>git</executable>
-                                    <arguments>
-                                        <argument>submodule</argument>
-                                        <argument>update</argument>
-                                        <argument>--init</argument>
-                                        <argument>--recursive</argument>
-                                    </arguments>
-                                </configuration>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>CI-with-IT</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -180,7 +110,6 @@
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
         <maven-failsafe-plugin.version>2.22.0</maven-failsafe-plugin.version>
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
-        <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
         <maven-jar-plugin.version>3.1.0</maven-jar-plugin.version>
         <maven-shade-plugin.version>3.1.1</maven-shade-plugin.version>
         <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
@@ -192,7 +121,6 @@
         <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
         <jmh.version>1.21</jmh.version>
         <gmaven-plugin.version>1.5</gmaven-plugin.version>
-        <cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
         <checkstyle.fails.on.error>true</checkstyle.fails.on.error>
 
     </properties>
@@ -328,23 +256,6 @@
                     <artifactId>maven-shade-plugin</artifactId>
                     <version>${maven-shade-plugin.version}</version>
                 </plugin>
-                <!--
-                    maven-surefire-plugin will exclude integration tests (ITs)
-                    and leave them for maven-failsafe-plugin to run, which is bound to the `verify` goal.
-                    If you want to run the ITs please activate the CI-with-IT profile
-                    as well as the the profiles of the modules whose ITs you want to run.
-                    e.g. you want to run the ITs in oap-server, run `./mvnw -Pbackend,CI-with-IT clean verify`
-                 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                    <configuration>
-                        <excludes>
-                            <exclude>IT*.class</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
@@ -431,17 +342,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>${coveralls-maven-plugin.version}</version>
-                <configuration>
-                    <repoToken>${COVERALLS_REPO_TOKEN}</repoToken>
-                    <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                    </sourceDirectories>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
@@ -493,41 +393,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>${cobertura-maven-plugin.version}</version>
-                <configuration>
-                    <check />
-                    <aggregate>true</aggregate>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <quiet>true</quiet>
-                    <formats>
-                        <format>html</format>
-                        <format>xml</format>
-                    </formats>
-                    <instrumentation>
-                        <ignoreTrivial>true</ignoreTrivial>
-                        <ignoreMethodAnnotations>
-                            <ignoreMethodAnnotation>lombok.Generated</ignoreMethodAnnotation>
-                        </ignoreMethodAnnotations>
-                        <includes>
-                            <include>org/apache/skywalking/**/*.class</include>
-                        </includes>
-                        <excludes>
-                            <exclude>org/apache/skywalking/**/*Test.class</exclude>
-                            <exclude>org/apache/skywalking/**/Test*.class</exclude>
-                            <exclude>org/apache/skywalking/apm/network/register/v2/**/*.class</exclude>
-                            <exclude>org/apache/skywalking/apm/network/common/**/*.class</exclude>
-                            <exclude>org/apache/skywalking/apm/network/servicemesh/**/*.class</exclude>
-                            <exclude>org/apache/skywalking/apm/network/language/**/*.class</exclude>
-                            <exclude>org/apache/skywalking/apm/toolkit/**/*Activation.class</exclude>
-                            <exclude>org/apache/skywalking/apm/plugin/**/*Instrumentation.class</exclude>
-                            <exclude>org/apache/skywalking/apm/plugin/**/*Instrumentation$*.class</exclude>
-                        </excludes>
-                    </instrumentation>
-                </configuration>
             </plugin>
         </plugins>
     </build>

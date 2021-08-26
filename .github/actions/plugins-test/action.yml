@@ -36,17 +36,6 @@ runs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-agent-
-    - name: Check Unintended Changes
-      shell: bash
-      run: |
-        echo "::group::Check sw.version"
-        sudo apt install -y -q xmlstarlet
-        SW_VERSION=$(xmlstarlet sel -N pom=http://maven.apache.org/POM/4.0.0 -t -v "/pom:project/pom:properties/pom:sw.version" test/e2e/pom.xml)
-        if [[ "$(echo $(echo $SW_VERSION))" != "" ]]; then
-          echo "Please don't submit the change of sw.version in test/e2e/pom.xml"
-          exit 1
-        fi
-        echo "::endgroup::"
     - name: Check License
       uses: apache/skywalking-eyes@a63f4afcc287dfb3727ecc45a4afc55a5e69c15f
     - name: Add checkstyle-plugin
@@ -60,8 +49,8 @@ runs:
       run: |
         echo "::group::Build SkyWalking Agent"
         # Retry one more time due to frequent "maven connection reset"
-        ./mvnw --batch-mode clean package -DskipTests -Pagent || \
-        ./mvnw --batch-mode clean package -DskipTests -Pagent
+        ./mvnw --batch-mode clean package -DskipTests || \
+        ./mvnw --batch-mode clean package -DskipTests
         echo "::endgroup::"
     - name: Build Docker Image
       shell: bash

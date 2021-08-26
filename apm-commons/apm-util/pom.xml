@@ -24,7 +24,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-util</artifactId>
+    <artifactId>java-agent-util</artifactId>
     <packaging>jar</packaging>
 
     <name>apm-util</name>

@@ -31,10 +31,3 @@ github:
     squash:  true
     merge:   false
     rebase:  false
-  protected_branches:
-    main:
-      required_status_checks:
-        strict: true
-        contexts:
-          - CI
-      required_pull_request_reviews:

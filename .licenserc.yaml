@@ -22,11 +22,9 @@ header:
     copyright-owner: Apache Software Foundation
 
   paths-ignore:
-    - '.github/ISSUE_TEMPLATE'
     - '.github/PULL_REQUEST_TEMPLATE'
     - '**/.gitignore'
     - '.gitmodules'
-    - '.muse'
     - '.mvn'
     - 'apm-checkstyle/CHECKSTYLE_HEAD'
     - 'apm-protocol/apm-network/src/main/proto/.gitignore'
@@ -45,23 +43,5 @@ header:
     - '**/*.pem'
     - 'LICENSE'
     - 'NOTICE'
-    - 'skywalking-ui/dist'
-    - 'skywalking-ui/node_modules'
-    - 'skywalking-ui/node'
-    - 'skywalking-ui/.browserslistrc'
-    - 'skywalking-ui/.prettierrc'
-    - '**/src/main/fbs/istio/**'
-    - '**/src/main/proto/envoy/**'
-    - '**/src/main/proto/udpa/**'
-    - '**/src/main/proto/gogoproto/gogo.proto'
-    - '**/src/main/proto/google/**'
-    - '**/src/main/proto/istio/**'
-    - '**/src/main/proto/jaeger/**'
-    - '**/src/main/proto/mixer/**'
-    - '**/src/main/proto/policy/**'
-    - '**/src/main/proto/prometheus/client_model/metrics.proto'
-    - '**/src/main/proto/protoc-gen-swagger/**'
-    - '**/src/main/proto/validate/validate.proto'
-    - '**/src/main/proto/opencensus/**'
 
   comment: on-failure

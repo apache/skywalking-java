@@ -25,7 +25,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-sniffer</artifactId>
+    <artifactId>java-agent-sniffer</artifactId>
     <packaging>pom</packaging>
 
     <modules>

@@ -39,7 +39,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-network</artifactId>
+            <artifactId>java-agent-network</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

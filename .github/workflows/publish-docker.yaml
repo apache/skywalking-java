@@ -19,27 +19,23 @@ name: publish-docker
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   SKIP_TEST: true
-  HUB: ghcr.io/apache/skywalking
+  NAME: skywalking-java
+  HUB: ghcr.io/apache/skywalking-java
 
 jobs:
   build:
-    if: github.repository == 'apache/skywalking'
+    if: github.repository == 'apache/skywalking-java'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    timeout-minutes: 90
-    strategy:
-      fail-fast: true
-      matrix:
-        es: [es6, es7]
+    timeout-minutes: 60
     env:
-      ES_VERSION: ${{ matrix.es }}
-      TAG: ${{ github.sha }}-${{ matrix.es }}
+      TAG: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -48,9 +44,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          key: ${{ runner.os }}-maven-publish-docker
+          restore-keys: ${{ runner.os }}-maven-
       - name: Log in to the Container registry
         uses: docker/login-action@v1.10.0
         with:
@@ -59,5 +54,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build docker image
         run: |
-          make docker || make docker
           make docker.push || make docker.push
+          docker tag $HUB/$NAME:$TAG $HUB/$NAME:latest
+          docker push $HUB/$NAME:latest

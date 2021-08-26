@@ -14,18 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+ARG BASE_IMAGE='adoptopenjdk/openjdk8:alpine'
 
-set -e
+FROM alpine AS cli
 
-export LOGGING_CONFIG="webapp/logback.xml"
+WORKDIR /skywalking/bin
 
-if [[ ! -z "$SW_OAP_ADDRESS" ]]; then
-  address_arr=(${SW_OAP_ADDRESS//,/ })
-  for i in "${!address_arr[@]}"
-  do
-      JAVA_OPTS="${JAVA_OPTS} -Dspring.cloud.discovery.client.simple.instances.oap-service[$i].uri=${address_arr[$i]}"
-  done
-fi
+ARG CLI_VERSION=0.6.0
 
-exec java  ${JAVA_OPTS} -jar webapp/skywalking-webapp.jar "$@"
+ADD https://archive.apache.org/dist/skywalking/cli/${CLI_VERSION}/skywalking-cli-${CLI_VERSION}-bin.tgz /
+RUN tar -zxf /skywalking-cli-${CLI_VERSION}-bin.tgz -C / ; \
+    mv /skywalking-cli-${CLI_VERSION}-bin/bin/swctl-${CLI_VERSION}-linux-amd64 /skywalking/bin/swctl
+
+FROM $BASE_IMAGE
+
+LABEL maintainer="kezhenxu94@apache.org"
+
+ENV JAVA_TOOL_OPTIONS=-javaagent:/skywalking/agent/skywalking-agent.jar
+
+WORKDIR /skywalking
+
+ADD skywalking-agent /skywalking/agent
+
+COPY --from=cli /skywalking/bin/swctl /usr/bin/swctl

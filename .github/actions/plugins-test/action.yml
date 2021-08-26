@@ -33,9 +33,8 @@ runs:
       uses: actions/cache@v2
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-agent-
+        key: ${{ runner.os }}-maven-agent-test
+        restore-keys: ${{ runner.os }}-maven-agent-test
     - name: Check License
       uses: apache/skywalking-eyes@a63f4afcc287dfb3727ecc45a4afc55a5e69c15f
     - name: Add checkstyle-plugin
@@ -65,12 +64,4 @@ runs:
       run: |
         echo "::group::Run Plugin Test ${{ inputs.test_case }}"
         bash test/plugin/run.sh --image_version=${{ inputs.java_version }}-1.0.0 ${{ inputs.test_case }}
-        echo "::endgroup::"
-    - name: Report Coverage
-      shell: bash
-      env:
-        CODECOV_TOKEN: d2065307-8f01-4637-9715-2781ef096db7
-      run: |
-        echo "::group::Uploading Code Coverage"
-        bash -x tools/coverage/report.sh
         echo "::endgroup::"

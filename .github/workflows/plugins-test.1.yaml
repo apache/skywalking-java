@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: PluginsTest
+name: Test
 
 on:
   pull_request:
@@ -40,7 +40,7 @@ concurrency:
 
 jobs:
   PluginsTest:
-    name: Plugin
+    name: ${{ matrix.case }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:

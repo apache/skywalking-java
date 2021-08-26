@@ -4,14 +4,13 @@ Apache SkyWalking Java Agent
 <img src="http://skywalking.apache.org/assets/logo.svg" alt="Sky Walking logo" height="90px" align="right" />
 
 
-[![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
+[![GitHub stars](https://img.shields.io/github/stars/apache/skywalking-java.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking-java)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.skywalking/apache-skywalking-apm.svg)](http://skywalking.apache.org/downloads/)
-[![CI/IT Tests](https://github.com/apache/skywalking/workflows/CI%20AND%20IT/badge.svg?branch=master)](https://github.com/apache/skywalking/actions?query=workflow%3ACI%2BAND%2BIT+event%3Aschedule+branch%3Amaster)
-[![E2E Tests](https://github.com/apache/skywalking/workflows/E2E/badge.svg?branch=master)](https://github.com/apache/skywalking/actions?query=branch%3Amaster+event%3Aschedule+workflow%3AE2E)
+[![Tests](https://github.com/apache/skywalking-java/workflows/CI%20AND%20IT/badge.svg?branch=master)](https://github.com/apache/skywalking-java/actions?query=workflow%3ACI%2BAND%2BIT+event%3Aschedule+branch%3Amaster)
 
-SkyWalking-Java: The Java Agent for Apache SkyWalking, which provides the native tracing/metrics/logging abilities for Python project.
+SkyWalking-Java: The Java Agent for Apache SkyWalking, which provides the native tracing/metrics/logging abilities for Java projects.
 
 SkyWalking: an APM(application performance monitor) system, especially designed for microservices, cloud native and container-based (Docker, Kubernetes, Mesos) architectures.
 

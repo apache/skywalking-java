@@ -1,10 +1,8 @@
-Apache SkyWalking
+Apache SkyWalking Java Agent
 ==========
 
 <img src="http://skywalking.apache.org/assets/logo.svg" alt="Sky Walking logo" height="90px" align="right" />
 
-**SkyWalking**: an APM(application performance monitor) system, especially designed for
-microservices, cloud native and container-based architectures.
 
 [![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
@@ -13,40 +11,9 @@ microservices, cloud native and container-based architectures.
 [![CI/IT Tests](https://github.com/apache/skywalking/workflows/CI%20AND%20IT/badge.svg?branch=master)](https://github.com/apache/skywalking/actions?query=workflow%3ACI%2BAND%2BIT+event%3Aschedule+branch%3Amaster)
 [![E2E Tests](https://github.com/apache/skywalking/workflows/E2E/badge.svg?branch=master)](https://github.com/apache/skywalking/actions?query=branch%3Amaster+event%3Aschedule+workflow%3AE2E)
 
-# Abstract
-**SkyWalking** is an open source APM system, including monitoring, tracing, diagnosing capabilities for distributed system
-in Cloud Native architecture.
-The core features are following.
+SkyWalking-Java: The Java Agent for Apache SkyWalking, which provides the native tracing/metrics/logging abilities for Python project.
 
-- Service, service instance, endpoint metrics analysis
-- Root cause analysis. Profile the code on the runtime
-- Service topology map analysis
-- Service, service instance and endpoint dependency analysis
-- Slow services and endpoints detected
-- Performance optimization
-- Distributed tracing and context propagation
-- Database access metrics. Detect slow database access statements(including SQL statements)
-- Alarm
-- Browser performance monitoring
-- Infrastructure(VM, network, disk etc.) monitoring
-- Collaboration across metrics, traces, and logs
-
-<img src="https://skywalking.apache.org/images/SkyWalking_Architecture_20210424.png?t=20210424"/>
-
-SkyWalking supports to collect telemetry (metrics, traces, and logs) data from multiple sources
-and multiple formats,
-including
-1. Java, .NET Core, NodeJS, PHP, and Python auto-instrument agents.
-1. Go and C++ SDKs.
-1. LUA agent especially for Nginx, OpenResty and Apache APISIX.
-1. Browser agent.
-1. Service Mesh Observability. Control panel and data panel. 
-1. Metrics system, including Prometheus, OpenTelemetry, Spring Sleuth(Micrometer), Zabbix.
-1. Logs.
-1. Zipkin v1/v2 trace.(No Analysis)
-
-SkyWalking OAP is using the STAM(Streaming Topology Analysis Method) to analysis topology in the tracing based agent scenario 
-for better performance. Read [the paper of STAM](https://wu-sheng.github.io/STAM/) for more details.
+SkyWalking: an APM(application performance monitor) system, especially designed for microservices, cloud native and container-based (Docker, Kubernetes, Mesos) architectures.
 
 # Documentation
 - [Official documentation](https://skywalking.apache.org/docs/#SkyWalking)
@@ -70,9 +37,6 @@ Please follow the [REPORTING GUIDELINES](https://www.apache.org/foundation/polic
 # Live Demo
 Find the [demo](https://skywalking.apache.org/#demo) and [screenshots](https://skywalking.apache.org/#arch) on our website.
 
-**Video on youtube.com**
-
-[![RocketBot UI](http://img.youtube.com/vi/mfKaToAKl7k/0.jpg)](http://www.youtube.com/watch?v=mfKaToAKl7k)
 
 # Contact Us
 * Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
@@ -80,26 +44,6 @@ Find the [demo](https://skywalking.apache.org/#demo) and [screenshots](https://s
 * Twitter, [ASFSkyWalking](https://twitter.com/ASFSkyWalking)
 * QQ Group: 901167865(Recommended), 392443393
 * [bilibili B站 视频](https://space.bilibili.com/390683219)
-
-# Our Users
-Hundreds of companies and organizations use SkyWalking for research, production, and commercial product.
-Visit our [website](http://skywalking.apache.org/#users) to find the user page.
-
-
-# Landscapes
-
-<p align="center">
-<br/><br/>
-<img src="https://landscape.cncf.io/images/left-logo.svg" width="150"/>&nbsp;&nbsp;<img src="https://landscape.cncf.io/images/right-logo.svg" width="200"/>
-<br/><br/>
-SkyWalking enriches the <a href="https://landscape.cncf.io/landscape=observability-and-analysis&license=apache-license-2-0">CNCF CLOUD NATIVE Landscape.</a>
-
-</p>
-
-<p align="center">
-<a href="https://openapm.io"><img src="https://openapm.io/static/media/openapm_logo.svg" width="100"/></a>
-  <br/>Our project enriches the <a href="https://openapm.io">OpenAPM Landscape!</a>
-</p>
 
 # License
 [Apache 2.0 License.](LICENSE)

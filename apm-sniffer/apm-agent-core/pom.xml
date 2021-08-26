@@ -57,12 +57,12 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-network</artifactId>
+            <artifactId>java-agent-network</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-util</artifactId>
+            <artifactId>java-agent-util</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -115,7 +115,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-datacarrier</artifactId>
+            <artifactId>java-agent-datacarrier</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

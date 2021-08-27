@@ -7,7 +7,7 @@
    </dependency>
 ```
 
-If you're using Spring sleuth, you could use [Spring Sleuth Setup](./../../backend/spring-sleuth-setup.md).
+If you're using Spring sleuth, you could use `Spring Sleuth Setup` at the OAP server.
 
 * `Counter` API represents a single monotonically increasing counter, automatic collect data and report to backend.
 ```java

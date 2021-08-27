@@ -16,13 +16,7 @@ SkyWalking-Java: The Java Agent for Apache SkyWalking, which provides the native
 SkyWalking: an APM(application performance monitor) system, especially designed for microservices, cloud native and container-based (Docker, Kubernetes, Mesos) architectures.
 
 # Documentation
-- [Official documentation](https://skywalking.apache.org/docs/#SkyWalking)
-- [The paper of STAM](https://wu-sheng.github.io/STAM/), Streaming Topology Analysis Method.
-- [Blog](https://skywalking.apache.org/blog/2020-04-13-apache-skywalking-profiling/) about Use Profiling to Fix the Blind Spot of Distributed Tracing
-- [Blog](https://skywalking.apache.org/blog/2020-12-03-obs-service-mesh-with-sw-and-als/) about observing Istio + Envoy service mesh with ALS solution.
-- [Blog](https://skywalking.apache.org/blog/obs-service-mesh-vm-with-sw-and-als/) about observing Istio + Envoy service mesh with ALS Metadata-Exchange mechanism (in VMs and / or Kubernetes).
-
-NOTICE, SkyWalking 8.0+ uses [v3 protocols](docs/en/protocols/README.md). They are incompatible with previous releases.
+- [Official documentation](https://skywalking.apache.org/docs/#JavaAgent)
 
 # Downloads
 Please head to the [releases page](https://skywalking.apache.org/downloads/) to download a release of Apache SkyWalking.

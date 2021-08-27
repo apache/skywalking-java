@@ -19,8 +19,12 @@ name: "CodeQL"
 on:
   push:
     branches: [ 'main' ]
+    paths:
+      - '**/*.java'
   pull_request:
     branches: [ 'main' ]
+    paths:
+      - '**/*.java'
   schedule:
     - cron: '28 3 * * *'
 

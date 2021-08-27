@@ -75,7 +75,7 @@ catalog:
       - name: "Advanced reporters"
         path: "/en/setup/service-agent/java-agent/advanced-reporters"
       - name: "Plugin development guide"
-        path: "/en/guides/java-plugin-development-guide/"
+        path: "/en/setup/service-agent/java-agent/java-plugin-development-guide/"
       - name: "Java Agent Performance Test"
         path: "https://skyapmtest.github.io/Agent-Benchmarks/"
 

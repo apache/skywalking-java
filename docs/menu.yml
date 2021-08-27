@@ -78,6 +78,9 @@ catalog:
         path: "/en/setup/service-agent/java-agent/java-plugin-development-guide/"
       - name: "Java Agent Performance Test"
         path: "https://skyapmtest.github.io/Agent-Benchmarks/"
-
+  - name: "Contribution"
+    catalog:
+      - name: "Java Agent Release Guidance"
+        path: "/en/contribution/release-java-agent/"
   - name: "Changelog"
     path: "https://github.com/apache/skywalking/tree/master/changes"

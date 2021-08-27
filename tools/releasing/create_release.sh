@@ -25,7 +25,7 @@
 
 RELEASE_VERSION=${RELEASE_VERSION}
 TAG_NAME=v${RELEASE_VERSION}
-PRODUCT_NAME="apache-skywalking-apm"
+PRODUCT_NAME="apache-skywalking-java-agent"
 
 echo "Release version "${RELEASE_VERSION}
 echo "Source tag "${TAG_NAME}
@@ -55,11 +55,12 @@ fi
 
 git checkout ${TAG_NAME}
 
+# Init submodules
 git submodule init
 git submodule update
 
 cd ..
-
+# Build source code tar
 tar czf ${PRODUCT_NAME}-src.tgz \
     --exclude .git \
     --exclude .DS_Store \
@@ -71,3 +72,7 @@ tar czf ${PRODUCT_NAME}-src.tgz \
 gpg --armor --detach-sig ${PRODUCT_NAME}-src.tgz
 
 shasum -a 512 ${PRODUCT_NAME}-src.tgz > ${PRODUCT_NAME}-src.tgz.sha512
+
+# Build binary tar
+cd ${PRODUCT_NAME}
+make dist

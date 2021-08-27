@@ -72,10 +72,10 @@ jobs:
       - name: Check Javaagent Plugin List
         run: tools/plugin/check-javaagent-plugin-list.sh
       - name: Install and Test
-        if: matrix.java-version == '8'
+        if: matrix.java-version == '8' && matrix.os != 'windows'
         run: ./mvnw -q --batch-mode clean verify install javadoc:javadoc
       - name: Install and Test
-        if: matrix.java-version == '11'
+        if: matrix.java-version == '11' || matrix.os == 'windows'
         run: ./mvnw -q --batch-mode clean verify install
 
   ci:

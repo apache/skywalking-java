@@ -19,6 +19,7 @@ SHELL := /bin/bash -o pipefail
 HUB ?= skywalking
 NAME ?= skywalking-java
 TAG ?= latest
+AGENT_PACKAGE = skywalking-agent
 
 BASE_IMAGE ?= adoptopenjdk/openjdk8:alpine
 SKIP_TEST ?= false
@@ -34,3 +35,10 @@ docker: build
 .PHONY: docker.push
 docker.push: docker
 	docker push $(HUB)/$(NAME):$(TAG)
+
+.PHONY: dist
+dist: build
+	tar czf apache-skywalking-java-agent-$(TAG).tgz $(AGENT_PACKAGE)
+	gpg --armor --detach-sig apache-skywalking-java-agent-$(TAG).tgz
+	shasum -a 512 apache-skywalking-java-agent-$(TAG).tgz > apache-skywalking-java-agent-$(TAG).tgz.sha512
+

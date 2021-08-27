@@ -20,17 +20,17 @@ The test framework provides `JVM-container` and `Tomcat-container` base images i
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../test/plugin/containers/jvm-container) uses `openjdk:8` as the base image. `JVM-container` supports JDK14, which inherits `openjdk:14`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `openjdk:8` as the base image. `JVM-container` supports JDK14, which inherits `openjdk:14`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
 Take the following test projects as examples:
-* [sofarpc-scenario](../../../test/plugin/scenarios/sofarpc-scenario) is a single project case.
-* [webflux-scenario](../../../test/plugin/scenarios/webflux-scenario) is a case including multiple projects.
-* [jdk14-with-gson-scenario](../../../test/plugin/scenarios/jdk14-with-gson-scenario) is a single project case with JDK14.
+* [sofarpc-scenario](../../../../../test/plugin/scenarios/sofarpc-scenario) is a single project case.
+* [webflux-scenario](../../../../../test/plugin/scenarios/webflux-scenario) is a case including multiple projects.
+* [jdk14-with-gson-scenario](../../../../../test/plugin/scenarios/jdk14-with-gson-scenario) is a single project case with JDK14.
 
 ### Tomcat-container Image Introduction
 
-[Tomcat-container](../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5.57-jdk8-openjdk` or `tomcat:8.5.57-jdk14-openjdk` as the base image.
+[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5.57-jdk8-openjdk` or `tomcat:8.5.57-jdk14-openjdk` as the base image.
 The test case project must be packaged as `project-name.war` by using `mvn package`.
 
 Take the following test project as an example
@@ -182,10 +182,10 @@ as the version number, which will be changed in the test for each version.
 > It does not support resource related configurations, such as volumes, ports, and ulimits. The reason for this is that in test scenarios, no mapping is required for any port to the host VM, or to mount any folder.
 
 **Take the following test cases as examples:**
-* [dubbo-2.7.x with JVM-container](../../../test/plugin/scenarios/dubbo-2.7.x-scenario/configuration.yml)
-* [jetty with JVM-container](../../../test/plugin/scenarios/jetty-scenario/configuration.yml)
-* [gateway with runningMode](../../../test/plugin/scenarios/gateway-2.1.x-scenario/configuration.yml)
-* [canal with docker-compose](../../../test/plugin/scenarios/canal-scenario/configuration.yml)
+* [dubbo-2.7.x with JVM-container](../../../../../test/plugin/scenarios/dubbo-2.7.x-scenario/configuration.yml)
+* [jetty with JVM-container](../../../../../test/plugin/scenarios/jetty-scenario/configuration.yml)
+* [gateway with runningMode](../../../../../test/plugin/scenarios/gateway-2.1.x-scenario/configuration.yml)
+* [canal with docker-compose](../../../../../test/plugin/scenarios/canal-scenario/configuration.yml)
 
 ### expectedData.yaml
 
@@ -363,8 +363,8 @@ java -jar ${agent_opts} "-Dskywalking.agent.service_name=jettyclient-scenario"  
 > Only set this or use other skywalking options when it is really necessary.
 
 **Take the following test cases as examples**
-* [undertow](../../../test/plugin/scenarios/undertow-scenario/bin/startup.sh)
-* [webflux](../../../test/plugin/scenarios/webflux-scenario/webflux-dist/bin/startup.sh)
+* [undertow](../../../../../test/plugin/scenarios/undertow-scenario/bin/startup.sh)
+* [webflux](../../../../../test/plugin/scenarios/webflux-scenario/webflux-dist/bin/startup.sh)
 
 
 ## Best Practices

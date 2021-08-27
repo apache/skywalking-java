@@ -99,4 +99,4 @@ Now, we have the following known bootstrap plugins.
 
 ## Plugin Development Guide
 SkyWalking java agent supports plugin to extend [the supported list](Supported-list.md). Please follow 
-our [Plugin Development Guide](../../../guides/Java-Plugin-Development-Guide.md).
+our [Plugin Development Guide](Java-Plugin-Development-Guide.md).

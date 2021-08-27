@@ -154,7 +154,7 @@ SpanLayer is the type of span. There are 5 values:
 1. MQ
 
 Component IDs are defined and reserved by the SkyWalking project.
-For extension of the component name/ID, please follow the [component library definitions and extensions](Component-library-settings.md) document.
+For extension of the component name/ID, please follow the OAP server `Component library settings` document.
 
 ### Special Span Tags
 All tags are available in the trace view. Meanwhile, in the OAP backend analysis, some special tags or tag combinations provide other advanced features.
@@ -165,7 +165,8 @@ The value should be an integer. The response code of OAL entities corresponds to
 #### Tag keys `db.statement` and `db.type`.
 The value of `db.statement` should be a string that represents the database statement, such as SQL, or `[No statement]/`+span#operationName if the value is empty.
 When the exit span contains this tag, OAP samples the slow statements based on `agent-analyzer/default/maxSlowSQLLength`.
-The threshold of slow statement is defined in accordance with [`agent-analyzer/default/slowDBAccessThreshold`](../setup/backend/slow-db-statement.md)
+The threshold of slow statement is defined in accordance with `agent-analyzer/default/slowDBAccessThreshold`. 
+Check **Slow Database Statement** document of OAP server for details.
 
 #### Extension logic endpoint: Tag key `x-le`
 The logic endpoint is a concept that doesn't represent a real RPC call, but requires the statistic.
@@ -327,7 +328,7 @@ tomcat-7.x/8.x=TomcatInstrumentation
      return witnessMethodList;
    }
    ```
-   For more examples, see [WitnessTest.java](../../../apm-sniffer/apm-agent-core/src/test/java/org/apache/skywalking/apm/agent/core/plugin/witness/WitnessTest.java)
+   For more examples, see [WitnessTest.java](../../../../../apm-sniffer/apm-agent-core/src/test/java/org/apache/skywalking/apm/agent/core/plugin/witness/WitnessTest.java)
 
    
 

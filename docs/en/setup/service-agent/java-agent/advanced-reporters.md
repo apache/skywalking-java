@@ -17,7 +17,7 @@ plugin.kafka.bootstrap_servers=${SW_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 plugin.kafka.get_topic_timeout=${SW_GET_TOPIC_TIMEOUT:10}
 ```
 
-Before you activated the Kafka reporter, you have to make sure that [Kafka fetcher](../../backend/backend-fetcher.md#kafka-fetcher) has been opened in service.
+Before you activated the Kafka reporter, you have to make sure that `Kafka fetcher` of OAP server has been opened in service.
 
 ### Advanced Kafka Producer Configurations
 

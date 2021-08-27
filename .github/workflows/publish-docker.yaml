@@ -23,18 +23,23 @@ on:
 
 env:
   SKIP_TEST: true
-  NAME: skywalking-java
   HUB: ghcr.io/apache/skywalking-java
 
 jobs:
   build:
     if: github.repository == 'apache/skywalking-java'
+    name: Build and Push Docker
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     timeout-minutes: 60
+    strategy:
+      matrix:
+        java-version: [ 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
     env:
+      BASE_IMAGE: adoptopenjdk/openjdk${{ matrix.java-version }}:alpine
+      NAME: jdk-${{ matrix.java-version }}
       TAG: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v2

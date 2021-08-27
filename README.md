@@ -8,7 +8,7 @@ Apache SkyWalking Java Agent
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
 
 [![Maven Central](https://img.shields.io/maven-central/v/org.apache.skywalking/apache-skywalking-apm.svg)](http://skywalking.apache.org/downloads/)
-[![Tests](https://github.com/apache/skywalking-java/workflows/CI%20AND%20IT/badge.svg?branch=master)](https://github.com/apache/skywalking-java/actions?query=workflow%3ACI%2BAND%2BIT+event%3Aschedule+branch%3Amaster)
+[![CI](https://github.com/apache/skywalking-java/actions/workflows/ci.yaml/badge.svg)](https://github.com/apache/skywalking-java/actions/workflows/ci.yaml)
 
 SkyWalking-Java: The Java Agent for Apache SkyWalking, which provides the native tracing/metrics/logging abilities for Java projects.
 

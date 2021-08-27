@@ -165,7 +165,8 @@ The value should be an integer. The response code of OAL entities corresponds to
 #### Tag keys `db.statement` and `db.type`.
 The value of `db.statement` should be a string that represents the database statement, such as SQL, or `[No statement]/`+span#operationName if the value is empty.
 When the exit span contains this tag, OAP samples the slow statements based on `agent-analyzer/default/maxSlowSQLLength`.
-The threshold of slow statement is defined in accordance with [`agent-analyzer/default/slowDBAccessThreshold`](../setup/backend/slow-db-statement.md)
+The threshold of slow statement is defined in accordance with `agent-analyzer/default/slowDBAccessThreshold`. 
+Check **Slow Database Statement** document of OAP server for details.
 
 #### Extension logic endpoint: Tag key `x-le`
 The logic endpoint is a concept that doesn't represent a real RPC call, but requires the statistic.

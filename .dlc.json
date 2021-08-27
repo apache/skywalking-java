@@ -8,6 +8,9 @@
     },
     {
       "pattern": "^https://dist.apache.org/repos/dist/dev/skywalking/java-agent/x.y.z$"
+    },
+    {
+      "pattern": "^https://dist.apache.org/repos/dist/release/skywalking/java-agent$"
     }
   ],
   "timeout": "10s",

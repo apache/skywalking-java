@@ -44,8 +44,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-publish-docker
-          restore-keys: ${{ runner.os }}-maven-
+          key: ${{ runner.os }}-maven-publish-docker-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-publish-docker-
       - name: Log in to the Container registry
         uses: docker/login-action@v1.10.0
         with:

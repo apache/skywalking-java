@@ -16,12 +16,9 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-name: "Run Plugin Test"
-description: "Common steps when running a plugin test"
+name: "Build Plugin Agent"
+description: "Build Plugin Agent before running a plugin test"
 inputs:
-  test_case:
-    description: "The plugin test name"
-    required: true
   java_version:
     description: "The Java version under which this test case will run"
     required: false
@@ -29,12 +26,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Cache local Maven repository
-      uses: actions/cache@v2
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-agent-test
-        restore-keys: ${{ runner.os }}-maven-agent-test
     - name: Check License
       uses: apache/skywalking-eyes@a63f4afcc287dfb3727ecc45a4afc55a5e69c15f
     - name: Add checkstyle-plugin
@@ -43,25 +34,43 @@ runs:
         echo "::group::Add checkstyle plugin to the pom.xml"
         sed -i "/<\/sourceDirectories>/i <sourceDirectory>scenarios\/""${{ inputs.test_case }}""<\/sourceDirectory>" test/plugin/pom.xml
         echo "::endgroup::"
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-agent-test-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-maven-agent-test-
     - name: Build SkyWalking Agent
       shell: bash
       run: |
         echo "::group::Build SkyWalking Agent"
         # Retry one more time due to frequent "maven connection reset"
-        ./mvnw --batch-mode clean package -DskipTests || \
-        ./mvnw --batch-mode clean package -DskipTests
+        ./mvnw --batch-mode clean package -Dmaven.test.skip || \
+        ./mvnw --batch-mode clean package -Dmaven.test.skip
         echo "::endgroup::"
+    - uses: actions/upload-artifact@v2
+      name: Upload Agent
+      with:
+        name: skywalking-agent
+        path: skywalking-agent
     - name: Build Docker Image
       shell: bash
       run: |
         echo "::group::Build Docker Image"
         # Retry one more time due to frequent "maven connection reset"
-        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -DskipTests -P${{ inputs.java_version }} || \
-        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -DskipTests -P${{ inputs.java_version }}
+        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip -P${{ inputs.java_version }} || \
+        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip -P${{ inputs.java_version }}
         echo "::endgroup::"
-    - name: Run Plugin Test ${{ inputs.test_case }}
-      shell: bash
-      run: |
-        echo "::group::Run Plugin Test ${{ inputs.test_case }}"
-        bash test/plugin/run.sh --image_version=${{ inputs.java_version }}-1.0.0 ${{ inputs.test_case }}
+
+        echo "::group::Save Docker Image"
+        mkdir -p test-containers
+        docker save -o test-containers/skywalking-agent-test-jvm-${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-jvm:${{ inputs.java_version }}-1.0.0
+        docker save -o test-containers/skywalking-agent-test-tomcat-${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-tomcat:${{ inputs.java_version }}-1.0.0
         echo "::endgroup::"
+    - uses: actions/upload-artifact@v2
+      name: Upload Test Containers
+      with:
+        name: test-tools
+        path: |
+          test-containers
+          test/plugin/dist/plugin-runner-helper.jar

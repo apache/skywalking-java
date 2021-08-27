@@ -154,7 +154,7 @@ SpanLayer is the type of span. There are 5 values:
 1. MQ
 
 Component IDs are defined and reserved by the SkyWalking project.
-For extension of the component name/ID, please follow the [component library definitions and extensions](Component-library-settings.md) document.
+For extension of the component name/ID, please follow the OAP server `Component library settings` document.
 
 ### Special Span Tags
 All tags are available in the trace view. Meanwhile, in the OAP backend analysis, some special tags or tag combinations provide other advanced features.

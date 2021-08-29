@@ -8,7 +8,6 @@ at the same time, the SkyWalking backend is in another region (VPC).
 > Because of that, security requirement is very obvious.
 
 ## Authentication Mode
-Only support **no mutual auth**.
 - Use this [script](../../../../../tools/TLS/tls_key_generate.sh) if you are not familiar with how to generate key files.
 - Find `ca.crt`, and use it at client side
 - Find `server.crt` ,`server.pem` and `ca.crt`. Use them at server side. Please refer to `gRPC SSL` of the OAP server doc.
@@ -27,7 +26,7 @@ agent.force_tls=${SW_AGENT_FORCE_TLS:true}
 
 - Sharing gRPC server must be started with enabled mTLS. More details see `receiver-sharing-server` section in `application.yaml` of SkyWalking OAP Server.  
 - Configure Client-side SSL/TLS in `agent.conf`.
-- Change `SW_AGENT_COLLECTOR_BACKEND_SERVICES` to host and port of `receiver-sharing-server`.
+- Change `SW_AGENT_COLLECTOR_BACKEND_SERVICES` targeting to host and port of `receiver-sharing-server`.
 
 For example:
 ```

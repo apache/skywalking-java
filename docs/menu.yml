@@ -83,4 +83,4 @@ catalog:
       - name: "Java Agent Release Guidance"
         path: "/en/contribution/release-java-agent/"
   - name: "Changelog"
-    path: "https://github.com/apache/skywalking/tree/master/changes"
+    path: "https://github.com/apache/skywalking-java/tree/master/changes"

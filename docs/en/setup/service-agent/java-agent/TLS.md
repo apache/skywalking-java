@@ -25,7 +25,7 @@ agent.force_tls=${SW_AGENT_FORCE_TLS:true}
 
 ## Enable mutual TLS
 
-- Sharing gRPC server must be started with enabled mTLS. More details see `receiver-sharing-server` section in `application.yaml`. Please refer to [gRPC SSL](../../backend/grpc-ssl.md)  
+- Sharing gRPC server must be started with enabled mTLS. More details see `receiver-sharing-server` section in `application.yaml` of SkyWalking OAP Server.  
 - Configure Client-side SSL/TLS in `agent.conf`.
 - Change `SW_AGENT_COLLECTOR_BACKEND_SERVICES` to host and port of `receiver-sharing-server`.
 

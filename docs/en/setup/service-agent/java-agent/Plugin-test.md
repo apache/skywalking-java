@@ -34,7 +34,7 @@ Take the following test projects as examples:
 The test case project must be packaged as `project-name.war` by using `mvn package`.
 
 Take the following test project as an example
-* [spring-4.3.x-scenario](https://github.com/apache/skywalking/tree/master/test/plugin/scenarios/spring-4.3.x-scenario)
+* [spring-4.3.x-scenario](../../../../../test/plugin/scenarios/spring-4.3.x-scenario)
 
 
 ## Test project hierarchical structure

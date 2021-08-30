@@ -37,3 +37,5 @@ agent.ssl_cert_chain_path=${SW_AGENT_SSL_CERT_CHAIN_PATH:/ca/client.crt}
 
 collector.backend_service=${SW_AGENT_COLLECTOR_BACKEND_SERVICES:skywalking-oap:11801}
 ```
+
+Notice, the client-side's certificate and the private key are from the same CA certificate with server-side.

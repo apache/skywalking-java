@@ -60,8 +60,7 @@ public class TLSChannelBuilder implements ChannelBuilder<NettyChannelBuilder> {
                              InputStream key = PrivateKeyUtil.loadDecryptionKey(keyPath)) {
                             builder.keyManager(cert, key);
                         }
-                    }
-                    else if (!certFile.isFile() || !keyFile.isFile()) {
+                    } else if (!certFile.isFile() || !keyFile.isFile()) {
                         LOGGER.warn("Failed to enable mTLS caused by cert or key cannot be found.");
                     }
                 }
@@ -75,9 +74,7 @@ public class TLSChannelBuilder implements ChannelBuilder<NettyChannelBuilder> {
 
     private static String toAbsolutePath(final String path) throws AgentPackageNotFoundException {
         if (path.startsWith("/")) {
-            return path;
-        } else if (path.startsWith("./")) {
-            return AgentPackagePath.getPath() + path.substring(1);
+            return AgentPackagePath.getPath() + path;
         } else {
             return AgentPackagePath.getPath() + "/" + path;
         }

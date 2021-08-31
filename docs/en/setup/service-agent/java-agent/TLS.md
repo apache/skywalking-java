@@ -7,11 +7,21 @@ at the same time, the SkyWalking backend is in another region (VPC).
 > 
 > Because of that, security requirement is very obvious.
 
+## Creating SSL/TLS Certificates
+
+The first step is to generate certificates and key files for encrypting communication. This is
+fairly straightforward: use `openssl` from the command line.
+
+Use this [script](../../../../tools/TLS/tls_key_generate.sh) if you are not familiar with how to generate key files.
+
+We need the following files:
+ - `client.pem`: A private RSA key to sign and authenticate the public key. It's either a PKCS#8(PEM) or PKCS#1(DER).
+ - `client.crt`: Self-signed X.509 public keys for distribution.
+ - `ca.crt`: A certificate authority public key for a client to validate the server's certificate.
+ 
 ## Authentication Mode
-- Use this [script](../../../../../tools/TLS/tls_key_generate.sh) if you are not familiar with how to generate key files.
 - Find `ca.crt`, and use it at client side. In `mTLS` mode, `client.crt` and `client.pem` are required at client side.
-- Find `server.crt` ,`server.pem` and `ca.crt`. Use them at server side. Please refer to `gRPC Security` of the OAP server doc.
-  for more details.
+- Find `server.crt`, `server.pem` and `ca.crt`. Use them at server side. Please refer to `gRPC Security` of the OAP server doc for more details.
 
 ## Open and config TLS
 

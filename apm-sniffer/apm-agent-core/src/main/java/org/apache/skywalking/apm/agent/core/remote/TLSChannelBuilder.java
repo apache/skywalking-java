@@ -58,7 +58,7 @@ public class TLSChannelBuilder implements ChannelBuilder<NettyChannelBuilder> {
 
                     if (certFile.isFile() && keyFile.isFile()) {
                         try (InputStream cert = new FileInputStream(certFile);
-                             InputStream key = PrivateKeyUtil.loadDecryptionKey(keyPath)) {
+                             InputStream key = PrivateKeyUtil.loadDecryptionKey(keyFile.getAbsolutePath())) {
                             builder.keyManager(cert, key);
                         }
                     } else if (!certFile.isFile() || !keyFile.isFile()) {

@@ -20,6 +20,9 @@ property key | Description | Default |
 `agent.operation_name_threshold `|The operationName max length, setting this value > 190 is not recommended.|`150`|
 `agent.keep_tracing`|Keep tracing even the backend is not available if this value is `true`.|`false`|
 `agent.force_tls`|Force open TLS for gRPC channel if this value is `true`.|`false`|
+`agent.ssl_trusted_ca_path` | gRPC SSL trusted ca file. | `/ca/ca.crt` |
+`agent.ssl_key_path`| The private key file. Enable mTLS when ssl_key_path and ssl_cert_chain_path exist. | `""` |
+`agent.ssl_cert_chain_path`| The certificate file. Enable mTLS when ssl_key_path and ssl_cert_chain_path exist. | `""` |
 `osinfo.ipv4_list_size`| Limit the length of the ipv4 list size. |`10`|
 `collector.grpc_channel_check_interval`|grpc channel status check interval.|`30`|
 `collector.heartbeat_period`|agent heartbeat report period. Unit, second.|`30`|

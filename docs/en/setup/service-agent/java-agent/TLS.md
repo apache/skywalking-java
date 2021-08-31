@@ -12,7 +12,7 @@ at the same time, the SkyWalking backend is in another region (VPC).
 The first step is to generate certificates and key files for encrypting communication. This is
 fairly straightforward: use `openssl` from the command line.
 
-Use this [script](../../../../tools/TLS/tls_key_generate.sh) if you are not familiar with how to generate key files.
+Use this [script](../../../../../tools/TLS/tls_key_generate.sh) if you are not familiar with how to generate key files.
 
 We need the following files:
  - `client.pem`: A private RSA key to sign and authenticate the public key. It's either a PKCS#8(PEM) or PKCS#1(DER).

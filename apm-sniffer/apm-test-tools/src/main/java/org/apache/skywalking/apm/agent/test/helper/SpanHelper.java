@@ -40,6 +40,19 @@ public class SpanHelper {
         return -9999;
     }
 
+    public static String getPeer(AbstractSpan tracingSpan) {
+        try {
+            return FieldGetter.get2LevelParentFieldValue(tracingSpan, "peer");
+        } catch (Exception e) {
+            try {
+                return FieldGetter.getParentFieldValue(tracingSpan, "peer");
+            } catch (Exception e1) {
+
+            }
+        }
+        return null;
+    }
+
     public static List<LogDataEntity> getLogs(AbstractSpan tracingSpan) {
         try {
             List<LogDataEntity> logs = FieldGetter.get2LevelParentFieldValue(tracingSpan, "logs");

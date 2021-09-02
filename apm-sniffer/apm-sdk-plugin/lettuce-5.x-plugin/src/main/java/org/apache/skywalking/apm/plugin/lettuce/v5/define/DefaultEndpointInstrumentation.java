@@ -26,14 +26,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class AbstractRedisClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class DefaultEndpointInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "io.lettuce.core.AbstractRedisClient";
+    private static final String ENHANCE_CLASS = "io.lettuce.core.protocol.DefaultEndpoint";
 
-    private static final String ABSTRACT_REDIS_CLIENT_CONSTRUCTOR_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.lettuce.v5.AbstractRedisClientInterceptor";
+    private static final String DEFAULT_ENDPOINT_CHANNEL_ACTIVE_INTERCEPTOR = "org.apache.skywalking.apm.plugin.lettuce.v5.DefaultEndpointChannelActiveInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -46,12 +46,12 @@ public class AbstractRedisClientInstrumentation extends ClassInstanceMethodsEnha
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("setOptions").and(takesArgumentWithType(0, "io.lettuce.core.ClientOptions"));
+                    return named("notifyChannelActive").and(takesArgument(0, named("io.netty.channel.Channel")));
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return ABSTRACT_REDIS_CLIENT_CONSTRUCTOR_INTERCEPTOR_CLASS;
+                    return DEFAULT_ENDPOINT_CHANNEL_ACTIVE_INTERCEPTOR;
                 }
 
                 @Override

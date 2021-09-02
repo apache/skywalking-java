@@ -18,37 +18,36 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.v5;
 
-import io.lettuce.core.AbstractRedisClient;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
 import java.lang.reflect.Method;
 
-public class AbstractRedisClientInterceptor implements InstanceMethodsAroundInterceptor {
+public class RedisCommandCompleteExceptionallyMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
-        EnhancedInstance clientOptions = (EnhancedInstance) allArguments[0];
-        if (clientOptions == null) {
-            return;
-        }
-        AbstractRedisClient client = (AbstractRedisClient) objInst;
-        if (client.getOptions() == null || ((EnhancedInstance) client.getOptions()).getSkyWalkingDynamicField() == null) {
-            return;
-        }
-        clientOptions.setSkyWalkingDynamicField(((EnhancedInstance) client.getOptions()).getSkyWalkingDynamicField());
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
+        if (objInst.getSkyWalkingDynamicField() != null) {
+            Throwable t = (Throwable) allArguments[0];
+            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            span.log(t);
+            span.asyncFinish();
+            objInst.setSkyWalkingDynamicField(null);
+        }
         return ret;
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+        if (objInst.getSkyWalkingDynamicField() != null) {
+            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            span.log(t);
+        }
     }
 }

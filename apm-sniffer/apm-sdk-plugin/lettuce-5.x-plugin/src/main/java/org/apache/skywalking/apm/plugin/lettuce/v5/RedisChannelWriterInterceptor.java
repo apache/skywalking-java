@@ -119,7 +119,6 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
             abstractSpan.log(t);
             abstractSpan.asyncFinish();
         }
-
     }
 
     private static RedisCommand<?, ?, ?> getSpanCarrierCommand(Object o) {

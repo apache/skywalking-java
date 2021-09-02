@@ -28,8 +28,8 @@ public class ConnectionCache {
 
     private static final String CONNECTION_SPLIT_STR = ",";
 
-    public static ConnectionInfo get(String host, String port) {
-        final String hostPortPair = String.format("%s:%s", host, port);
+    public static ConnectionInfo get(String host, String port, String databaseName) {
+        final String hostPortPair = String.format("%s:%s/%s", host, port, databaseName);
         return CONNECTIONS_MAP.get(hostPortPair);
     }
 
@@ -40,7 +40,7 @@ public class ConnectionCache {
     public static void save(ConnectionInfo connectionInfo) {
         for (String conn : connectionInfo.getDatabasePeer().split(CONNECTION_SPLIT_STR)) {
             if (!StringUtil.isEmpty(conn)) {
-                CONNECTIONS_MAP.putIfAbsent(conn, connectionInfo);
+                CONNECTIONS_MAP.putIfAbsent(conn + "/" + connectionInfo.getDatabaseName(), connectionInfo);
             }
         }
     }

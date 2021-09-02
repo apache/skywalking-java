@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.v5;
 
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -27,6 +27,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import java.lang.reflect.Method;
 
 public class RedisCommandCancelMethodInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final String CANCEL_SIGNAL_TAG = "signalType";
     private static final String COMMAND_CANCEL_VALUE = "cancel";
 
     @Override
@@ -38,9 +39,8 @@ public class RedisCommandCancelMethodInterceptor implements InstanceMethodsAroun
         if (objInst.getSkyWalkingDynamicField() != null) {
             AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
             span.errorOccurred();
-            Tags.SIGNAL_TYPE.set(span, COMMAND_CANCEL_VALUE);
+            span.tag(new StringTag(CANCEL_SIGNAL_TAG), COMMAND_CANCEL_VALUE);
             span.asyncFinish();
-            //help gc
             objInst.setSkyWalkingDynamicField(null);
         }
         return ret;

@@ -15,7 +15,7 @@ Release Notes.
 * Add all config items to `agent.conf` file for convenient containerization use cases.
 * Advanced Kafka Producer configuration enhancement.
 * Support mTLS for gRPC channel.
-* fix bug that plugin record wrong time elapse for lettuce plugin
+* fix the bug that plugin record wrong time elapse for lettuce plugin
 
 #### Documentation
 

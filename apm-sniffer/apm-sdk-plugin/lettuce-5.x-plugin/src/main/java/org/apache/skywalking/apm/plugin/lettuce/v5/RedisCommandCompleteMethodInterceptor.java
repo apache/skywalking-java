@@ -36,7 +36,6 @@ public class RedisCommandCompleteMethodInterceptor implements InstanceMethodsAro
         if (objInst.getSkyWalkingDynamicField() != null) {
             AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
             span.asyncFinish();
-            //help gc
             objInst.setSkyWalkingDynamicField(null);
         }
         return ret;

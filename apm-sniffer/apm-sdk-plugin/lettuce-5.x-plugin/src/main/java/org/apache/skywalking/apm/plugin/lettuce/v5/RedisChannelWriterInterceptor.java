@@ -111,8 +111,15 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-        AbstractSpan span = ContextManager.activeSpan();
-        span.log(t);
+        RedisCommand<?, ?, ?> redisCommand = getSpanCarrierCommand(allArguments[0]);
+        if (redisCommand instanceof EnhancedInstance && ((EnhancedInstance) redisCommand).getSkyWalkingDynamicField() != null) {
+            EnhancedInstance enhancedRedisCommand = (EnhancedInstance) redisCommand;
+            AbstractSpan abstractSpan = (AbstractSpan) enhancedRedisCommand.getSkyWalkingDynamicField();
+            enhancedRedisCommand.setSkyWalkingDynamicField(null);
+            abstractSpan.log(t);
+            abstractSpan.asyncFinish();
+        }
+
     }
 
     private static RedisCommand<?, ?, ?> getSpanCarrierCommand(Object o) {

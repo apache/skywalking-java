@@ -96,8 +96,6 @@ public final class Tags {
      */
     public static final StringTag RPC_RESPONSE_STATUS_CODE = new StringTag(18, "rpc.status_code", true);
 
-    public static final StringTag SIGNAL_TYPE = new StringTag(19, "signalType");
-
     public static final class HTTP {
         public static final StringTag METHOD = new StringTag(10, "http.method");
 

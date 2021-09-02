@@ -38,7 +38,6 @@ public class RedisCommandCompleteExceptionallyMethodInterceptor implements Insta
             AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
             span.log(t);
             span.asyncFinish();
-            //help gc
             objInst.setSkyWalkingDynamicField(null);
         }
         return ret;

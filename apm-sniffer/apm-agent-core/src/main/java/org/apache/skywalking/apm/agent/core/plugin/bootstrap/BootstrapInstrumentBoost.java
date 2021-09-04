@@ -18,6 +18,14 @@
 
 package org.apache.skywalking.apm.agent.core.plugin.bootstrap;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.instrument.Instrumentation;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
@@ -27,7 +35,11 @@ import net.bytebuddy.dynamic.loading.ClassInjector;
 import net.bytebuddy.pool.TypePool;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.plugin.*;
+import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.ByteBuddyCoreClasses;
+import org.apache.skywalking.apm.agent.core.plugin.InstrumentDebuggingClass;
+import org.apache.skywalking.apm.agent.core.plugin.PluginException;
+import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
@@ -36,14 +48,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsI
 import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter;
 import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.instrument.Instrumentation;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 

@@ -16,6 +16,7 @@ Release Notes.
 * Advanced Kafka Producer configuration enhancement.
 * Support mTLS for gRPC channel.
 * fix the bug that plugin record wrong time elapse for lettuce plugin
+* Add support for extClassLoader
 
 #### Documentation
 

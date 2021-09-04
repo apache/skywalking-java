@@ -48,6 +48,8 @@ public abstract class AbstractClassEnhancePluginDefine {
      */
     public static final String CONTEXT_ATTR_NAME = "_$EnhancedClassField_ws";
 
+    private boolean isExtClassLoaderLoaded = false;
+
     /**
      * Main entrance of enhancing the class.
      *
@@ -164,6 +166,14 @@ public abstract class AbstractClassEnhancePluginDefine {
 
     public boolean isBootstrapInstrumentation() {
         return false;
+    }
+
+    public boolean isExtClassLoaderLoaded() {
+        return isExtClassLoaderLoaded;
+    }
+
+    public void setExtClassLoaderLoaded(boolean isExtClassLoaderLoaded) {
+        this.isExtClassLoaderLoaded = isExtClassLoaderLoaded;
     }
 
     /**

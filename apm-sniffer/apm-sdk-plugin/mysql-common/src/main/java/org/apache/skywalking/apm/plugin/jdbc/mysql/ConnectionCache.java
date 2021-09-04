@@ -33,8 +33,8 @@ public class ConnectionCache {
         return CONNECTIONS_MAP.get(hostPortPair);
     }
 
-    public static ConnectionInfo get(String hostPortPair) {
-        return CONNECTIONS_MAP.get(hostPortPair);
+    public static ConnectionInfo get(String hostPortPair, String databaseName) {
+        return CONNECTIONS_MAP.get(hostPortPair + "/" + databaseName);
     }
 
     public static void save(ConnectionInfo connectionInfo) {

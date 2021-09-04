@@ -48,7 +48,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsI
 import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter;
 import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 
-
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 /**

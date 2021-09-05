@@ -16,6 +16,7 @@ Release Notes.
 * Advanced Kafka Producer configuration enhancement.
 * Support mTLS for gRPC channel.
 * fix the bug that plugin record wrong time elapse for lettuce plugin
+* fix the bug that the wrong db.instance value displayed on Skywalking-UI when existing multi-database-instance on same host port pair.
 * Add support for extClassLoader
 
 #### Documentation

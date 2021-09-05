@@ -41,7 +41,12 @@ public class ConnectionCreateOldInterceptor implements StaticMethodsAroundInterc
     public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
         Object ret) {
         if (ret instanceof EnhancedInstance) {
-            ConnectionInfo connectionInfo = ConnectionCache.get(allArguments[1].toString(), allArguments[2].toString());
+            String database = "";
+            try {
+                Method getDbMethod = parameterTypes[0].getDeclaredMethod("getDatabase");
+                database = (String) getDbMethod.invoke(allArguments[0]);
+            } catch (Throwable t) { }
+            ConnectionInfo connectionInfo = ConnectionCache.get(allArguments[1].toString(), allArguments[2].toString(), database);
             ((EnhancedInstance) ret).setSkyWalkingDynamicField(connectionInfo);
         }
         return ret;

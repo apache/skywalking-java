@@ -70,7 +70,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
             }
 
             if (staticMethodsInterceptV2Point.isOverrideArgs()) {
-                if (isBootstrapInstrumentation()) {
+                if (isBootstrapInstrumentation() || isExtClassLoaderLoaded()) {
                     newClassBuilder = newClassBuilder.method(
                         isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
@@ -84,7 +84,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                                                                                 .to(new StaticMethodsInterV2WithOverrideArgs(interceptor)));
                 }
             } else {
-                if (isBootstrapInstrumentation()) {
+                if (isBootstrapInstrumentation() || isExtClassLoaderLoaded()) {
                     newClassBuilder = newClassBuilder.method(
                         isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
@@ -139,7 +139,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                     junction = junction.and(ElementMatchers.<MethodDescription>isDeclaredBy(typeDescription));
                 }
                 if (instanceMethodsInterceptV2Point.isOverrideArgs()) {
-                    if (isBootstrapInstrumentation()) {
+                    if (isBootstrapInstrumentation() || isExtClassLoaderLoaded()) {
                         newClassBuilder = newClassBuilder.method(junction)
                                                          .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                     .withBinders(Morph.Binder.install(OverrideCallable.class))
@@ -151,7 +151,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                                                                                     .to(new InstMethodsInterV2WithOverrideArgs(interceptor, classLoader)));
                     }
                 } else {
-                    if (isBootstrapInstrumentation()) {
+                    if (isBootstrapInstrumentation() || isExtClassLoaderLoaded()) {
                         newClassBuilder = newClassBuilder.method(junction)
                                                          .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                     .to(BootstrapInstrumentBoost.forInternalDelegateClass(interceptor)));

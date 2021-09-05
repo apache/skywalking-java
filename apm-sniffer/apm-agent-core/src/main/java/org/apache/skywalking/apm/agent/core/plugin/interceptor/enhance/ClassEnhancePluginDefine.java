@@ -151,7 +151,7 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
                                                                                     .to(new InstMethodsInterWithOverrideArgs(interceptor, classLoader)));
                     }
                 } else {
-                    if (isBootstrapInstrumentation()) {
+                    if (isBootstrapInstrumentation() || isExtClassLoaderLoaded()) {
                         newClassBuilder = newClassBuilder.method(junction)
                                                          .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                     .to(BootstrapInstrumentBoost.forInternalDelegateClass(interceptor)));
@@ -189,7 +189,7 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
             }
 
             if (staticMethodsInterceptPoint.isOverrideArgs()) {
-                if (isBootstrapInstrumentation()) {
+                if (isBootstrapInstrumentation() || isExtClassLoaderLoaded()) {
                     newClassBuilder = newClassBuilder.method(isStatic().and(staticMethodsInterceptPoint.getMethodsMatcher()))
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                 .withBinders(Morph.Binder.install(OverrideCallable.class))
@@ -201,7 +201,7 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
                                                                                 .to(new StaticMethodsInterWithOverrideArgs(interceptor)));
                 }
             } else {
-                if (isBootstrapInstrumentation()) {
+                if (isBootstrapInstrumentation() || isExtClassLoaderLoaded()) {
                     newClassBuilder = newClassBuilder.method(isStatic().and(staticMethodsInterceptPoint.getMethodsMatcher()))
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                 .to(BootstrapInstrumentBoost.forInternalDelegateClass(interceptor)));

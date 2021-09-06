@@ -32,6 +32,7 @@
         <compiler.version>1.8</compiler.version>
         <spring-boot-version>2.1.6.RELEASE</spring-boot-version>
         <test.framework.version>4.3</test.framework.version>
+        <commons.logging.version>1.1.3</commons.logging.version>
     </properties>
 
     <name>skywalking-extclassloader-scenario</name>
@@ -68,7 +69,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${test.framework.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -109,6 +109,43 @@
                                 <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
                             <outputDirectory>./target/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.httpcomponents</groupId>
+                                    <artifactId>httpclient</artifactId>
+                                    <version>${test.framework.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.httpcomponents</groupId>
+                                    <artifactId>httpcore</artifactId>
+                                    <version>${test.framework.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>commons-logging</groupId>
+                                    <artifactId>commons-logging</artifactId>
+                                    <version>${commons.logging.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>./extlibs</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>
                 </executions>

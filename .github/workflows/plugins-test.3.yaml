@@ -88,6 +88,7 @@ jobs:
           - gateway-3.x-scenario
           - neo4j-4.x-scenario
           - oracle-scenario
+          - extclassloader-scenario
     steps:
       - uses: actions/checkout@v2
         with:

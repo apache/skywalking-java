@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.jdkhttp;
+package org.apache.skywalking.apm.testcase.extclassloader;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

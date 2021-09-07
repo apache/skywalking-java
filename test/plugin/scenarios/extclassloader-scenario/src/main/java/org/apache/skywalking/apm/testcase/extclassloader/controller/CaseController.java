@@ -36,37 +36,37 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/case")
 public class CaseController {
 
-	private static final String SUCCESS = "Success";
+    private static final String SUCCESS = "Success";
 
-	@RequestMapping("/extclassloader-scenario")
-	@ResponseBody
-	public String testcase(HttpServletRequest request) throws IOException {
+    @RequestMapping("/extclassloader-scenario")
+    @ResponseBody
+    public String testcase(HttpServletRequest request) throws IOException {
 
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpGet httpGet = new HttpGet("http://localhost:8080" + request.getContextPath() + "/case/receiveContext-0");
-		CloseableHttpResponse response = httpclient.execute(httpGet);
-		try {
-			HttpEntity entity = response.getEntity();
-			EntityUtils.consume(entity);
-		} finally {
-			response.close();
-			httpclient.close();
-		}
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet("http://localhost:8080" + request.getContextPath() + "/case/receiveContext-0");
+        CloseableHttpResponse response = httpclient.execute(httpGet);
+        try {
+            HttpEntity entity = response.getEntity();
+            EntityUtils.consume(entity);
+        } finally {
+            response.close();
+            httpclient.close();
+        }
 
-		return SUCCESS;
-	}
+        return SUCCESS;
+    }
 
-	@RequestMapping("/healthCheck")
-	@ResponseBody
-	public String healthCheck() {
-		// your codes
-		return SUCCESS;
-	}
+    @RequestMapping("/healthCheck")
+    @ResponseBody
+    public String healthCheck() {
+        // your codes
+        return SUCCESS;
+    }
 
-	@RequestMapping("/receiveContext-0")
-	@ResponseBody
-	public String receiveContextService0() {
-		return "receiveContext-0";
-	}
+    @RequestMapping("/receiveContext-0")
+    @ResponseBody
+    public String receiveContextService0() {
+        return "receiveContext-0";
+    }
 
 }

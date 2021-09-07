@@ -18,5 +18,3 @@ type: jvm
 entryService: http://localhost:8080/extclassloader-scenario/case/extclassloader-scenario
 healthCheck: http://localhost:8080/extclassloader-scenario/case/healthCheck
 startScript: ./bin/startup.sh
-runningMode: default
-withPlugins: apm-httpClient-4.x-plugin-*.jar

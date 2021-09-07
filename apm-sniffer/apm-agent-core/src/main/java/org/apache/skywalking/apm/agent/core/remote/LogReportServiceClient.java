@@ -18,35 +18,70 @@
 
 package org.apache.skywalking.apm.agent.core.remote;
 
+import io.grpc.Channel;
+import io.grpc.stub.StreamObserver;
 import java.util.List;
 
+import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
+import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.conf.Config.Collector;
+import org.apache.skywalking.apm.agent.core.conf.Config.Log;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
+import org.apache.skywalking.apm.commons.datacarrier.DataCarrier;
+import org.apache.skywalking.apm.commons.datacarrier.buffer.BufferStrategy;
 import org.apache.skywalking.apm.commons.datacarrier.consumer.IConsumer;
+import org.apache.skywalking.apm.network.common.v3.Commands;
 import org.apache.skywalking.apm.network.logging.v3.LogData;
+import org.apache.skywalking.apm.network.logging.v3.LogReportServiceGrpc;
+
+import static org.apache.skywalking.apm.agent.core.conf.Config.Collector.GRPC_UPSTREAM_TIMEOUT;
+import static org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus.CONNECTED;
 
 @DefaultImplementor
-public class LogReportServiceClient implements BootService, IConsumer<LogData> {
+public class LogReportServiceClient implements BootService, GRPCChannelListener, IConsumer<LogData> {
+    private static final ILog LOGGER = LogManager.getLogger(LogReportServiceClient.class);
+
+    private volatile DataCarrier<LogData> carrier;
+    private volatile GRPCChannelStatus status;
+
+    private LogReportServiceGrpc.LogReportServiceStub logReportServiceStub;
 
     @Override
     public void prepare() throws Throwable {
-
+        ServiceManager.INSTANCE.findService(GRPCChannelManager.class).addChannelListener(this);
     }
 
     @Override
     public void boot() throws Throwable {
-
+        carrier = new DataCarrier<>("gRPC-log", "gRPC-log",
+                                    Config.Buffer.CHANNEL_SIZE,
+                                    Config.Buffer.BUFFER_SIZE,
+                                    BufferStrategy.IF_POSSIBLE
+        );
+        carrier.consume(this, 1);
     }
 
     @Override
     public void onComplete() throws Throwable {
-
+        Channel channel = ServiceManager.INSTANCE.findService(GRPCChannelManager.class).getChannel();
+        logReportServiceStub = LogReportServiceGrpc.newStub(channel)
+                                                   .withDeadlineAfter(Collector.GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS)
+                                                   .withMaxOutboundMessageSize(Log.MAX_MESSAGE_SIZE);
     }
 
-    @Override
-    public void shutdown() throws Throwable {
-
+    public void produce(LogData logData) {
+        if (Objects.nonNull(logData) && !carrier.produce(logData)) {
+            if (LOGGER.isDebugEnable()) {
+                LOGGER.debug("One log has been abandoned, cause by buffer is full.");
+            }
+        }
     }
 
     @Override
@@ -54,22 +89,70 @@ public class LogReportServiceClient implements BootService, IConsumer<LogData> {
 
     }
 
-    public void produce(LogData logData) {
+    @Override
+    public void consume(final List<LogData> dataList) {
+        if (CollectionUtil.isEmpty(dataList)) {
+            return;
+        }
 
+        if (CONNECTED.equals(status)) {
+            GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
+
+            StreamObserver<LogData> logDataStreamObserver = logReportServiceStub.collect(
+                new StreamObserver<Commands>() {
+                    @Override
+                    public void onNext(final Commands commands) {
+
+                    }
+
+                    @Override
+                    public void onError(final Throwable throwable) {
+                        status.finished();
+                        LOGGER.error(throwable, "Try to send {} log data to collector, with unexpected exception.",
+                                     dataList.size()
+                        );
+                        ServiceManager.INSTANCE
+                            .findService(GRPCChannelManager.class)
+                            .reportError(throwable);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        status.finished();
+                    }
+                });
+
+            for (final LogData logData : dataList) {
+                logDataStreamObserver.onNext(logData);
+            }
+            logDataStreamObserver.onCompleted();
+            status.wait4Finish();
+        }
     }
 
     @Override
-    public void consume(List<LogData> data) {
-
-    }
-
-    @Override
-    public void onError(List<LogData> data, Throwable t) {
-
+    public void onError(final List<LogData> data, final Throwable t) {
+        LOGGER.error(t, "Try to consume {} log data to sender, with unexpected exception.", data.size());
     }
 
     @Override
     public void onExit() {
 
+    }
+
+    @Override
+    public void statusChanged(GRPCChannelStatus status) {
+        if (GRPCChannelStatus.CONNECTED.equals(status)) {
+            Channel channel = ServiceManager.INSTANCE.findService(GRPCChannelManager.class).getChannel();
+            logReportServiceStub = LogReportServiceGrpc.newStub(channel)
+                                                       .withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS)
+                                                       .withMaxOutboundMessageSize(Log.MAX_MESSAGE_SIZE);
+        }
+        this.status = status;
+    }
+
+    @Override
+    public void shutdown() {
+        carrier.shutdownConsumers();
     }
 }

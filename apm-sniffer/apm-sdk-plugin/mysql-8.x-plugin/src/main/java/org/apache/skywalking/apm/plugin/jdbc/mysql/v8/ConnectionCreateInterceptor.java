@@ -40,7 +40,7 @@ public class ConnectionCreateInterceptor implements StaticMethodsAroundIntercept
         Object ret) {
         if (ret instanceof EnhancedInstance) {
             final HostInfo hostInfo = (HostInfo) allArguments[0];
-            ConnectionInfo connectionInfo = ConnectionCache.get(hostInfo.getHostPortPair());
+            ConnectionInfo connectionInfo = ConnectionCache.get(hostInfo.getHostPortPair(), hostInfo.getDatabase());
             ((EnhancedInstance) ret).setSkyWalkingDynamicField(connectionInfo);
         }
         return ret;

@@ -128,7 +128,6 @@ public class ServiceManagerTest {
         assertNotNull(service);
     }
 
-
     private void assertLogReporterServiceClient(LogReportServiceClient service) {
         assertNotNull(service);
     }

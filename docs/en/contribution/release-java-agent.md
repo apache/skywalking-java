@@ -267,6 +267,22 @@ SkyWalking Resources:
 - Apache SkyWalking Team
 ```
 
+## Release Docker images
+
+```shell
+export SW_VERSION=x.y.z
+git clone --depth 1 --branch v$SW_VERSION https://github.com/apache/skywalking-java.git
+cd skywalking-java
+
+svn co https://dist.apache.org/repos/dist/release/skywalking-java/$SW_VERSION release # (1)
+
+export SW_OUT=release
+export HUB=apache
+export TAG=$SW_VERSION
+export DIST=<the binary package name inside (1), e.g. apache-skywalking-apm-8.8.0.tar.gz>
+make docker.push -j 7
+```
+
 ## Clean up the old releases
 Once the latest release has been published, you should clean up the old releases from the mirror system.
 1. Update the download links (source, dist, asc, and sha512) on the website to the archive repo (https://archive.apache.org/dist/skywalking).

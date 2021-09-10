@@ -1,6 +1,14 @@
-# Docker
+# Apache SkyWalking Agent Containerized Scenarios
 
-This section introduces how to build your Java application image on top of this image.
+**Docker images are not official ASF releases but provided for convenience. Recommended usage is always to build the
+source**
+
+This image only hosts the pre-built SkyWalking Java agent jars, and provides some convenient configurations for
+containerized scenarios.
+
+# How to use this image
+
+## Docker
 
 ```dockerfile
 FROM apache/skywalking-java-agent:8.5.0-jdk8
@@ -11,9 +19,7 @@ FROM apache/skywalking-java-agent:8.5.0-jdk8
 You can start your Java application with `CMD` or `ENTRYPOINT`, but you don't need to care about the Java options to
 enable SkyWalking agent, it should be adopted automatically.
 
-# Kubernetes
-
-This section introduces how to use this image as sidecar of Kubernetes service.
+## Kubernetes
 
 In Kubernetes scenarios, you can also use this agent image as a sidecar.
 
@@ -47,4 +53,3 @@ spec:
         - name: JAVA_TOOL_OPTIONS
           value: "-javaagent:/skywalking/agent/skywalking-agent.jar"
 ```
-

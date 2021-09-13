@@ -80,6 +80,8 @@ catalog:
         path: "https://skyapmtest.github.io/Agent-Benchmarks/"
   - name: "Contribution"
     catalog:
+      - name: "Compiling Guidance"
+        path: "/en/contribution/compiling/"
       - name: "Java Agent Release Guidance"
         path: "/en/contribution/release-java-agent/"
   - name: "Changelog"

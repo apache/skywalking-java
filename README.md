@@ -21,7 +21,8 @@ SkyWalking: an APM(application performance monitor) system, especially designed 
 Please head to the [releases page](https://skywalking.apache.org/downloads/) to download a release of Apache SkyWalking.
 
 # Compiling project
-> ./mvnw clean package
+> git clone https://github.com/apache/skywalking-java.git
+> ./mvnw clean package -Pall
 
 The agent binary package is generated in `skywalking-agent` folder.
 

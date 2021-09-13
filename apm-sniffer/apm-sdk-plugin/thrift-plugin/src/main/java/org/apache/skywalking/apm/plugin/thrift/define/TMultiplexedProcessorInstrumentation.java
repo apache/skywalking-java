@@ -28,8 +28,10 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 public class TMultiplexedProcessorInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.thrift.TBaseProcessorInterceptor";
     private static final String ENHANCE_CLASS = "org.apache.thrift.TMultiplexedProcessor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.thrift.TMultiplexedProcessorInterceptor";
+    private static final String REGISTER_PROCESSOR_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.thrift.TMultiplexedProcessorRegisterInterceptor";
+    private static final String REGISTER_DEFAULT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.thrift.TMultiplexedProcessorRegisterDefaultInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -61,6 +63,40 @@ public class TMultiplexedProcessorInstrumentation extends ClassInstanceMethodsEn
                 @Override
                 public String getMethodsInterceptor() {
                     return INTERCEPTOR_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return ElementMatchers.named("registerProcessor").and(ElementMatchers.takesArguments(2));
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return REGISTER_PROCESSOR_INTERCEPTOR_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return ElementMatchers.named("registerDefault");
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return REGISTER_DEFAULT_INTERCEPTOR_CLASS;
                 }
 
                 @Override

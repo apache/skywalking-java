@@ -4,13 +4,17 @@ This document will help you compile and build a project in your maven and set yo
 Prepare JDK 8+.
 
 * If you clone codes from https://github.com/apache/skywalking-java
-> git clone https://github.com/apache/skywalking-java.git
-> cd skywalking-java
-> ./mvnw clean package -Pall
+```shell
+git clone https://github.com/apache/skywalking-java.git
+cd skywalking-java
+./mvnw clean package -Pall
+```
 
 * If you download source codes tar from https://skywalking.apache.org/downloads/
 
-> ./mvnw clean package
+```shell
+./mvnw clean package
+```
 
 The agent binary package is generated in `skywalking-agent` folder.
 

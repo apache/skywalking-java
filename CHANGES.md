@@ -18,6 +18,7 @@ Release Notes.
 * fix the bug that plugin record wrong time elapse for lettuce plugin
 * fix the bug that the wrong db.instance value displayed on Skywalking-UI when existing multi-database-instance on same host port pair.
 * Add thrift plugin support thrift TMultiplexedProcessor.
+* Add benchmark result for `exception-ignore` plugin and polish plugin guide.
 
 #### Documentation
 

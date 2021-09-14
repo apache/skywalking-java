@@ -119,7 +119,7 @@
         <versions-maven-plugin.version>2.5</versions-maven-plugin.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
-        <jmh.version>1.21</jmh.version>
+        <jmh.version>1.33</jmh.version>
         <gmaven-plugin.version>1.5</gmaven-plugin.version>
         <checkstyle.fails.on.error>true</checkstyle.fails.on.error>
 
@@ -414,8 +414,8 @@
                         org/apache/skywalking/oal/rt/grammar/*.java,
                         org/apache/skywalking/oap/server/exporter/grpc/*.java,
                         org/apache/skywalking/oap/server/configuration/service/*.java,
-                        **/generated/*_jmhType*.java,
-                        **/generated/*_jmhTest.java
+                        **/jmh_generated/*_jmhType*.java,
+                        **/jmh_generated/*_jmhTest.java
                     </excludes>
                     <propertyExpansion>
                         import.control=${maven.multiModuleProjectDirectory}/apm-checkstyle/importControl.xml

@@ -19,31 +19,21 @@
 package org.apache.skywalking.apm.plugin.thrift;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.plugin.thrift.wrapper.Context;
-import org.apache.skywalking.apm.plugin.thrift.wrapper.ServerInProtocolWrapper;
 import org.apache.thrift.ProcessFunction;
 import org.apache.thrift.TBaseAsyncProcessor;
 import org.apache.thrift.TBaseProcessor;
+import org.apache.thrift.TProcessor;
 
-/**
- * To wrap the ProcessFunction for getting arguments of method.
- *
- * @see TBaseAsyncProcessor
- * @see TBaseProcessorInterceptor
- */
-public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
-    private Map<String, ProcessFunction> processMap;
+public class TMultiplexedProcessorRegisterDefaultInterceptor implements InstanceMethodsAroundInterceptor {
 
-    @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        processMap = ((TBaseProcessor) objInst).getProcessMapView();
-    }
+    private static final ILog LOGGER = LogManager.getLogger(TMultiplexedProcessorRegisterDefaultInterceptor.class);
 
     @Override
     public void beforeMethod(EnhancedInstance objInst,
@@ -51,10 +41,10 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                              Object[] allArguments,
                              Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        if (allArguments[0] instanceof ServerInProtocolWrapper) {
-            ServerInProtocolWrapper in = (ServerInProtocolWrapper) allArguments[0];
-            in.initial(new Context(processMap));
-        }
+
+        Map<String, ProcessFunction> processMap = (Map<String, ProcessFunction>) objInst.getSkyWalkingDynamicField();
+        TProcessor processor = (TProcessor) allArguments[0];
+        processMap.putAll(getProcessMap(processor));
     }
 
     @Override
@@ -63,9 +53,6 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                               Object[] allArguments,
                               Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
-        if (allArguments[0] instanceof ServerInProtocolWrapper) {
-            ContextManager.stopSpan();
-        }
         return ret;
     }
 
@@ -75,8 +62,19 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                                       Object[] allArguments,
                                       Class<?>[] argumentsTypes,
                                       Throwable t) {
-        if (allArguments[0] instanceof ServerInProtocolWrapper) {
-            ContextManager.activeSpan().log(t);
+    }
+
+    private Map<String, ProcessFunction> getProcessMap(TProcessor processor) {
+        Map<String, ProcessFunction> hashMap = new HashMap<>();
+        if (processor instanceof TBaseProcessor) {
+            Map<String, ProcessFunction> processMapView = ((TBaseProcessor) processor).getProcessMapView();
+            hashMap.putAll(processMapView);
+        } else if (processor instanceof TBaseAsyncProcessor) {
+            Map<String, ProcessFunction> processMapView = ((TBaseProcessor) processor).getProcessMapView();
+            hashMap.putAll(processMapView);
+        } else {
+            LOGGER.warn("Not support this processor:{}", processor.getClass().getName());
         }
+        return hashMap;
     }
 }

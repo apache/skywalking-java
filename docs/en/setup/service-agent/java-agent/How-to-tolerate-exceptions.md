@@ -107,8 +107,15 @@ If an exception has the `@IgnoredException` annotation, the exception wouldn't b
       `org.apache.skywalking.apm.agent.core.context.status.TestAnnotatedException`  | false |
 
 ## Recursive check
-Due to the wrapper nature of Java exceptions, sometimes users need recursive checking. Skywalking also supports it. Typically, we don't recommend setting this more than 10, which could cause a performance issue. Negative value and 0 would be ignored, which means all exceptions would make the span tagged in error status.
+Due to the wrapper nature of Java exceptions, sometimes users need recursive checking. Skywalking also supports it. 
 
 ```
-    statuscheck.max_recursive_depth=${SW_STATUSCHECK_MAX_RECURSIVE_DEPTH:1}
+statuscheck.max_recursive_depth=${SW_STATUSCHECK_MAX_RECURSIVE_DEPTH:1}
 ```
+
+According to the benchmark result, the exception check time is nearly proportional to the recursive depth being set.
+For each single check, it costs about ten of nanoseconds (~30 nanoseconds in the benchmark report, but may vary according 
+to different hardware and platforms).
+
+Typically, we don't recommend setting this more than 10, which could cause a performance issue. 
+Negative value and 0 would be ignored, which means all exceptions would make the span tagged in error status.

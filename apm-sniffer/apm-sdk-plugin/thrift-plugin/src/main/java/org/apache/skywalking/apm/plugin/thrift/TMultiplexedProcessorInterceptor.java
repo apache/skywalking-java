@@ -19,8 +19,11 @@
 package org.apache.skywalking.apm.plugin.thrift;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -29,20 +32,22 @@ import org.apache.skywalking.apm.plugin.thrift.wrapper.Context;
 import org.apache.skywalking.apm.plugin.thrift.wrapper.ServerInProtocolWrapper;
 import org.apache.thrift.ProcessFunction;
 import org.apache.thrift.TBaseAsyncProcessor;
-import org.apache.thrift.TBaseProcessor;
 
 /**
  * To wrap the ProcessFunction for getting arguments of method.
  *
  * @see TBaseAsyncProcessor
  * @see TBaseProcessorInterceptor
+ * @see TMultiplexedProcessorInterceptor
  */
-public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
-    private Map<String, ProcessFunction> processMap;
+public class TMultiplexedProcessorInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
+    private Map<String, ProcessFunction> processMap = new HashMap<>();
+
+    private static final ILog LOGGER = LogManager.getLogger(TMultiplexedProcessorInterceptor.class);
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        processMap = ((TBaseProcessor) objInst).getProcessMapView();
+    public void onConstruct(final EnhancedInstance objInst, final Object[] allArguments) throws Throwable {
+        objInst.setSkyWalkingDynamicField(processMap);
     }
 
     @Override
@@ -51,10 +56,9 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                              Object[] allArguments,
                              Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        if (allArguments[0] instanceof ServerInProtocolWrapper) {
-            ServerInProtocolWrapper in = (ServerInProtocolWrapper) allArguments[0];
-            in.initial(new Context(processMap));
-        }
+
+        ServerInProtocolWrapper in = (ServerInProtocolWrapper) allArguments[0];
+        in.initial(new Context(processMap));
     }
 
     @Override
@@ -63,9 +67,7 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                               Object[] allArguments,
                               Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
-        if (allArguments[0] instanceof ServerInProtocolWrapper) {
-            ContextManager.stopSpan();
-        }
+        ContextManager.stopSpan();
         return ret;
     }
 
@@ -75,8 +77,6 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                                       Object[] allArguments,
                                       Class<?>[] argumentsTypes,
                                       Throwable t) {
-        if (allArguments[0] instanceof ServerInProtocolWrapper) {
-            ContextManager.activeSpan().log(t);
-        }
+        ContextManager.activeSpan().log(t);
     }
 }

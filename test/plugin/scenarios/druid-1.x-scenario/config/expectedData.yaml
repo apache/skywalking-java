@@ -85,8 +85,8 @@ segmentItems:
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
       operationId: 0
-      parentSpanId: 0
-      spanId: 6
+      parentSpanId: nq -1
+      spanId: nq 0
       startTime: gt 0
       endTime: gt 0
       componentId: 33
@@ -123,8 +123,8 @@ segmentItems:
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
       operationId: 0
-      parentSpanId: 0
-      spanId: 9
+      parentSpanId: nq -1
+      spanId: nq 0
       startTime: gt 0
       endTime: gt 0
       componentId: 33
@@ -161,8 +161,8 @@ segmentItems:
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
       operationId: 0
-      parentSpanId: 0
-      spanId: 12
+      parentSpanId: nq -1
+      spanId: nq 0
       startTime: gt 0
       endTime: gt 0
       componentId: 33
@@ -199,8 +199,8 @@ segmentItems:
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
       operationId: 0
-      parentSpanId: 0
-      spanId: 15
+      parentSpanId: nq -1
+      spanId: nq 0
       startTime: gt 0
       endTime: gt 0
       componentId: 33

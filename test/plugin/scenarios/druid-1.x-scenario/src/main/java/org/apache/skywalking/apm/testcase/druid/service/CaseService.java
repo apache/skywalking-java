@@ -32,7 +32,7 @@ import java.util.Properties;
 public class CaseService {
 
     public static DataSource DS;
-    private static final String CREATE_TABLE_SQL = "CREATE TABLE test_DRUID(\n" + "id VARCHAR(1) PRIMARY KEY, \n" + "value VARCHAR(1) NOT NULL)";
+    private static final String CREATE_TABLE_SQL = "CREATE TABLE test_DRUID(id VARCHAR(1) PRIMARY KEY, value VARCHAR(1) NOT NULL)";
     private static final String INSERT_DATA_SQL = "INSERT INTO test_DRUID(id, value) VALUES(1,1)";
     private static final String QUERY_DATA_SQL = "SELECT id, value FROM test_DRUID WHERE id=1";
     private static final String DELETE_DATA_SQL = "DELETE FROM test_DRUID WHERE id=1";

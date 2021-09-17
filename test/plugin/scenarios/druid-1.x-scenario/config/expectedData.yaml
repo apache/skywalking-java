@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: Druid/case/druid-http
+    - operationName: /case/druid-1.x-scenario
       operationId: 0
       parentSpanId: -1
       spanId: 0

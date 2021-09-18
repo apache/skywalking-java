@@ -18,20 +18,18 @@
 
 package org.apache.skywalking.apm.testcase.druid.service;
 
-import com.alibaba.druid.pool.DruidDataSourceFactory;
+import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.skywalking.apm.testcase.druid.MySQLConfig;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 
 @Service
 public class CaseService {
 
-    public static DataSource DS;
+    public static DruidDataSource dataSource;
     private static final String CREATE_TABLE_SQL = "CREATE TABLE test_DRUID(id VARCHAR(1) PRIMARY KEY, value VARCHAR(1) NOT NULL)";
     private static final String INSERT_DATA_SQL = "INSERT INTO test_DRUID(id, value) VALUES(1,1)";
     private static final String QUERY_DATA_SQL = "SELECT id, value FROM test_DRUID WHERE id=1";
@@ -39,13 +37,12 @@ public class CaseService {
     private static final String DROP_TABLE_SQL = "DROP table test_DRUID";
 
     static {
-        Properties properties = new Properties();
-        properties.setProperty("driverClassName", "com.mysql.jdbc.Driver");
-        properties.setProperty("url", MySQLConfig.getUrl());
-        properties.setProperty("username", MySQLConfig.getUserName());
-        properties.setProperty("password", MySQLConfig.getPassword());
+        dataSource = new DruidDataSource();
         try {
-            DS = DruidDataSourceFactory.createDataSource(properties);
+            dataSource.setUrl(MySQLConfig.getUrl());
+            dataSource.setUsername(MySQLConfig.getUserName());
+            dataSource.setPassword(MySQLConfig.getPassword());
+            dataSource.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,10 +54,11 @@ public class CaseService {
         sqlExecutor(QUERY_DATA_SQL);
         sqlExecutor(DELETE_DATA_SQL);
         sqlExecutor(DROP_TABLE_SQL);
+        dataSource.close();
     }
 
     public void sqlExecutor(String sql) {
-        try (Connection conn = DS.getConnection()) {
+        try (Connection conn = dataSource.getConnection()) {
             Statement statement = conn.createStatement();
             statement.execute(sql);
         } catch (SQLException e) {

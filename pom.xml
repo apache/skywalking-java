@@ -391,7 +391,6 @@
                     <sourceDirectories>
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-<sourceDirectory>scenarios/redisson-scenario</sourceDirectory>
                     </sourceDirectories>
                     <resourceIncludes>
                         **/*.properties,

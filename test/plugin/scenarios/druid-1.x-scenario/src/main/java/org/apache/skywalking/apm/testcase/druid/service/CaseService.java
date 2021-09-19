@@ -29,7 +29,7 @@ import java.sql.Statement;
 @Service
 public class CaseService {
 
-    public static DruidDataSource dataSource;
+    public static DruidDataSource DS;
     private static final String CREATE_TABLE_SQL = "CREATE TABLE test_DRUID(id VARCHAR(1) PRIMARY KEY, value VARCHAR(1) NOT NULL)";
     private static final String INSERT_DATA_SQL = "INSERT INTO test_DRUID(id, value) VALUES(1,1)";
     private static final String QUERY_DATA_SQL = "SELECT id, value FROM test_DRUID WHERE id=1";
@@ -37,12 +37,12 @@ public class CaseService {
     private static final String DROP_TABLE_SQL = "DROP table test_DRUID";
 
     static {
-        dataSource = new DruidDataSource();
+        DS = new DruidDataSource();
         try {
-            dataSource.setUrl(MySQLConfig.getUrl());
-            dataSource.setUsername(MySQLConfig.getUserName());
-            dataSource.setPassword(MySQLConfig.getPassword());
-            dataSource.init();
+            DS.setUrl(MySQLConfig.getUrl());
+            DS.setUsername(MySQLConfig.getUserName());
+            DS.setPassword(MySQLConfig.getPassword());
+            DS.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,11 +54,11 @@ public class CaseService {
         sqlExecutor(QUERY_DATA_SQL);
         sqlExecutor(DELETE_DATA_SQL);
         sqlExecutor(DROP_TABLE_SQL);
-        dataSource.close();
+        DS.close();
     }
 
     public void sqlExecutor(String sql) {
-        try (Connection conn = dataSource.getConnection()) {
+        try (Connection conn = DS.getConnection()) {
             Statement statement = conn.createStatement();
             statement.execute(sql);
         } catch (SQLException e) {

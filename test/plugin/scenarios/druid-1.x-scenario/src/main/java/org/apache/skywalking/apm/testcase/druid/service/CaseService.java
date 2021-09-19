@@ -54,7 +54,6 @@ public class CaseService {
         sqlExecutor(QUERY_DATA_SQL);
         sqlExecutor(DELETE_DATA_SQL);
         sqlExecutor(DROP_TABLE_SQL);
-        DS.close();
     }
 
     public void sqlExecutor(String sql) {

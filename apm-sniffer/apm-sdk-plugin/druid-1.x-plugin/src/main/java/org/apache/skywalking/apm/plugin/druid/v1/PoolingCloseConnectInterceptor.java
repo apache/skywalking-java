@@ -34,7 +34,7 @@ public class PoolingCloseConnectInterceptor implements InstanceMethodsAroundInte
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         AbstractSpan span = ContextManager.createLocalSpan("Druid/Connection/" + method.getName());
-        span.setComponent(ComponentsDefine.DRUID);
+        span.setComponent(ComponentsDefine.ALIBABA_DRUID);
     }
 
     @Override

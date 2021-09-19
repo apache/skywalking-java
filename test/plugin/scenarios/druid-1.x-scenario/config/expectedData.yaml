@@ -20,19 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Druid/Connection/getConnection
-      operationId: 0
-      parentSpanId: 1
-      spanId: 2
-      spanLayer: Unknown
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 115
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: false
-    - operationName: Druid/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Unknown
@@ -42,11 +29,9 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
-      spanId: 3
+      spanId: 2
       spanLayer: Database
       startTime: gt 0
       endTime: gt 0
@@ -54,14 +39,22 @@ segmentItems:
       isError: false
       spanType: Exit
       peer: mysql-server:3306
-      skipAnalysis: false
       tags:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'CREATE TABLE test_DRUID(id VARCHAR(1) PRIMARY
           KEY, value VARCHAR(1) NOT NULL)'}
     - operationName: Druid/Connection/close
-      operationId: 0
+      parentSpanId: 0
+      spanId: 3
+      spanLayer: Unknown
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 115
+      isError: false
+      spanType: Local
+      peer: ''
+    - operationName: Druid/Connection/getConnection
       parentSpanId: 0
       spanId: 4
       spanLayer: Unknown
@@ -71,10 +64,22 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
-    - operationName: Druid/Connection/getConnection
-      operationId: 0
-      parentSpanId: 5
+    - operationName: Mysql/JDBI/Statement/execute
+      parentSpanId: 0
+      spanId: 5
+      spanLayer: Database
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 33
+      isError: false
+      spanType: Exit
+      peer: mysql-server:3306
+      tags:
+      - {key: db.type, value: sql}
+      - {key: db.instance, value: test}
+      - {key: db.statement, value: 'INSERT INTO test_DRUID(id, value) VALUES(1,1)'}
+    - operationName: Druid/Connection/close
+      parentSpanId: 0
       spanId: 6
       spanLayer: Unknown
       startTime: gt 0
@@ -83,11 +88,9 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
     - operationName: Druid/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
-      spanId: 5
+      spanId: 7
       spanLayer: Unknown
       startTime: gt 0
       endTime: gt 0
@@ -95,11 +98,9 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
-      spanId: 7
+      spanId: 8
       spanLayer: Database
       startTime: gt 0
       endTime: gt 0
@@ -107,37 +108,11 @@ segmentItems:
       isError: false
       spanType: Exit
       peer: mysql-server:3306
-      skipAnalysis: false
       tags:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
-      - {key: db.statement, value: 'INSERT INTO test_DRUID(id, value) VALUES(1,1)'}
+      - {key: db.statement, value: 'SELECT id, value FROM test_DRUID WHERE id=1'}
     - operationName: Druid/Connection/close
-      operationId: 0
-      parentSpanId: 0
-      spanId: 8
-      spanLayer: Unknown
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 115
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: false
-    - operationName: Druid/Connection/getConnection
-      operationId: 0
-      parentSpanId: 9
-      spanId: 10
-      spanLayer: Unknown
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 115
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: false
-    - operationName: Druid/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 9
       spanLayer: Unknown
@@ -147,9 +122,17 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
+    - operationName: Druid/Connection/getConnection
+      parentSpanId: 0
+      spanId: 10
+      spanLayer: Unknown
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 115
+      isError: false
+      spanType: Local
+      peer: ''
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 11
       spanLayer: Database
@@ -159,13 +142,11 @@ segmentItems:
       isError: false
       spanType: Exit
       peer: mysql-server:3306
-      skipAnalysis: false
       tags:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
-      - {key: db.statement, value: 'SELECT id, value FROM test_DRUID WHERE id=1'}
+      - {key: db.statement, value: 'DELETE FROM test_DRUID WHERE id=1'}
     - operationName: Druid/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 12
       spanLayer: Unknown
@@ -175,21 +156,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
     - operationName: Druid/Connection/getConnection
-      operationId: 0
-      parentSpanId: 13
-      spanId: 14
-      spanLayer: Unknown
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 115
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: false
-    - operationName: Druid/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 13
       spanLayer: Unknown
@@ -199,11 +166,9 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
-      spanId: 15
+      spanId: 14
       spanLayer: Database
       startTime: gt 0
       endTime: gt 0
@@ -211,67 +176,13 @@ segmentItems:
       isError: false
       spanType: Exit
       peer: mysql-server:3306
-      skipAnalysis: false
-      tags:
-      - {key: db.type, value: sql}
-      - {key: db.instance, value: test}
-      - {key: db.statement, value: 'DELETE FROM test_DRUID WHERE id=1'}
-    - operationName: Druid/Connection/close
-      operationId: 0
-      parentSpanId: 0
-      spanId: 16
-      spanLayer: Unknown
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 115
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: false
-    - operationName: Druid/Connection/getConnection
-      operationId: 0
-      parentSpanId: 17
-      spanId: 18
-      spanLayer: Unknown
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 115
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: false
-    - operationName: Druid/Connection/getConnection
-      operationId: 0
-      parentSpanId: 0
-      spanId: 17
-      spanLayer: Unknown
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 115
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
-      parentSpanId: 0
-      spanId: 19
-      spanLayer: Database
-      startTime: gt 0
-      endTime: gt 0
-      componentId: 33
-      isError: false
-      spanType: Exit
-      peer: mysql-server:3306
-      skipAnalysis: false
       tags:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'DROP table test_DRUID'}
     - operationName: Druid/Connection/close
-      operationId: 0
       parentSpanId: 0
-      spanId: 20
+      spanId: 15
       spanLayer: Unknown
       startTime: gt 0
       endTime: gt 0
@@ -279,11 +190,9 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-      skipAnalysis: false
     - operationName: Mysql/JDBI/Connection/close
-      operationId: 0
       parentSpanId: 0
-      spanId: 21
+      spanId: 16
       spanLayer: Database
       startTime: gt 0
       endTime: gt 0
@@ -291,13 +200,11 @@ segmentItems:
       isError: false
       spanType: Exit
       peer: mysql-server:3306
-      skipAnalysis: false
       tags:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: ''}
     - operationName: /druid-1.x-scenario/case/druid-1.x-scenario
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -307,7 +214,6 @@ segmentItems:
       isError: false
       spanType: Entry
       peer: ''
-      skipAnalysis: false
       tags:
       - {key: url, value: 'http://localhost:8080/druid-1.x-scenario/case/druid-1.x-scenario'}
       - {key: http.method, value: GET}

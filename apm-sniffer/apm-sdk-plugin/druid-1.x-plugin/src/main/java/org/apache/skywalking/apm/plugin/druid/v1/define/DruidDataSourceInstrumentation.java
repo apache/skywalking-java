@@ -32,7 +32,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 /**
  * Druid is a database connection pool from Alibaba inc.
  * <p>
- * DruidDataSource provides a "one stop shopping" solution for database connection pool solution
+ * DruidDataSource provides a "one stop" solution for database connection pool solution
  * basic requirements. DruidDataSource#getConnection() or DruidDataSource#getConnection(String, String)
  * creates (if necessary) and return a connection.
  */

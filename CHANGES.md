@@ -20,6 +20,7 @@ Release Notes.
 * Add thrift plugin support thrift TMultiplexedProcessor.
 * Add benchmark result for `exception-ignore` plugin and polish plugin guide.
 * Provide Alibaba Druid database connection pool plugin.
+* Provide HikariCP database connection pool plugin.
 
 #### Documentation
 

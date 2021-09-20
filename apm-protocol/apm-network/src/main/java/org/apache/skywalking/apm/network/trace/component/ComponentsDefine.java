@@ -209,4 +209,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent ALIBABA_DRUID = new OfficialComponent(115, "AlibabaDruid");
 
+    public static final OfficialComponent HIKARI_CP = new OfficialComponent(116, "HikariCP");
+
 }

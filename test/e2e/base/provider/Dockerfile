@@ -13,23 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG AGENT_TAG=3e97740036242cf4ee8808b737727a7093b3d31f-java8
-# 9a05ad4b423a380c8da711e2a2b856ee93bc9422-es6
-ARG SW_VERSION=8.6.0
+FROM skywalking/skywalking-java:latest-java8
 
-FROM maven:3.8.1-jdk-8 as builder
+ARG JAR_FILE
+ADD target/${JAR_FILE} /services/${JAR_FILE}
 
-ADD . /provider_code
-
-WORKDIR /provider_code
-RUN mvn clean package -B -Dsw.version=8.6.0
-
-FROM ghcr.io/apache/skywalking/agent:${AGENT_TAG}
-
-VOLUME /services
-
-COPY --from=builder /provider_code/target/e2e-service-provider.jar /services/
-
-ENV JAVA_OPTS="-DSW_INSTANCE_NAME=provider"
+RUN echo 'agent.instance_name=${SW_INSTANCE_NAME:provider}' >> /skywalking/agent/config/agent.config
+RUN echo 'logging.output=${SW_LOGGING_OUTPUT:CONSOLE}' >> /skywalking/agent/config/agent.config
 
 CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-provider.jar"]

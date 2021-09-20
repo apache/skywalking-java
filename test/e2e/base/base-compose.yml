@@ -18,15 +18,13 @@ version: '2.1'
 services:
 
   oap:
-    image: skywalking/oap:latest # ghcr.io/apache/skywalking/oap:902b6c540bd0e027c28f6fb8834d88a66a62143a-es6
+    image: ghcr.io/apache/skywalking/oap:1730f2c84bbd4da999ec2c74d1c26db31d5a0d24
     expose:
       - 11800
       - 12800
     networks:
       - e2e
     restart: on-failure
-    environment:
-      SW_STORAGE: h2
     healthcheck:
       test: ["CMD", "sh", "-c", "nc -zn 127.0.0.1 11800"]
       interval: 5s
@@ -34,15 +32,14 @@ services:
       retries: 120
 
   provider:
-    build:
-      context: provider
-      dockerfile: Dockerfile
+    image: skywalking/e2e-service-provider:1.0.0
     expose:
       - 9090
     networks:
       - e2e
     environment:
       SW_AGENT_NAME: e2e-service-provider
+      SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       SW_INSTANCE_NAME: provider1
       SW_LOGGING_OUTPUT: CONSOLE
     healthcheck:
@@ -52,15 +49,14 @@ services:
       retries: 120
 
   consumer:
-    build:
-      context: consumer
-      dockerfile: Dockerfile
+    image: skywalking/e2e-service-consumer:1.0.0
     expose:
       - 9090
     networks:
       - e2e
     environment:
       PROVIDER_URL: http://provider:9090
+      SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       SW_AGENT_NAME: e2e-service-consumer
       SW_INSTANCE_NAME: consumer1
       SW_LOGGING_OUTPUT: CONSOLE

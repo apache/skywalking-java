@@ -20,9 +20,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.5.RELEASE</version>
+        <groupId>org.apache.skywalking</groupId>
+        <artifactId>apache-skywalking-e2e</artifactId>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -35,18 +35,8 @@
         <log4j2.version>2.7</log4j2.version>
         <logback.version>1.2.3</logback.version>
 
-        <sw.version>
-            <!--
-            Please manually set the SkyWalking version here to build in the IDE
-            (if you build from command line, just use ./mvn -Dsw.version=x.y.z),
-            but make sure not to check it into the code base / git
-            -->
-        </sw.version>
 
-        <java.version>1.8</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-
+        <dockerfile.skip>false</dockerfile.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring.boot.version>2.2.5.RELEASE</spring.boot.version>
@@ -56,9 +46,6 @@
         <guava.version>28.2-jre</guava.version>
         <h2.version>1.4.199</h2.version>
         <mysql.version>8.0.13</mysql.version>
-        <lombok.version>1.18.20</lombok.version>
-        <kafka-clients.version>2.4.1</kafka-clients.version>
-        <jacoco.version>0.8.6</jacoco.version>
 
         <maven-failsafe-plugin.version>2.22.0</maven-failsafe-plugin.version>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -177,6 +164,19 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <configuration>
+                    <skip>${dockerfile.skip}</skip>
+                    <repository>skywalking/${project.artifactId}</repository>
+                    <tag>${project.version}</tag>
+                    <pullNewerImage>false</pullNewerImage>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>

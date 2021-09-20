@@ -13,22 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG AGENT_TAG=3e97740036242cf4ee8808b737727a7093b3d31f-java8
-# 9a05ad4b423a380c8da711e2a2b856ee93bc9422-es6
-ARG SW_VERSION=8.6.0
+FROM skywalking/skywalking-java:latest-java8
 
-FROM maven:3.8.1-jdk-8 as builder
-
-ADD . /consumer_code
-
-WORKDIR /consumer_code
-RUN mvn clean package -B -Dsw.version=8.6.0
-
-FROM ghcr.io/apache/skywalking/agent:${AGENT_TAG}
-
-VOLUME /services
-
-COPY --from=builder /consumer_code/target/e2e-service-consumer.jar /services/
+ARG JAR_FILE
+ADD target/${JAR_FILE} /services/${JAR_FILE}
 
 ENV JAVA_OPTS=""
 

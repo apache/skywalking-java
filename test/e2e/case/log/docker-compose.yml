@@ -20,10 +20,6 @@ services:
     extends:
       file: ../../base/base-compose.yml
       service: oap
-    environment:
-      SW_LOG_LAL_FILES: test
-    volumes:
-      - ./lal.yaml:/skywalking/config/lal/test.yaml
     ports:
       - 12800
 
@@ -33,6 +29,9 @@ services:
       service: provider
     ports:
       - 9090
+    depends_on:
+      oap:
+        condition: service_healthy
 
   consumer:
     extends:

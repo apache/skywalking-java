@@ -17,24 +17,37 @@
   ~
   -->
 
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.apache.skywalking</groupId>
-        <artifactId>apache-skywalking-e2e</artifactId>
-        <version>1.0.0</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.5.RELEASE</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
+    <name>SkyWalking End to End Tests</name>
+    <groupId>org.apache.skywalking</groupId>
+    <artifactId>apache-skywalking-e2e</artifactId>
+    <version>1.0.0</version>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
-    <artifactId>e2e-service-consumer</artifactId>
+    <modules>
+        <module>provider</module>
+        <module>consumer</module>
+    </modules>
 
     <properties>
-        <dockerfile.skip>false</dockerfile.skip>
-
+        <sw.version>
+            8.8.0-SNAPSHOT
+            <!--
+            Please manually set the SkyWalking version here to build in the IDE
+            (if you build from command line, just use ./mvnw -Dsw.version=x.y.z),
+            but make sure not to check it into the code base / git
+            -->
+        </sw.version>
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -42,65 +55,26 @@
         <spring.boot.version>2.2.5.RELEASE</spring.boot.version>
         <guava.version>28.2-jre</guava.version>
         <lombok.version>1.18.20</lombok.version>
+
+        <dockerfile.skip>true</dockerfile.skip>
+        <dockerfile.maven.version>1.4.13</dockerfile.maven.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-toolkit-trace</artifactId>
-            <version>${sw.version}</version>
-        </dependency>
-    </dependencies>
 
     <build>
-        <finalName>e2e-service-consumer</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
-                <configuration>
-                    <executable>true</executable>
-                    <addResources>true</addResources>
-                    <excludeDevtools>true</excludeDevtools>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile.maven.version}</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <skip>${dockerfile.skip}</skip>
                     <repository>skywalking/${project.artifactId}</repository>
@@ -111,6 +85,7 @@
                     </buildArgs>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

@@ -17,8 +17,8 @@ events:
 {{- range .events }}
 - uuid: {{ notEmpty .uuid }}
   source:
-    service: e2e-service-provider
-    serviceinstance: provider1
+    service: e2e-service-consumer
+    serviceinstance: consumer1
     endpoint: ""
   name: Start
   type: Normal

@@ -18,6 +18,12 @@ traces:
 - segmentid: {{ notEmpty .segmentid }}
   endpointnames:
   {{- if eq (index .endpointnames 0) "H2/JDBI/Statement/execute" }}
+    - HikariCP/Connection/getConnection
+  {{- end }}
+  {{- if eq (index .endpointnames 0) "H2/JDBI/Statement/execute" }}
+    - HikariCP/Connection/close
+  {{- end }}
+  {{- if eq (index .endpointnames 0) "H2/JDBI/Statement/execute" }}
     - H2/JDBI/Statement/execute
   {{- end}}
   {{- if eq (index .endpointnames 0) "H2/JDBI/Statement/executeQuery" }}

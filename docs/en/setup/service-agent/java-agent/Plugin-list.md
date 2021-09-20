@@ -27,6 +27,7 @@
 - guava-cache
 - h2-1.x
 - hbase-1.x/2.x
+- hikaricp-3.x/4.x
 - httpasyncclient-4.x
 - httpclient-3.x
 - httpclient-4.x

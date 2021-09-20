@@ -22,8 +22,8 @@ on:
       - main
 
 jobs:
-  NativeProtocolsE2E:
-    name: Native Management/JVM/Tracing/Meter/Event/Log/Profile/CDS
+  LogE2E:
+    name: Log
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,4 +31,4 @@ jobs:
           submodules: true
       - uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
         with:
-          e2e-file: test/e2e/case/native-protocols/e2e.yaml
+          e2e-file: test/e2e/case/log/e2e.yaml

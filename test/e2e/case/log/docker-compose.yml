@@ -22,14 +22,10 @@ services:
       service: oap
     environment:
       SW_LOG_LAL_FILES: test
-      SW_CLUSTER: etcd
     volumes:
       - ./lal.yaml:/skywalking/config/lal/test.yaml
     ports:
       - 12800
-    depends_on:
-      etcd:
-        condition: service_healthy
 
   provider:
     extends:
@@ -37,9 +33,6 @@ services:
       service: provider
     ports:
       - 9090
-    depends_on:
-      satellite:
-        condition: service_healthy
 
   consumer:
     extends:
@@ -48,8 +41,6 @@ services:
     ports:
       - 9090
     depends_on:
-      satellite:
-        condition: service_healthy
       provider:
         condition: service_healthy
 

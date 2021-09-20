@@ -122,6 +122,8 @@ metrics based on the tracing data.
   * [Graphql](https://github.com/graphql-java) 8.0 -> 15.x
 * Pool
   * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
+  * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
+  * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x
 * Logging Framework
   * [log4j](https://github.com/apache/log4j) 2.x
   * [log4j2](https://github.com/apache/logging-log4j2) 1.2.x 

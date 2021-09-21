@@ -29,9 +29,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - run: ./mvnw --batch-mode clean package -Dmaven.test.skip=true
+      - run: ./mvnw --batch-mode clean install -Dmaven.test.skip=true
       - run: make docker.java8
-      - run: ./mvnw -B clean package -f ./test/e2e/base/pom.xml -Dsw.version=8.8.0-SNAPSHOT
+      - run: ./mvnw -B package -f ./test/e2e/base/pom.xml -Dsw.version=8.8.0-SNAPSHOT
       - uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
         with:
           e2e-file: test/e2e/case/base/e2e.yaml

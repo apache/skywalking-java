@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "::group::Check sw.version"
           sudo apt install -y -q xmlstarlet
-          SW_VERSION=$(xmlstarlet sel -N pom=http://maven.apache.org/POM/4.0.0 -t -v "/pom:project/pom:properties/pom:sw.version" test/e2e/pom.xml)
+          SW_VERSION=$(xmlstarlet sel -N pom=http://maven.apache.org/POM/4.0.0 -t -v "/pom:project/pom:version" ./pom.xml)
           if [[ "$(echo $(echo $SW_VERSION))" != "" ]]; then
           echo "Please don't submit the change of sw.version in test/e2e/pom.xml"
           exit 1
@@ -45,4 +45,4 @@ jobs:
       - run: ./mvnw -B clean package -f ./test/e2e/base/pom.xml
       - uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
         with:
-          e2e-file: test/e2e/case/log/e2e.yaml
+          e2e-file: test/e2e/case/base/e2e.yaml

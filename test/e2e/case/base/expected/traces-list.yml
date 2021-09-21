@@ -17,10 +17,10 @@ traces:
 {{- range .traces }}
 - segmentid: {{ notEmpty .segmentid }}
   endpointnames:
-  {{- if eq (index .endpointnames 0) "H2/JDBI/Statement/execute" }}
+  {{- if eq (index .endpointnames 0) "HikariCP/Connection/getConnection" }}
     - HikariCP/Connection/getConnection
   {{- end }}
-  {{- if eq (index .endpointnames 0) "H2/JDBI/Statement/execute" }}
+  {{- if eq (index .endpointnames 0) "HikariCP/Connection/close" }}
     - HikariCP/Connection/close
   {{- end }}
   {{- if eq (index .endpointnames 0) "H2/JDBI/Statement/execute" }}

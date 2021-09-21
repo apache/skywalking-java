@@ -84,16 +84,12 @@ verify:
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name instance_jvm_thread_live_count --instance=provider1 --service=e2e-service-provider |yq e 'to_entries' -
       expected: expected/metrics-has-value.yml
 
-#    # native tracing: trace segment list
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls
-#      expected: expected/traces-list.yml
-#    # native tracing: trace detail
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace $(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls|grep -A 5 '/info'|tail -n1|awk -F ' ' '{print $2}')
-#      expected: expected/trace-info-detail.yml
-
-    # native meter: instance meter
-    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name meter_jvm_classes_loaded --instance=provider1 --service=e2e-service-provider |yq e 'to_entries' -
-      expected: expected/metrics-has-value.yml
+    # native tracing: trace segment list
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls
+      expected: expected/traces-list.yml
+    # native tracing: trace detail
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace $(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls|grep -A 5 '/info'|tail -n1|awk -F ' ' '{print $2}')
+      expected: expected/trace-info-detail.yml
 
     # native event: event list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql event list --service=e2e-service-provider --instance=provider1

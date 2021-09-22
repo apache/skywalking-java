@@ -23,7 +23,7 @@ on:
 
 jobs:
   E2E:
-    name: Base(Java8)
+    name: Basic function + gRPC transport(Java8)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

@@ -30,9 +30,7 @@ jobs:
         with:
           submodules: true
       - name: Build SkyWalking agent docker image
-        run: |
-          ./mvnw --batch-mode clean install -Dmaven.test.skip=true
-          make docker.java8
+        run: make build docker.java8
       - name: Get SkyWalking version
         shell: bash
         run: |

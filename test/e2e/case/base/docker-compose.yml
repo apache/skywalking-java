@@ -28,7 +28,7 @@ services:
       file: ../../base/base-compose.yml
       service: provider
     environment:
-      SW_INSTANCE_NAME: provider1
+      SW_AGENT_INSTANCE_NAME: provider1
       SW_LOGGING_OUTPUT: CONSOLE
     ports:
       - 9090
@@ -41,7 +41,7 @@ services:
       file: ../../base/base-compose.yml
       service: consumer
     environment:
-      SW_INSTANCE_NAME: consumer1
+      SW_AGENT_INSTANCE_NAME: consumer1
       SW_LOGGING_OUTPUT: CONSOLE
     ports:
       - 9090

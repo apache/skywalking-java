@@ -32,7 +32,9 @@ services:
       retries: 120
 
   provider:
-    image: skywalking/e2e-service-provider:1.0.0
+    build:
+      context: provider
+      dockerfile: Dockerfile
     expose:
       - 9090
     networks:
@@ -49,7 +51,9 @@ services:
       retries: 120
 
   consumer:
-    image: skywalking/e2e-service-consumer:1.0.0
+    build:
+      context: consumer
+      dockerfile: Dockerfile
     expose:
       - 9090
     networks:

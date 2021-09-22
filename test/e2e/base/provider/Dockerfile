@@ -16,7 +16,7 @@
 FROM skywalking/skywalking-java:latest-java8
 
 VOLUME /services
-ADD target/e2e-service-consumer.jar /services/
+ADD target/e2e-service-provider.jar /services/
 
 ENV JAVA_OPTS=""
 

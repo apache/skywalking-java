@@ -10,6 +10,7 @@
 - canal-1.x
 - cassandra-java-driver-3.x
 - dbcp-2.x
+- druid-1.x
 - dubbo
 - ehcache-2.x
 - elastic-job-2.x
@@ -26,6 +27,7 @@
 - guava-cache
 - h2-1.x
 - hbase-1.x/2.x
+- hikaricp-3.x/4.x
 - httpasyncclient-4.x
 - httpclient-3.x
 - httpclient-4.x

@@ -51,8 +51,10 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                              Object[] allArguments,
                              Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        ServerInProtocolWrapper in = (ServerInProtocolWrapper) allArguments[0];
-        in.initial(new Context(processMap));
+        if (allArguments[0] instanceof ServerInProtocolWrapper) {
+            ServerInProtocolWrapper in = (ServerInProtocolWrapper) allArguments[0];
+            in.initial(new Context(processMap));
+        }
     }
 
     @Override
@@ -61,7 +63,9 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                               Object[] allArguments,
                               Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
-        ContextManager.stopSpan();
+        if (allArguments[0] instanceof ServerInProtocolWrapper) {
+            ContextManager.stopSpan();
+        }
         return ret;
     }
 
@@ -71,6 +75,8 @@ public class TBaseProcessorInterceptor implements InstanceConstructorInterceptor
                                       Object[] allArguments,
                                       Class<?>[] argumentsTypes,
                                       Throwable t) {
-        ContextManager.activeSpan().log(t);
+        if (allArguments[0] instanceof ServerInProtocolWrapper) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 }

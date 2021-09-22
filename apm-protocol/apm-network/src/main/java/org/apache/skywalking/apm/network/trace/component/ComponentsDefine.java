@@ -207,4 +207,8 @@ public class ComponentsDefine {
   
     public static final OfficialComponent GUAVA_CACHE = new OfficialComponent(114, "GuavaCache");
 
+    public static final OfficialComponent ALIBABA_DRUID = new OfficialComponent(115, "AlibabaDruid");
+
+    public static final OfficialComponent HIKARI_CP = new OfficialComponent(116, "HikariCP");
+
 }

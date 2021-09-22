@@ -45,7 +45,7 @@ This step is only for testing purpose. If your env is correctly set, you don't n
 ## Prepare for the release
 ```
 ./mvnw release:clean
-./mvnw release:prepare -DautoVersionSubmodules=true
+./mvnw release:prepare -DautoVersionSubmodules=true -Pall
 ```
 
 - Set version number as x.y.z, and tag as **v**x.y.z (The version tag must start with **v**. You will find out why this is necessary in the next step.)
@@ -54,7 +54,7 @@ _You could do a GPG signature before preparing for the release. If you need to i
 
 ## Stage the release 
 ```
-./mvnw release:perform -DskipTests
+./mvnw release:perform -DskipTests -Pall
 ```
 
 - The release will be automatically inserted into a temporary staging repository.
@@ -265,6 +265,22 @@ SkyWalking Resources:
 
 
 - Apache SkyWalking Team
+```
+
+## Release Docker images
+
+```shell
+export SW_VERSION=x.y.z
+git clone --depth 1 --branch v$SW_VERSION https://github.com/apache/skywalking-java.git
+cd skywalking-java
+
+svn co https://dist.apache.org/repos/dist/release/skywalking-java/$SW_VERSION release # (1)
+
+export SW_OUT=release
+export HUB=apache
+export TAG=$SW_VERSION
+export DIST=<the binary package name inside (1), e.g. apache-skywalking-apm-8.8.0.tar.gz>
+make docker.push -j 7
 ```
 
 ## Clean up the old releases

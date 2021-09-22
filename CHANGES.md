@@ -17,7 +17,12 @@ Release Notes.
 * Support mTLS for gRPC channel.
 * fix the bug that plugin record wrong time elapse for lettuce plugin
 * fix the bug that the wrong db.instance value displayed on Skywalking-UI when existing multi-database-instance on same host port pair.
+* Add thrift plugin support thrift TMultiplexedProcessor.
+* Add benchmark result for `exception-ignore` plugin and polish plugin guide.
+* Provide Alibaba Druid database connection pool plugin.
+* Provide HikariCP database connection pool plugin.
 * fix the bug that springMVC plugin will not stop span when exception throws.
+
 
 #### Documentation
 

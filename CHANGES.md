@@ -21,7 +21,7 @@ Release Notes.
 * Add benchmark result for `exception-ignore` plugin and polish plugin guide.
 * Provide Alibaba Druid database connection pool plugin.
 * Provide HikariCP database connection pool plugin.
-* Make GRPC log reporter sharing GRPC channel with other reporters of agent.
+* Make GRPC log reporter sharing GRPC channel with other reporters of agent. Remove config items of `agent.conf`, `plugin.toolkit.log.grpc.reporter.server_host`, `plugin.toolkit.log.grpc.reporter.server_port`, `plugin.toolkit.log.grpc.reporter.max_message_size`, and `plugin.toolkit.log.grpc.reporter.upstream_timeout`.
 * Implement Kafka Log Reporter.
 
 #### Documentation

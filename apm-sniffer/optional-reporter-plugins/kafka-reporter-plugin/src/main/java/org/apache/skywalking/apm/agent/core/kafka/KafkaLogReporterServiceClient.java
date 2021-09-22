@@ -23,15 +23,12 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.skywalking.apm.agent.core.boot.OverrideImplementor;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.remote.LogReportServiceClient;
 import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
 import org.apache.skywalking.apm.network.logging.v3.LogData;
 
 @OverrideImplementor(LogReportServiceClient.class)
 public class KafkaLogReporterServiceClient extends LogReportServiceClient implements KafkaConnectionStatusListener {
-    private static final ILog LOGGER = LogManager.getLogger(KafkaLogReporterServiceClient.class);
 
     private String topic;
     private KafkaProducer<String, Bytes> producer;
@@ -41,15 +38,6 @@ public class KafkaLogReporterServiceClient extends LogReportServiceClient implem
         KafkaProducerManager producerManager = ServiceManager.INSTANCE.findService(KafkaProducerManager.class);
         producerManager.addListener(this);
         topic = producerManager.formatTopicNameThenRegister(KafkaReporterPluginConfig.Plugin.Kafka.TOPIC_LOGGING);
-    }
-
-    @Override
-    public void boot() throws Throwable {
-        super.boot();
-    }
-
-    @Override
-    public void onComplete() throws Throwable {
     }
 
     @Override

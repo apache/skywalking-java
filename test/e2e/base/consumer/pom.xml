@@ -32,18 +32,6 @@
 
     <artifactId>e2e-service-consumer</artifactId>
 
-    <properties>
-        <dockerfile.skip>false</dockerfile.skip>
-
-        <java.version>1.8</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.boot.version>2.2.5.RELEASE</spring.boot.version>
-        <guava.version>28.2-jre</guava.version>
-        <lombok.version>1.18.20</lombok.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -97,19 +85,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <configuration>
-                    <skip>${dockerfile.skip}</skip>
-                    <repository>skywalking/${project.artifactId}</repository>
-                    <tag>${project.version}</tag>
-                    <pullNewerImage>false</pullNewerImage>
-                    <buildArgs>
-                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>
-                </configuration>
             </plugin>
         </plugins>
     </build>

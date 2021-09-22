@@ -13,32 +13,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: E2E
+
+name: Dead Link Checker
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
+
+concurrency:
+  group: dlc-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  E2E:
-    name: Base(Java8)
+  CheckDeadLinks:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Build SkyWalking agent docker image
-        run: |
-          ./mvnw --batch-mode clean install -Dmaven.test.skip=true
-          make docker.java8
-      - name: Get SkyWalking version
-        shell: bash
-        run: |
-          SW_VERSION=$(./mvnw -q -DforceStdout -N org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version)
-          ./mvnw -B package -f ./test/e2e/base/pom.xml -Dsw.version=${SW_VERSION}
-      - name: Run E2E Tests
-        uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
-        with:
-          e2e-file: test/e2e/case/base/e2e.yaml
+      - run: sudo npm install -g markdown-link-check
+      - run: |
+          for file in $(find . -name "*.md"); do
+            markdown-link-check -c .dlc.json -q "$file"
+          done

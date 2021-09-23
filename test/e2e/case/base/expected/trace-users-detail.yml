@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,12 +12,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-org.apache.skywalking.apm.agent.core.kafka.KafkaProducerManager
-org.apache.skywalking.apm.agent.core.kafka.KafkaContextManagerExtendService
-org.apache.skywalking.apm.agent.core.kafka.KafkaServiceManagementServiceClient
-org.apache.skywalking.apm.agent.core.kafka.KafkaJVMMetricsSender
-org.apache.skywalking.apm.agent.core.kafka.KafkaTraceSegmentServiceClient
-org.apache.skywalking.apm.agent.core.kafka.KafkaProfileSnapshotSender
-org.apache.skywalking.apm.agent.core.kafka.KafkaMeterSender
-org.apache.skywalking.apm.agent.core.kafka.KafkaLogReporterServiceClient
+
+spans:
+  {{- range .spans}}
+  - traceid: {{ notEmpty .traceid }}
+    segmentid: {{ notEmpty .segmentid }}
+    spanid: 0
+    parentspanid: -1
+    refs: []
+    servicecode: {{ notEmpty .servicecode }}
+    serviceinstancename: {{ notEmpty .serviceinstancename }}
+    starttime: {{ gt .starttime 0 }}
+    endtime: {{ gt .endtime 0 }}
+    endpointname: /users
+    type: Entry
+    peer: ""
+    component: Tomcat
+    iserror: false
+    layer: Http
+    tags:
+      {{- range .tags }}
+      {{- if eq .key "http.method" }}
+      - key: http.method
+        value: POST
+      {{- end }}
+      {{- if eq .key "url" }}
+      - key: url
+        value: {{ notEmpty .value }}
+      {{- end }}
+      {{- end }}
+    logs: []
+  {{- end }}

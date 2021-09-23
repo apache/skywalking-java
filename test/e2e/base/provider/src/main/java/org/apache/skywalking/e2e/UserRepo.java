@@ -16,21 +16,9 @@
  *
  */
 
-package org.apache.skywalking.apm.toolkit.logging.common.log;
+package org.apache.skywalking.e2e;
 
-import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class ToolkitConfig {
-
-    public static class Plugin {
-        public static class Toolkit {
-            @PluginConfig(root = ToolkitConfig.class)
-            public static class Log {
-                /**
-                 * Whether or not to transmit logged data as formatted or un-formatted.
-                 */
-                public static boolean TRANSMIT_FORMATTED = true;
-            }
-        }
-    }
+public interface UserRepo extends JpaRepository<User, Long> {
 }

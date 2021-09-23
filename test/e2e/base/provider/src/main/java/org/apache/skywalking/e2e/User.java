@@ -16,21 +16,27 @@
  *
  */
 
-package org.apache.skywalking.apm.toolkit.logging.common.log;
+package org.apache.skywalking.e2e;
 
-import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-public class ToolkitConfig {
+@Data
+@Entity
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    public static class Plugin {
-        public static class Toolkit {
-            @PluginConfig(root = ToolkitConfig.class)
-            public static class Log {
-                /**
-                 * Whether or not to transmit logged data as formatted or un-formatted.
-                 */
-                public static boolean TRANSMIT_FORMATTED = true;
-            }
-        }
-    }
+    @Column
+    private String name;
 }

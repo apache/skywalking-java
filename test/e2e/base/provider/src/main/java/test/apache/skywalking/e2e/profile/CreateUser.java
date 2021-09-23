@@ -16,21 +16,17 @@
  *
  */
 
-package org.apache.skywalking.apm.toolkit.logging.common.log;
+package test.apache.skywalking.e2e.profile;
 
-import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
+import lombok.Data;
+import org.apache.skywalking.e2e.User;
 
-public class ToolkitConfig {
+@Data
+public class CreateUser {
+    private String name;
+    private boolean enableProfiling;
 
-    public static class Plugin {
-        public static class Toolkit {
-            @PluginConfig(root = ToolkitConfig.class)
-            public static class Log {
-                /**
-                 * Whether or not to transmit logged data as formatted or un-formatted.
-                 */
-                public static boolean TRANSMIT_FORMATTED = true;
-            }
-        }
+    public User toUser() {
+        return User.builder().name(name).build();
     }
 }

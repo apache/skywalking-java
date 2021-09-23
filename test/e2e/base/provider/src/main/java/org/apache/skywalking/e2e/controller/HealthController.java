@@ -16,21 +16,16 @@
  *
  */
 
-package org.apache.skywalking.apm.toolkit.logging.common.log;
+package org.apache.skywalking.e2e.controller;
 
-import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-public class ToolkitConfig {
-
-    public static class Plugin {
-        public static class Toolkit {
-            @PluginConfig(root = ToolkitConfig.class)
-            public static class Log {
-                /**
-                 * Whether or not to transmit logged data as formatted or un-formatted.
-                 */
-                public static boolean TRANSMIT_FORMATTED = true;
-            }
-        }
+@RestController
+@SuppressWarnings("SameReturnValue")
+public class HealthController {
+    @GetMapping("/health")
+    public String hello() {
+        return "healthy";
     }
 }

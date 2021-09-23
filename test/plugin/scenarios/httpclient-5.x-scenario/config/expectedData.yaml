@@ -33,7 +33,9 @@ segmentItems:
               - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/back'}
               - {key: http.method, value: GET}
             refs:
-              - {refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null , traceId: not null}
+              - {parentEndpoint: /httpclient-5.x/case/asyncGet, networkAddress: '127.0.0.1:8080',
+                refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+                 null, parentService: httpclient-5.x-scenario, traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
@@ -62,7 +64,9 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null , traceId: not null}
+              - {parentEndpoint: /httpclient-5.x/case/asyncGet, networkAddress: '127.0.0.1:8080',
+                refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                 null, parentService: httpclient-5.x-scenario, traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
@@ -80,7 +84,9 @@ segmentItems:
               - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/case/asyncGet'}
               - {key: http.method, value: GET}
             refs:
-              - {refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null , traceId: not null}
+              - {parentEndpoint: /httpclient-5.x/case/get, networkAddress: '127.0.0.1:8080',
+                refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+                 null, parentService: httpclient-5.x-scenario, traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:

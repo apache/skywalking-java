@@ -74,7 +74,7 @@ public class FrontController {
     @GetMapping("/asyncGet")
     public String asyncGet() throws Exception {
         SimpleHttpRequest request = SimpleHttpRequests.get("http://127.0.0.1:8080/httpclient-5.x/back");
-        LOGGER.info("Executing request " + request.getMethod() + " " + request.getUri());
+        LOGGER.info("Executing async request " + request.getMethod() + " " + request.getUri());
 
         Future<SimpleHttpResponse> future = httpAsyncClient.execute(request, null);
         SimpleHttpResponse response = future.get();

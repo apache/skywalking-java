@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 type: jvm
-entryService: http://127.0.0.1:8080/httpclient-5.x/case/asyncGet
+entryService: http://127.0.0.1:8080/httpclient-5.x/case/get
 healthCheck: http://127.0.0.1:8080/httpclient-5.x/case/healthcheck
 startScript: ./bin/startup.sh

@@ -37,20 +37,19 @@ public class HttpClientConfig {
 
     @Bean
     public CloseableHttpClient getCloseableHttpClient() {
-        return HttpClients.createDefault();
+        this.httpClient = HttpClients.createDefault();
+        return this.httpClient;
     }
 
     @Bean
     public CloseableHttpAsyncClient getCloseableHttpAsyncClient() {
-        CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
-        httpAsyncClient.start();
-        return httpAsyncClient;
+        this.httpAsyncClient = HttpAsyncClients.createDefault();
+        this.httpAsyncClient.start();
+        return this.httpAsyncClient;
     }
 
-    @Autowired
     private CloseableHttpClient httpClient;
 
-    @Autowired
     private CloseableHttpAsyncClient httpAsyncClient;
 
     @PreDestroy

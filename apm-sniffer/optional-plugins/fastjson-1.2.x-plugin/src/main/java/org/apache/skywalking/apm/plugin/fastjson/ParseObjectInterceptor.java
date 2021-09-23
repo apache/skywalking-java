@@ -21,21 +21,20 @@ package org.apache.skywalking.apm.plugin.fastjson;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
 
-public class ParseObjectInterceptor implements InstanceMethodsAroundInterceptor {
+public class ParseObjectInterceptor implements StaticMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_FROM_JSON = "Fastjson/ParseJson";
     public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
 
         AbstractSpan span = ContextManager.createLocalSpan(OPERATION_NAME_FROM_JSON + method.getName());
         span.setComponent(ComponentsDefine.FASTJSON);
@@ -47,18 +46,26 @@ public class ParseObjectInterceptor implements InstanceMethodsAroundInterceptor 
         } else if (allArguments[0] instanceof char[]) {
             span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((char[]) allArguments[0]).length));
         } else if (allArguments[0] instanceof InputStream) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((InputStream) allArguments[0]).available()));
+            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(inputStreamAvailable(allArguments[0])));
         }
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Object ret) {
         ContextManager.stopSpan();
         return ret;
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
+    }
+
+    private int inputStreamAvailable(Object in) {
+        try {
+            return ((InputStream) in).available();
+        } catch (Throwable e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 }

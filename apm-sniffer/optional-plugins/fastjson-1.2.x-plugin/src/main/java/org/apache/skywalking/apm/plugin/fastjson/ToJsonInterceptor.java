@@ -21,28 +21,30 @@ package org.apache.skywalking.apm.plugin.fastjson;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
 
-public class ToJsonInterceptor implements InstanceMethodsAroundInterceptor {
+public class ToJsonInterceptor implements StaticMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_TO_JSON = "Fastjson/ToJson";
     public static final String SPAN_TAG_KEY_OBJECT = "object";
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
 
         AbstractSpan span = ContextManager.createLocalSpan(OPERATION_NAME_TO_JSON + method.getName());
         span.setComponent(ComponentsDefine.FASTJSON);
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Object ret) {
 
+        if (!ContextManager.isActive()) {
+            return ret;
+        }
         if (ret != null) {
             ContextManager.activeSpan().tag(Tags.ofKey(SPAN_TAG_KEY_OBJECT), String.valueOf(ret.getClass().getTypeName()));
         }
@@ -51,7 +53,7 @@ public class ToJsonInterceptor implements InstanceMethodsAroundInterceptor {
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
     }
 }

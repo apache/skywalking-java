@@ -20,15 +20,6 @@ SkyWalking: an APM(application performance monitor) system, especially designed 
 # Downloads
 Please head to the [releases page](https://skywalking.apache.org/downloads/) to download a release of Apache SkyWalking.
 
-# Compiling project
-> ./mvnw clean package
-
-The agent binary package is generated in `skywalking-agent` folder.
-
-Set **Generated Source Codes**(`grpc-java` and `java` folders in **apm-protocol/apm-network/target/generated-sources/protobuf**) 
-folders if you are using IntelliJ IDE.
-
-
 # Code of conduct
 This project adheres to the Contributor Covenant [code of conduct](https://www.apache.org/foundation/policies/conduct). By participating, you are expected to uphold this code.
 Please follow the [REPORTING GUIDELINES](https://www.apache.org/foundation/policies/conduct#reporting-guidelines) to report unacceptable behavior.

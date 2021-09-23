@@ -19,22 +19,11 @@ SHELL := /bin/bash -o pipefail
 HUB ?= skywalking
 NAME ?= skywalking-java
 TAG ?= latest
-AGENT_PACKAGE = skywalking-agent
-
-BASE_IMAGE ?= adoptopenjdk/openjdk8:alpine
-SKIP_TEST ?= false
+AGENT_PACKAGE ?= skywalking-agent
 
 .PHONY: build
 build:
-	./mvnw --batch-mode clean package -Dmaven.test.skip=$(SKIP_TEST)
-
-.PHONY: docker
-docker: build
-	docker build --no-cache --build-arg BASE_IMAGE=$(BASE_IMAGE) . -t $(HUB)/$(NAME):$(TAG)
-
-.PHONY: docker.push
-docker.push: docker
-	docker push $(HUB)/$(NAME):$(TAG)
+	./mvnw --batch-mode clean package -Dmaven.test.skip=true
 
 .PHONY: dist
 dist: build
@@ -42,3 +31,23 @@ dist: build
 	gpg --armor --detach-sig apache-skywalking-java-agent-$(TAG).tgz
 	shasum -a 512 apache-skywalking-java-agent-$(TAG).tgz > apache-skywalking-java-agent-$(TAG).tgz.sha512
 
+# Docker build
+
+JAVA_VERSIONS := 8 11 12 13 14 15 16
+JAVA_VERSION = $(word 1, $@)
+
+.PHONY: $(JAVA_VERSIONS:%=java%)
+$(JAVA_VERSIONS:%=docker.java%): skywalking-agent
+	docker build --no-cache --build-arg BASE_IMAGE=adoptopenjdk/openjdk$(JAVA_VERSION:docker.java%=%):alpine-jre --build-arg DIST=$(AGENT_PACKAGE) . -t $(HUB)/$(NAME):$(TAG)-$(JAVA_VERSION:docker.%=%)
+
+.PHONY: docker
+docker: $(JAVA_VERSIONS:%=docker.java%)
+
+# Docker push
+
+.PHONY: $(JAVA_VERSIONS:%=docker.push.java%)
+$(JAVA_VERSIONS:%=docker.push.java%): $(JAVA_VERSIONS:%=docker.java%)
+	docker push $(HUB)/$(NAME):$(TAG)-$(JAVA_VERSION:docker.push.%=%)
+
+.PHONY: docker.push
+docker.push: $(JAVA_VERSIONS:%=docker.java%)

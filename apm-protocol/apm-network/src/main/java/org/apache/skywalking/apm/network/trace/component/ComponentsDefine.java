@@ -211,4 +211,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent HIKARI_CP = new OfficialComponent(116, "HikariCP");
 
+    public static final OfficialComponent FASTJSON = new OfficialComponent(117, "Fastjson");
+
 }

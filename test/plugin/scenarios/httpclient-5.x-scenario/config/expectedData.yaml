@@ -33,7 +33,7 @@ segmentItems:
               - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/back'}
               - {key: http.method, value: GET}
             refs:
-              - {parentEndpoint: /httpclient-5.x/case/asyncGet, networkAddress: '127.0.0.1:8080',
+              - {parentEndpoint: httpasyncclient/local, networkAddress: '127.0.0.1:8080',
                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                  null, parentService: httpclient-5.x-scenario, traceId: not null}
             skipAnalysis: 'false'

@@ -16,21 +16,15 @@
  *
  */
 
-package org.apache.skywalking.apm.toolkit.logging.common.log;
+package org.apache.skywalking.e2e;
 
-import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-public class ToolkitConfig {
-
-    public static class Plugin {
-        public static class Toolkit {
-            @PluginConfig(root = ToolkitConfig.class)
-            public static class Log {
-                /**
-                 * Whether or not to transmit logged data as formatted or un-formatted.
-                 */
-                public static boolean TRANSMIT_FORMATTED = true;
-            }
-        }
-    }
+@Data
+@Configuration
+@ConfigurationProperties("e2e")
+public class E2EConfiguration {
+    private String providerBaseUrl;
 }

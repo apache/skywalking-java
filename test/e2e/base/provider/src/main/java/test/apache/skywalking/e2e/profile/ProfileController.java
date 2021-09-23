@@ -16,21 +16,27 @@
  *
  */
 
-package org.apache.skywalking.apm.toolkit.logging.common.log;
+package test.apache.skywalking.e2e.profile;
 
-import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
+import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
+import org.apache.skywalking.e2e.User;
+import org.apache.skywalking.e2e.UserRepo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-public class ToolkitConfig {
+@RestController
+@RequiredArgsConstructor
+public class ProfileController {
+    private final UserRepo userRepo;
 
-    public static class Plugin {
-        public static class Toolkit {
-            @PluginConfig(root = ToolkitConfig.class)
-            public static class Log {
-                /**
-                 * Whether or not to transmit logged data as formatted or un-formatted.
-                 */
-                public static boolean TRANSMIT_FORMATTED = true;
-            }
+    @PostMapping("/profile/{name}")
+    public User createAuthor(@RequestBody final CreateUser createUser) throws InterruptedException {
+        final User user = userRepo.save(createUser.toUser());
+        if (createUser.isEnableProfiling()) {
+            TimeUnit.MILLISECONDS.sleep(6200);
         }
+        return user;
     }
 }

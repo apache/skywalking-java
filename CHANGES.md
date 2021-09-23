@@ -21,6 +21,10 @@ Release Notes.
 * Add benchmark result for `exception-ignore` plugin and polish plugin guide.
 * Provide Alibaba Druid database connection pool plugin.
 * Provide HikariCP database connection pool plugin.
+* Fix a tracing context leak of SpringMVC plugin, when an internal exception throws due to response can't be found.
+* Make GRPC log reporter sharing GRPC channel with other reporters of agent. Remove config items of `agent.conf`, `plugin.toolkit.log.grpc.reporter.server_host`, `plugin.toolkit.log.grpc.reporter.server_port`, and `plugin.toolkit.log.grpc.reporter.upstream_timeout`.
+    rename `plugin.toolkit.log.grpc.reporter.max_message_size` to `log.max_message_size`.
+* Implement Kafka Log Reporter. Add config item of `agnt.conf`, `plugin.kafka.topic_logging`.
 * Upgrade byte-buddy to 1.11.16
 
 #### Documentation

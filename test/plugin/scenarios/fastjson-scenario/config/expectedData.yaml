@@ -14,40 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: gson-scenario
+- serviceName: fastjson-scenario
   segmentSize: ge 2
   segments:
   - segmentId: nq 0
     spans:
-    - operationName: Gson/ToJson
-      operationId: 0
-      parentSpanId: 0
-      spanId: 1
-      spanLayer: Unknown
-      tags:
-      - {key: length, value: not null}
-      startTime: nq 0
-      endTime: nq 0
-      componentId: 55
-      isError: false
-      spanType: Local
-      peer: ' '
-      skipAnalysis: 'false'
-    - operationName: Gson/FromJson
-      operationId: 0
-      parentSpanId: 0
-      spanId: 2
-      spanLayer: Unknown
-      tags:
-      - {key: length, value: not null}
-      startTime: nq 0
-      endTime: nq 0
-      componentId: 55
-      isError: false
-      spanType: Local
-      peer: ''
-      skipAnalysis: 'false'
-    - operationName: /gson-scenario/case/gson-scenario
+    - operationName: /fastjson-scenario/case/fastjson-scenario
       operationId: 0
       spanId: 0
       spanLayer: Http
@@ -58,6 +30,5 @@ segmentItems:
       spanType: Entry
       peer: ''
       tags:
-      - {key: url, value: 'http://localhost:8080/gson-scenario/case/gson-scenario'}
+      - {key: url, value: 'http://localhost:8080/fastjson-scenario/case/fastjson-scenario'}
       - {key: http.method, value: GET}
-      skipAnalysis: 'false'

@@ -24,11 +24,8 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PreDestroy;
 
 @Configuration
 public class HttpClientConfig {
@@ -37,32 +34,13 @@ public class HttpClientConfig {
 
     @Bean
     public CloseableHttpClient getCloseableHttpClient() {
-        this.httpClient = HttpClients.createDefault();
-        return this.httpClient;
+        return HttpClients.createDefault();
     }
 
     @Bean
     public CloseableHttpAsyncClient getCloseableHttpAsyncClient() {
-        this.httpAsyncClient = HttpAsyncClients.createDefault();
-        this.httpAsyncClient.start();
-        return this.httpAsyncClient;
-    }
-
-    private CloseableHttpClient httpClient;
-
-    private CloseableHttpAsyncClient httpAsyncClient;
-
-    @PreDestroy
-    public void destroy() {
-        try {
-            httpClient.close();
-        } catch (Exception e) {
-            LOGGER.error("httpClient close failed", e);
-        }
-        try {
-            httpAsyncClient.close();
-        } catch (Exception e) {
-            LOGGER.error("httpAsyncClient close failed", e);
-        }
+        CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
+        httpAsyncClient.start();
+        return httpAsyncClient;
     }
 }

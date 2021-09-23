@@ -35,7 +35,6 @@ import java.io.IOException;
 @Service
 public class CaseService {
 
-
     public void parseCase() {
         String jsonStr = "{\"key\":123}";
         Object jsonObj = JSON.parse(jsonStr, ParserConfig.getGlobalInstance(), JSON.DEFAULT_GENERATE_FEATURE);
@@ -55,8 +54,10 @@ public class CaseService {
     }
 
     public void toJavaObjectCase() {
-        String jsonStr = "{\"key\":123,\"msg\":\"test\"}";
-        Object jsonObj = JSON.toJavaObject(JSON.parseObject(jsonStr), CaseEntity.class);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("key", 123);
+        jsonObject.put("msg", "test");
+        Object jsonObj = JSON.toJavaObject(jsonObject, CaseEntity.class);
         assert jsonObj instanceof CaseEntity;
     }
 

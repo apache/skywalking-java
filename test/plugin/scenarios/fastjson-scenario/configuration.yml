@@ -18,5 +18,7 @@ type: jvm
 entryService: http://localhost:8080/fastjson-scenario/case/fastjson-scenario
 healthCheck: http://localhost:8080/fastjson-scenario/case/healthCheck
 startScript: ./bin/startup.sh
+runningMode: with_optional
+withPlugins: apm-fastjson-1.x-plugin-*.jar
 environment:
 dependencies:

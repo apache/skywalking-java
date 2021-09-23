@@ -46,10 +46,10 @@ public class MysqlURLParser extends AbstractURLParser {
         int hostLabelStartIndex = url.indexOf("//");
         int hostLabelEndIndex = url.indexOf("/", hostLabelStartIndex + 2);
         int hostLabelEndIndexWithParameter = url.indexOf("?", hostLabelStartIndex + 2);
-        if(hostLabelEndIndexWithParameter > hostLabelEndIndex) {
+        if (hostLabelEndIndexWithParameter > hostLabelEndIndex) {
             hostLabelEndIndex = hostLabelEndIndexWithParameter;
         }
-        if(hostLabelEndIndex == -1) {
+        if (hostLabelEndIndex == -1) {
             hostLabelEndIndex = url.length();
         }
         return new URLLocation(hostLabelStartIndex + 2, hostLabelEndIndex);
@@ -66,7 +66,7 @@ public class MysqlURLParser extends AbstractURLParser {
     protected URLLocation fetchDatabaseNameIndexRange(int startSize) {
         int databaseStartTag = url.indexOf("/", startSize);
         int parameterStartTag = url.indexOf("?", startSize);
-        if(parameterStartTag > databaseStartTag) {
+        if (parameterStartTag > databaseStartTag) {
             return null;
         }
         if (databaseStartTag == -1) {
@@ -107,11 +107,13 @@ public class MysqlURLParser extends AbstractURLParser {
         } else {
             String[] hostAndPort = hostSegment[0].split(":");
             if (hostAndPort.length != 1) {
-                return new ConnectionInfo(component, dbType, hostAndPort[0], Integer.valueOf(hostAndPort[1]), fetchDatabaseNameFromURL(location
-                        .endIndex()));
+                return new ConnectionInfo(component, dbType, hostAndPort[0], Integer.valueOf(hostAndPort[1]),
+                                          fetchDatabaseNameFromURL(location
+                                                                           .endIndex()));
             } else {
-                return new ConnectionInfo(component, dbType, hostAndPort[0], DEFAULT_PORT, fetchDatabaseNameFromURL(location
-                        .endIndex()));
+                return new ConnectionInfo(component, dbType, hostAndPort[0], DEFAULT_PORT,
+                                          fetchDatabaseNameFromURL(location
+                                                                           .endIndex()));
             }
         }
     }

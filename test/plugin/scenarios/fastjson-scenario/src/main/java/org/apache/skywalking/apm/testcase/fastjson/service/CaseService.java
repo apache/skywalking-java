@@ -62,10 +62,10 @@ public class CaseService {
     }
 
     public void toJsonCase() {
-        CaseEntity caseEntity = new CaseEntity();
-        caseEntity.setKey(123);
-        caseEntity.setMsg("test");
-        Object jsonObj = JSON.toJSON(caseEntity, SerializeConfig.globalInstance);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("key", 123);
+        jsonObject.put("msg", "test");
+        Object jsonObj = JSON.toJSON(jsonObject, SerializeConfig.globalInstance);
         assert jsonObj instanceof JSONObject;
     }
 

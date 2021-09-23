@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
 
 public class ToJsonStringInterceptor implements StaticMethodsAroundInterceptor {
 
-    public static final String OPERATION_NAME_TO_JSON = "Fastjson/ToJson";
+    public static final String OPERATION_NAME_TO_JSON = "Fastjson/";
     public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override

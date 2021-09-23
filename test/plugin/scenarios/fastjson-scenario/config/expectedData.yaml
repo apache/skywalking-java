@@ -19,8 +19,104 @@ segmentItems:
   segments:
   - segmentId: nq 0
     spans:
+    - operationName: Fastjson/parse
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '11'}
+    - operationName: Fastjson/parseArray
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '25'}
+    - operationName: Fastjson/parseObject
+      parentSpanId: 0
+      spanId: 3
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '24'}
+    - operationName: Fastjson/toJavaObject
+      parentSpanId: 0
+      spanId: 4
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: object, value: org.apache.skywalking.apm.testcase.fastjson.entity.CaseEntity}
+    - operationName: Fastjson/toJSON
+      parentSpanId: 0
+      spanId: 5
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: object, value: com.alibaba.fastjson.JSONObject}
+    - operationName: Fastjson/toJSONBytes
+      parentSpanId: 0
+      spanId: 6
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '24'}
+    - operationName: Fastjson/toJSONString
+      parentSpanId: 0
+      spanId: 7
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '24'}
+    - operationName: Fastjson/writeJSONString
+      parentSpanId: 0
+      spanId: 8
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 117
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '24'}
     - operationName: /fastjson-scenario/case/fastjson-scenario
-      operationId: 0
+      parentSpanId: -1
       spanId: 0
       spanLayer: Http
       startTime: nq 0

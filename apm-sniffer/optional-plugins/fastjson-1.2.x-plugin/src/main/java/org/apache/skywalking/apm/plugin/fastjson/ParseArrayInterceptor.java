@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
 
 public class ParseArrayInterceptor implements StaticMethodsAroundInterceptor {
 
-    public static final String OPERATION_NAME_FROM_JSON = "Fastjson/ParseJson";
+    public static final String OPERATION_NAME_FROM_JSON = "Fastjson/";
     public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override

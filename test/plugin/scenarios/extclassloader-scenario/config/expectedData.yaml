@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /extclassloader-scenario/case/receiveContext-0
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -41,7 +40,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /extclassloader-scenario/case/receiveContext-0
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -56,7 +54,6 @@ segmentItems:
       - {key: url, value: 'http://localhost:8080/extclassloader-scenario/case/receiveContext-0'}
       skipAnalysis: 'false'
     - operationName: /extclassloader-scenario/case/extclassloader-scenario
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

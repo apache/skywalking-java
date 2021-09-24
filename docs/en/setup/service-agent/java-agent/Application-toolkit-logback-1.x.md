@@ -143,10 +143,7 @@ The gRPC reporter could forward the collected logs to SkyWalking OAP server, or 
 *  Add config of the plugin or use default
 
 ```properties
-plugin.toolkit.log.grpc.reporter.server_host=${SW_GRPC_LOG_SERVER_HOST:127.0.0.1}
-plugin.toolkit.log.grpc.reporter.server_port=${SW_GRPC_LOG_SERVER_PORT:11800}
-plugin.toolkit.log.grpc.reporter.max_message_size=${SW_GRPC_LOG_MAX_MESSAGE_SIZE:10485760}
-plugin.toolkit.log.grpc.reporter.upstream_timeout=${SW_GRPC_LOG_GRPC_UPSTREAM_TIMEOUT:30}
+log.max_message_size=${SW_GRPC_LOG_MAX_MESSAGE_SIZE:10485760}
 ```
 
 ## Transmitting un-formatted messages

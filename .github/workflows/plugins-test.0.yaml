@@ -84,6 +84,7 @@ jobs:
           - elasticjob-3.x-scenario
           - springmvc-reactive-scenario
           - springmvc-reactive-devtools-scenario
+          - fastjson-scenario
     steps:
       - uses: actions/checkout@v2
         with:

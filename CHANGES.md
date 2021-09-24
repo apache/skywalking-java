@@ -26,7 +26,7 @@ Release Notes.
     rename `plugin.toolkit.log.grpc.reporter.max_message_size` to `log.max_message_size`.
 * Implement Kafka Log Reporter. Add config item of `agnt.conf`, `plugin.kafka.topic_logging`.
 * Upgrade byte-buddy to 1.11.18
-* Support for Apache HttpClient 5 plug.
+* Add plugin to support Apache HttpClient 5.
 
 #### Documentation
 

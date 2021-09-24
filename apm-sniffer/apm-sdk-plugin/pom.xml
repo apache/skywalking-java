@@ -109,6 +109,7 @@
         <module>shardingsphere-plugins</module>
         <module>druid-1.x-plugin</module>
         <module>hikaricp-3.x-4.x-plugin</module>
+        <module>httpclient-5.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

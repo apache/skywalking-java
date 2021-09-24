@@ -106,6 +106,7 @@ metrics based on the tracing data.
 * [Canal: Alibaba mysql database binlog incremental subscription & consumer components](https://github.com/alibaba/canal) 1.0.25 -> 1.1.2
 * JSON
   * [GSON](https://github.com/google/gson) 2.8.x (Optional²)
+  * [Fastjson](https://github.com/alibaba/fastjson) 1.2.x (Optional²)
 * Vert.x Ecosystem
   * Vert.x Eventbus 3.2+
   * Vert.x Web 3.x

@@ -33,8 +33,7 @@ import java.util.Map;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 /**
- * Fastjson A fast JSON parser/generator for Java (It's very popular
- * json parsing library in China from Alibaba inc).
+ * Fastjson A fast JSON parser/generator for Java from Alibaba inc.
  * <p>
  * JSON provides a "one stop" solution for json parser/generator solution
  * basic requirements.

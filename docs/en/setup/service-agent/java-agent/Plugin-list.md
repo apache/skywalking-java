@@ -32,6 +32,7 @@
 - httpasyncclient-4.x
 - httpclient-3.x
 - httpclient-4.x
+- httpclient-5.x
 - hystrix-1.x
 - influxdb-2.x
 - jdk-http-plugin

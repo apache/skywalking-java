@@ -197,6 +197,6 @@ public class FastjsonInstrumentation extends ClassStaticMethodsEnhancePluginDefi
 
     @Override
     protected ClassMatch enhanceClass() {
-        return MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS);
+        return NameMatch.byName(ENHANCE_CLASS);
     }
 }

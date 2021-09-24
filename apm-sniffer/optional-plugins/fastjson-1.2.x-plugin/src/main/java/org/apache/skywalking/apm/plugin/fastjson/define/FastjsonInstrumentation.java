@@ -46,7 +46,7 @@ public class FastjsonInstrumentation extends ClassStaticMethodsEnhancePluginDefi
 
     public static final String ENHANCE_CLASS = "com.alibaba.fastjson.JSON";
 
-    public static final Map<String, String> ENHANCE_METHODS = new HashMap<String, String>() {
+    private static final Map<String, String> ENHANCE_METHODS = new HashMap<String, String>() {
         {
             put("parseArray", "org.apache.skywalking.apm.plugin.fastjson.ParseArrayInterceptor");
             put("parse", "org.apache.skywalking.apm.plugin.fastjson.ParseInterceptor");

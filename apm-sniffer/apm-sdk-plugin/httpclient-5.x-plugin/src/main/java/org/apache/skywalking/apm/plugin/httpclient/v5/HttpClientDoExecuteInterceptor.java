@@ -115,7 +115,7 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
         return lowerUrl.startsWith("http") || lowerUrl.startsWith("https");
     }
 
-    private String buildSpanValue(HttpHost httpHost, String uri) {
+    private String buildURL(HttpHost httpHost, String uri) {
         if (isUrl(uri)) {
             return uri;
         } else {

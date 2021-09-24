@@ -61,7 +61,7 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
         AbstractSpan span = ContextManager.createExitSpan(operationName, contextCarrier, remotePeer);
 
         span.setComponent(ComponentsDefine.HTTPCLIENT);
-        Tags.URL.set(span, buildSpanValue(httpHost, uri));
+        Tags.URL.set(span, buildURL(httpHost, uri));
         Tags.HTTP.METHOD.set(span, httpRequest.getMethod());
         SpanLayer.asHttp(span);
 

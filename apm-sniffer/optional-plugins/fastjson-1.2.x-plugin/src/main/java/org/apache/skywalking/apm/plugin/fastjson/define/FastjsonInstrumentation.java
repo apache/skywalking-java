@@ -23,7 +23,12 @@ import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
@@ -41,158 +46,45 @@ public class FastjsonInstrumentation extends ClassStaticMethodsEnhancePluginDefi
 
     public static final String ENHANCE_CLASS = "com.alibaba.fastjson.JSON";
 
-    public enum Enhance {
-
-        PARSE_ARRAY("parseArray", "org.apache.skywalking.apm.plugin.fastjson.ParseArrayInterceptor"),
-        PARSE("parse", "org.apache.skywalking.apm.plugin.fastjson.ParseInterceptor"),
-        PARSE_OBJECT("parseObject", "org.apache.skywalking.apm.plugin.fastjson.ParseObjectInterceptor"),
-        TO_JAVA_OBJECT("toJavaObject", "org.apache.skywalking.apm.plugin.fastjson.ToJavaObjectInterceptor"),
-        TO_JSON_BYTES("toJSONBytes", "org.apache.skywalking.apm.plugin.fastjson.ToJsonBytesInterceptor"),
-        TO_JSON("toJSON", "org.apache.skywalking.apm.plugin.fastjson.ToJsonInterceptor"),
-        TO_JSON_STRING("toJSONString", "org.apache.skywalking.apm.plugin.fastjson.ToJsonStringInterceptor"),
-        WRITE_JSON_STRING("writeJSONString", "org.apache.skywalking.apm.plugin.fastjson.WriteJsonStringInterceptor");
-
-        private String enhanceMethod, interceptorClass;
-
-        Enhance(String enhanceMethod, String interceptorClass) {
-            this.enhanceMethod = enhanceMethod;
-            this.interceptorClass = interceptorClass;
+    public static final Map<String, String> ENHANCE_METHODS = new HashMap<String, String>() {
+        {
+            put("parseArray", "org.apache.skywalking.apm.plugin.fastjson.ParseArrayInterceptor");
+            put("parse", "org.apache.skywalking.apm.plugin.fastjson.ParseInterceptor");
+            put("parseObject", "org.apache.skywalking.apm.plugin.fastjson.ParseObjectInterceptor");
+            put("toJavaObject", "org.apache.skywalking.apm.plugin.fastjson.ToJavaObjectInterceptor");
+            put("toJSONBytes", "org.apache.skywalking.apm.plugin.fastjson.ToJsonBytesInterceptor");
+            put("toJSON", "org.apache.skywalking.apm.plugin.fastjson.ToJsonInterceptor");
+            put("toJSONString", "org.apache.skywalking.apm.plugin.fastjson.ToJsonStringInterceptor");
+            put("writeJSONString", "org.apache.skywalking.apm.plugin.fastjson.WriteJsonStringInterceptor");
         }
-    }
+    };
 
     @Override
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
 
-        return new StaticMethodsInterceptPoint[]{
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.PARSE_ARRAY.enhanceMethod);
-                    }
+        final List<StaticMethodsInterceptPoint> points = new ArrayList<StaticMethodsInterceptPoint>(ENHANCE_METHODS.size());
 
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.PARSE_ARRAY.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.PARSE.enhanceMethod);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.PARSE.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.PARSE_OBJECT.enhanceMethod);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.PARSE_OBJECT.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.TO_JAVA_OBJECT.enhanceMethod);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.TO_JAVA_OBJECT.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.TO_JSON_BYTES.enhanceMethod);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.TO_JSON_BYTES.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.TO_JSON.enhanceMethod);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.TO_JSON.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.TO_JSON_STRING.enhanceMethod);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.TO_JSON_STRING.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(Enhance.WRITE_JSON_STRING.enhanceMethod);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return Enhance.WRITE_JSON_STRING.interceptorClass;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
+        for (Map.Entry<String, String> entry : ENHANCE_METHODS.entrySet()) {
+            final StaticMethodsInterceptPoint point = new StaticMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(entry.getKey());
                 }
-        };
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return entry.getValue();
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            };
+            points.add(point);
+        }
+
+        return points.toArray(new StaticMethodsInterceptPoint[points.size()]);
     }
 
     @Override

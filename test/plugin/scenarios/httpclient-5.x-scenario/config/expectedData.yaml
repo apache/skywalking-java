@@ -25,7 +25,7 @@ segmentItems:
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: 14
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -76,7 +76,7 @@ segmentItems:
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: 14
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -110,7 +110,7 @@ segmentItems:
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: 14
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''

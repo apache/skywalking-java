@@ -64,8 +64,8 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {parentEndpoint: /httpclient-5.x/case/asyncGet, networkAddress: '127.0.0.1:8080',
-                refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+              - {parentEndpoint: /httpclient-5.x/case/asyncGet, networkAddress: '',
+                refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
                  null, parentService: httpclient-5.x-scenario, traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null

@@ -40,7 +40,7 @@ public class HttpAsyncClientDoExecuteInterceptor implements InstanceMethodsAroun
         FutureCallback callback = (FutureCallback) allArguments[5];
         allArguments[2] = new AsyncResponseConsumerWrapper(consumer);
         allArguments[5] = new FutureCallbackWrapper(callback);
-        if (ContextManager.isActive() && !ContextManager.activeSpan().isExit()) {
+        if (ContextManager.isActive()) {
             context.setAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT, ContextManager.capture());
         }
     }

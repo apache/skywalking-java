@@ -144,18 +144,17 @@ if [[ ! -d ${agent_home} ]]; then
     ${mvnw} --batch-mode -f ${home}/../../pom.xml -Pagent -DskipTests clean package
 fi
 # if it fails last time, relevant information will be deleted
-if [ "$os" == 'Darwin' ]; then
-    sed -i '' '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml
-else
-    sed -i '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml
-fi
+
+# MacOS sed or GNU sed
+sed -i '' '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml \
+|| \
+sed -i '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml
+
 # add scenario_name into plugin/pom.xml
 echo check code with the checkstyle-plugin
-if [ "$os" == 'Darwin' ]; then
-    sed -i '' '/<\/sourceDirectories>/i\'$'\n''<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>'$'\n' ./pom.xml
-else
-    sed -i '/<\/sourceDirectories>/i <sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>' ./pom.xml
-fi
+sed -i '' '/<\/sourceDirectories>/i\'$'\n''<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>'$'\n' ./pom.xml \
+|| \
+sed -i '/<\/sourceDirectories>/i <sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>' ./pom.xml
 
 if [[ "$force_build" == "on" ]]; then
     profile=
@@ -163,11 +162,9 @@ if [[ "$force_build" == "on" ]]; then
     ${mvnw} --batch-mode -f ${home}/pom.xml clean package -DskipTests ${profile}
 fi
 # remove scenario_name into plugin/pom.xml
-if [ "$os" == 'Darwin' ]; then
-    sed -i '' '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml
-else
-    sed -i '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml
-fi
+sed -i '' '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml \
+|| \
+sed -i '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml
 
 workspace="${home}/workspace/${scenario_name}"
 [[ -d ${workspace} ]] && rm -rf $workspace

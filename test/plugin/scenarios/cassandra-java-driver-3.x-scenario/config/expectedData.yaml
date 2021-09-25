@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 1
       spanId: 2
       spanLayer: Database
@@ -34,7 +33,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -51,7 +49,6 @@ segmentItems:
           = {''class'': ''SimpleStrategy'', ''replication_factor'': 1}'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 3
       spanId: 4
       spanLayer: Database
@@ -65,7 +62,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -82,7 +78,6 @@ segmentItems:
           KEY, value TEXT)'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 5
       spanId: 6
       spanLayer: Database
@@ -96,7 +91,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 5
       spanLayer: Database
@@ -112,7 +106,6 @@ segmentItems:
       - {key: db.statement, value: 'INSERT INTO demo.test(id, value) VALUES(?,?)'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 7
       spanId: 8
       spanLayer: Database
@@ -126,7 +119,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 7
       spanLayer: Database
@@ -142,7 +134,6 @@ segmentItems:
       - {key: db.statement, value: 'SELECT * FROM demo.test WHERE id = ?'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 9
       spanId: 10
       spanLayer: Database
@@ -156,7 +147,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 9
       spanLayer: Database
@@ -172,7 +162,6 @@ segmentItems:
       - {key: db.statement, value: 'DELETE FROM demo.test WHERE id = ?'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 11
       spanId: 12
       spanLayer: Database
@@ -186,7 +175,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 11
       spanLayer: Database
@@ -202,7 +190,6 @@ segmentItems:
       - {key: db.statement, value: DROP TABLE IF EXISTS demo.test}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 13
       spanId: 14
       spanLayer: Database
@@ -216,7 +203,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 13
       spanLayer: Database
@@ -232,7 +218,6 @@ segmentItems:
       - {key: db.statement, value: DROP KEYSPACE IF EXISTS demo}
       skipAnalysis: 'false'
     - operationName: Cassandra/executeAsync
-      operationId: 0
       parentSpanId: 0
       spanId: 15
       spanLayer: Database
@@ -249,7 +234,6 @@ segmentItems:
           = {''class'': ''SimpleStrategy'', ''replication_factor'': 1}'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 0
       spanId: 16
       spanLayer: Database
@@ -263,7 +247,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/executeAsync
-      operationId: 0
       parentSpanId: 0
       spanId: 17
       spanLayer: Database
@@ -280,7 +263,6 @@ segmentItems:
           KEY, value TEXT)'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 0
       spanId: 18
       spanLayer: Database
@@ -294,7 +276,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/executeAsync
-      operationId: 0
       parentSpanId: 0
       spanId: 19
       spanLayer: Database
@@ -310,7 +291,6 @@ segmentItems:
       - {key: db.statement, value: 'INSERT INTO demo.test(id, value) VALUES(?,?)'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 0
       spanId: 20
       spanLayer: Database
@@ -324,7 +304,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/executeAsync
-      operationId: 0
       parentSpanId: 0
       spanId: 21
       spanLayer: Database
@@ -340,7 +319,6 @@ segmentItems:
       - {key: db.statement, value: 'SELECT * FROM demo.test WHERE id = ?'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 0
       spanId: 22
       spanLayer: Database
@@ -354,7 +332,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/executeAsync
-      operationId: 0
       parentSpanId: 0
       spanId: 23
       spanLayer: Database
@@ -370,7 +347,6 @@ segmentItems:
       - {key: db.statement, value: 'DELETE FROM demo.test WHERE id = ?'}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 0
       spanId: 24
       spanLayer: Database
@@ -384,7 +360,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/executeAsync
-      operationId: 0
       parentSpanId: 0
       spanId: 25
       spanLayer: Database
@@ -400,7 +375,6 @@ segmentItems:
       - {key: db.statement, value: DROP TABLE IF EXISTS demo.test}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 0
       spanId: 26
       spanLayer: Database
@@ -414,7 +388,6 @@ segmentItems:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
     - operationName: Cassandra/executeAsync
-      operationId: 0
       parentSpanId: 0
       spanId: 27
       spanLayer: Database
@@ -430,7 +403,6 @@ segmentItems:
       - {key: db.statement, value: DROP KEYSPACE IF EXISTS demo}
       skipAnalysis: 'false'
     - operationName: Cassandra/getUninterruptibly
-      operationId: 0
       parentSpanId: 0
       spanId: 28
       spanLayer: Database
@@ -443,8 +415,7 @@ segmentItems:
       tags:
       - {key: db.type, value: cassandra}
       skipAnalysis: 'false'
-    - operationName: /cassandra-java-driver-3.x-scenario/case/cassandra
-      operationId: 0
+    - operationName: GET:/cassandra-java-driver-3.x-scenario/case/cassandra
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

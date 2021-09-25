@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Oracle/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -38,7 +37,6 @@ segmentItems:
           \ NOT NULL)"
       skipAnalysis: 'false'
     - operationName: Oracle/JDBI/PreparedStatement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -54,7 +52,6 @@ segmentItems:
       - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
       skipAnalysis: 'false'
     - operationName: Oracle/JDBI/PreparedStatement/executeQuery
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -70,7 +67,6 @@ segmentItems:
       - {key: db.statement, value: 'SELECT id, value FROM test_007 WHERE id=?'}
       skipAnalysis: 'false'
     - operationName: Oracle/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -86,7 +82,6 @@ segmentItems:
       - {key: db.statement, value: DROP table test_007}
       skipAnalysis: 'false'
     - operationName: Oracle/JDBI/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 5
       spanLayer: Database
@@ -101,8 +96,7 @@ segmentItems:
       spanType: Exit
       peer: oracle-server:1521
       skipAnalysis: 'false'
-    - operationName: /oracle-scenario/case/oracle
-      operationId: 0
+    - operationName: GET:/oracle-scenario/case/oracle
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

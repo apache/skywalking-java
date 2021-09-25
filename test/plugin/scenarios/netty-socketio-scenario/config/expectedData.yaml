@@ -19,8 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /netty-socketio-scenario/case/netty-socketio
-      operationId: 0
+    - operationName: GET:/netty-socketio-scenario/case/netty-socketio
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -37,7 +36,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: SocketIO/onConnect
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -52,13 +50,20 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - {operationName: SocketIO/send_data/receive, operationId: 0, parentSpanId: -1,
-      spanId: 0, spanLayer: Http, startTime: nq 0, endTime: nq 0, componentId: 76,
-      isError: false, spanType: Entry, peer: '', skipAnalysis: 'false'}
+    - operationName: SocketIO/send_data/receive
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 76
+      isError: false
+      spanType: Entry
+      peer: ''
+      skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: /socket.io/
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

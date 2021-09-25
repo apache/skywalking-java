@@ -28,6 +28,7 @@ Release Notes.
 * Implement Kafka Log Reporter. Add config item of `agnt.conf`, `plugin.kafka.topic_logging`.
 * Upgrade byte-buddy to 1.11.18
 * Add plugin to support Apache HttpClient 5.
+* Format Springmvc & Tomcat EntrySpan operation name to `METHOD:URI`
 
 #### Documentation
 

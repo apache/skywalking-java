@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/annotation/success
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -42,7 +41,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/annotation/error
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -64,7 +62,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/annotation/{test}
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -86,7 +83,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/annotation/{test}
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -108,7 +104,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/route/{test}
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -130,7 +125,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/route/{test}
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -152,7 +146,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /**
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -174,7 +167,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/annotation/mono/hello
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -196,7 +188,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/webclient/server
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -221,7 +212,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /testcase/annotation/success
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -236,7 +226,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: /testcase/annotation/error
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Http
@@ -252,7 +241,6 @@ segmentItems:
       - {key: http.status_code, value: '500'}
       skipAnalysis: 'false'
     - operationName: /testcase/annotation/foo
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Http
@@ -267,7 +255,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: /testcase/annotation/loo
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       spanLayer: Http
@@ -282,7 +269,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: /testcase/route/success
-      operationId: 0
       parentSpanId: 0
       spanId: 5
       spanLayer: Http
@@ -297,7 +283,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: /testcase/route/error
-      operationId: 0
       parentSpanId: 0
       spanId: 6
       spanLayer: Http
@@ -313,7 +298,6 @@ segmentItems:
       - {key: http.status_code, value: '500'}
       skipAnalysis: 'false'
     - operationName: /notFound
-      operationId: 0
       parentSpanId: 0
       spanId: 7
       spanLayer: Http
@@ -329,7 +313,6 @@ segmentItems:
       - {key: http.status_code, value: '404'}
       skipAnalysis: 'false'
     - operationName: /testcase/annotation/mono/hello
-      operationId: 0
       parentSpanId: 0
       spanId: 8
       spanLayer: Http
@@ -344,7 +327,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: /testcase/webclient/server
-      operationId: 0
       parentSpanId: 0
       spanId: 9
       spanLayer: Http
@@ -360,7 +342,6 @@ segmentItems:
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /projectA/testcase
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

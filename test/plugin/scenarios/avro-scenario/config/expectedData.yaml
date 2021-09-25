@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: example.proto.Greeter.hello
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: RPCFramework
@@ -40,11 +39,18 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - {operationName: example.proto.Greeter.hello, operationId: 0, parentSpanId: 0,
-      spanId: 1, spanLayer: RPCFramework, startTime: gt 0, endTime: gt 0, componentId: 83,
-      isError: false, spanType: Exit, peer: 'localhost/127.0.0.1:9018', skipAnalysis: 'false'}
-    - operationName: /avro-scenario/case/avro-scenario
-      operationId: 0
+    - operationName: example.proto.Greeter.hello
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: RPCFramework
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 83
+      isError: false
+      spanType: Exit
+      peer: 'localhost/127.0.0.1:9018'
+      skipAnalysis: 'false'
+    - operationName: GET:/avro-scenario/case/avro-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

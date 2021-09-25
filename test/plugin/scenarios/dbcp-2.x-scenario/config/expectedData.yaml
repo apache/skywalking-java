@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Mysql/JDBI/Connection/close
-      operationId: eq 0
       parentSpanId: 1
       spanId: 2
       componentId: 33
@@ -33,7 +32,6 @@ segmentItems:
         - {key: db.instance, value: test}
         - {key: db.statement, value: ''}
     - operationName: DBCP/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       startTime: gt 0
@@ -44,7 +42,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       startTime: gt 0
@@ -61,7 +58,6 @@ segmentItems:
           value: "CREATE TABLE test_DBCP(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(1)\
           \ NOT NULL)"
     - operationName: DBCP/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       startTime: gt 0
@@ -72,7 +68,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: DBCP/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 5
       startTime: gt 0
@@ -83,7 +78,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 6
       startTime: gt 0
@@ -99,7 +93,6 @@ segmentItems:
         - key: db.statement
           value: 'INSERT INTO test_DBCP(id, value) VALUES(1,1)'
     - operationName: DBCP/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 7
       startTime: gt 0
@@ -110,7 +103,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: DBCP/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 8
       startTime: gt 0
@@ -121,7 +113,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 9
       startTime: gt 0
@@ -137,7 +128,6 @@ segmentItems:
         - key: db.statement
           value: 'SELECT id, value FROM test_DBCP WHERE id=1'
     - operationName: DBCP/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 10
       startTime: gt 0
@@ -148,7 +138,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: DBCP/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 11
       startTime: gt 0
@@ -159,7 +148,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 12
       startTime: gt 0
@@ -175,7 +163,6 @@ segmentItems:
         - key: db.statement
           value: "DELETE FROM test_DBCP WHERE id=1"
     - operationName: DBCP/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 13
       startTime: gt 0
@@ -186,7 +173,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: DBCP/Connection/getConnection
-      operationId: 0
       parentSpanId: 0
       spanId: 14
       startTime: gt 0
@@ -197,7 +183,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
     - operationName: Mysql/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 15
       startTime: gt 0
@@ -213,7 +198,6 @@ segmentItems:
         - key: db.statement
           value: "DROP table test_DBCP"
     - operationName: DBCP/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 16
       startTime: gt 0
@@ -223,8 +207,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: /dbcp-2.x-scenario/case/dbcp-2.x-scenario
-      operationId: 0
+    - operationName: GET:/dbcp-2.x-scenario/case/dbcp-2.x-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

@@ -19,8 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /spring-scheduled-scenario/case/call
-      operationId: 0
+    - operationName: GET:/spring-scheduled-scenario/case/call
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -39,7 +38,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /spring-scheduled-scenario/case/call
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -54,7 +52,6 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/spring-scheduled-scenario/case/call'}
     - operationName: SpringScheduled/org.apache.skywalking.apm.testcase.spring.scheduled.job.SchedulingJob.work
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown

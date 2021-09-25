@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Canal/example
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Unknown
@@ -34,8 +33,7 @@ segmentItems:
       - {key: batchSize, value: '1000'}
       - {key: destination, value: example}
       skipAnalysis: 'false'
-    - operationName: /canal-scenario/case/canal-case
-      operationId: 0
+    - operationName: GET:/canal-scenario/case/canal-case
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /play-scenario/case/play-scenario/projects/{projectId}
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

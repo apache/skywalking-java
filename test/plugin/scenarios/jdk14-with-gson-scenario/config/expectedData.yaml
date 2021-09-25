@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: nq 0
     spans:
     - operationName: Gson/ToJson
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Unknown
@@ -34,7 +33,6 @@ segmentItems:
       peer: ' '
       skipAnalysis: 'false'
     - operationName: Gson/FromJson
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Unknown
@@ -48,7 +46,6 @@ segmentItems:
       peer: ''
       skipAnalysis: 'false'
     - operationName: /person/action
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Unknown
@@ -61,8 +58,7 @@ segmentItems:
       skipAnalysis: 'false'
       tags:
         - {key: key, value: value}
-    - operationName: /case/gson-scenario
-      operationId: 0
+    - operationName: GET:/case/gson-scenario
       spanId: 0
       spanLayer: Http
       startTime: nq 0

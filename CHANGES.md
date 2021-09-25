@@ -21,6 +21,7 @@ Release Notes.
 * Add benchmark result for `exception-ignore` plugin and polish plugin guide.
 * Provide Alibaba Druid database connection pool plugin.
 * Provide HikariCP database connection pool plugin.
+* Fix NumberFormat exception in jdbc-commons plugin when MysqlURLParser parser jdbcurl
 
 #### Documentation
 

@@ -110,13 +110,11 @@ public class MysqlURLParser extends AbstractURLParser {
         } else {
             String[] hostAndPort = hostSegment[0].split(":");
             if (hostAndPort.length != 1) {
-                return new ConnectionInfo(component, dbType, hostAndPort[0], Integer.valueOf(hostAndPort[1]),
-                                          fetchDatabaseNameFromURL(location
-                                                                           .endIndex()));
+                return new ConnectionInfo(component, dbType, hostAndPort[0], Integer.valueOf(hostAndPort[1]), fetchDatabaseNameFromURL(location
+                        .endIndex()));
             } else {
-                return new ConnectionInfo(component, dbType, hostAndPort[0], DEFAULT_PORT,
-                                          fetchDatabaseNameFromURL(location
-                                                                           .endIndex()));
+                return new ConnectionInfo(component, dbType, hostAndPort[0], DEFAULT_PORT, fetchDatabaseNameFromURL(location
+                        .endIndex()));
             }
         }
     }

@@ -36,7 +36,7 @@ segmentItems:
         - {key: message, value: not null}
         - {key: stack, value: not null}
       refs:
-      - {parentEndpoint: /case/hystrix-scenario, networkAddress: '', refType: CrossThread,
+      - {parentEndpoint: GET:/case/hystrix-scenario, networkAddress: '', refType: CrossThread,
         parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: hystrix-scenario, traceId: not null}
       skipAnalysis: 'false'

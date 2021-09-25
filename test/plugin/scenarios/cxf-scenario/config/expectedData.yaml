@@ -19,7 +19,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: GET:/cxf-scenario/soap/user
+          - operationName: POST:/cxf-scenario/soap/user
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -34,7 +34,7 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/cxf-scenario/soap/user'}
               - {key: http.method, value: POST}
             refs:
-              - {parentEndpoint: /cxf-scenario/case/cxf-scenario, networkAddress: 'localhost:8080',
+              - {parentEndpoint: GET:/cxf-scenario/case/cxf-scenario, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: cxf-scenario, traceId: not null}
       - segmentId: not null
@@ -51,7 +51,7 @@ segmentItems:
             peer: ''
             skipAnalysis: 'false'
             refs:
-              - {parentEndpoint: /cxf-scenario/soap/user, networkAddress: '', refType: CrossThread,
+              - {parentEndpoint: POST:/cxf-scenario/soap/user, networkAddress: '', refType: CrossThread,
                  parentSpanId: 0, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: cxf-scenario, traceId: not null}
       - segmentId: not null

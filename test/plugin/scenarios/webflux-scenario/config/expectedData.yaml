@@ -34,7 +34,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -55,7 +55,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '500'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -76,7 +76,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 3, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -97,7 +97,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 4, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -118,7 +118,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 5, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -139,7 +139,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '500'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 6, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -160,7 +160,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '404'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 7, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -181,7 +181,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 8, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -202,7 +202,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: /projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 9, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -341,7 +341,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
-    - operationName: /projectA/testcase
+    - operationName: GET:/projectA/testcase
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

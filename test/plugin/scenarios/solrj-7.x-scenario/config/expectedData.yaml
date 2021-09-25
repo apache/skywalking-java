@@ -121,7 +121,7 @@ segmentItems:
       - {key: db.type, value: Solr}
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
-    - operationName: /solrj-scenario/case/solr
+    - operationName: GET:/solrj-scenario/case/solrj
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

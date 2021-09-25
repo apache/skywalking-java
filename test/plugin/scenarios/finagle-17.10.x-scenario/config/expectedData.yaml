@@ -36,7 +36,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: hello,
+    - operationName: hello
       parentSpanId: 0
       spanId: 1
       spanLayer: RPCFramework

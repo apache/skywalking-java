@@ -30,7 +30,7 @@ segmentItems:
       spanType: Entry
       peer: ''
       refs:
-      - {parentEndpoint: /baidu-brpc-scenario/case/brpc, networkAddress: '127.0.0.1:1118',
+      - {parentEndpoint: GET:/baidu-brpc-scenario/case/brpc, networkAddress: '127.0.0.1:1118',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: baidu-brpc-scenario, traceId: not null}
       skipAnalysis: 'false'

@@ -18,6 +18,7 @@
 - elasticsearch-5.x
 - elasticsearch-6.x
 - elasticsearch-7.x
+- fastjson-1.2.x
 - feign-default-http-9.x
 - feign-pathvar-9.x
 - finagle
@@ -31,6 +32,7 @@
 - httpasyncclient-4.x
 - httpclient-3.x
 - httpclient-4.x
+- httpclient-5.x
 - hystrix-1.x
 - influxdb-2.x
 - jdk-http-plugin

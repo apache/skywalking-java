@@ -1,0 +1,48 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  E2E:
+    name: Basic function + gRPC transport(Java8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Build SkyWalking agent docker image
+        run: make build docker.java8
+      - name: Build consumer & provider images
+        shell: bash
+        run: |
+          echo "::group::Install SNAPSHOT apm-application-toolkit"
+          ./mvnw -DskipTests -N install
+          ./mvnw -f apm-application-toolkit -DskipTests -am install
+          echo "::endgroup::"
+          echo "::group::"
+          SW_VERSION=$(./mvnw -q -DforceStdout -N org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version)
+          ./mvnw -B package -f ./test/e2e/base/pom.xml -Dsw.version=${SW_VERSION}
+          echo "::endgroup::"
+      - name: Run E2E Tests
+        uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
+        with:
+          e2e-file: test/e2e/case/base/e2e.yaml

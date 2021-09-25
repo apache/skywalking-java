@@ -42,6 +42,8 @@ public class KafkaReporterPluginConfig {
 
             public static String TOPIC_METER = "skywalking-meters";
 
+            public static String TOPIC_LOGGING = "skywalking-logging";
+
             public static String NAMESPACE = "";
 
             /**

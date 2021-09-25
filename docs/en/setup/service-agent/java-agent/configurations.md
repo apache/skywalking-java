@@ -56,6 +56,7 @@ property key | Description | Default |
 `meter.active`|If true, the agent collects and reports metrics to the backend.|`true`|
 `meter.report_interval`|Report meters interval. The unit is second|`20`|
 `meter.max_meter_size`| Max size of the meter pool |`500`|
+`log.max_message_size`| The max size of message to send to server.Default is 10 MB. |`10485760`|
 `plugin.mount` | Mount the specific folders of the plugins. Plugins in mounted folders would work. | `plugins,activations` |
 `plugin.peer_max_length `|Peer maximum description limit.|`200`|
 `plugin.exclude_plugins `|Exclude some plugins define in plugins dir.Plugin names is defined in [Agent plugin list](Plugin-list.md)|`""`|
@@ -95,13 +96,10 @@ property key | Description | Default |
 `plugin.kafka.topic_segment` | Specify which Kafka topic name for traces data to report to. | `skywalking-segments` |
 `plugin.kafka.topic_profiling` | Specify which Kafka topic name for Thread Profiling snapshot to report to. | `skywalking-profilings` |
 `plugin.kafka.topic_management` | Specify which Kafka topic name for the register or heartbeat data of Service Instance to report to. | `skywalking-managements` |
+`plugin.kafka.topic_logging` | Specify which Kafka topic name for the logging data to report to. | `skywalking-logging` |
 `plugin.kafka.namespace` | isolate multi OAP server when using same Kafka cluster (final topic name will append namespace before Kafka topics with `-` ).  | `` |
 `plugin.springannotation.classname_match_regex` |  Match spring beans with regular expression for the class name. Multiple expressions could be separated by a comma. This only works when `Spring annotation plugin` has been activated. | `All the spring beans tagged with @Bean,@Service,@Dao, or @Repository.` |
 `plugin.toolkit.log.transmit_formatted` | Whether or not to transmit logged data as formatted or un-formatted. | `true` |
-`plugin.toolkit.log.grpc.reporter.server_host` | Specify which grpc server's host for log data to report to. | `127.0.0.1` |
-`plugin.toolkit.log.grpc.reporter.server_port` | Specify which grpc server's port for log data to report to. | `11800` |
-`plugin.toolkit.log.grpc.reporter.max_message_size` | Specify the maximum size of log data for grpc client to report to. | `10485760` |
-`plugin.toolkit.log.grpc.reporter.upstream_timeout` | How long grpc client will timeout in sending data to upstream. Unit is second.|`30` seconds|
 `plugin.lettuce.trace_redis_parameters` | If set to true, the parameters of Redis commands would be collected by Lettuce agent.| `false` |
 `plugin.lettuce.redis_parameter_max_length` | If set to positive number and `plugin.lettuce.trace_redis_parameters` is set to `true`, Redis command parameters would be collected and truncated to this length.| `128` |
 `plugin.neo4j.trace_cypher_parameters`|If set to true, the parameters of the cypher would be collected.|`false`|

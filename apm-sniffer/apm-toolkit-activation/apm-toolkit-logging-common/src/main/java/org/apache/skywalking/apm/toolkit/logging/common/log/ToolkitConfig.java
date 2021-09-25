@@ -30,31 +30,6 @@ public class ToolkitConfig {
                  * Whether or not to transmit logged data as formatted or un-formatted.
                  */
                 public static boolean TRANSMIT_FORMATTED = true;
-
-                public static class GRPC {
-                    @PluginConfig(root = ToolkitConfig.class)
-                    public static class Reporter {
-                        /**
-                         * The host of gRPC log server.
-                         */
-                        public static String SERVER_HOST = "127.0.0.1";
-
-                        /**
-                         * The port of gRPC log server.
-                         */
-                        public static int SERVER_PORT = 11800;
-
-                        /**
-                         * The max size of message to send to server.Default is 10 MB.
-                         */
-                        public static int MAX_MESSAGE_SIZE = 10 * 1024 * 1024;
-
-                        /**
-                         * How long grpc client will timeout in sending data to upstream. The unit is second.
-                         */
-                        public static int UPSTREAM_TIMEOUT = 30;
-                    }
-                }
             }
         }
     }

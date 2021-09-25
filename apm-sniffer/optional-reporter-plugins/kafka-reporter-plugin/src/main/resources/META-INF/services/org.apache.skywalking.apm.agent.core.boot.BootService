@@ -21,3 +21,4 @@ org.apache.skywalking.apm.agent.core.kafka.KafkaJVMMetricsSender
 org.apache.skywalking.apm.agent.core.kafka.KafkaTraceSegmentServiceClient
 org.apache.skywalking.apm.agent.core.kafka.KafkaProfileSnapshotSender
 org.apache.skywalking.apm.agent.core.kafka.KafkaMeterSender
+org.apache.skywalking.apm.agent.core.kafka.KafkaLogReporterServiceClient

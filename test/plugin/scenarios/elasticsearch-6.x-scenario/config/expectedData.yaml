@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Elasticsearch/CreateRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -36,7 +35,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/IndexRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -52,7 +50,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/GetRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -68,7 +65,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/SearchRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -83,7 +79,6 @@ segmentItems:
       - {key: db.instance, value: not null}
       - {key: db.statement, value: not null}
     - operationName: Elasticsearch/SearchRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 5
       spanLayer: Database
@@ -98,7 +93,6 @@ segmentItems:
         - {key: db.instance, value: not null}
         - {key: db.statement, value: not null}
     - operationName: Elasticsearch/SearchScrollRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 6
       spanLayer: Database
@@ -113,7 +107,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/SearchRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 7
       spanLayer: Database
@@ -128,7 +121,6 @@ segmentItems:
         - {key: db.instance, value: not null}
         - {key: db.statement, value: not null}
     - operationName: Elasticsearch/SearchScrollRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 8
       spanLayer: Database
@@ -143,7 +135,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/SearchRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 9
       spanLayer: Database
@@ -158,7 +149,6 @@ segmentItems:
         - {key: db.instance, value: not null}
         - {key: db.statement, value: not null}
     - operationName: Elasticsearch/ClearScrollRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 10
       spanLayer: Database
@@ -173,7 +163,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/SearchRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 11
       spanLayer: Database
@@ -188,7 +177,6 @@ segmentItems:
         - {key: db.instance, value: not null}
         - {key: db.statement, value: not null}
     - operationName: Elasticsearch/ClearScrollRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 12
       spanLayer: Database
@@ -203,7 +191,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/SearchTemplateRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 13
       spanLayer: Database
@@ -218,7 +205,6 @@ segmentItems:
         - {key: db.instance, value: not null}
         - {key: db.statement, value: not null}
     - operationName: Elasticsearch/SearchTemplateRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 14
       spanLayer: Database
@@ -233,7 +219,6 @@ segmentItems:
         - {key: db.instance, value: not null}
         - {key: db.statement, value: not null}
     - operationName: Elasticsearch/UpdateRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 15
       spanLayer: Database
@@ -249,7 +234,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/AnalyzeRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 16
       spanLayer: Database
@@ -265,7 +249,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/AnalyzeRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 17
       spanLayer: Database
@@ -281,7 +264,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/DeleteByQueryRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 18
       spanLayer: Database
@@ -297,7 +279,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/DeleteByQueryRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 19
       spanLayer: Database
@@ -313,7 +294,6 @@ segmentItems:
         - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/DeleteRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 20
       spanLayer: Database
@@ -328,7 +308,6 @@ segmentItems:
       - {key: db.instance, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/IndexRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 21
       spanLayer: Database
@@ -347,7 +326,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/actionGet
-      operationId: 0
       parentSpanId: 0
       spanId: 22
       startTime: nq 0
@@ -360,7 +338,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/GetRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 23
       spanLayer: Database
@@ -379,7 +356,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/SearchRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 24
       spanLayer: Database
@@ -398,7 +374,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/UpdateRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 25
       spanLayer: Database
@@ -417,7 +392,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/DeleteRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 26
       spanLayer: Database
@@ -436,7 +410,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: Elasticsearch/DeleteIndexRequest
-      operationId: 0
       parentSpanId: 0
       spanId: 27
       spanLayer: Database
@@ -452,8 +425,7 @@ segmentItems:
       - {key: node.address, value: not null}
       - {key: es.indices, value: not null}
       skipAnalysis: 'false'
-    - operationName: /elasticsearch-case/case/elasticsearch
-      operationId: 0
+    - operationName: GET:/elasticsearch-case/case/elasticsearch
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

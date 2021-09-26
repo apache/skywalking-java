@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: H2/JDBI/PreparedStatement/executeQuery
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -36,7 +35,6 @@ segmentItems:
       - {key: db.statement, value: SELECT * FROM t_order_1}
       skipAnalysis: 'false'
     - operationName: /ShardingSphere/executeSQL/
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -47,14 +45,13 @@ segmentItems:
       spanType: Local
       peer: ''
       refs:
-      - {parentEndpoint: /shardingsphere-4.x-scenario/case/execute, networkAddress: '',
+      - {parentEndpoint: GET:/shardingsphere-4.x-scenario/case/execute, networkAddress: '',
         refType: CrossThread, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: H2/JDBI/PreparedStatement/executeQuery
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -70,7 +67,6 @@ segmentItems:
       - {key: db.statement, value: SELECT * FROM t_order_1}
       skipAnalysis: 'false'
     - operationName: /ShardingSphere/executeSQL/
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -81,14 +77,13 @@ segmentItems:
       spanType: Local
       peer: ''
       refs:
-      - {parentEndpoint: /shardingsphere-4.x-scenario/case/execute, networkAddress: '',
+      - {parentEndpoint: GET:/shardingsphere-4.x-scenario/case/execute, networkAddress: '',
         refType: CrossThread, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: H2/JDBI/PreparedStatement/executeQuery
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -104,7 +99,6 @@ segmentItems:
       - {key: db.statement, value: SELECT * FROM t_order_0}
       skipAnalysis: 'false'
     - operationName: /ShardingSphere/executeSQL/
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -115,14 +109,13 @@ segmentItems:
       spanType: Local
       peer: ''
       refs:
-      - {parentEndpoint: /shardingsphere-4.x-scenario/case/execute, networkAddress: '',
+      - {parentEndpoint: GET:/shardingsphere-4.x-scenario/case/execute, networkAddress: '',
         refType: CrossThread, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: shardingsphere-4.x-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: /ShardingSphere/parseSQL/
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Unknown
@@ -136,7 +129,6 @@ segmentItems:
       - {key: db.statement, value: SELECT * FROM t_order}
       skipAnalysis: 'false'
     - operationName: H2/JDBI/PreparedStatement/executeQuery
-      operationId: 0
       parentSpanId: 3
       spanId: 4
       spanLayer: Database
@@ -151,14 +143,29 @@ segmentItems:
       - {key: db.instance, value: demo_ds_0}
       - {key: db.statement, value: SELECT * FROM t_order_0}
       skipAnalysis: 'false'
-    - {operationName: /ShardingSphere/executeSQL/, operationId: 0, parentSpanId: 2,
-      spanId: 3, spanLayer: Unknown, startTime: not null, endTime: not null, componentId: 60,
-      isError: false, spanType: Local, peer: '', skipAnalysis: 'false'}
-    - {operationName: /ShardingSphere/JDBCRootInvoke/, operationId: 0, parentSpanId: 0,
-      spanId: 2, spanLayer: Unknown, startTime: not null, endTime: not null, componentId: 60,
-      isError: false, spanType: Local, peer: '', skipAnalysis: 'false'}
-    - operationName: /shardingsphere-4.x-scenario/case/execute
-      operationId: 0
+    - operationName: /ShardingSphere/executeSQL/
+      parentSpanId: 2
+      spanId: 3
+      spanLayer: Unknown
+      startTime: not null
+      endTime: not null
+      componentId: 60
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: 'false'
+    - operationName: /ShardingSphere/JDBCRootInvoke/
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: Unknown
+      startTime: not null
+      endTime: not null
+      componentId: 60
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: 'false'
+    - operationName: GET:/shardingsphere-4.x-scenario/case/execute
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

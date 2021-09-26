@@ -19,8 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /jdk-http-scenario/case/receiveContext-0
-      operationId: 0
+    - operationName: GET:/jdk-http-scenario/case/receiveContext-0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -34,14 +33,13 @@ segmentItems:
       - {key: url, value: 'http://localhost:8080/jdk-http-scenario/case/receiveContext-0'}
       - {key: http.method, value: GET}
       refs:
-      - {parentEndpoint: /jdk-http-scenario/case/jdk-http-scenario, networkAddress: 'localhost:8080',
+      - {parentEndpoint: GET:/jdk-http-scenario/case/jdk-http-scenario, networkAddress: 'localhost:8080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: jdk-http-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: /jdk-http-scenario/case/receiveContext-0
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -55,8 +53,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/jdk-http-scenario/case/receiveContext-0'}
       skipAnalysis: 'false'
-    - operationName: /jdk-http-scenario/case/jdk-http-scenario
-      operationId: 0
+    - operationName: GET:/jdk-http-scenario/case/jdk-http-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

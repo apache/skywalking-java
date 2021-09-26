@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Redisson/SET
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Cache
@@ -36,7 +35,6 @@ segmentItems:
       - {key: db.statement, value: 'SET key_a ?'}
       skipAnalysis: 'false'
     - operationName: Redisson/BATCH_EXECUTE
-      operationId: 0
       parentSpanId: 0
       spanId: nq 0
       spanLayer: Cache
@@ -52,8 +50,7 @@ segmentItems:
       - {key: db.statement, value: 'SET batch_k_a ?;SET batch_k_b ?;PEXPIRE batch_k_b
           20000;'}
       skipAnalysis: 'false'
-    - operationName: /case/redisson-case
-      operationId: 0
+    - operationName: GET:/case/redisson-case
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

@@ -19,7 +19,123 @@ segmentItems:
   segments:
   - segmentId: nq 0
     spans:
-    - operationName: /jackson-scenario/case/jackson-scenario
+    - operationName: Jackson/ObjectMapper/writeValue
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+    - operationName: Jackson/ObjectMapper/writeValueAsString
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '20'}
+    - operationName: Jackson/ObjectMapper/writeValueAsBytes
+      parentSpanId: 0
+      spanId: 3
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '20'}
+    - operationName: Jackson/ObjectMapper/readValue
+      parentSpanId: 0
+      spanId: 4
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '26'}
+    - operationName: Jackson/ObjectReader/readValue
+      parentSpanId: 0
+      spanId: 5
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '26'}
+    - operationName: Jackson/ObjectReader/readValue
+      parentSpanId: 0
+      spanId: 6
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '26'}
+    - operationName: Jackson/ObjectReader/readValues
+      parentSpanId: 0
+      spanId: 7
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '26'}
+    - operationName: Jackson/ObjectWriter/writeValue
+      parentSpanId: 0
+      spanId: 8
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+    - operationName: Jackson/ObjectWriter/writeValueAsString
+      parentSpanId: 0
+      spanId: 9
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '20'}
+    - operationName: Jackson/ObjectWriter/writeValueAsBytes
+      parentSpanId: 0
+      spanId: 10
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 118
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: length, value: '20'}
+    - operationName: GET:/jackson-scenario/case/jackson-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

@@ -34,7 +34,7 @@ public class BasicMethodsInterceptor implements InstanceMethodsAroundInterceptor
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         AbstractSpan span = ContextManager.createLocalSpan(
-                OPERATION_NAME_JACKSON + method.getDeclaringClass().getName() + "/" + method.getName());
+                OPERATION_NAME_JACKSON + method.getDeclaringClass().getSimpleName() + "." + method.getName());
         span.setComponent(ComponentsDefine.JACKSON);
     }
 

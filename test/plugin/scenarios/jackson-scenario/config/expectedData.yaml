@@ -15,11 +15,11 @@
 # limitations under the License.
 segmentItems:
 - serviceName: jackson-scenario
-  segmentSize: ge 1
+  segmentSize: ge 2
   segments:
   - segmentId: nq 0
     spans:
-    - operationName: Jackson/ObjectMapper/writeValue
+    - operationName: Jackson/ObjectMapper.writeValue
       parentSpanId: 0
       spanId: 1
       spanLayer: Unknown
@@ -29,7 +29,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: Jackson/ObjectMapper/writeValueAsString
+    - operationName: Jackson/ObjectMapper.writeValueAsString
       parentSpanId: 0
       spanId: 2
       spanLayer: Unknown
@@ -41,7 +41,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '20'}
-    - operationName: Jackson/ObjectMapper/writeValueAsBytes
+    - operationName: Jackson/ObjectMapper.writeValueAsBytes
       parentSpanId: 0
       spanId: 3
       spanLayer: Unknown
@@ -53,7 +53,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '20'}
-    - operationName: Jackson/ObjectMapper/readValue
+    - operationName: Jackson/ObjectMapper.readValue
       parentSpanId: 0
       spanId: 4
       spanLayer: Unknown
@@ -65,7 +65,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '26'}
-    - operationName: Jackson/ObjectReader/readValue
+    - operationName: Jackson/ObjectReader.readValue
       parentSpanId: 0
       spanId: 5
       spanLayer: Unknown
@@ -77,7 +77,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '26'}
-    - operationName: Jackson/ObjectReader/readValue
+    - operationName: Jackson/ObjectReader.readValue
       parentSpanId: 0
       spanId: 6
       spanLayer: Unknown
@@ -89,7 +89,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '26'}
-    - operationName: Jackson/ObjectReader/readValues
+    - operationName: Jackson/ObjectReader.readValues
       parentSpanId: 0
       spanId: 7
       spanLayer: Unknown
@@ -101,7 +101,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '26'}
-    - operationName: Jackson/ObjectWriter/writeValue
+    - operationName: Jackson/ObjectWriter.writeValue
       parentSpanId: 0
       spanId: 8
       spanLayer: Unknown
@@ -111,7 +111,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: Jackson/ObjectWriter/writeValueAsString
+    - operationName: Jackson/ObjectWriter.writeValueAsString
       parentSpanId: 0
       spanId: 9
       spanLayer: Unknown
@@ -123,7 +123,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '20'}
-    - operationName: Jackson/ObjectWriter/writeValueAsBytes
+    - operationName: Jackson/ObjectWriter.writeValueAsBytes
       parentSpanId: 0
       spanId: 10
       spanLayer: Unknown

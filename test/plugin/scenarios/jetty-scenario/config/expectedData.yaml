@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /jettyserver-case/case/receiveContext-0
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -34,7 +33,7 @@ segmentItems:
       - {key: url, value: 'http://localhost:18080/jettyserver-case/case/receiveContext-0'}
       - {key: http.method, value: GET}
       refs:
-      - {parentEndpoint: /jettyclient-case/case/jettyclient-case, networkAddress: 'localhost:18080',
+      - {parentEndpoint: GET:/jettyclient-case/case/jettyclient-case, networkAddress: 'localhost:18080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: jettyclient-scenario, traceId: not null}
       skipAnalysis: 'false'
@@ -44,7 +43,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /jettyserver-case/case/receiveContext-0
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -58,14 +56,13 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:18080/jettyserver-case/case/receiveContext-0'}
       skipAnalysis: 'false'
-    - operationName: /jettyclient-case/case/jettyclient-case
-      operationId: 0
+    - operationName: GET:/jettyclient-case/case/jettyclient-case
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
-      componentId: gt 0
+      componentId: 1
       isError: false
       spanType: Entry
       tags:

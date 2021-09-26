@@ -20,7 +20,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: Kafka/spring_test/Producer
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: MQ
@@ -34,8 +33,7 @@ segmentItems:
             tags:
               - {key: mq.broker, value: 'kafka-server:9092'}
               - {key: mq.topic, value: spring_test}
-          - operationName: /case/spring-kafka-case
-            operationId: 0
+          - operationName: GET:/case/spring-kafka-case
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -51,8 +49,7 @@ segmentItems:
               - {key: http.method, value: GET}
       - segmentId: not null
         spans:
-          - operationName: /case/spring-kafka-consumer-ping
-            operationId: 0
+          - operationName: GET:/case/spring-kafka-consumer-ping
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -74,7 +71,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: /spring-kafka-1.3.x-scenario/case/spring-kafka-consumer-ping
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
@@ -89,7 +85,6 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8080/spring-kafka-1.3.x-scenario/case/spring-kafka-consumer-ping'}
           - operationName: Kafka/spring_test/Consumer/grop:spring_test
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: MQ
@@ -105,7 +100,7 @@ segmentItems:
               - {key: mq.topic, value: spring_test}
               - {key: transmission.latency, value: not null}
             refs:
-              - {parentEndpoint: /case/spring-kafka-case, networkAddress: 'kafka-server:9092',
+              - {parentEndpoint: GET:/case/spring-kafka-case, networkAddress: 'kafka-server:9092',
                  refType: CrossProcess, parentSpanId: not null, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: spring-kafka-1.3.x-scenario,
                  traceId: not null}

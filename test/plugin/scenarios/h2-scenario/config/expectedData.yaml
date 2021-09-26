@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: H2/JDBI/PreparedStatement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -38,7 +37,6 @@ segmentItems:
           \ NOT NULL)"
       skipAnalysis: 'false'
     - operationName: H2/JDBI/CallableStatement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -54,7 +52,6 @@ segmentItems:
       - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
       skipAnalysis: 'false'
     - operationName: H2/JDBI/Statement/execute
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -70,7 +67,6 @@ segmentItems:
       - {key: db.statement, value: DROP table test_007}
       skipAnalysis: 'false'
     - operationName: H2/JDBI/Connection/close
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -85,8 +81,7 @@ segmentItems:
       - {key: db.instance, value: test}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'
-    - operationName: /h2-scenario/case/h2-scenario
-      operationId: 0
+    - operationName: GET:/h2-scenario/case/h2-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

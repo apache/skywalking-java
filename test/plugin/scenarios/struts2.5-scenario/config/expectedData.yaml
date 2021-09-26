@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /struts2.5-scenario/struts-scenario/case1.action
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -44,7 +43,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /struts2.5-scenario/struts-scenario/case1.action
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -59,7 +57,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: /struts2.5-scenario/struts-scenario/case.action
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

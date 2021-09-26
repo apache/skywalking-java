@@ -115,7 +115,7 @@ segmentItems:
       peer: ''
       tags:
         - {key: length, value: '24'}
-    - operationName: /fastjson-scenario/case/fastjson-scenario
+    - operationName: GET:/fastjson-scenario/case/fastjson-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

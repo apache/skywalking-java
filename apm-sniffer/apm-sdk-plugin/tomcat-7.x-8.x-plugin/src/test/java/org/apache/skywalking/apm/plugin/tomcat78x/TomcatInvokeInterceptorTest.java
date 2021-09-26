@@ -87,6 +87,7 @@ public class TomcatInvokeInterceptorTest {
         when(request.getRequestURI()).thenReturn("/test/testRequestURL");
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/testRequestURL"));
         when(response.getStatus()).thenReturn(200);
+        when(request.getMethod()).thenReturn("GET");
         arguments = new Object[] {
             request,
             response
@@ -174,7 +175,7 @@ public class TomcatInvokeInterceptorTest {
     }
 
     private void assertHttpSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is("/test/testRequestURL"));
+        assertThat(span.getOperationName(), is("GET:/test/testRequestURL"));
         assertComponent(span, ComponentsDefine.TOMCAT);
         SpanAssert.assertTag(span, 0, "http://localhost:8080/test/testRequestURL");
         assertThat(span.isEntry(), is(true));

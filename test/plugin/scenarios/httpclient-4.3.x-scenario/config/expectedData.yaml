@@ -19,8 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /httpclient-4.3.x-scenario/case/context-propagate
-      operationId: 0
+    - operationName: GET:/httpclient-4.3.x-scenario/case/context-propagate
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -34,14 +33,13 @@ segmentItems:
       - {key: url, value: 'http://localhost:8080/httpclient-4.3.x-scenario/case/context-propagate'}
       - {key: http.method, value: GET}
       refs:
-      - {parentEndpoint: /httpclient-4.3.x-scenario/case/httpclient, networkAddress: 'localhost:8080',
+      - {parentEndpoint: GET:/httpclient-4.3.x-scenario/case/httpclient, networkAddress: 'localhost:8080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: httpclient-4.3.x-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: /httpclient-4.3.x-scenario/case/context-propagate
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -55,8 +53,7 @@ segmentItems:
       - {key: url, value: 'http://localhost:8080/httpclient-4.3.x-scenario/case/context-propagate'}
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
-    - operationName: /httpclient-4.3.x-scenario/case/httpclient
-      operationId: 0
+    - operationName: GET:/httpclient-4.3.x-scenario/case/httpclient
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

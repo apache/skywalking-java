@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Zookeeper/exists
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Cache
@@ -36,7 +35,6 @@ segmentItems:
       - {key: watch, value: 'true'}
       skipAnalysis: 'false'
     - operationName: Zookeeper/WatchedEvent/NodeDeleted
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -54,7 +52,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Zookeeper/create
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Cache
@@ -69,7 +66,6 @@ segmentItems:
       - {key: path, value: /path}
       skipAnalysis: 'false'
     - operationName: Zookeeper/exists
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Cache
@@ -85,7 +81,6 @@ segmentItems:
       - {key: watch, value: 'true'}
       skipAnalysis: 'false'
     - operationName: Zookeeper/delete
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Cache
@@ -100,8 +95,7 @@ segmentItems:
       - {key: path, value: /path}
       - {key: version, value: '-1'}
       skipAnalysis: 'false'
-    - operationName: /zookeeper-scenario/case/zookeeper-case
-      operationId: 0
+    - operationName: GET:/zookeeper-scenario/case/zookeeper-case
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

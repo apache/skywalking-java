@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: TX/get/t.a.s.a.t.s.t.s.i.DemoServiceImpl.doBiz
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Unknown
@@ -36,7 +35,6 @@ segmentItems:
       - {key: timeout, value: '-1'}
       skipAnalysis: 'false'
     - operationName: Mysql/JDBI/PreparedStatement/executeUpdate
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -52,7 +50,6 @@ segmentItems:
       - {key: db.statement, value: 'insert into `test`.`table_demo`(name) values(?)'}
       skipAnalysis: 'false'
     - operationName: Mysql/JDBI/PreparedStatement/executeUpdate
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -68,7 +65,6 @@ segmentItems:
       - {key: db.statement, value: 'insert into `test`.`table_demo`(name) values(?)'}
       skipAnalysis: 'false'
     - operationName: Mysql/JDBI/Connection/commit
-      operationId: 0
       parentSpanId: 4
       spanId: 5
       spanLayer: Database
@@ -84,7 +80,6 @@ segmentItems:
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'
     - operationName: Mysql/JDBI/Statement/executeQuery
-      operationId: 0
       parentSpanId: 4
       spanId: 6
       spanLayer: Database
@@ -100,7 +95,6 @@ segmentItems:
       - {key: db.statement, value: select @@session.tx_read_only}
       skipAnalysis: 'false'
     - operationName: Mysql/JDBI/Connection/close
-      operationId: 0
       parentSpanId: 4
       spanId: 7
       spanLayer: Database
@@ -116,7 +110,6 @@ segmentItems:
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'
     - operationName: TX/commit
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       spanLayer: Unknown
@@ -132,8 +125,7 @@ segmentItems:
       - {key: rollbackOnly, value: 'false'}
       - {key: isCompleted, value: 'false'}
       skipAnalysis: 'false'
-    - operationName: /case/spring-tx-case
-      operationId: 0
+    - operationName: GET:/case/spring-tx-case
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

@@ -20,7 +20,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: Mssql/JDBI/PreparedStatement/execute
-            operationId: eq 0
             parentSpanId: 0
             spanId: 1
             tags:
@@ -39,7 +38,6 @@ segmentItems:
             peer: mssql-server:1433
             skipAnalysis: 'false'
           - operationName: Mssql/JDBI/PreparedStatement/execute
-            operationId: eq 0
             parentSpanId: 0
             spanId: 2
             tags:
@@ -56,7 +54,6 @@ segmentItems:
             peer: mssql-server:1433
             skipAnalysis: 'false'
           - operationName: Mssql/JDBI/Statement/execute
-            operationId: eq 0
             parentSpanId: 0
             spanId: 3
             tags:
@@ -73,7 +70,6 @@ segmentItems:
             peer: mssql-server:1433
             skipAnalysis: 'false'
           - operationName: Mssql/JDBI/Connection/close
-            operationId: eq 0
             parentSpanId: 0
             spanId: 4
             tags:
@@ -89,8 +85,7 @@ segmentItems:
             componentId: 104
             peer: mssql-server:1433
             skipAnalysis: 'false'
-          - operationName: /mssql-jtds-scenario/case/mssql-jtds-scenario
-            operationId: eq 0
+          - operationName: GET:/mssql-jtds-scenario/case/mssql-jtds-scenario
             parentSpanId: -1
             spanId: 0
             startTime: nq 0

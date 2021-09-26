@@ -73,8 +73,6 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
 
     public abstract String getRequestURL(Method method);
 
-    public abstract String getAcceptedMethodTypes(Method method);
-
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
@@ -86,20 +84,6 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
          */
         if (forwardRequestFlag != null && forwardRequestFlag) {
             return;
-        }
-
-        String operationName;
-        if (SpringMVCPluginConfig.Plugin.SpringMVC.USE_QUALIFIED_NAME_AS_ENDPOINT_NAME) {
-            operationName = MethodUtil.generateOperationName(method);
-        } else {
-            EnhanceRequireObjectCache pathMappingCache = (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField();
-            String requestURL = pathMappingCache.findPathMapping(method);
-            if (requestURL == null) {
-                requestURL = getRequestURL(method);
-                pathMappingCache.addPathMapping(method, requestURL);
-                requestURL = pathMappingCache.findPathMapping(method);
-            }
-            operationName = getAcceptedMethodTypes(method) + requestURL;
         }
 
         Object request = ContextManager.getRuntimeContext().get(REQUEST_KEY_IN_RUNTIME_CONTEXT);
@@ -118,6 +102,8 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
                         next.setHeadValue(httpServletRequest.getHeader(next.getHeadKey()));
                     }
 
+                    String operationName = this.buildOperationName(method, httpServletRequest.getMethod(),
+                                                                   (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField());
                     AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
                     Tags.URL.set(span, httpServletRequest.getRequestURL().toString());
                     Tags.HTTP.METHOD.set(span, httpServletRequest.getMethod());
@@ -139,6 +125,8 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
                         next.setHeadValue(serverHttpRequest.getHeaders().getFirst(next.getHeadKey()));
                     }
 
+                    String operationName = this.buildOperationName(method, serverHttpRequest.getMethodValue(),
+                                                                   (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField());
                     AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
                     Tags.URL.set(span, serverHttpRequest.getURI().toString());
                     Tags.HTTP.METHOD.set(span, serverHttpRequest.getMethodValue());
@@ -165,21 +153,6 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
 
             stackDepth.increment();
         }
-    }
-
-    private String buildOperationName(Object invoker, Method method) {
-        StringBuilder operationName = new StringBuilder(invoker.getClass().getName()).append(".")
-                .append(method.getName())
-                .append("(");
-        for (Class<?> type : method.getParameterTypes()) {
-            operationName.append(type.getName()).append(",");
-        }
-
-        if (method.getParameterTypes().length > 0) {
-            operationName = operationName.deleteCharAt(operationName.length() - 1);
-        }
-
-        return operationName.append(")").toString();
     }
 
     @Override
@@ -259,5 +232,37 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
+    }
+
+    private String buildOperationName(Object invoker, Method method) {
+        StringBuilder operationName = new StringBuilder(invoker.getClass().getName()).append(".")
+                                                                                     .append(method.getName())
+                                                                                     .append("(");
+        for (Class<?> type : method.getParameterTypes()) {
+            operationName.append(type.getName()).append(",");
+        }
+
+        if (method.getParameterTypes().length > 0) {
+            operationName = operationName.deleteCharAt(operationName.length() - 1);
+        }
+
+        return operationName.append(")").toString();
+    }
+
+    private String buildOperationName(Method method, String httpMethod, EnhanceRequireObjectCache pathMappingCache) {
+        String operationName;
+        if (SpringMVCPluginConfig.Plugin.SpringMVC.USE_QUALIFIED_NAME_AS_ENDPOINT_NAME) {
+            operationName = MethodUtil.generateOperationName(method);
+        } else {
+            String requestURL = pathMappingCache.findPathMapping(method);
+            if (requestURL == null) {
+                requestURL = getRequestURL(method);
+                pathMappingCache.addPathMapping(method, requestURL);
+                requestURL = pathMappingCache.findPathMapping(method);
+            }
+            operationName =  String.join(":", httpMethod, requestURL);
+        }
+
+        return operationName;
     }
 }

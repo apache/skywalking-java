@@ -74,8 +74,8 @@ public class TomcatInvokeInterceptor implements InstanceMethodsAroundInterceptor
             next = next.next();
             next.setHeadValue(request.getHeader(next.getHeadKey()));
         }
-
-        AbstractSpan span = ContextManager.createEntrySpan(request.getRequestURI(), contextCarrier);
+        String operationName =  String.join(":", request.getMethod(), request.getRequestURI());
+        AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
         Tags.URL.set(span, request.getRequestURL().toString());
         Tags.HTTP.METHOD.set(span, request.getMethod());
         span.setComponent(ComponentsDefine.TOMCAT);

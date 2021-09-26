@@ -19,14 +19,13 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /httpasyncclient/case/httpasyncclient
-      operationId: 0
+    - operationName: GET:/httpasyncclient/case/httpasyncclient
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
-      componentId: not null
+      componentId: 1
       isError: false
       spanType: Entry
       peer: ''
@@ -36,14 +35,13 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: /httpasyncclient/back
-      operationId: 0
+    - operationName: GET:/httpasyncclient/back
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
-      componentId: not null
+      componentId: 1
       isError: false
       spanType: Entry
       peer: ''
@@ -54,13 +52,12 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /httpasyncclient/back
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
-      componentId: not null
+      componentId: 26
       isError: false
       spanType: Exit
       peer: 127.0.0.1:8080
@@ -68,6 +65,14 @@ segmentItems:
       - {key: url, value: 'http://127.0.0.1:8080/httpasyncclient/back'}
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
-    - {operationName: httpasyncclient/local, operationId: 0, parentSpanId: -1, spanId: 0,
-      spanLayer: not null, startTime: nq 0, endTime: nq 0, componentId: 0, isError: false,
-      spanType: Local, peer: '', skipAnalysis: 'false'}
+    - operationName: httpasyncclient/local
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: not null
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: 'false'

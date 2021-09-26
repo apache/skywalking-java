@@ -21,7 +21,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: org.apache.skywalking.apm.testcase.dubbo.services.GreetService.doBusiness(String)
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -35,14 +34,13 @@ segmentItems:
               - {key: url, value: not null}
               - {key: arguments, value: helloWorld}
             refs:
-              - {parentEndpoint: /dubbo-2.7.x-scenario/case/dubbo, networkAddress: 'localhost:20080',
+              - {parentEndpoint: GET:/dubbo-2.7.x-scenario/case/dubbo, networkAddress: 'localhost:20080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: dubbo-2.7.x-scenario, traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
           - operationName: org.apache.skywalking.apm.testcase.dubbo.services.GreetService.doBusiness(String)
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: RPCFramework
@@ -56,8 +54,7 @@ segmentItems:
               - {key: url, value: 'dubbo://localhost:20080/org.apache.skywalking.apm.testcase.dubbo.services.GreetService.doBusiness(String)'}
               - {key: arguments, value: helloWorld}
             skipAnalysis: 'false'
-          - operationName: /dubbo-2.7.x-scenario/case/dubbo
-            operationId: 0
+          - operationName: GET:/dubbo-2.7.x-scenario/case/dubbo
             parentSpanId: -1
             spanId: 0
             spanLayer: Http

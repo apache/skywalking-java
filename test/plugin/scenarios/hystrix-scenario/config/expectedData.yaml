@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: Hystrix/TestACommand/Execution
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -37,14 +36,13 @@ segmentItems:
         - {key: message, value: not null}
         - {key: stack, value: not null}
       refs:
-      - {parentEndpoint: /case/hystrix-scenario, networkAddress: '', refType: CrossThread,
+      - {parentEndpoint: GET:/case/hystrix-scenario, networkAddress: '', refType: CrossThread,
         parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: hystrix-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: Hystrix/TestACommand/Fallback
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -61,11 +59,18 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - {operationName: Hystrix/TestBCommand/Execution, operationId: 0, parentSpanId: 0,
-      spanId: 1, spanLayer: Unknown, startTime: nq 0, endTime: nq 0, componentId: 29,
-      isError: false, spanType: Local, peer: '', skipAnalysis: 'false'}
-    - operationName: /case/hystrix-scenario
-      operationId: 0
+    - operationName: Hystrix/TestBCommand/Execution
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 29
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: 'false'
+    - operationName: GET:/case/hystrix-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

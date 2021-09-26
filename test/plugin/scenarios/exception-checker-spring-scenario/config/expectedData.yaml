@@ -19,8 +19,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: /case/healthCheck
-            operationId: 0
+          - operationName: HEAD:/case/healthCheck
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -37,7 +36,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: test.apache.skywalking.apm.testcase.exceptionchecker.service.TestService.testAnnotatedException
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Unknown
@@ -56,7 +54,6 @@ segmentItems:
                   - key: stack
                     value: not null
           - operationName: test.apache.skywalking.apm.testcase.exceptionchecker.service.TestService.testListedException
-            operationId: 0
             parentSpanId: 0
             spanId: 2
             spanLayer: Unknown
@@ -75,7 +72,6 @@ segmentItems:
                   - key: stack
                     value: not null
           - operationName: test.apache.skywalking.apm.testcase.exceptionchecker.service.TestService.testHierarchyListedException
-            operationId: 0
             parentSpanId: 0
             spanId: 3
             spanLayer: Unknown
@@ -94,7 +90,6 @@ segmentItems:
                   - key: stack
                     value: not null
           - operationName: test.apache.skywalking.apm.testcase.exceptionchecker.service.TestService.testException
-            operationId: 0
             parentSpanId: 0
             spanId: 4
             spanLayer: Unknown
@@ -113,7 +108,6 @@ segmentItems:
                   - key: stack
                     value: not null
           - operationName: test.apache.skywalking.apm.testcase.exceptionchecker.service.TestService.testRecursiveException
-            operationId: 0
             parentSpanId: 0
             spanId: 5
             spanLayer: Unknown
@@ -131,8 +125,7 @@ segmentItems:
                   - {key: message, value: test.apache.skywalking.apm.testcase.exceptionchecker.exception.TestListedException}
                   - key: stack
                     value: not null
-          - operationName: /case/exceptionchecker
-            operationId: 0
+          - operationName: GET:/case/exceptionchecker
             parentSpanId: -1
             spanId: 0
             spanLayer: Http

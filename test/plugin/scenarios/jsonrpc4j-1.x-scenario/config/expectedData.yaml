@@ -21,7 +21,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: /jsonrpc4j-1.x-scenario/path/to/demo-service.sayHello
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: RPCFramework
@@ -38,8 +37,7 @@ segmentItems:
                 key: url,
                 value: 'http://localhost:8080/jsonrpc4j-1.x-scenario/path/to/demo-service',
               }
-          - operationName: /jsonrpc4j-1.x-scenario/case/json-rpc
-            operationId: 0
+          - operationName: GET:/jsonrpc4j-1.x-scenario/case/json-rpc
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -59,7 +57,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: /jsonrpc4j-1.x-scenario/path/to/demo-service
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -80,7 +77,7 @@ segmentItems:
               - { key: http.status_code, value: '200' }
             refs:
               - {
-                parentEndpoint: /jsonrpc4j-1.x-scenario/case/json-rpc,
+                parentEndpoint: GET:/jsonrpc4j-1.x-scenario/case/json-rpc,
                 networkAddress: 'localhost:8080',
                 refType: CrossProcess,
                 parentSpanId: 1,

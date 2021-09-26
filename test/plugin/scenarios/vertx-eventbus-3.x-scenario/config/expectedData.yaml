@@ -20,7 +20,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: org.apache.skywalking.apm.testcase.vertxeventbus.controller.VertxEventbusController$$Lambda$.handle(RoutingContext)
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
@@ -32,7 +31,6 @@ segmentItems:
             peer: ''
             skipAnalysis: false
           - operationName: '{HEAD}/vertx-eventbus-3-scenario/case/healthCheck'
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -50,7 +48,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: local-message-receiver
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -69,7 +66,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: local-message-receiver
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -83,7 +79,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: '/vertx-eventbus-3-scenario/case/executeTest'
-            operationId: 0
             parentSpanId: 1
             spanId: 2
             spanLayer: Http
@@ -99,7 +94,6 @@ segmentItems:
               - {key: url, value: '/vertx-eventbus-3-scenario/case/executeTest'}
               - {key: http.status_code, value: '200'}
           - operationName: org.apache.skywalking.apm.testcase.vertxeventbus.controller.VertxEventbusController$$Lambda$.handle(RoutingContext)
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
@@ -111,7 +105,6 @@ segmentItems:
             peer: ''
             skipAnalysis: false
           - operationName: '{GET}/vertx-eventbus-3-scenario/case/eventbus-case'
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -129,7 +122,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: '#/vertx-eventbus-3-scenario/case/executeTest'
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -148,7 +140,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: cluster-message-receiver
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -167,7 +158,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: cluster-message-receiver
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -181,7 +171,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: org.apache.skywalking.apm.testcase.vertxeventbus.controller.VertxEventbusController$$Lambda$.handle(RoutingContext)
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
@@ -193,7 +182,6 @@ segmentItems:
             peer: ''
             skipAnalysis: false
           - operationName: '{GET}/vertx-eventbus-3-scenario/case/executeTest'
-            operationId: 0
             parentSpanId: -1
             spanId: 0
             spanLayer: Http

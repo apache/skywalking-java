@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: hello
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: RPCFramework
@@ -31,17 +30,24 @@ segmentItems:
       spanType: Entry
       peer: ''
       refs:
-      - {parentEndpoint: /finagle-17.10.x-scenario/case/finagle, networkAddress: '127.0.0.1:12220',
+      - {parentEndpoint: GET:/finagle-17.10.x-scenario/case/finagle, networkAddress: '127.0.0.1:12220',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: finagle-17.10.x-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - {operationName: hello, operationId: 0, parentSpanId: 0, spanId: 1, spanLayer: RPCFramework,
-      startTime: nq 0, endTime: nq 0, componentId: 85, isError: false, spanType: Exit,
-      peer: '127.0.0.1:12220', skipAnalysis: 'false'}
-    - operationName: /finagle-17.10.x-scenario/case/finagle
-      operationId: 0
+    - operationName: hello
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: RPCFramework
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 85
+      isError: false
+      spanType: Exit
+      peer: '127.0.0.1:12220'
+      skipAnalysis: 'false'
+    - operationName: GET:/finagle-17.10.x-scenario/case/finagle
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

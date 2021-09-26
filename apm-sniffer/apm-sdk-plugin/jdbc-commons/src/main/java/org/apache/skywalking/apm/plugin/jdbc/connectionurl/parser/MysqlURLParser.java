@@ -45,8 +45,15 @@ public class MysqlURLParser extends AbstractURLParser {
     protected URLLocation fetchDatabaseHostsIndexRange() {
         int hostLabelStartIndex = url.indexOf("//");
         int hostLabelEndIndex = url.indexOf("/", hostLabelStartIndex + 2);
+        int hostLabelEndIndexWithParameter = url.indexOf("?", hostLabelStartIndex + 2);
         if (hostLabelEndIndex == -1) {
-            hostLabelEndIndex = url.indexOf("?", hostLabelStartIndex + 2);
+            hostLabelEndIndex = hostLabelEndIndexWithParameter;
+        }
+        if (hostLabelEndIndexWithParameter < hostLabelEndIndex && hostLabelEndIndexWithParameter != -1) {
+            hostLabelEndIndex = hostLabelEndIndexWithParameter;
+        }
+        if (hostLabelEndIndex == -1) {
+            hostLabelEndIndex = url.length();
         }
         return new URLLocation(hostLabelStartIndex + 2, hostLabelEndIndex);
     }
@@ -61,6 +68,10 @@ public class MysqlURLParser extends AbstractURLParser {
 
     protected URLLocation fetchDatabaseNameIndexRange(int startSize) {
         int databaseStartTag = url.indexOf("/", startSize);
+        int parameterStartTag = url.indexOf("?", startSize);
+        if (parameterStartTag < databaseStartTag && parameterStartTag != -1) {
+            return null;
+        }
         if (databaseStartTag == -1) {
             return null;
         }

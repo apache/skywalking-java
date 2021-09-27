@@ -68,7 +68,7 @@ public abstract class AbstractInstrumentation extends ClassInstanceMethodsEnhanc
             points.add(point);
         }
 
-        return points.toArray(new InstanceMethodsInterceptPoint[points.size()]);
+        return points.toArray(new InstanceMethodsInterceptPoint[0]);
     }
 
     /**

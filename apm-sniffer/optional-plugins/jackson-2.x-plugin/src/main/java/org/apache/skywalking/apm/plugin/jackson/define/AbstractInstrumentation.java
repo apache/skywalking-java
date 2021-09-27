@@ -46,7 +46,7 @@ public abstract class AbstractInstrumentation extends ClassInstanceMethodsEnhanc
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
 
-        final List<InstanceMethodsInterceptPoint> points = new ArrayList<InstanceMethodsInterceptPoint>(this.enhanceMethods().size());
+        final List<InstanceMethodsInterceptPoint> points = new ArrayList<>(this.enhanceMethods().size());
 
         for (Map.Entry<String, String> entry : this.enhanceMethods().entrySet()) {
             final InstanceMethodsInterceptPoint point = new InstanceMethodsInterceptPoint() {

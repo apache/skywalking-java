@@ -25,5 +25,4 @@
     <allow pkg="java"/>
     <allow pkg="org.apache.skywalking"/>
     <allow pkg="net.bytebuddy"/>
-    <allow pkg="com.google.common"/>
 </import-control>

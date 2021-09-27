@@ -41,13 +41,23 @@ public class ObjectMapperInstrumentation extends AbstractInstrumentation {
 
     @Override
     protected Map<String, String> enhanceMethods() {
-        return new HashMap<String, String>() {
-            {
-                put("writeValue", "org.apache.skywalking.apm.plugin.jackson.BasicMethodsInterceptor");
-                put("writeValueAsString", "org.apache.skywalking.apm.plugin.jackson.WriteValueAsStringInterceptor");
-                put("writeValueAsBytes", "org.apache.skywalking.apm.plugin.jackson.WriteValueAsBytesInterceptor");
-                put("readValue", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor");
-            }
-        };
+        return ImmutableMap.<String, String>builder()
+                           .put(
+                               "writeValue",
+                               "org.apache.skywalking.apm.plugin.jackson.BasicMethodsInterceptor"
+                           )
+                           .put(
+                               "writeValueAsString",
+                               "org.apache.skywalking.apm.plugin.jackson.WriteValueAsStringInterceptor"
+                           )
+                           .put(
+                               "writeValueAsBytes",
+                               "org.apache.skywalking.apm.plugin.jackson.WriteValueAsBytesInterceptor"
+                           )
+                           .put(
+                               "readValue",
+                               "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
+                           )
+                           .build();
     }
 }

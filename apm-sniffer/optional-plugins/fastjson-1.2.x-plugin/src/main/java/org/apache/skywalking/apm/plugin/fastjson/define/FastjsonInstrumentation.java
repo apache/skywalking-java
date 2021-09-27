@@ -43,25 +43,25 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  */
 public class FastjsonInstrumentation extends ClassStaticMethodsEnhancePluginDefine {
 
-    public static final String ENHANCE_CLASS = "com.alibaba.fastjson.JSON";
+    private static final String ENHANCE_CLASS = "com.alibaba.fastjson.JSON";
 
-    private static final Map<String, String> ENHANCE_METHODS = new HashMap<String, String>() {
-        {
-            put("parseArray", "org.apache.skywalking.apm.plugin.fastjson.ParseArrayInterceptor");
-            put("parse", "org.apache.skywalking.apm.plugin.fastjson.ParseInterceptor");
-            put("parseObject", "org.apache.skywalking.apm.plugin.fastjson.ParseObjectInterceptor");
-            put("toJavaObject", "org.apache.skywalking.apm.plugin.fastjson.ToJavaObjectInterceptor");
-            put("toJSONBytes", "org.apache.skywalking.apm.plugin.fastjson.ToJsonBytesInterceptor");
-            put("toJSON", "org.apache.skywalking.apm.plugin.fastjson.ToJsonInterceptor");
-            put("toJSONString", "org.apache.skywalking.apm.plugin.fastjson.ToJsonStringInterceptor");
-            put("writeJSONString", "org.apache.skywalking.apm.plugin.fastjson.WriteJsonStringInterceptor");
-        }
-    };
+    private static final Map<String, String> ENHANCE_METHODS = new HashMap<>();
+
+    static {
+        ENHANCE_METHODS.put("parseArray", "org.apache.skywalking.apm.plugin.fastjson.ParseArrayInterceptor");
+        ENHANCE_METHODS.put("parse", "org.apache.skywalking.apm.plugin.fastjson.ParseInterceptor");
+        ENHANCE_METHODS.put("parseObject", "org.apache.skywalking.apm.plugin.fastjson.ParseObjectInterceptor");
+        ENHANCE_METHODS.put("toJavaObject", "org.apache.skywalking.apm.plugin.fastjson.ToJavaObjectInterceptor");
+        ENHANCE_METHODS.put("toJSONBytes", "org.apache.skywalking.apm.plugin.fastjson.ToJsonBytesInterceptor");
+        ENHANCE_METHODS.put("toJSON", "org.apache.skywalking.apm.plugin.fastjson.ToJsonInterceptor");
+        ENHANCE_METHODS.put("toJSONString", "org.apache.skywalking.apm.plugin.fastjson.ToJsonStringInterceptor");
+        ENHANCE_METHODS.put("writeJSONString", "org.apache.skywalking.apm.plugin.fastjson.WriteJsonStringInterceptor");
+    }
 
     @Override
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
 
-        final List<StaticMethodsInterceptPoint> points = new ArrayList<StaticMethodsInterceptPoint>(ENHANCE_METHODS.size());
+        final List<StaticMethodsInterceptPoint> points = new ArrayList<>(ENHANCE_METHODS.size());
 
         for (Map.Entry<String, String> entry : ENHANCE_METHODS.entrySet()) {
             final StaticMethodsInterceptPoint point = new StaticMethodsInterceptPoint() {
@@ -83,7 +83,7 @@ public class FastjsonInstrumentation extends ClassStaticMethodsEnhancePluginDefi
             points.add(point);
         }
 
-        return points.toArray(new StaticMethodsInterceptPoint[points.size()]);
+        return points.toArray(new StaticMethodsInterceptPoint[0]);
     }
 
     @Override

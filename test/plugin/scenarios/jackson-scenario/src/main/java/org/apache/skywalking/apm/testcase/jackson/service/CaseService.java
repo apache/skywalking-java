@@ -43,8 +43,8 @@ public class CaseService {
         Object jsonByte = mapper.writeValueAsBytes(entity);
         assert jsonByte instanceof byte[];
 
-        String json_str = "{\"key\":123, \"msg\":\"test\" }";
-        Object jsonObj = mapper.readValue(json_str, CaseEntity.class);
+        String jsonString = "{\"key\":123, \"msg\":\"test\" }";
+        Object jsonObj = mapper.readValue(jsonString, CaseEntity.class);
         assert jsonObj instanceof CaseEntity;
     }
 
@@ -52,14 +52,14 @@ public class CaseService {
         ObjectMapper mapper = new ObjectMapper();
         ObjectReader reader = mapper.readerFor(CaseEntity.class);
 
-        String json_str = "{\"key\":123, \"msg\":\"test\" }";
-        byte[] json_b = json_str.getBytes();
+        String jsonString = "{\"key\":123, \"msg\":\"test\" }";
+        byte[] jsonBytes = jsonString.getBytes();
 
-        Object jsonObj1 = reader.readValue(json_str);
+        Object jsonObj1 = reader.readValue(jsonString);
         assert jsonObj1 instanceof CaseEntity;
-        Object jsonObj2 = reader.readValue(json_b);
+        Object jsonObj2 = reader.readValue(jsonBytes);
         assert jsonObj2 instanceof CaseEntity;
-        Object jsonObj3 = reader.readValues(json_str);
+        Object jsonObj3 = reader.readValues(jsonString);
         assert jsonObj3 instanceof MappingIterator;
     }
 

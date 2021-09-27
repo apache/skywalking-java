@@ -43,7 +43,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  */
 public class FastjsonInstrumentation extends ClassStaticMethodsEnhancePluginDefine {
 
-    public static final String ENHANCE_CLASS = "com.alibaba.fastjson.JSON";
+    private static final String ENHANCE_CLASS = "com.alibaba.fastjson.JSON";
 
     private static final Map<String, String> ENHANCE_METHODS = ImmutableMap.<String, String>builder()
             .put("parseArray", "org.apache.skywalking.apm.plugin.fastjson.ParseArrayInterceptor")

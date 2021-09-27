@@ -32,20 +32,24 @@ public class BasicMethodsInterceptor implements InstanceMethodsAroundInterceptor
     public static final String OPERATION_NAME_JACKSON = "Jackson/";
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        AbstractSpan span = ContextManager.createLocalSpan(
-                OPERATION_NAME_JACKSON + method.getDeclaringClass().getSimpleName() + "." + method.getName());
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
+                             Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+
+        AbstractSpan span = ContextManager.createLocalSpan(OPERATION_NAME_JACKSON +
+                method.getDeclaringClass().getSimpleName() + "." + method.getName());
         span.setComponent(ComponentsDefine.JACKSON);
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
+                              Class<?>[] argumentsTypes, Object ret) throws Throwable {
         ContextManager.stopSpan();
         return ret;
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
+                                      Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
     }
 }

@@ -31,9 +31,8 @@ import java.util.Map;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 /**
- * Jackson has been known as "the Java JSON library" or "the best JSON parser for Java". Or simply as "JSON for Java".
- * <p>
- * Jackson provides a "one stop" solution for json serialization and deserialization solution basic requirements.
+ * Jackson provides a "one stop" solution for json serialization and deserialization solution
+ * basic requirements.
  */
 
 public abstract class AbstractInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {

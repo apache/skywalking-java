@@ -18,16 +18,15 @@
 
 package org.apache.skywalking.apm.plugin.jackson.define;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Jackson has been known as "the Java JSON library" or "the best JSON parser for Java". Or simply as "JSON for Java".
- * <p>
- * Jackson provides a "one stop" solution for json serialization and deserialization solution basic requirements.
+ * Jackson provides a "one stop" solution for json serialization and deserialization solution
+ * basic requirements.
  * <p>
  * ObjectReader: readValue()\readValues()
  */
@@ -41,11 +40,15 @@ public class ObjectReaderInstrumentation extends AbstractInstrumentation {
 
     @Override
     protected Map<String, String> enhanceMethods() {
-        return new HashMap<String, String>() {
-            {
-                put("readValue", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor");
-                put("readValues", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor");
-            }
-        };
+        return ImmutableMap.<String, String>builder()
+                .put(
+                        "readValue",
+                        "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
+                )
+                .put(
+                        "readValues",
+                        "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
+                )
+                .build();
     }
 }

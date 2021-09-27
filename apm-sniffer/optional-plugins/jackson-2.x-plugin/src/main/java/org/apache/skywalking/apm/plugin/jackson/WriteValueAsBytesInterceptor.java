@@ -34,15 +34,17 @@ public class WriteValueAsBytesInterceptor implements InstanceMethodsAroundInterc
     public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
+                             Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
 
-        AbstractSpan span = ContextManager.createLocalSpan(
-                OPERATION_NAME_JACKSON + method.getDeclaringClass().getSimpleName() + "." + method.getName());
+        AbstractSpan span = ContextManager.createLocalSpan(OPERATION_NAME_JACKSON +
+                method.getDeclaringClass().getSimpleName() + "." + method.getName());
         span.setComponent(ComponentsDefine.JACKSON);
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
+                              Class<?>[] argumentsTypes, Object ret) throws Throwable {
 
         if (!ContextManager.isActive()) {
             return ret;
@@ -55,7 +57,8 @@ public class WriteValueAsBytesInterceptor implements InstanceMethodsAroundInterc
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
+                                      Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
     }
 }

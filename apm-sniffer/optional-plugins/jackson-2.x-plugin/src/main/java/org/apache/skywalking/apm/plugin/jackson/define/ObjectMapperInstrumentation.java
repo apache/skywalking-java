@@ -33,22 +33,30 @@ import java.util.Map;
 
 public class ObjectMapperInstrumentation extends AbstractInstrumentation {
 
-    private static final String ENHANCE_CLASS = "com.fasterxml.jackson.databind.ObjectMapper";
-
-    private static final Map<String, String> ENHANCE_METHODS = ImmutableMap.<String, String>builder()
-            .put("writeValue", "org.apache.skywalking.apm.plugin.jackson.BasicMethodsInterceptor")
-            .put("writeValueAsString", "org.apache.skywalking.apm.plugin.jackson.WriteValueAsStringInterceptor")
-            .put("writeValueAsBytes", "org.apache.skywalking.apm.plugin.jackson.WriteValueAsBytesInterceptor")
-            .put("readValue", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor")
-            .build();
-
     @Override
     protected ClassMatch enhanceClass() {
-        return NameMatch.byName(ENHANCE_CLASS);
+        return NameMatch.byName("com.fasterxml.jackson.databind.ObjectMapper");
     }
 
     @Override
     protected Map<String, String> enhanceMethods() {
-        return ENHANCE_METHODS;
+        return ImmutableMap.<String, String>builder()
+                .put(
+                        "writeValue",
+                        "org.apache.skywalking.apm.plugin.jackson.BasicMethodsInterceptor"
+                )
+                .put(
+                        "writeValueAsString",
+                        "org.apache.skywalking.apm.plugin.jackson.WriteValueAsStringInterceptor"
+                )
+                .put(
+                        "writeValueAsBytes",
+                        "org.apache.skywalking.apm.plugin.jackson.WriteValueAsBytesInterceptor"
+                )
+                .put(
+                        "readValue",
+                        "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
+                )
+                .build();
     }
 }

@@ -33,20 +33,22 @@ import java.util.Map;
 
 public class ObjectReaderInstrumentation extends AbstractInstrumentation {
 
-    private static final String ENHANCE_CLASS = "com.fasterxml.jackson.databind.ObjectReader";
-
-    private static final Map<String, String> ENHANCE_METHODS = ImmutableMap.<String, String>builder()
-            .put("readValue", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor")
-            .put("readValues", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor")
-            .build();
-
     @Override
     protected ClassMatch enhanceClass() {
-        return NameMatch.byName(ENHANCE_CLASS);
+        return NameMatch.byName("com.fasterxml.jackson.databind.ObjectReader");
     }
 
     @Override
     protected Map<String, String> enhanceMethods() {
-        return ENHANCE_METHODS;
+        return ImmutableMap.<String, String>builder()
+                .put(
+                        "readValue",
+                        "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
+                )
+                .put(
+                        "readValues",
+                        "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
+                )
+                .build();
     }
 }

@@ -107,6 +107,7 @@ metrics based on the tracing data.
 * JSON
   * [GSON](https://github.com/google/gson) 2.8.x (Optional²)
   * [Fastjson](https://github.com/alibaba/fastjson) 1.2.x (Optional²)
+  * [Jackson](https://github.com/FasterXML/jackson) 2.x (Optional²)
 * Vert.x Ecosystem
   * Vert.x Eventbus 3.2+
   * Vert.x Web 3.x

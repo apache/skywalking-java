@@ -18,10 +18,10 @@
 
 package org.apache.skywalking.apm.plugin.jackson.define;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,22 +33,22 @@ import java.util.Map;
 
 public class ObjectReaderInstrumentation extends AbstractInstrumentation {
 
+    private static final String ENHANCE_CLASS = "com.fasterxml.jackson.databind.ObjectReader";
+
+    private static final Map<String, String> ENHANCE_METHODS = new HashMap<>();
+
+    static {
+        ENHANCE_METHODS.put("readValue", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor");
+        ENHANCE_METHODS.put("readValues", "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor");
+    }
+
     @Override
     protected ClassMatch enhanceClass() {
-        return NameMatch.byName("com.fasterxml.jackson.databind.ObjectReader");
+        return NameMatch.byName(ENHANCE_CLASS);
     }
 
     @Override
     protected Map<String, String> enhanceMethods() {
-        return ImmutableMap.<String, String>builder()
-                .put(
-                        "readValue",
-                        "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
-                )
-                .put(
-                        "readValues",
-                        "org.apache.skywalking.apm.plugin.jackson.ReadValueInterceptor"
-                )
-                .build();
+        return ENHANCE_METHODS;
     }
 }

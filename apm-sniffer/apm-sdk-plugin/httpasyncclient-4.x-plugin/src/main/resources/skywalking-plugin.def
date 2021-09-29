@@ -17,5 +17,6 @@
 httpasyncclient-4.x=org.apache.skywalking.apm.plugin.httpasyncclient.v4.define.HttpAsyncClientInstrumentation
 httpasyncclient-4.x=org.apache.skywalking.apm.plugin.httpasyncclient.v4.define.SessionRequestInstrumentation
 httpasyncclient-4.x=org.apache.skywalking.apm.plugin.httpasyncclient.v4.define.HttpAsyncRequestExecutorInstrumentation
+httpasyncclient-4.x=org.apache.skywalking.apm.plugin.httpasyncclient.v4.define.LeaseRequestInstrumentation
 
 

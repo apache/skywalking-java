@@ -22,8 +22,6 @@ import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-import static org.apache.skywalking.apm.plugin.httpasyncclient.v4.SessionRequestCompleteInterceptor.CONTEXT_LOCAL;
-
 /**
  * hold the snapshot in SkyWalkingDynamicField
  */
@@ -32,15 +30,15 @@ public class SessionRequestConstructorInterceptor implements InstanceConstructor
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         if (ContextManager.isActive()) {
             if (ContextManager.activeSpan().isExit()) {
-                CONTEXT_LOCAL.remove();
+                Constants.HTTP_CONTEXT_LOCAL.remove();
                 return;
             }
             ContextSnapshot snapshot = ContextManager.capture();
             objInst.setSkyWalkingDynamicField(new Object[] {
                 snapshot,
-                CONTEXT_LOCAL.get()
+                    Constants.HTTP_CONTEXT_LOCAL.get()
             });
         }
-        CONTEXT_LOCAL.remove();
+        Constants.HTTP_CONTEXT_LOCAL.remove();
     }
 }

@@ -32,6 +32,7 @@ Release Notes.
 * Add plugin to support Apache HttpClient 5.
 * Format SpringMVC & Tomcat EntrySpan operation name to `METHOD:URI`.
 * Make `HTTP method` in the operation name according to runtime, rather than previous code-level definition, which used to have possibilities including multiple HTTP methods.
+* Fix the bug that httpasyncclient-4.x-plugin does not take effect every time.
 
 #### Documentation
 

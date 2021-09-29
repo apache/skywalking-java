@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.impl.nio.DefaultNHttpClientConnection;
 import org.apache.http.nio.protocol.HttpAsyncRequestProducer;
 import org.apache.http.nio.protocol.HttpAsyncResponseConsumer;
 import org.apache.http.protocol.BasicHttpContext;
@@ -59,7 +60,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import static org.apache.skywalking.apm.plugin.httpasyncclient.v4.SessionRequestCompleteInterceptor.CONTEXT_LOCAL;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -109,6 +109,9 @@ public class HttpAsyncClientInterceptorTest {
     @Mock
     private HttpResponse response;
 
+    @Mock
+    private DefaultNHttpClientConnection connection;
+
     @Before
     public void setUp() throws Exception {
         ServiceManager.INSTANCE.boot();
@@ -120,7 +123,7 @@ public class HttpAsyncClientInterceptorTest {
         httpContext = new BasicHttpContext();
         httpContext.setAttribute(HttpClientContext.HTTP_REQUEST, requestWrapper);
         httpContext.setAttribute(HttpClientContext.HTTP_TARGET_HOST, httpHost);
-        CONTEXT_LOCAL.set(httpContext);
+        Constants.HTTP_CONTEXT_LOCAL.set(httpContext);
         HttpClientPluginConfig.Plugin.HttpClient.COLLECT_HTTP_PARAMS = true;
         when(httpHost.getHostName()).thenReturn("127.0.0.1");
         when(httpHost.getSchemeName()).thenReturn("http");
@@ -225,7 +228,7 @@ public class HttpAsyncClientInterceptorTest {
             FutureCallback.class
         };
         httpAsyncClientInterceptor.beforeMethod(enhancedInstance, null, allArguments, types, null);
-        Assert.assertEquals(CONTEXT_LOCAL.get(), httpContext);
+        Assert.assertEquals(Constants.HTTP_CONTEXT_LOCAL.get(), httpContext);
         Assert.assertTrue(allArguments[1] instanceof HttpAsyncResponseConsumerWrapper);
         Assert.assertTrue(allArguments[3] instanceof FutureCallbackWrapper);
 
@@ -238,7 +241,8 @@ public class HttpAsyncClientInterceptorTest {
                     //start local
                     completeInterceptor.beforeMethod(enhancedInstance, null, null, null, null);
                     //start request
-                    requestExecutorInterceptor.beforeMethod(enhancedInstance, null, null, null, null);
+                    requestExecutorInterceptor.beforeMethod(enhancedInstance, null,
+                            new Object[]{connection}, null, null);
 
                     HttpAsyncResponseConsumerWrapper consumerWrapper = new HttpAsyncResponseConsumerWrapper(consumer);
 

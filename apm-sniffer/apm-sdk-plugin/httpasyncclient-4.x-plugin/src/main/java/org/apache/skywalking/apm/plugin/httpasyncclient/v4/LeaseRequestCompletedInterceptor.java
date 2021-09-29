@@ -17,7 +17,7 @@
 
 package org.apache.skywalking.apm.plugin.httpasyncclient.v4;
 
-import org.apache.http.nio.conn.ManagedNHttpClientConnection;
+import org.apache.http.nio.NHttpConnection;
 import org.apache.http.pool.PoolEntry;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -32,7 +32,7 @@ public class LeaseRequestCompletedInterceptor implements InstanceMethodsAroundIn
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
         PoolEntry entry = (PoolEntry) allArguments[0];
-        ManagedNHttpClientConnection conn = (ManagedNHttpClientConnection) entry.getConnection();
+        NHttpConnection conn = (NHttpConnection) entry.getConnection();
         if (ContextManager.isActive()) {
             conn.getContext().setAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT, ContextManager.capture());
             conn.getContext().setAttribute(Constants.SKYWALKING_HTTP_CONTEXT, Constants.HTTP_CONTEXT_LOCAL.get());

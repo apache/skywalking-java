@@ -102,7 +102,6 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
         }
     }
 
-
     private HttpContext findHttpContext(Object[] allArguments) {
         HttpContext context = Constants.HTTP_CONTEXT_LOCAL.get();
         Constants.HTTP_CONTEXT_LOCAL.remove();

@@ -20,9 +20,12 @@ package org.apache.skywalking.apm.plugin.httpasyncclient.v4;
 import org.apache.http.protocol.HttpContext;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
 
@@ -30,8 +33,6 @@ import java.lang.reflect.Method;
  * request ready(completed) so we can start our local thread span;
  */
 public class SessionRequestCompleteInterceptor implements InstanceMethodsAroundInterceptor {
-
-    public static ThreadLocal<HttpContext> CONTEXT_LOCAL = new ThreadLocal<HttpContext>();
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -41,11 +42,13 @@ public class SessionRequestCompleteInterceptor implements InstanceMethodsAroundI
             return;
         }
         ContextSnapshot snapshot = (ContextSnapshot) array[0];
-        ContextManager.createLocalSpan("httpasyncclient/local");
+        AbstractSpan localSpan = ContextManager.createLocalSpan("httpasyncclient/local");
+        localSpan.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
+        localSpan.setLayer(SpanLayer.HTTP);
         if (snapshot != null) {
             ContextManager.continued(snapshot);
         }
-        CONTEXT_LOCAL.set((HttpContext) array[1]);
+        Constants.HTTP_CONTEXT_LOCAL.set((HttpContext) array[1]);
 
     }
 

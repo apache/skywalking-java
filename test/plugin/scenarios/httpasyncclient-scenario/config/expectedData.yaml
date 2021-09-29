@@ -71,7 +71,7 @@ segmentItems:
       spanLayer: not null
       startTime: nq 0
       endTime: nq 0
-      componentId: 0
+      componentId: 26
       isError: false
       spanType: Local
       peer: ''

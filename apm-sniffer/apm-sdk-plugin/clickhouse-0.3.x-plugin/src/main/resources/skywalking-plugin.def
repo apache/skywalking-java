@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-clickhouse-3.x=org.apache.skywalking.apm.plugin.jdbc.clickhouse.define.ConnectionInstrumentation
+clickhouse-0.3.x=org.apache.skywalking.apm.plugin.jdbc.clickhouse.define.ConnectionInstrumentation

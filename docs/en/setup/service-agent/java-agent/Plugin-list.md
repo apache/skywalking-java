@@ -35,6 +35,7 @@
 - httpclient-5.x
 - hystrix-1.x
 - influxdb-2.x
+- jackson-2.x
 - jdk-http-plugin
 - jdk-threading-plugin
 - jedis-2.x

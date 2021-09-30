@@ -23,6 +23,7 @@ Release Notes.
 * Provide HikariCP database connection pool plugin.
 * Fix NumberFormat exception in jdbc-commons plugin when MysqlURLParser parser jdbcurl
 * Provide Alibaba Fastjson parser/generator plugin.
+* Provide Jackson serialization and deserialization plugin.
 * Fix a tracing context leak of SpringMVC plugin, when an internal exception throws due to response can't be found.
 * Make GRPC log reporter sharing GRPC channel with other reporters of agent. Remove config items of `agent.conf`, `plugin.toolkit.log.grpc.reporter.server_host`, `plugin.toolkit.log.grpc.reporter.server_port`, and `plugin.toolkit.log.grpc.reporter.upstream_timeout`.
     rename `plugin.toolkit.log.grpc.reporter.max_message_size` to `log.max_message_size`.
@@ -31,6 +32,7 @@ Release Notes.
 * Add plugin to support Apache HttpClient 5.
 * Format SpringMVC & Tomcat EntrySpan operation name to `METHOD:URI`.
 * Make `HTTP method` in the operation name according to runtime, rather than previous code-level definition, which used to have possibilities including multiple HTTP methods.
+* Fix the bug that httpasyncclient-4.x-plugin does not take effect every time.
 * Add plugin to support ClickHouse JDBC driver.
 
 #### Documentation

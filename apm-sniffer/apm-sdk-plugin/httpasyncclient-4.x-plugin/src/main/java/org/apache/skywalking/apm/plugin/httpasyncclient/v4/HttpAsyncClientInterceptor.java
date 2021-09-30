@@ -28,8 +28,6 @@ import org.apache.skywalking.apm.plugin.httpasyncclient.v4.wrapper.HttpAsyncResp
 
 import java.lang.reflect.Method;
 
-import static org.apache.skywalking.apm.plugin.httpasyncclient.v4.SessionRequestCompleteInterceptor.CONTEXT_LOCAL;
-
 /**
  * in main thread,hold the context in thread local so we can read in the same thread.
  */
@@ -43,7 +41,7 @@ public class HttpAsyncClientInterceptor implements InstanceMethodsAroundIntercep
         FutureCallback callback = (FutureCallback) allArguments[3];
         allArguments[1] = new HttpAsyncResponseConsumerWrapper(consumer);
         allArguments[3] = new FutureCallbackWrapper(callback);
-        CONTEXT_LOCAL.set(context);
+        Constants.HTTP_CONTEXT_LOCAL.set(context);
     }
 
     @Override

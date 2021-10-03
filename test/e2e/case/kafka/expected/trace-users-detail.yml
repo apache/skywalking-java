@@ -13,15 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM skywalking/skywalking-java:latest-java8
-
-ARG ENABLE_KAFKA_REPORTER
-
-RUN if [[ "${ENABLE_KAFKA_REPORTER}" == "true" ]]; then cp -rf /skywalking/agent/optional-reporter-plugins/* /skywalking/agent/plugins/ ; fi
-
-VOLUME /services
-ADD target/e2e-service-provider.jar /services/
-
-ENV JAVA_OPTS=""
-
-CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-provider.jar"]
+spans:
+  {{- range .spans}}
+  - traceid: {{ notEmpty .traceid }}
+    segmentid: {{ notEmpty .segmentid }}
+    spanid: 0
+    parentspanid: -1
+    refs: []
+    servicecode: {{ notEmpty .servicecode }}
+    serviceinstancename: {{ notEmpty .serviceinstancename }}
+    starttime: {{ gt .starttime 0 }}
+    endtime: {{ gt .endtime 0 }}
+    endpointname: POST:/users
+    type: Entry
+    peer: ""
+    component: Tomcat
+    iserror: false
+    layer: Http
+    tags:
+      {{- range .tags }}
+      {{- if eq .key "http.method" }}
+      - key: http.method
+        value: POST
+      {{- end }}
+      {{- if eq .key "url" }}
+      - key: url
+        value: {{ notEmpty .value }}
+      {{- end }}
+      {{- end }}
+    logs: []
+  {{- end }}

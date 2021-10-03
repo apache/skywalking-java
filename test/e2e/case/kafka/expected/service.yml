@@ -13,15 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM skywalking/skywalking-java:latest-java8
-
-ARG ENABLE_KAFKA_REPORTER
-
-RUN if [[ "${ENABLE_KAFKA_REPORTER}" == "true" ]]; then cp -rf /skywalking/agent/optional-reporter-plugins/* /skywalking/agent/plugins/ ; fi
-
-VOLUME /services
-ADD target/e2e-service-provider.jar /services/
-
-ENV JAVA_OPTS=""
-
-CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-provider.jar"]
+- id: {{ b64enc "e2e-service-provider" }}.1
+  name: e2e-service-provider
+  group: ""
+- id: {{ b64enc "e2e-service-consumer" }}.1
+  name: e2e-service-consumer
+  group: ""

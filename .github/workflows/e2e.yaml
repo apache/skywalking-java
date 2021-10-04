@@ -23,8 +23,16 @@ on:
 
 jobs:
   E2E:
-    name: Basic function + gRPC transport(Java8)
+    name: Basic function + ${{ matrix.case.name }} transport(Java8)
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        case:
+          - name: gRPC
+            path: test/e2e/case/base/e2e.yaml
+          - name: Kafka
+            path: test/e2e/case/kafka/e2e.yaml
     steps:
       - uses: actions/checkout@v2
         with:
@@ -45,4 +53,4 @@ jobs:
       - name: Run E2E Tests
         uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
         with:
-          e2e-file: test/e2e/case/base/e2e.yaml
+          e2e-file: ${{ matrix.case.path }}

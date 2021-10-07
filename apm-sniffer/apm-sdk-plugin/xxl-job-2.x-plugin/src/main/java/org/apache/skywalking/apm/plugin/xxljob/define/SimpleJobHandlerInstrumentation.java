@@ -31,15 +31,13 @@ import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOpe
 
 import static net.bytebuddy.matcher.ElementMatchers.isPublic;
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
-import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_IJOB_HANDLER;
-import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_SCRIPT_JOB_HANDLER;
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_GLUE_JOB_HANDLER;
+import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_IJOB_HANDLER;
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_METHOD_JOB_HANDLER;
+import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_SCRIPT_JOB_HANDLER;
 
 /**
- * Enhance the implement class of {@link com.xxl.job.core.handler.IJobHandler} and intercept execute(String) method,
+ * Enhance the implement class of {@link com.xxl.job.core.handler.IJobHandler} and intercept execute() method,
  * this method is a entrance of execute job.
  *
  * @see org.apache.skywalking.apm.plugin.xxljob.SimpleJobHandlerMethodInterceptor
@@ -72,9 +70,7 @@ public class SimpleJobHandlerInstrumentation extends ClassInstanceMethodsEnhance
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named("execute")
-                                .and(isPublic())
-                                .and(takesArguments(1))
-                                .and(takesArgument(0, String.class));
+                                .and(isPublic());
                     }
 
                     @Override

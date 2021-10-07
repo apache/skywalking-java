@@ -35,7 +35,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_METHOD_JOB_HANDLER;
 
 /**
- * Enhance {@link com.xxl.job.core.handler.impl.MethodJobHandler} instance and intercept {@link com.xxl.job.core.handler.impl.MethodJobHandler#execute(String)} method,
+ * Enhance {@link com.xxl.job.core.handler.impl.MethodJobHandler} instance and intercept {@link com.xxl.job.core.handler.impl.MethodJobHandler#execute()} method,
  * this method is a entrance of execute method job.
  *
  * @see org.apache.skywalking.apm.plugin.xxljob.MethodJobHandlerConstructorInterceptor
@@ -79,9 +79,7 @@ public class MethodJobHandlerInstrumentation extends ClassInstanceMethodsEnhance
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named("execute")
-                                .and(isPublic())
-                                .and(takesArguments(1))
-                                .and(takesArgument(0, String.class));
+                                .and(isPublic());
                     }
 
                     @Override

@@ -38,13 +38,15 @@ public class SimpleJobHandlerMethodInterceptor implements InstanceMethodsAroundI
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        String jobParam = (String) allArguments[0];
         String operationName = ComponentsDefine.XXL_JOB.getName() + "/SimpleJob/" + method.getDeclaringClass().getName();
 
         AbstractSpan span = ContextManager.createLocalSpan(operationName);
         span.setComponent(ComponentsDefine.XXL_JOB);
         Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
-        span.tag(JOB_PARAM, jobParam);
+        if (allArguments.length > 0) {
+            String jobParam = (String) allArguments[0];
+            span.tag(JOB_PARAM, jobParam);
+        }
     }
 
     @Override

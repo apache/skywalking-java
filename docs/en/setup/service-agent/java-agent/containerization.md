@@ -34,16 +34,17 @@ spec:
   volumes:
     - name: skywalking-agent
       emptyDir: { }
-
-  containers:
+      
+  initContainers:
     - name: agent-container
-      image: apache/skywalking-java-agent:8.4.0-alpine
+      image: apache/skywalking-java-agent:8.7.0-alpine
       volumeMounts:
         - name: skywalking-agent
           mountPath: /agent
       command: [ "/bin/sh" ]
       args: [ "-c", "cp -R /skywalking/agent /agent/" ]
 
+  containers:
     - name: app-container
       image: springio/gs-spring-boot-docker
       volumeMounts:

@@ -34,7 +34,7 @@ spec:
   volumes:
     - name: skywalking-agent
       emptyDir: { }
-      
+
   initContainers:
     - name: agent-container
       image: apache/skywalking-java-agent:8.7.0-alpine

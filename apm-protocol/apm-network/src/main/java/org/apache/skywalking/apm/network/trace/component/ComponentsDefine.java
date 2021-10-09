@@ -215,5 +215,5 @@ public class ComponentsDefine {
 
     public static final OfficialComponent JACKSON = new OfficialComponent(118, "Jackson");
 
-    public static final OfficialComponent APACHE_KYLIN = new OfficialComponent(119, "Apache-kylin");
+    public static final OfficialComponent APACHE_KYLIN = new OfficialComponent(121, "Apache-kylin");
 }

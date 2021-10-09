@@ -90,6 +90,7 @@ jobs:
           - oracle-scenario
           - druid-1.x-scenario
           - hikaricp-scenario
+          - kylin-jdbc-2.6.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

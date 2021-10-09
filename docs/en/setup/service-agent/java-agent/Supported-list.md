@@ -41,6 +41,7 @@ metrics based on the tracing data.
   * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17
   * [Mssql-Jtds](https://github.com/milesibastos/jTDS) 1.x
   * [Mssql-jdbc](https://github.com/microsoft/mssql-jdbc) 6.x -> 8.x
+  * [Apache-Kylin-Jdbc](https://github.com/apache/kylin.git) 2.6.x
 * RPC Frameworks
   * [Dubbo](https://github.com/alibaba/dubbo) 2.5.4 -> 2.6.0
   * [Dubbox](https://github.com/dangdangdotcom/dubbox) 2.8.4

@@ -29,7 +29,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.plugin.jdbc.define.Constants;
-import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
 /**
  * Intercept {@link ru.yandex.clickhouse.ClickHouseConnectionImpl} class.
@@ -107,8 +106,8 @@ public class ConnectionInstrumentation extends ClassInstanceMethodsEnhancePlugin
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(INIT_CONNECTION_METHOD_NAME).and(
-                                ElementMatchers.takesArgument(0, ClickHouseProperties.class));
+                        return named(INIT_CONNECTION_METHOD_NAME).and(ElementMatchers.takesArgument(0,
+                                named("ru.yandex.clickhouse.settings.ClickHouseProperties")));
                     }
 
                     @Override

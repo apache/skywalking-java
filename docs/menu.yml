@@ -59,7 +59,7 @@ catalog:
           - name: "Logback"
             path: "/en/setup/service-agent/java-agent/application-toolkit-logback-1.x/"
       - name: "Logic Endpoint"
-          path: "/en/setup/service-agent/java-agent/logic-endpoint"
+        path: "/en/setup/service-agent/java-agent/logic-endpoint"
   - name: "Plugins"
     catalog:
       - name: "Supported middleware, framework and library"

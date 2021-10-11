@@ -33,6 +33,7 @@ Release Notes.
 * Format SpringMVC & Tomcat EntrySpan operation name to `METHOD:URI`.
 * Make `HTTP method` in the operation name according to runtime, rather than previous code-level definition, which used to have possibilities including multiple HTTP methods.
 * Fix the bug that httpasyncclient-4.x-plugin does not take effect every time.
+* Add plugin to support ClickHouse JDBC driver.
 
 #### Documentation
 

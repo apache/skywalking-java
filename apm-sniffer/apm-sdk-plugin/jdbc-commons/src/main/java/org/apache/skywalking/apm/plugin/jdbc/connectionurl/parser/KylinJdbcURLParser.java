@@ -22,6 +22,6 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 public class KylinJdbcURLParser extends MysqlURLParser {
     public KylinJdbcURLParser(String url) {
-        super(url, "Apache-kylin", ComponentsDefine.APACHE_KYLIN);
+        super(url, "Apache-kylin", ComponentsDefine.APACHE_KYLIN_JDBC_DRIVER);
     }
 }

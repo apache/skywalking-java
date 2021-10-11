@@ -75,7 +75,7 @@ public class StatementExecuteMethodsInterceptorTest {
         enhanceRequireCacheObject = new StatementEnhanceInfos(connectionInfo, SQL, "CallableStatement");
         when(objectInstance.getSkyWalkingDynamicField()).thenReturn(enhanceRequireCacheObject);
         when(method.getName()).thenReturn("executeQuery");
-        when(connectionInfo.getComponent()).thenReturn(ComponentsDefine.APACHE_KYLIN);
+        when(connectionInfo.getComponent()).thenReturn(ComponentsDefine.APACHE_KYLIN_JDBC_DRIVER);
         when(connectionInfo.getDBType()).thenReturn("Apache-kylin");
         when(connectionInfo.getDatabaseName()).thenReturn("test");
         when(connectionInfo.getDatabasePeer()).thenReturn("localhost:3306");

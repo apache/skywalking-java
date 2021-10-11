@@ -42,13 +42,11 @@ public class InitConnectionMethodInterceptor implements InstanceMethodsAroundInt
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
         final Object properties = allArguments[0];
-        if (properties instanceof ClickHouseProperties) {
-            ClickHouseProperties clickHouseProperties = (ClickHouseProperties) properties;
-            final ConnectionInfo connectionInfo = new ConnectionInfo(ComponentsDefine.CLICKHOUSE_JDBC_DRIVER,
-                    "ClickHouse", clickHouseProperties.getHost(), clickHouseProperties.getPort(),
-                    clickHouseProperties.getDatabase());
-            objInst.setSkyWalkingDynamicField(connectionInfo);
-        }
+        ClickHouseProperties clickHouseProperties = (ClickHouseProperties) properties;
+        final ConnectionInfo connectionInfo = new ConnectionInfo(ComponentsDefine.CLICKHOUSE_JDBC_DRIVER,
+                "ClickHouse", clickHouseProperties.getHost(), clickHouseProperties.getPort(),
+                clickHouseProperties.getDatabase());
+        objInst.setSkyWalkingDynamicField(connectionInfo);
     }
 
     @Override

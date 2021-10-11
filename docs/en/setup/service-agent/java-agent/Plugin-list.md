@@ -125,4 +125,4 @@
 - spring-cloud-gateway-3.x
 - neo4j-4.x
 - clickhouse-0.3.x
-- Apache-Kylin-2.6.x
+- apache-kylin-2.6.x

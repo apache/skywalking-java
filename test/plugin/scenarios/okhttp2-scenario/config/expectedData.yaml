@@ -28,7 +28,7 @@ segmentItems:
       isError: false
       spanType: Local
       skipAnalysis: 'false'
-    - operationName: GET:/case/okhttp2-scenario
+    - operationName: GET:/okhttp2-scenario/case/okhttp2-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -43,7 +43,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: GET:/case/receiveContext-0
+    - operationName: GET:/okhttp2-scenario/case/receiveContext-0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -62,7 +62,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: GET:/case/receiveContext-1
+    - operationName: GET:/okhttp2-scenario/case/receiveContext-1
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -95,7 +95,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://127.0.0.1:8080/okhttp2-scenario/case/receiveContext-0'}
       refs:
-      - {parentEndpoint: GET:/case/okhttp2-scenario, networkAddress: '', refType: CrossThread,
+      - {parentEndpoint: GET:okhttp2-scenario/case/okhttp2-scenario, networkAddress: '', refType: CrossThread,
         parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: okhttp2-scenario, traceId: not null}
       skipAnalysis: 'false'

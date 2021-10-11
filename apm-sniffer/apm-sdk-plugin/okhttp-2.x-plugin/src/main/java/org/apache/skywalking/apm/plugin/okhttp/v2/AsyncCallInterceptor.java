@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.okhttp.v2;
 
-
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.Request;

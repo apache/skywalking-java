@@ -89,7 +89,7 @@ services:
       broker-b:
         condition: service_healthy
 
-  provider:
+  kafka_provider:
     extends:
       file: ../../base/base-compose.yml
       service: provider
@@ -107,7 +107,7 @@ services:
         condition: service_healthy
 
 
-  consumer:
+  kafka_consumer:
     extends:
       file: ../../base/base-compose.yml
       service: consumer
@@ -121,7 +121,7 @@ services:
     ports:
       - 9090
     depends_on:
-      provider:
+      kafka_provider:
         condition: service_healthy
 
 networks:

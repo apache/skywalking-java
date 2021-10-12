@@ -34,6 +34,7 @@
     value: '{{ notEmpty .value }}'
   - name: ipv4s
     value: {{ notEmpty .value }}
+    {{- end }}
   language: JAVA
   instanceuuid: {{ b64enc "e2e-service-provider" }}.1_{{ b64enc "provider1" }}
 {{- end}}

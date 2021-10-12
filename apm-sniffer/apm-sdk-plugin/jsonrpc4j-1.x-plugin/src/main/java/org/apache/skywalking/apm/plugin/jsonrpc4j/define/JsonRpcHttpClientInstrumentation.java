@@ -52,18 +52,7 @@ public class JsonRpcHttpClientInstrumentation extends ClassInstanceMethodsEnhanc
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return ElementMatchers.takesArguments(6).and(ElementMatchers.takesArgument(1, URL.class));
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return INTERCEPTOR_CLASS;
-                    }
-                },
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return ElementMatchers.takesArguments(5).and(ElementMatchers.takesArgument(1, URL.class));
+                        return ElementMatchers.takesArgument(1, URL.class);
                     }
 
                     @Override

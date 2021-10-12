@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.okhttp2.controller;
+package test.apache.skywalking.apm.testcase.okhttp2.controller;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;

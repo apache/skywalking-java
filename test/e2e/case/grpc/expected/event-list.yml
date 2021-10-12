@@ -27,6 +27,7 @@ events:
   {{- contains .parameters }}
     - key: OPTS
       value: {{ notEmpty .value }}
+  {{- end }}
   starttime: {{ gt .starttime 0 }}
   endtime: {{ gt .endtime 0 }}
 {{- end }}

@@ -61,7 +61,7 @@ verify:
     # max retry count
     count: 20
     # the interval between two retries, in millisecond.
-    interval: 10000
+    interval: 10s
   cases:
     # basic check: service list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql service ls

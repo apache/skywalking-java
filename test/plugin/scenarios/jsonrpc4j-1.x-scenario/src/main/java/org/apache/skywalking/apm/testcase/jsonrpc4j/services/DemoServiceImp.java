@@ -18,10 +18,8 @@
 
 package org.apache.skywalking.apm.testcase.jsonrpc4j.services;
 
-import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImpl;
 import org.springframework.stereotype.Service;
 
-@AutoJsonRpcServiceImpl
 @Service
 public class DemoServiceImp implements DemoService {
 

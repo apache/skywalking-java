@@ -21,7 +21,7 @@ spans:
     parentspanid: {{ .parentspanid }}
     refs:
       {{- if eq .servicecode "e2e-service-provider" }}
-      {{- cintains .refs }}
+      {{- contains .refs }}
         - traceid: {{ notEmpty .traceid }}
           parentsegmentid: {{ notEmpty .parentsegmentid }}
           parentspanid: 1

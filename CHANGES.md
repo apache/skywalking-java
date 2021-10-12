@@ -34,7 +34,7 @@ Release Notes.
 * Make `HTTP method` in the operation name according to runtime, rather than previous code-level definition, which used to have possibilities including multiple HTTP methods.
 * Fix the bug that httpasyncclient-4.x-plugin does not take effect every time.
 * Add plugin to support ClickHouse JDBC driver.
-* Add plugin to support Apache Kylin-jdbc 2.6.x
+* Add plugin to support Apache Kylin-jdbc 2.6.x 3.x 4.x
 
 #### Documentation
 

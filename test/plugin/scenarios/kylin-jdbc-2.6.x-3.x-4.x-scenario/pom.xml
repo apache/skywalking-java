@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>org.apache.skywalking.apm.testcase</groupId>
-    <artifactId>kylin-jdbc-2.6.x-scenario</artifactId>
+    <artifactId>kylin-jdbc-2.6.x-3.x-4.x-scenario</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -37,7 +37,7 @@
         <spring.version>4.3.8.RELEASE</spring.version>
     </properties>
 
-    <name>skywalking-kylin-jdbc-2.6.x-scenario</name>
+    <name>skywalking-kylin-jdbc-2.6.x-3.x-4.x-scenario</name>
 
     <dependencyManagement>
         <dependencies>
@@ -75,7 +75,7 @@
     </dependencies>
 
     <build>
-        <finalName>kylin-jdbc-2.6.x-scenario</finalName>
+        <finalName>kylin-jdbc-2.6.x-3.x-4.x-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

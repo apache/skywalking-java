@@ -18,6 +18,6 @@
 server:
   port: 8080
   servlet:
-    context-path: /kylin-jdbc-2.6.x-scenario
+    context-path: /kylin-jdbc-2.6.x-3.x-4.x-scenario
 logging:
   config: classpath:log4j2.xml

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: kylin-jdbc-2.6.x-scenario
+- serviceName: kylin-jdbc-2.6.x-3.x-4.x-scenario
   segmentSize: ge 1
   segments:
   - segmentId: not null
@@ -65,7 +65,7 @@ segmentItems:
       - {key: db.type, value: sql}
       - {key: db.instance, value: learn_kylin}
       - {key: db.statement, value: ''}
-    - operationName: HEAD:/kylin-jdbc-2.6.x-scenario/case/healthCheck
+    - operationName: HEAD:/kylin-jdbc-2.6.x-3.x-4.x-scenario/case/healthCheck
       parentSpanId: -1
       spanId: 0
       startTime: nq 0
@@ -76,7 +76,7 @@ segmentItems:
       peer: ''
       componentId: 1
       tags:
-      - {key: url, value: 'http://localhost:8080/kylin-jdbc-2.6.x-scenario/case/healthCheck'}
+      - {key: url, value: 'http://localhost:8080/kylin-jdbc-2.6.x-3.x-4.x-scenario/case/healthCheck'}
       - {key: http.method, value: HEAD}
       logs: []
       skipAnalysis: 'false'

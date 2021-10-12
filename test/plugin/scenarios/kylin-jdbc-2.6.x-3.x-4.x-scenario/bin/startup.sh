@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,16 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-type: jvm
-entryService: http://localhost:8080/kylin-jdbc-2.6.x-scenario/case/kylin-jdbc-2.6.x-scenario
-healthCheck: http://localhost:8080/kylin-jdbc-2.6.x-scenario/case/healthCheck
-startScript: ./bin/startup.sh
-environment:
-depends_on:
-  - kylin-server
-dependencies:
-  kylin-server:
-    image: apachekylin/apache-kylin-standalone:4.0.0
-    hostname: kylin-server
-    expose:
-      - "7070"
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} ${home}/../libs/kylin-jdbc-2.6.x-3.x-4.x-scenario.jar &

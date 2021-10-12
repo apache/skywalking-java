@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>${project.build.directory}/kylin-jdbc-2.6.x-scenario.jar</source>
+            <source>${project.build.directory}/kylin-jdbc-2.6.x-3.x-4.x-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>

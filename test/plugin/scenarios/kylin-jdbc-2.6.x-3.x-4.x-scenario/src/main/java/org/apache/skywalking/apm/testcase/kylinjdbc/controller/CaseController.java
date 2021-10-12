@@ -39,7 +39,7 @@ public class CaseController {
     private static final String STATEMENT_QUERY_DATA_SQL = "select * from KYLIN_ACCOUNT LIMIT 1";
     private static final String QUERY_DATA_SQL = "select * from KYLIN_ACCOUNT";
 
-    @RequestMapping("/kylin-jdbc-2.6.x-scenario")
+    @RequestMapping("/kylin-jdbc-2.6.x-3.x-4.x-scenario")
     @ResponseBody
     public String testcase() throws Exception {
         Thread.sleep(2000);

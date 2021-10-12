@@ -27,9 +27,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-kylin-jdbc-2.x-plugin</artifactId>
+    <artifactId>apm-kylin-jdbc-2.6.x-3.x-4.x-plugin</artifactId>
     <packaging>jar</packaging>
-    <name>kylin-jdbc-2.x-plugin</name>
+    <name>kylin-jdbc-2.6.x-3.x-4.x-plugin</name>
     <url>http://maven.apache.org</url>
 
     <properties>

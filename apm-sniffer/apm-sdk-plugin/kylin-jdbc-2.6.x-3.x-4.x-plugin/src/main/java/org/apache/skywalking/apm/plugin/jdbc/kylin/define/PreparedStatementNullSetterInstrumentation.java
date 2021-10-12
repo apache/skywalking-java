@@ -16,10 +16,18 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2;
+package org.apache.skywalking.apm.plugin.jdbc.kylin.define;
 
-import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.plugin.jdbc.JDBCPreparedStatementNullSetterInstanceMethodsInterceptPoint;
 
-public class Constants {
-    public static final StringTag SQL_PARAMETERS = new StringTag("db.sql.parameters");
+public class PreparedStatementNullSetterInstrumentation extends PreparedStatementInstrumentation {
+
+    @Override
+    public final InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+        return new InstanceMethodsInterceptPoint[]{
+                new JDBCPreparedStatementNullSetterInstanceMethodsInterceptPoint()
+        };
+    }
+
 }

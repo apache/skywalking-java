@@ -16,7 +16,9 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2;
+package org.apache.skywalking.apm.plugin.jdbc.kylin;
+
+import static org.apache.skywalking.apm.plugin.jdbc.kylin.Constants.SQL_PARAMETERS;
 
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -26,27 +28,38 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.plugin.jdbc.JDBCPluginConfig;
+import org.apache.skywalking.apm.plugin.jdbc.PreparedStatementParameterBuilder;
 import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
-public class StatementExecuteMethodsInterceptor implements InstanceMethodsAroundInterceptor {
+public class PreparedStatementExecuteMethodsInterceptor implements InstanceMethodsAroundInterceptor {
+
     @Override
     public final void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
                                    Class<?>[] argumentsTypes, MethodInterceptResult result) {
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) objInst.getSkyWalkingDynamicField();
         ConnectionInfo connectInfo = cacheObject.getConnectionInfo();
-        if (connectInfo != null) {
-            AbstractSpan span = ContextManager.createExitSpan(buildOperationName(connectInfo, method.getName(), cacheObject
-                    .getStatementName()), connectInfo.getDatabasePeer());
-            Tags.DB_TYPE.set(span, "sql");
-            Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
-            String sql = allArguments.length > 0 ? (String) allArguments[0] : "";
-            sql = SqlBodyUtil.limitSqlBodySize(sql);
-            Tags.DB_STATEMENT.set(span, sql);
-            span.setComponent(connectInfo.getComponent());
-            SpanLayer.asDB(span);
+        if (connectInfo == null) {
+            return;
         }
+        AbstractSpan span = ContextManager.createExitSpan(buildOperationName(connectInfo, method.getName(), cacheObject
+            .getStatementName()), connectInfo.getDatabasePeer());
+        Tags.DB_TYPE.set(span, "sql");
+        Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
+        Tags.DB_STATEMENT.set(span, SqlBodyUtil.limitSqlBodySize(cacheObject.getSql()));
+        span.setComponent(connectInfo.getComponent());
+
+        if (JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS) {
+            final Object[] parameters = cacheObject.getParameters();
+            if (parameters != null && parameters.length > 0) {
+                int maxIndex = cacheObject.getMaxIndex();
+                SQL_PARAMETERS.set(span, getParameterString(parameters, maxIndex));
+            }
+        }
+
+        SpanLayer.asDB(span);
     }
 
     @Override
@@ -70,5 +83,12 @@ public class StatementExecuteMethodsInterceptor implements InstanceMethodsAround
 
     private String buildOperationName(ConnectionInfo connectionInfo, String methodName, String statementName) {
         return connectionInfo.getDBType() + "/JDBI/" + statementName + "/" + methodName;
+    }
+
+    private String getParameterString(Object[] parameters, int maxIndex) {
+        return new PreparedStatementParameterBuilder()
+            .setParameters(parameters)
+            .setMaxIndex(maxIndex)
+            .build();
     }
 }

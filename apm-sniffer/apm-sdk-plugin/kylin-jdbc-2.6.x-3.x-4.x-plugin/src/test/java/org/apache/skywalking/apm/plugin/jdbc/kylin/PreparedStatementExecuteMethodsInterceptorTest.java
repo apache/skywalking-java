@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2;
+package org.apache.skywalking.apm.plugin.jdbc.kylin;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -35,6 +35,7 @@ import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.jdbc.JDBCPluginConfig;
+import org.apache.skywalking.apm.plugin.jdbc.JDBCPreparedStatementSetterInterceptor;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 import org.junit.After;
@@ -48,9 +49,9 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
-public class StatementExecuteMethodsInterceptorTest {
+public class PreparedStatementExecuteMethodsInterceptorTest {
 
-    private static final String SQL = "Select * from test";
+    private static final String SQL = "Select * from test where id = ?";
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
@@ -58,7 +59,9 @@ public class StatementExecuteMethodsInterceptorTest {
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
 
-    private StatementExecuteMethodsInterceptor serviceMethodInterceptor;
+    private PreparedStatementExecuteMethodsInterceptor serviceMethodInterceptor;
+
+    private JDBCPreparedStatementSetterInterceptor preparedStatementSetterInterceptor;
 
     @Mock
     private ConnectionInfo connectionInfo;
@@ -70,9 +73,11 @@ public class StatementExecuteMethodsInterceptorTest {
 
     @Before
     public void setUp() {
-        serviceMethodInterceptor = new StatementExecuteMethodsInterceptor();
+        JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS = true;
+        preparedStatementSetterInterceptor = new JDBCPreparedStatementSetterInterceptor();
+        serviceMethodInterceptor = new PreparedStatementExecuteMethodsInterceptor();
 
-        enhanceRequireCacheObject = new StatementEnhanceInfos(connectionInfo, SQL, "CallableStatement");
+        enhanceRequireCacheObject = new StatementEnhanceInfos(connectionInfo, SQL, "PreparedStatement");
         when(objectInstance.getSkyWalkingDynamicField()).thenReturn(enhanceRequireCacheObject);
         when(method.getName()).thenReturn("executeQuery");
         when(connectionInfo.getComponent()).thenReturn(ComponentsDefine.APACHE_KYLIN_JDBC_DRIVER);
@@ -84,39 +89,65 @@ public class StatementExecuteMethodsInterceptorTest {
     @After
     public void clean() {
         JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH = 2048;
+        JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS = false;
     }
 
     @Test
-    public void testExecuteStatement() {
-        serviceMethodInterceptor.beforeMethod(objectInstance, method, new Object[]{SQL}, null, null);
-        serviceMethodInterceptor.afterMethod(objectInstance, method, new Object[]{SQL}, null, null);
+    public void testExecutePreparedStatement() throws Throwable {
+        preparedStatementSetterInterceptor.beforeMethod(
+            objectInstance, method, new Object[] {
+                1,
+                "abcd"
+            }, null, null);
+        preparedStatementSetterInterceptor.beforeMethod(
+            objectInstance, method, new Object[] {
+                2,
+                "efgh"
+            }, null, null);
+
+        serviceMethodInterceptor.beforeMethod(objectInstance, method, new Object[] {SQL}, null, null);
+        serviceMethodInterceptor.afterMethod(objectInstance, method, new Object[] {SQL}, null, null);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment segment = segmentStorage.getTraceSegments().get(0);
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("kylin/JDBI/CallableStatement/"));
+        assertThat(span.getOperationName(), is("kylin/JDBI/PreparedStatement/"));
         SpanAssert.assertTag(span, 0, "sql");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, SQL);
+        SpanAssert.assertTag(span, 3, "[abcd,efgh]");
     }
 
     @Test
-    public void testExecuteStatementWithLimitSqlBody() {
+    public void testExecutePreparedStatementWithLimitSqlBody() throws Throwable {
         JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH = 10;
-        serviceMethodInterceptor.beforeMethod(objectInstance, method, new Object[]{SQL}, null, null);
-        serviceMethodInterceptor.afterMethod(objectInstance, method, new Object[]{SQL}, null, null);
+
+        preparedStatementSetterInterceptor.beforeMethod(
+                objectInstance, method, new Object[] {
+                        1,
+                        "abcd"
+                }, null, null);
+        preparedStatementSetterInterceptor.beforeMethod(
+                objectInstance, method, new Object[] {
+                        2,
+                        "efgh"
+                }, null, null);
+
+        serviceMethodInterceptor.beforeMethod(objectInstance, method, new Object[] {SQL}, null, null);
+        serviceMethodInterceptor.afterMethod(objectInstance, method, new Object[] {SQL}, null, null);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment segment = segmentStorage.getTraceSegments().get(0);
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("kylin/JDBI/CallableStatement/"));
+        assertThat(span.getOperationName(), is("kylin/JDBI/PreparedStatement/"));
         SpanAssert.assertTag(span, 0, "sql");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, "Select * f...");
+        SpanAssert.assertTag(span, 3, "[abcd,efgh]");
     }
 
 }

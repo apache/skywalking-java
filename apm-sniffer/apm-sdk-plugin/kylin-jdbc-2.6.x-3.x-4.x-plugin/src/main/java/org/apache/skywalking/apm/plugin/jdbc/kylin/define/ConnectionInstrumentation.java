@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define;
+package org.apache.skywalking.apm.plugin.jdbc.kylin.define;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
@@ -32,10 +32,10 @@ import org.apache.skywalking.apm.plugin.jdbc.define.Constants;
 public class ConnectionInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.apache.kylin.jdbc.KylinConnection";
-    private static final String CREATE_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.v2.CreateStatementInterceptor";
-    private static final String CREATE_PREPARED_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.v2.CreatePreparedStatementInterceptor";
-    private static final String CREATE_CALLABLE_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.v2.CreateCallableStatementInterceptor";
-    private static final String SET_CATALOG_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.v2.SetCatalogInterceptor";
+    private static final String CREATE_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.CreateStatementInterceptor";
+    private static final String CREATE_PREPARED_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.CreatePreparedStatementInterceptor";
+    private static final String CREATE_CALLABLE_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.CreateCallableStatementInterceptor";
+    private static final String SET_CATALOG_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.SetCatalogInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

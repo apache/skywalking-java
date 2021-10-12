@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define;
+package org.apache.skywalking.apm.plugin.jdbc.kylin.define;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
@@ -30,7 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 public class StatementInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String KYLIN_STATEMENT_CLASS_NAME = "org.apache.kylin.jdbc.KylinStatement";
-    private static final String STATEMENT_EXECUTE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jdbc.kylin.v2.StatementExecuteMethodsInterceptor";
+    private static final String STATEMENT_EXECUTE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jdbc.kylin.StatementExecuteMethodsInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {

@@ -14,10 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define.DriverInstrumentation
-kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define.ConnectionInstrumentation
-kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define.StatementInstrumentation
-kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define.PreparedStatementInstrumentation
-kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define.PreparedStatementSetterInstrumentation
-kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define.PreparedStatementNullSetterInstrumentation
-kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define.PreparedStatementIgnoredSetterInstrumentation
+kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.define.DriverInstrumentation
+kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.define.ConnectionInstrumentation
+kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.define.StatementInstrumentation
+kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.define.PreparedStatementInstrumentation
+kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.define.PreparedStatementSetterInstrumentation
+kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.define.PreparedStatementNullSetterInstrumentation
+kylin-jdbc-2.6.x-3.x-4.x=org.apache.skywalking.apm.plugin.jdbc.kylin.define.PreparedStatementIgnoredSetterInstrumentation

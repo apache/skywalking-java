@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define;
+package org.apache.skywalking.apm.plugin.jdbc.kylin.define;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch.byMultiClassMatch;
@@ -31,7 +31,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 public class PreparedStatementInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String KYLIN_PREPARED_STATEMENT_CLASS = "org.apache.kylin.jdbc.KylinPreparedStatement";
-    private static final String PREPARED_STATEMENT_EXECUTE_METHODS_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.v2.PreparedStatementExecuteMethodsInterceptor";
+    private static final String PREPARED_STATEMENT_EXECUTE_METHODS_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.kylin.PreparedStatementExecuteMethodsInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

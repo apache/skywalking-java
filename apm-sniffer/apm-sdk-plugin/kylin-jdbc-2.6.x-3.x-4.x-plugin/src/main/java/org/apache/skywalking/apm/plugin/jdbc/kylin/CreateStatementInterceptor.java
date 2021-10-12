@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2;
+package org.apache.skywalking.apm.plugin.jdbc.kylin;
 
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -25,7 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
-public class CreateCallableStatementInterceptor implements InstanceMethodsAroundInterceptor {
+public class CreateStatementInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) {
@@ -36,7 +36,7 @@ public class CreateCallableStatementInterceptor implements InstanceMethodsAround
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) {
         if (ret instanceof EnhancedInstance) {
-            ((EnhancedInstance) ret).setSkyWalkingDynamicField(new StatementEnhanceInfos((ConnectionInfo) objInst.getSkyWalkingDynamicField(), (String) allArguments[0], "CallableStatement"));
+            ((EnhancedInstance) ret).setSkyWalkingDynamicField(new StatementEnhanceInfos((ConnectionInfo) objInst.getSkyWalkingDynamicField(), "", "Statement"));
         }
         return ret;
     }
@@ -44,5 +44,6 @@ public class CreateCallableStatementInterceptor implements InstanceMethodsAround
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
+
     }
 }

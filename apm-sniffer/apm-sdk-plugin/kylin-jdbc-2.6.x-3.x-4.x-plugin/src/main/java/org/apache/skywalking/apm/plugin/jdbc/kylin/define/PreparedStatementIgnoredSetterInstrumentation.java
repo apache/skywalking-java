@@ -16,17 +16,18 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define;
+package org.apache.skywalking.apm.plugin.jdbc.kylin.define;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.plugin.jdbc.JDBCPreparedStatementNullSetterInstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.plugin.jdbc.PSSetterDefinitionOfJDBCInstrumentation;
 
-public class PreparedStatementNullSetterInstrumentation extends PreparedStatementInstrumentation {
+public class PreparedStatementIgnoredSetterInstrumentation extends
+        org.apache.skywalking.apm.plugin.jdbc.kylin.define.PreparedStatementInstrumentation {
 
     @Override
     public final InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[]{
-                new JDBCPreparedStatementNullSetterInstanceMethodsInterceptPoint()
+                new PSSetterDefinitionOfJDBCInstrumentation(true)
         };
     }
 

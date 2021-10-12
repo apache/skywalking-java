@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2;
+package org.apache.skywalking.apm.plugin.jdbc.kylin;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,11 +32,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CreatePreparedStatementInterceptorTest {
+public class CreateCallableStatementInterceptorTest {
 
     private static final String SQL = "Select * from test";
 
-    private CreatePreparedStatementInterceptor interceptor;
+    private CreateCallableStatementInterceptor interceptor;
 
     @Mock
     private EnhancedInstance ret;
@@ -49,7 +49,7 @@ public class CreatePreparedStatementInterceptorTest {
 
     @Before
     public void setUp() {
-        interceptor = new CreatePreparedStatementInterceptor();
+        interceptor = new CreateCallableStatementInterceptor();
 
         when(objectInstance.getSkyWalkingDynamicField()).thenReturn(connectionInfo);
     }

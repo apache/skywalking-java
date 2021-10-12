@@ -16,22 +16,18 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin.v2.define;
+package org.apache.skywalking.apm.plugin.jdbc.kylin.define;
 
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.plugin.jdbc.PSSetterDefinitionOfJDBCInstrumentation;
 
-import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.jdbc.define.AbstractDriverInstrumentation;
-
-/**
- * {@link DriverInstrumentation} presents that skywalking intercepts {@link org.apache.kylin.jdbc.Driver}.
- */
-public class DriverInstrumentation extends AbstractDriverInstrumentation {
-
-    private static final String ENHANCE_CLASS = "org.apache.kylin.jdbc.Driver";
+public class PreparedStatementSetterInstrumentation extends PreparedStatementInstrumentation {
 
     @Override
-    protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+    public final InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+        return new InstanceMethodsInterceptPoint[]{
+                new PSSetterDefinitionOfJDBCInstrumentation(false)
+        };
     }
+
 }

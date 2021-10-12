@@ -215,4 +215,5 @@ public class ComponentsDefine {
 
     public static final OfficialComponent JACKSON = new OfficialComponent(118, "Jackson");
 
+    public static final OfficialComponent CLICKHOUSE_JDBC_DRIVER = new OfficialComponent(119, "ClickHouse-jdbc-driver");
 }

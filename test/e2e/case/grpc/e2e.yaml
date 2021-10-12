@@ -65,39 +65,39 @@ verify:
   cases:
     # basic check: service list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql service ls
-      expected: expected/service.yml
+      expected: ../expected/service.yml
     # basic check: service metrics
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name service_sla --service=e2e-service-provider |yq e 'to_entries' -
-      expected: expected/metrics-has-value.yml
+      expected: ../expected/metrics-has-value.yml
     # basic check: service endpoint
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql endpoint list --keyword=info --service-name=e2e-service-provider
-      expected: expected/service-endpoint.yml
+      expected: ../expected/service-endpoint.yml
     # basic check: service endpoint metrics
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name endpoint_cpm --endpoint=POST:/info --service=e2e-service-provider |yq e 'to_entries' -
-      expected: expected/metrics-has-value.yml
+      expected: ../expected/metrics-has-value.yml
 
     # service instance list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name=e2e-service-provider
-      expected: expected/service-instance.yml
+      expected: ../expected/service-instance.yml
 
     # service instance jvm metrics
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name instance_jvm_thread_live_count --instance=provider1 --service=e2e-service-provider |yq e 'to_entries' -
-      expected: expected/metrics-has-value.yml
+      expected: ../expected/metrics-has-value.yml
 
     # trace segment list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls
-      expected: expected/traces-list.yml
+      expected: ../expected/traces-list.yml
     # trace detail
     - query: |
         swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace $( \
           swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls \
             | yq e '.traces | select(.[].endpointnames[0]=="POST:/info") | .[0].traceids[0]' - \
         )
-      expected: expected/trace-info-detail.yml
+      expected: ../expected/trace-info-detail.yml
 
     # event list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql event list --service=e2e-service-provider --instance=provider1
-      expected: expected/event-list.yml
+      expected: ../expected/event-list.yml
 
     # logs list
     - query: |
@@ -105,4 +105,4 @@ verify:
             swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls \
               | yq e '.traces | select(.[].endpointnames[0]=="POST:/info") | .[0].traceids[0]' -
         )
-      expected: expected/logs-list.yml
+      expected: ../expected/logs-list.yml

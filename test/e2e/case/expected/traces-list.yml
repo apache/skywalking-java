@@ -13,9 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- id: {{ b64enc "e2e-service-provider" }}.1
-  name: e2e-service-provider
-  group: ""
-- id: {{ b64enc "e2e-service-consumer" }}.1
-  name: e2e-service-consumer
-  group: ""
+traces:
+{{- contains .traces }}
+- segmentid: {{ notEmpty .segmentid }}
+  endpointnames:
+  {{- contains .endpointnames }}
+    - POST:/info
+  {{- end }}}
+  duration: {{ ge .duration 0 }}
+  start: "{{ notEmpty .start}}"
+  iserror: false
+  traceids:
+    - {{ (index .traceids 0) }}
+{{- end }}
+total: {{ gt .total 0 }}

@@ -20,42 +20,44 @@ spans:
     spanid: {{ .spanid }}
     parentspanid: {{ .parentspanid }}
     refs:
-      {{- if eq .servicecode "e2e-service-provider" }}
       {{- contains .refs }}
-        - traceid: {{ notEmpty .traceid }}
-          parentsegmentid: {{ notEmpty .parentsegmentid }}
-          parentspanid: 1
-          type: CROSS_PROCESS
+      - traceid: {{ notEmpty .traceid }}
+        parentsegmentid: {{ notEmpty .parentsegmentid }}
+        parentspanid: 1
+        type: CROSS_PROCESS
       {{- end }}
-      {{- end }}
-      {{- if eq .servicecode "e2e-service-consumer" }}
-        []
-      {{- end }}
-    servicecode: {{ notEmpty .servicecode }}
-    serviceinstancename: {{ notEmpty .serviceinstancename }}
+    servicecode: "e2e-service-provider"
+    serviceinstancename: "provider1"
     starttime: {{ gt .starttime 0 }}
     endtime: {{ gt .endtime 0 }}
-    endpointname:
-    {{- if eq .type "Exit" }}
-      /info
-    {{- end }}
-    {{- if eq .type "Entry" }}
-      POST:/info
-    {{- end }}
-    type: {{ notEmpty .type }}
-    peer:
-    {{- if eq .type "Exit" }}
-      provider:9090
-    {{ else }}
-      ""
-    {{- end }}
+    endpointname: /info
+    type: Entry
+    peer: ""
     component:
-    {{- if eq .type "Exit" }}
-      SpringRestTemplate
-    {{- end }}
-    {{- if eq .type "Entry" }}
       Tomcat
-    {{- end }}
+    iserror: false
+    layer: Http
+    tags:
+      {{- contains .tags }}
+      - key: http.method
+        value: POST
+      - key: url
+        value: {{ notEmpty .value }}
+      {{- end }}
+    logs: []
+  - traceid: {{ notEmpty .traceid }}
+    segmentid: {{ notEmpty .segmentid }}
+    spanid: {{ .spanid }}
+    parentspanid: {{ .parentspanid }}
+    refs: []
+    servicecode: "e2e-service-consumer"
+    serviceinstancename: "consumer1"
+    starttime: {{ gt .starttime 0 }}
+    endtime: {{ gt .endtime 0 }}
+    endpointname: POST:/info
+    type: Exit
+    peer: "provider:9090"
+    component: SpringRestTemplate
     iserror: false
     layer: Http
     tags:

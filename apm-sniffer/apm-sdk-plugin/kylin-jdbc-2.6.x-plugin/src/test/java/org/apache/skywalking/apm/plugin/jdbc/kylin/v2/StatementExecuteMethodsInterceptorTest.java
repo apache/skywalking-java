@@ -76,7 +76,7 @@ public class StatementExecuteMethodsInterceptorTest {
         when(objectInstance.getSkyWalkingDynamicField()).thenReturn(enhanceRequireCacheObject);
         when(method.getName()).thenReturn("executeQuery");
         when(connectionInfo.getComponent()).thenReturn(ComponentsDefine.APACHE_KYLIN_JDBC_DRIVER);
-        when(connectionInfo.getDBType()).thenReturn("Apache-kylin");
+        when(connectionInfo.getDBType()).thenReturn("kylin");
         when(connectionInfo.getDatabaseName()).thenReturn("test");
         when(connectionInfo.getDatabasePeer()).thenReturn("localhost:3306");
     }
@@ -96,7 +96,7 @@ public class StatementExecuteMethodsInterceptorTest {
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("Apache-kylin/JDBI/CallableStatement/"));
+        assertThat(span.getOperationName(), is("kylin/JDBI/CallableStatement/"));
         SpanAssert.assertTag(span, 0, "sql");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, SQL);
@@ -113,7 +113,7 @@ public class StatementExecuteMethodsInterceptorTest {
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("Apache-kylin/JDBI/CallableStatement/"));
+        assertThat(span.getOperationName(), is("kylin/JDBI/CallableStatement/"));
         SpanAssert.assertTag(span, 0, "sql");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, "Select * f...");

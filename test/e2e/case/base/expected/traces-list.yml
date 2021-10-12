@@ -14,7 +14,7 @@
 # limitations under the License.
 
 traces:
-{{- range .traces }}
+{{- contains .traces }}
 - segmentid: {{ notEmpty .segmentid }}
   endpointnames:
   {{- if eq (index .endpointnames 0) "HikariCP/Connection/getConnection" }}

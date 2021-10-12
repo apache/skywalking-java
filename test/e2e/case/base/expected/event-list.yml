@@ -14,7 +14,7 @@
 # limitations under the License.
 
 events:
-{{- range .events }}
+{{- contains .events }}
 - uuid: {{ notEmpty .uuid }}
   source:
     service: e2e-service-provider
@@ -24,12 +24,9 @@ events:
   type: Normal
   message: Start Java Application
   parameters:
-  {{- range .parameters }}
-  {{- if eq .key "OPTS"}}
+  {{- contains .parameters }}
     - key: OPTS
       value: {{ notEmpty .value }}
-  {{- end }}
-  {{- end }}
   starttime: {{ gt .starttime 0 }}
   endtime: {{ gt .endtime 0 }}
 {{- end }}

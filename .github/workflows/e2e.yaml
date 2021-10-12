@@ -30,7 +30,7 @@ jobs:
       matrix:
         case:
           - name: gRPC
-            path: test/e2e/case/base/e2e.yaml
+            path: test/e2e/case/grpc/e2e.yaml
           - name: Kafka
             path: test/e2e/case/kafka/e2e.yaml
     steps:

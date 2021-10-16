@@ -1,6 +1,6 @@
 # Setup java agent
 
-1. Agent is available for JDK 8 - 14.
+1. Agent is available for JDK 8 - 17.
 1. Find `agent` folder in SkyWalking release package
 1. Set `agent.service_name` in `config/agent.config`. Could be any String in English.
 1. Set `collector.backend_service` in `config/agent.config`. Default point to `127.0.0.1:11800`, only works for local

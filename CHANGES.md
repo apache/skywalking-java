@@ -6,7 +6,8 @@ Release Notes.
 ------------------
 
 * **Split Java agent from the main monorepo. It is a separate repository and going to release separately**.
-* Upgrade jdk 11 in dockerfile and remove unused java_opts.
+* Support JDK 8-17 through upgrading byte-buddy to 1.11.18.
+* Upgrade JDK 11 in dockerfile and remove unused java_opts.
 * DataCarrier changes a `#consume` API to add properties as a parameter to initialize consumer when
   use `Class<? extends IConsumer<T>> consumerClass`.
 * Support Multiple DNS period resolving mechanism
@@ -28,7 +29,6 @@ Release Notes.
 * Make GRPC log reporter sharing GRPC channel with other reporters of agent. Remove config items of `agent.conf`, `plugin.toolkit.log.grpc.reporter.server_host`, `plugin.toolkit.log.grpc.reporter.server_port`, and `plugin.toolkit.log.grpc.reporter.upstream_timeout`.
     rename `plugin.toolkit.log.grpc.reporter.max_message_size` to `log.max_message_size`.
 * Implement Kafka Log Reporter. Add config item of `agnt.conf`, `plugin.kafka.topic_logging`.
-* Upgrade byte-buddy to 1.11.18
 * Add plugin to support Apache HttpClient 5.
 * Format SpringMVC & Tomcat EntrySpan operation name to `METHOD:URI`.
 * Make `HTTP method` in the operation name according to runtime, rather than previous code-level definition, which used to have possibilities including multiple HTTP methods.

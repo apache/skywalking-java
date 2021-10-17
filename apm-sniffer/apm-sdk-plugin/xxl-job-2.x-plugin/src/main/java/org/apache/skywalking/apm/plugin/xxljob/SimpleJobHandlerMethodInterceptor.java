@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.xxljob;
 
+import com.xxl.job.core.context.XxlJobHelper;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -43,10 +44,14 @@ public class SimpleJobHandlerMethodInterceptor implements InstanceMethodsAroundI
         AbstractSpan span = ContextManager.createLocalSpan(operationName);
         span.setComponent(ComponentsDefine.XXL_JOB);
         Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
+
+        String jobParam;
         if (allArguments.length > 0) {
-            String jobParam = (String) allArguments[0];
-            span.tag(JOB_PARAM, jobParam);
+            jobParam = (String) allArguments[0];
+        } else {
+            jobParam = XxlJobHelper.getJobParam();
         }
+        span.tag(JOB_PARAM, jobParam);
     }
 
     @Override

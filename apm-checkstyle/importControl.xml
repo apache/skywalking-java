@@ -25,4 +25,9 @@
     <allow pkg="java"/>
     <allow pkg="org.apache.skywalking"/>
     <allow pkg="net.bytebuddy"/>
+
+    <subpackage name="xxljob" >
+        <allow pkg="com.xxl.job.core.context"/>
+    </subpackage>
 </import-control>
+

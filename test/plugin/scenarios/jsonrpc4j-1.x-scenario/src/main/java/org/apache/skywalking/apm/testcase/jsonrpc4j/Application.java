@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.testcase.jsonrpc4j;
 
-import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceImplExporter;
+import com.googlecode.jsonrpc4j.spring.AutoJsonRpcServiceExporter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +30,7 @@ public class Application {
     }
 
     @Bean
-    public AutoJsonRpcServiceImplExporter serviceImplExporter() {
-        return new AutoJsonRpcServiceImplExporter();
+    public AutoJsonRpcServiceExporter serviceImplExporter() {
+        return new AutoJsonRpcServiceExporter();
     }
 }

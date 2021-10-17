@@ -33,7 +33,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
         <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
-        <jsonrpc.version>1.5.3</jsonrpc.version>
+        <test.framework.version>1.5.3</test.framework.version>
     </properties>
 
     <dependencyManagement>
@@ -57,7 +57,7 @@
         <dependency>
             <groupId>com.github.briandilley.jsonrpc4j</groupId>
             <artifactId>jsonrpc4j</artifactId>
-            <version>${jsonrpc.version}</version>
+            <version>${test.framework.version}</version>
         </dependency>
     </dependencies>
 

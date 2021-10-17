@@ -63,7 +63,6 @@ services:
     networks:
       - e2e
     environment:
-      PROVIDER_URL: http://provider:9090
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       SW_AGENT_NAME: e2e-service-consumer
       SW_AGENT_INSTANCE_NAME: consumer1

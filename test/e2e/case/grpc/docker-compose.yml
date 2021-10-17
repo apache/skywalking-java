@@ -37,6 +37,8 @@ services:
     extends:
       file: ../../base/base-compose.yml
       service: consumer
+    environment:
+      PROVIDER_URL: http://provider:9090
     ports:
       - 9090
     depends_on:

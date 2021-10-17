@@ -89,7 +89,7 @@ services:
       broker-b:
         condition: service_healthy
 
-  kafka_provider:
+  kafkaprovider:
     extends:
       file: ../../base/base-compose.yml
       service: provider
@@ -107,7 +107,7 @@ services:
         condition: service_healthy
 
 
-  kafka_consumer:
+  kafkaconsumer:
     extends:
       file: ../../base/base-compose.yml
       service: consumer
@@ -118,10 +118,11 @@ services:
       SW_KAFKA_BOOTSTRAP_SERVERS: broker-a:9092,broker-b:9092
       SW_GET_TOPIC_TIMEOUT: 60
       SW_PLUGIN_KAFKA_TOPIC_LOGGING: skywalking-logs
+      PROVIDER_URL: http://kafkaprovider:9090
     ports:
       - 9090
     depends_on:
-      kafka_provider:
+      kafkaprovider:
         condition: service_healthy
 
 networks:

@@ -52,7 +52,7 @@ trigger:
   action: http
   interval: 3s
   times: 5
-  url: http://${kafka_consumer_host}:${kafka_consumer_9090}/info
+  url: http://${kafkaconsumer_host}:${kafkaconsumer_9090}/info
   method: POST
 
 verify:

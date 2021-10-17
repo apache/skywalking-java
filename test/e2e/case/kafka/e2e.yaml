@@ -19,30 +19,12 @@ setup:
   env: compose
   file: docker-compose.yml
   timeout: 1200
+  init-system-environment: ../../script/env
   steps:
     - name: install yq
-      command: |
-        if ! command -v yq &> /dev/null; then
-          mkdir -p /tmp/skywalking-infra-e2e/bin && cd /tmp/skywalking-infra-e2e
-          mkdir -p yq && cd yq
-          curl -kLo yq.tar.gz https://github.com/mikefarah/yq/archive/v4.11.1.tar.gz
-          tar -zxf yq.tar.gz --strip=1
-          go install && go build -ldflags -s && mv yq ../bin/yq
-          export PATH="$PATH:/tmp/skywalking-infra-e2e/bin"
-          echo "success to install yq"
-        fi
+      command: bash test/e2e/script/prepare/install.sh yq
     - name: install swctl
-      command: |
-        if ! command -v swctl &> /dev/null; then
-          mkdir -p /tmp/skywalking-infra-e2e/bin && cd /tmp/skywalking-infra-e2e
-          mkdir -p swctl && cd swctl
-          curl -kLo skywalking-cli.tar.gz https://github.com/apache/skywalking-cli/archive/b90255132f916f53eb90955cc8a6445b03a4bec3.tar.gz
-          tar -zxf skywalking-cli.tar.gz --strip=1
-          utype=$(uname | awk '{print tolower($0)}')
-          make $utype && mv bin/swctl-*-$utype-amd64 ../bin/swctl
-          export PATH="$PATH:/tmp/skywalking-infra-e2e/bin"
-          echo "success to install swctl"
-        fi
+      command: bash test/e2e/script/prepare/install.sh swctl
 
 cleanup:
   # always never success failure

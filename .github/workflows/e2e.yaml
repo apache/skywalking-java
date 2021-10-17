@@ -50,6 +50,10 @@ jobs:
           SW_VERSION=$(./mvnw -q -DforceStdout -N org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version)
           ./mvnw -B package -f ./test/e2e/base/pom.xml -Dsw.version=${SW_VERSION}
           echo "::endgroup::"
+      - name: Setup go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
       - name: Run E2E Tests
         uses: apache/skywalking-infra-e2e@main
         with:

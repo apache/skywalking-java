@@ -13,24 +13,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-events:
-{{- range .events }}
-- uuid: {{ notEmpty .uuid }}
-  source:
-    service: e2e-service-provider
-    serviceinstance: provider1
-    endpoint: ""
-  name: Start
-  type: Normal
-  message: Start Java Application
-  parameters:
-  {{- range .parameters }}
-  {{- if eq .key "OPTS"}}
-    - key: OPTS
-      value: {{ notEmpty .value }}
-  {{- end }}
-  {{- end }}
-  starttime: {{ gt .starttime 0 }}
-  endtime: {{ gt .endtime 0 }}
-{{- end }}
-total: {{ gt .total 0 }}
+version: '2.1'
+
+services:
+  oap:
+    extends:
+      file: ../../base/base-compose.yml
+      service: oap
+    ports:
+      - 12800
+
+  provider:
+    extends:
+      file: ../../base/base-compose.yml
+      service: provider
+    ports:
+      - 9090
+    depends_on:
+      oap:
+        condition: service_healthy
+
+  consumer:
+    extends:
+      file: ../../base/base-compose.yml
+      service: consumer
+    environment:
+      PROVIDER_URL: http://provider:9090
+    ports:
+      - 9090
+    depends_on:
+      provider:
+        condition: service_healthy
+
+networks:
+  e2e:

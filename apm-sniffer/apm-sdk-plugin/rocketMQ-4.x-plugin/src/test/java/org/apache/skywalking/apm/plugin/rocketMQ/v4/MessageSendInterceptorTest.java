@@ -19,9 +19,13 @@
 package org.apache.skywalking.apm.plugin.rocketMQ.v4;
 
 import java.util.List;
+import java.util.Map;
+
 import org.apache.rocketmq.client.impl.CommunicationMode;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageDecoder;
 import org.apache.rocketmq.common.protocol.header.SendMessageRequestHeader;
+import org.apache.skywalking.apm.agent.core.context.SW8ExtensionCarrierItem;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,9 +48,16 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
+
+import static org.apache.rocketmq.common.message.MessageDecoder.NAME_VALUE_SEPARATOR;
+import static org.apache.rocketmq.common.message.MessageDecoder.PROPERTY_SEPARATOR;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
@@ -108,8 +119,8 @@ public class MessageSendInterceptorTest {
             CommunicationMode.ASYNC,
             null
         };
-        when(messageRequestHeader.getProperties()).thenReturn("");
         when(message.getTags()).thenReturn("TagA");
+        stubMessageRequestHeader("TAGS" + NAME_VALUE_SEPARATOR + "TagA" + PROPERTY_SEPARATOR);
     }
 
     @Test
@@ -117,6 +128,12 @@ public class MessageSendInterceptorTest {
         messageSendInterceptor.beforeMethod(enhancedInstance, null, arguments, null, null);
         messageSendInterceptor.afterMethod(enhancedInstance, null, arguments, null, null);
 
+        Map<String, String> tags = MessageDecoder.string2messageProperties(((SendMessageRequestHeader) arguments[3]).getProperties());
+        // check original header of TAGS
+        assertThat(tags.get("TAGS"), is("TagA"));
+        // check skywalking header
+        assertTrue(tags.containsKey(SW8ExtensionCarrierItem.HEADER_NAME));
+
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
@@ -127,8 +144,13 @@ public class MessageSendInterceptorTest {
         SpanAssert.assertLayer(mqSpan, SpanLayer.MQ);
         SpanAssert.assertComponent(mqSpan, ComponentsDefine.ROCKET_MQ_PRODUCER);
         SpanAssert.assertTag(mqSpan, 0, "127.0.0.1");
-        verify(messageRequestHeader).setProperties(anyString());
         verify(callBack).setSkyWalkingDynamicField(Matchers.any());
+    }
+
+    @Test
+    public void testSendMessageNew() throws Throwable {
+        stubMessageRequestHeader("TAGS" + NAME_VALUE_SEPARATOR + "TagA");
+        testSendMessage();
     }
 
     @Test
@@ -136,6 +158,12 @@ public class MessageSendInterceptorTest {
         messageSendInterceptor.beforeMethod(enhancedInstance, null, argumentsWithoutCallback, null, null);
         messageSendInterceptor.afterMethod(enhancedInstance, null, argumentsWithoutCallback, null, null);
 
+        Map<String, String> tags = MessageDecoder.string2messageProperties(((SendMessageRequestHeader) argumentsWithoutCallback[3]).getProperties());
+        // check original header of TAGS
+        assertThat(tags.get("TAGS"), is("TagA"));
+        // check skywalking header
+        assertTrue(tags.containsKey(SW8ExtensionCarrierItem.HEADER_NAME));
+
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
@@ -146,7 +174,25 @@ public class MessageSendInterceptorTest {
         SpanAssert.assertLayer(mqSpan, SpanLayer.MQ);
         SpanAssert.assertComponent(mqSpan, ComponentsDefine.ROCKET_MQ_PRODUCER);
         SpanAssert.assertTag(mqSpan, 0, "127.0.0.1");
-        verify(messageRequestHeader).setProperties(anyString());
     }
 
+    @Test
+    public void testSendMessageWithoutCallBackNew() throws Throwable {
+        stubMessageRequestHeader("TAGS" + NAME_VALUE_SEPARATOR + "TagA");
+        testSendMessageWithoutCallBack();
+    }
+
+    private void stubMessageRequestHeader(String properties) {
+        messageRequestHeader = mock(SendMessageRequestHeader.class, RETURNS_DEEP_STUBS);
+        doAnswer(invocation -> {
+            String val = (String)invocation.getArguments()[0];
+            when(messageRequestHeader.getProperties()).thenReturn(val);
+            return null;
+        }).when(messageRequestHeader).setProperties(anyString());
+        when(messageRequestHeader.getProperties()).thenCallRealMethod();
+        messageRequestHeader.setProperties(properties);
+
+        arguments[3] = messageRequestHeader;
+        argumentsWithoutCallback[3] = messageRequestHeader;
+    }
 }

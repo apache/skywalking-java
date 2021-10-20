@@ -37,6 +37,7 @@ Release Notes.
 * Fix version compatibility for JsonRPC4J plugin.
 * Add plugin to support Apache Kylin-jdbc 2.6.x 3.x 4.x
 * Fix instrumentation v2 API doesn't work for constructor instrumentation.
+* Adapt message header properties of RocketMQ 4.9.x
 
 #### Documentation
 

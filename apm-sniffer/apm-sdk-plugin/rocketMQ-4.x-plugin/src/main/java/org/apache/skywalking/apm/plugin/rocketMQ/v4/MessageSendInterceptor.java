@@ -68,11 +68,19 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         while (next.hasNext()) {
             next = next.next();
             if (!StringUtil.isEmpty(next.getHeadValue())) {
+                if (properties.length() > 0 && properties.charAt(properties.length() - 1) != PROPERTY_SEPARATOR) {
+                    // adapt for RocketMQ 4.9.x or later
+                    properties.append(PROPERTY_SEPARATOR);
+                }
                 properties.append(next.getHeadKey());
                 properties.append(NAME_VALUE_SEPARATOR);
                 properties.append(next.getHeadValue());
                 properties.append(PROPERTY_SEPARATOR);
             }
+        }
+        // remove trailing PROPERTY_SEPARATOR, which is unnecessary
+        if (properties.length() > 0 && properties.charAt(properties.length() - 1) == PROPERTY_SEPARATOR) {
+            properties.deleteCharAt(properties.length() - 1);
         }
         requestHeader.setProperties(properties.toString());
 

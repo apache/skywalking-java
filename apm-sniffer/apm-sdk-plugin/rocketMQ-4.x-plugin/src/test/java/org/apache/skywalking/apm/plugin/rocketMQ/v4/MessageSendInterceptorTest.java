@@ -128,7 +128,8 @@ public class MessageSendInterceptorTest {
         messageSendInterceptor.beforeMethod(enhancedInstance, null, arguments, null, null);
         messageSendInterceptor.afterMethod(enhancedInstance, null, arguments, null, null);
 
-        Map<String, String> tags = MessageDecoder.string2messageProperties(((SendMessageRequestHeader) arguments[3]).getProperties());
+        Map<String, String> tags = MessageDecoder.string2messageProperties(
+            ((SendMessageRequestHeader) arguments[3]).getProperties());
         // check original header of TAGS
         assertThat(tags.get("TAGS"), is("TagA"));
         // check skywalking header
@@ -158,7 +159,8 @@ public class MessageSendInterceptorTest {
         messageSendInterceptor.beforeMethod(enhancedInstance, null, argumentsWithoutCallback, null, null);
         messageSendInterceptor.afterMethod(enhancedInstance, null, argumentsWithoutCallback, null, null);
 
-        Map<String, String> tags = MessageDecoder.string2messageProperties(((SendMessageRequestHeader) argumentsWithoutCallback[3]).getProperties());
+        Map<String, String> tags = MessageDecoder.string2messageProperties(
+            ((SendMessageRequestHeader) argumentsWithoutCallback[3]).getProperties());
         // check original header of TAGS
         assertThat(tags.get("TAGS"), is("TagA"));
         // check skywalking header
@@ -185,7 +187,7 @@ public class MessageSendInterceptorTest {
     private void stubMessageRequestHeader(String properties) {
         messageRequestHeader = mock(SendMessageRequestHeader.class, RETURNS_DEEP_STUBS);
         doAnswer(invocation -> {
-            String val = (String)invocation.getArguments()[0];
+            String val = (String) invocation.getArguments()[0];
             when(messageRequestHeader.getProperties()).thenReturn(val);
             return null;
         }).when(messageRequestHeader).setProperties(anyString());

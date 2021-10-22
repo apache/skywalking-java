@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: solrJ/mycore/update/ADD
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -35,7 +34,6 @@ segmentItems:
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/COMMIT
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -50,7 +48,6 @@ segmentItems:
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/OPTIMIZE
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -65,7 +62,6 @@ segmentItems:
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/select
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -82,7 +78,6 @@ segmentItems:
       - {key: numFound, value: '100'}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/get
-      operationId: 0
       parentSpanId: 0
       spanId: 5
       spanLayer: Database
@@ -99,7 +94,6 @@ segmentItems:
       - {key: numFound, value: '1'}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/DELETE_BY_IDS
-      operationId: 0
       parentSpanId: 0
       spanId: 6
       spanLayer: Database
@@ -114,7 +108,6 @@ segmentItems:
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/DELETE_BY_QUERY
-      operationId: 0
       parentSpanId: 0
       spanId: 7
       spanLayer: Database
@@ -128,8 +121,7 @@ segmentItems:
       - {key: db.type, value: Solr}
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
-    - operationName: /solrj-scenario/case/solrj
-      operationId: 0
+    - operationName: GET:/solrj-scenario/case/solrj
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

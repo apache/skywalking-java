@@ -107,6 +107,11 @@
         <module>jsonrpc4j-1.x-plugin</module>
         <module>neo4j-4.x-plugin</module>
         <module>shardingsphere-plugins</module>
+        <module>druid-1.x-plugin</module>
+        <module>hikaricp-3.x-4.x-plugin</module>
+        <module>httpclient-5.x-plugin</module>
+        <module>clickhouse-0.3.x-plugin</module>
+        <module>kylin-jdbc-2.6.x-3.x-4.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

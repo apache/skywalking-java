@@ -21,10 +21,12 @@ import org.apache.http.HttpHost;
 import org.apache.http.RequestLine;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.nio.NHttpClientConnection;
 import org.apache.http.protocol.HttpContext;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -38,8 +40,7 @@ import org.apache.skywalking.apm.util.StringUtil;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
-
-import static org.apache.skywalking.apm.plugin.httpasyncclient.v4.SessionRequestCompleteInterceptor.CONTEXT_LOCAL;
+import java.util.Objects;
 
 /**
  * the actual point request begin fetch the request from thread local .
@@ -49,9 +50,8 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
-        HttpContext context = CONTEXT_LOCAL.get();
-        CONTEXT_LOCAL.remove();
-        if (context == null) {
+        HttpContext context = findHttpContext(allArguments);
+        if (Objects.isNull(context)) {
             return;
         }
         final ContextCarrier contextCarrier = new ContextCarrier();
@@ -100,5 +100,32 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
                     tagValue;
             Tags.HTTP.PARAMS.set(span, tagValue);
         }
+    }
+
+    private HttpContext findHttpContext(Object[] allArguments) {
+        HttpContext context = Constants.HTTP_CONTEXT_LOCAL.get();
+        Constants.HTTP_CONTEXT_LOCAL.remove();
+        if (Objects.nonNull(context)) {
+            return context;
+        }
+        NHttpClientConnection conn = (NHttpClientConnection) allArguments[0];
+        HttpContext contextInConn = conn.getContext();
+        if (Objects.isNull(contextInConn)) {
+            return null;
+        }
+        context = (HttpContext) contextInConn.getAttribute(Constants.SKYWALKING_HTTP_CONTEXT);
+        conn.getContext().removeAttribute(Constants.SKYWALKING_HTTP_CONTEXT);
+        if (Objects.isNull(context)) {
+            return null;
+        }
+        ContextSnapshot snapshot = (ContextSnapshot) contextInConn.getAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT);
+        conn.getContext().removeAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT);
+        if (snapshot != null) {
+            AbstractSpan localSpan = ContextManager.createLocalSpan("HttpAsyncClient/local");
+            localSpan.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
+            localSpan.setLayer(SpanLayer.HTTP);
+            ContextManager.continued(snapshot);
+        }
+        return context;
     }
 }

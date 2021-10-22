@@ -7,7 +7,7 @@ Apache SkyWalking Java Agent
 [![GitHub stars](https://img.shields.io/github/stars/apache/skywalking-java.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking-java)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.skywalking/apache-skywalking-apm.svg)](http://skywalking.apache.org/downloads/)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.skywalking/apm-agent.svg)](https://skywalking.apache.org/downloads/)
 [![CI](https://github.com/apache/skywalking-java/actions/workflows/ci.yaml/badge.svg)](https://github.com/apache/skywalking-java/actions/workflows/ci.yaml)
 
 SkyWalking-Java: The Java Agent for Apache SkyWalking, which provides the native tracing/metrics/logging abilities for Java projects.
@@ -19,15 +19,6 @@ SkyWalking: an APM(application performance monitor) system, especially designed 
 
 # Downloads
 Please head to the [releases page](https://skywalking.apache.org/downloads/) to download a release of Apache SkyWalking.
-
-# Compiling project
-> ./mvnw clean package
-
-The agent binary package is generated in `skywalking-agent` folder.
-
-Set **Generated Source Codes**(`grpc-java` and `java` folders in **apm-protocol/apm-network/target/generated-sources/protobuf**) 
-folders if you are using IntelliJ IDE.
-
 
 # Code of conduct
 This project adheres to the Contributor Covenant [code of conduct](https://www.apache.org/foundation/policies/conduct). By participating, you are expected to uphold this code.

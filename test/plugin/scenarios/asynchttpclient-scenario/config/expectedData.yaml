@@ -20,7 +20,6 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: AsyncHttpClient/asynchttpclient/back
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
@@ -35,14 +34,13 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8080/asynchttpclient/back'}
               - {key: http.status_code, value: '200'}
-          - operationName: /asynchttpclient/case
-            operationId: 0
+          - operationName: GET:/asynchttpclient/case
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -52,14 +50,13 @@ segmentItems:
               - {key: http.method, value: GET}
       - segmentId: not null
         spans:
-          - operationName: /asynchttpclient/back
-            operationId: 0
+          - operationName: GET:/asynchttpclient/back
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -68,6 +65,6 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/asynchttpclient/back'}
               - {key: http.method, value: GET}
             refs:
-              - {parentEndpoint: /asynchttpclient/case, networkAddress: 'localhost:8080',
+              - {parentEndpoint: GET:/asynchttpclient/case, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not null,
                  parentService: asynchttpclient-scenario, traceId: not null}

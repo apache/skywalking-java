@@ -53,6 +53,8 @@
         <module>sentinel-1.x-plugin</module>
         <module>ehcache-2.x-plugin</module>
         <module>guava-cache-plugin</module>
+        <module>fastjson-1.2.x-plugin</module>
+        <module>jackson-2.x-plugin</module>
     </modules>
 
     <dependencies>

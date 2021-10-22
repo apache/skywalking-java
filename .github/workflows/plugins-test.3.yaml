@@ -88,6 +88,10 @@ jobs:
           - gateway-3.x-scenario
           - neo4j-4.x-scenario
           - oracle-scenario
+          - druid-1.x-scenario
+          - hikaricp-scenario
+          - clickhouse-0.3.x-scenario
+          - kylin-jdbc-2.6.x-3.x-4.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

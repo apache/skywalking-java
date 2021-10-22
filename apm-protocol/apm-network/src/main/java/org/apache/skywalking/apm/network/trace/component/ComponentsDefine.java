@@ -207,4 +207,15 @@ public class ComponentsDefine {
   
     public static final OfficialComponent GUAVA_CACHE = new OfficialComponent(114, "GuavaCache");
 
+    public static final OfficialComponent ALIBABA_DRUID = new OfficialComponent(115, "AlibabaDruid");
+
+    public static final OfficialComponent HIKARI_CP = new OfficialComponent(116, "HikariCP");
+
+    public static final OfficialComponent FASTJSON = new OfficialComponent(117, "Fastjson");
+
+    public static final OfficialComponent JACKSON = new OfficialComponent(118, "Jackson");
+
+    public static final OfficialComponent CLICKHOUSE_JDBC_DRIVER = new OfficialComponent(119, "ClickHouse-jdbc-driver");
+
+    public static final OfficialComponent APACHE_KYLIN_JDBC_DRIVER = new OfficialComponent(121, "apache-kylin-jdbc-driver");
 }

@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: ActiveMQ/Queue/test/Producer
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: MQ
@@ -34,8 +33,7 @@ segmentItems:
       - {key: mq.broker, value: not null}
       - {key: mq.queue, value: test}
       skipAnalysis: 'false'
-    - operationName: /activemq-scenario/case/activemq
-      operationId: 0
+    - operationName: GET:/activemq-scenario/case/activemq
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -52,7 +50,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: ActiveMQ/Queue/test/Consumer
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: MQ
@@ -67,7 +64,7 @@ segmentItems:
       - {key: mq.queue, value: test}
       - {key: transmission.latency, value: not null}
       refs:
-      - {parentEndpoint: /activemq-scenario/case/activemq, networkAddress: not null,
+      - {parentEndpoint: GET:/activemq-scenario/case/activemq, networkAddress: not null,
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
         parentServiceInstance: not null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'

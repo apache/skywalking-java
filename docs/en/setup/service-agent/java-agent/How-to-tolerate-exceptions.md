@@ -107,8 +107,34 @@ If an exception has the `@IgnoredException` annotation, the exception wouldn't b
       `org.apache.skywalking.apm.agent.core.context.status.TestAnnotatedException`  | false |
 
 ## Recursive check
-Due to the wrapper nature of Java exceptions, sometimes users need recursive checking. Skywalking also supports it. Typically, we don't recommend setting this more than 10, which could cause a performance issue. Negative value and 0 would be ignored, which means all exceptions would make the span tagged in error status.
+Due to the wrapper nature of Java exceptions, sometimes users need recursive checking. Skywalking also supports it. 
 
 ```
-    statuscheck.max_recursive_depth=${SW_STATUSCHECK_MAX_RECURSIVE_DEPTH:1}
+statuscheck.max_recursive_depth=${SW_STATUSCHECK_MAX_RECURSIVE_DEPTH:1}
 ```
+
+The following report shows the benchmark results of the exception checks with different recursive depths,
+
+```
+# JMH version: 1.33
+# VM version: JDK 1.8.0_292, OpenJDK 64-Bit Server VM, 25.292-b10
+# VM invoker: /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre/bin/java
+# VM options: -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=54972:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8
+# Blackhole mode: full + dont-inline hint (default, use -Djmh.blackhole.autoDetect=true to auto-detect)
+# Warmup: 5 iterations, 10 s each
+# Measurement: 5 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+Benchmark                                             Mode  Cnt   Score   Error  Units
+HierarchyMatchExceptionBenchmark.depthOneBenchmark    avgt   25  31.050 ± 0.731  ns/op
+HierarchyMatchExceptionBenchmark.depthTwoBenchmark    avgt   25  64.918 ± 2.537  ns/op
+HierarchyMatchExceptionBenchmark.depthThreeBenchmark  avgt   25  89.645 ± 2.556  ns/op
+```
+
+According to the reported results above, the exception check time is nearly proportional to the recursive depth being set.
+For each single check, it costs about ten of nanoseconds (~30 nanoseconds in the report, but may vary according 
+to different hardware and platforms).
+
+Typically, we don't recommend setting this more than 10, which could cause a performance issue. 
+Negative value and 0 would be ignored, which means all exceptions would make the span tagged in error status.

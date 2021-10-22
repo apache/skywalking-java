@@ -23,7 +23,7 @@ metrics based on the tracing data.
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
   * [Okhttp](https://github.com/square/okhttp) 3.x -> 4.x
-  * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3
+  * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
   * [Spring RestTemplete](https://github.com/spring-projects/spring-framework) 4.x
   * [Jetty Client](http://www.eclipse.org/jetty/) 9
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
@@ -41,6 +41,8 @@ metrics based on the tracing data.
   * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17
   * [Mssql-Jtds](https://github.com/milesibastos/jTDS) 1.x
   * [Mssql-jdbc](https://github.com/microsoft/mssql-jdbc) 6.x -> 8.x
+  * [ClickHouse-jdbc](https://github.com/ClickHouse/clickhouse-jdbc) 0.3.x
+  * [Apache-Kylin-Jdbc](https://github.com/apache/kylin.git) 2.6.x -> 3.x -> 4.x
 * RPC Frameworks
   * [Dubbo](https://github.com/alibaba/dubbo) 2.5.4 -> 2.6.0
   * [Dubbox](https://github.com/dangdangdotcom/dubbox) 2.8.4
@@ -55,6 +57,7 @@ metrics based on the tracing data.
   * [Brpc-Java](https://github.com/baidu/brpc-java) 2.3.7 -> 2.5.3
   * [Thrift](https://github.com/apache/thrift/tree/master/lib/java) 0.10.0 -> 0.12.0
   * [Apache CXF](https://github.com/apache/cxf) 3.x
+  * [JSONRPC4J](https://github.com/briandilley/jsonrpc4j) 1.2.0 -> 1.6
 * MQ
   * [RocketMQ](https://github.com/apache/rocketmq) 4.x
   * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 2.8.0
@@ -62,7 +65,7 @@ metrics based on the tracing data.
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 5.x
   * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.4.x
-  * [Aliyun ONS](https://help.aliyun.com/document_detail/114448.html) 1.x (Optional¹)
+  * Aliyun ONS 1.x (Optional¹)
 * NoSQL
   * Redis
     * [Jedis](https://github.com/xetorthio/jedis) 2.x
@@ -85,7 +88,7 @@ metrics based on the tracing data.
   * HBase
     * [hbase-client](https://github.com/apache/hbase) HTable 1.0.0-2.4.2
   * Neo4j
-    * [Neo4j-java](https://neo4j.com/docs/java-manual/current) 4.x
+    * [Neo4j-java](https://neo4j.com/docs/java-manual/current/) 4.x
 * Service Discovery
   * [Netflix Eureka](https://github.com/Netflix/eureka)
 * Distributed Coordination
@@ -106,6 +109,8 @@ metrics based on the tracing data.
 * [Canal: Alibaba mysql database binlog incremental subscription & consumer components](https://github.com/alibaba/canal) 1.0.25 -> 1.1.2
 * JSON
   * [GSON](https://github.com/google/gson) 2.8.x (Optional²)
+  * [Fastjson](https://github.com/alibaba/fastjson) 1.2.x (Optional²)
+  * [Jackson](https://github.com/FasterXML/jackson) 2.x (Optional²)
 * Vert.x Ecosystem
   * Vert.x Eventbus 3.2+
   * Vert.x Web 3.x
@@ -122,6 +127,8 @@ metrics based on the tracing data.
   * [Graphql](https://github.com/graphql-java) 8.0 -> 15.x
 * Pool
   * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
+  * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
+  * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x
 * Logging Framework
   * [log4j](https://github.com/apache/log4j) 2.x
   * [log4j2](https://github.com/apache/logging-log4j2) 1.2.x 

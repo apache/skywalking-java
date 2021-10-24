@@ -29,8 +29,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>runner-helper</module>
-        <module>agent-test-tools</module>
         <module>containers</module>
     </modules>
 

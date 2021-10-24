@@ -157,9 +157,8 @@ sed -i '' '/<\/sourceDirectories>/i\'$'\n''<sourceDirectory>scenarios\/'"$scenar
 sed -i '/<\/sourceDirectories>/i <sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>' ./pom.xml
 
 if [[ "$force_build" == "on" ]]; then
-    profile=
-    [[ $image_version =~ "jdk14-" ]] && profile="-Pjdk14"
-    ${mvnw} --batch-mode -f ${home}/pom.xml clean package -DskipTests ${profile}
+    java_version=$(echo $image_version | grep -o -E "^jdk\d+")
+    ${mvnw} --batch-mode -f ${home}/pom.xml clean package -DskipTests -Djava.version=${java.version}
 fi
 # remove scenario_name into plugin/pom.xml
 sed -i '' '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml \

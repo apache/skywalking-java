@@ -13,41 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-version: '2.1'
-
-services:
-  oap:
-    extends:
-      file: ../../base/base-compose.yml
-      service: oap
-    ports:
-      - 12800
-
-  provider:
-    extends:
-      file: ../../base/base-compose.yml
-      service: provider
-    environment:
-      SW_AGENT_INSTANCE_NAME: provider1
-      SW_LOGGING_OUTPUT: CONSOLE
-    ports:
-      - 9090
-    depends_on:
-      oap:
-        condition: service_healthy
-
-  consumer:
-    extends:
-      file: ../../base/base-compose.yml
-      service: consumer
-    environment:
-      SW_AGENT_INSTANCE_NAME: consumer1
-      SW_LOGGING_OUTPUT: CONSOLE
-    ports:
-      - 9090
-    depends_on:
-      provider:
-        condition: service_healthy
-
-networks:
-  e2e:
+spans:
+  {{- contains .spans}}
+  - traceid: {{ notEmpty .traceid }}
+    segmentid: {{ notEmpty .segmentid }}
+    spanid: 0
+    parentspanid: -1
+    refs: []
+    servicecode: {{ notEmpty .servicecode }}
+    serviceinstancename: {{ notEmpty .serviceinstancename }}
+    starttime: {{ gt .starttime 0 }}
+    endtime: {{ gt .endtime 0 }}
+    endpointname: POST:/users
+    type: Entry
+    peer: ""
+    component: Tomcat
+    iserror: false
+    layer: Http
+    tags:
+      {{- contains .tags }}
+      - key: http.method
+        value: POST
+      - key: url
+        value: {{ notEmpty .value }}
+      {{- end }}
+    logs: []
+  {{- end }}

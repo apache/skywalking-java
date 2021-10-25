@@ -65,8 +65,8 @@ runs:
 
         echo "::group::Save Docker Image"
         mkdir -p test-containers
-        docker save -o test-containers/skywalking-agent-test-jvm-${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-jvm:${{ inputs.java_version }}-1.0.0
-        docker save -o test-containers/skywalking-agent-test-tomcat-${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-tomcat:${{ inputs.java_version }}-1.0.0
+        docker save -o test-containers/skywalking-agent-test-jvm-jdk${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-jvm:jdk${{ inputs.java_version }}-1.0.0
+        docker save -o test-containers/skywalking-agent-test-tomcat-jdk${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-tomcat:jdk${{ inputs.java_version }}-1.0.0
         echo "::endgroup::"
     - uses: actions/upload-artifact@v2
       name: Upload Test Containers

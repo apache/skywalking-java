@@ -23,8 +23,16 @@ on:
 
 jobs:
   E2E:
-    name: Basic function + gRPC transport(Java8)
+    name: Basic function + ${{ matrix.case.name }} transport(Java8)
     runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        case:
+          - name: gRPC
+            path: test/e2e/case/grpc/e2e.yaml
+          - name: Kafka
+            path: test/e2e/case/kafka/e2e.yaml
     steps:
       - uses: actions/checkout@v2
         with:
@@ -42,7 +50,11 @@ jobs:
           SW_VERSION=$(./mvnw -q -DforceStdout -N org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version)
           ./mvnw -B package -f ./test/e2e/base/pom.xml -Dsw.version=${SW_VERSION}
           echo "::endgroup::"
-      - name: Run E2E Tests
-        uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
+      - name: Setup go
+        uses: actions/setup-go@v2
         with:
-          e2e-file: test/e2e/case/base/e2e.yaml
+          go-version: '1.16'
+      - name: Run E2E Tests
+        uses: apache/skywalking-infra-e2e@main
+        with:
+          e2e-file: ${{ matrix.case.path }}

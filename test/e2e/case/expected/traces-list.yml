@@ -13,33 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-spans:
-  {{- range .spans}}
-  - traceid: {{ notEmpty .traceid }}
-    segmentid: {{ notEmpty .segmentid }}
-    spanid: 0
-    parentspanid: -1
-    refs: []
-    servicecode: {{ notEmpty .servicecode }}
-    serviceinstancename: {{ notEmpty .serviceinstancename }}
-    starttime: {{ gt .starttime 0 }}
-    endtime: {{ gt .endtime 0 }}
-    endpointname: POST:/users
-    type: Entry
-    peer: ""
-    component: Tomcat
+traces:
+  {{- contains .traces }}
+  - segmentid: {{ notEmpty .segmentid }}
+    endpointnames:
+    {{- contains .endpointnames }}
+      - POST:/info
+    {{- end }}
+    duration: {{ ge .duration 0 }}
+    start: "{{ notEmpty .start}}"
     iserror: false
-    layer: Http
-    tags:
-      {{- range .tags }}
-      {{- if eq .key "http.method" }}
-      - key: http.method
-        value: POST
-      {{- end }}
-      {{- if eq .key "url" }}
-      - key: url
-        value: {{ notEmpty .value }}
-      {{- end }}
-      {{- end }}
-    logs: []
+    traceids:
+      - {{ (index .traceids 0) }}
   {{- end }}
+total: {{ gt .total 0 }}

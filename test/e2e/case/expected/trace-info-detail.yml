@@ -14,60 +14,34 @@
 # limitations under the License.
 
 spans:
-  {{- range .spans}}
+  {{- contains .spans}}
   - traceid: {{ notEmpty .traceid }}
     segmentid: {{ notEmpty .segmentid }}
     spanid: {{ .spanid }}
     parentspanid: {{ .parentspanid }}
     refs:
-      {{- if eq .servicecode "e2e-service-provider" }}
-      {{- range .refs }}
-        - traceid: {{ notEmpty .traceid }}
-          parentsegmentid: {{ notEmpty .parentsegmentid }}
-          parentspanid: 1
-          type: CROSS_PROCESS
+      {{- contains .refs }}
+      - traceid: {{ notEmpty .traceid }}
+        parentsegmentid: {{ notEmpty .parentsegmentid }}
+        parentspanid: 1
+        type: CROSS_PROCESS
       {{- end }}
-      {{- end }}
-      {{- if eq .servicecode "e2e-service-consumer" }}
-        []
-      {{- end }}
-    servicecode: {{ notEmpty .servicecode }}
-    serviceinstancename: {{ notEmpty .serviceinstancename }}
+    servicecode: "e2e-service-provider"
+    serviceinstancename: "provider1"
     starttime: {{ gt .starttime 0 }}
     endtime: {{ gt .endtime 0 }}
-    endpointname:
-    {{- if eq .type "Exit" }}
-      /info
-    {{- end }}
-    {{- if eq .type "Entry" }}
-      POST:/info
-    {{- end }}
-    type: {{ notEmpty .type }}
-    peer:
-    {{- if eq .type "Exit" }}
-      provider:9090
-    {{ else }}
-      ""
-    {{- end }}
-    component:
-    {{- if eq .type "Exit" }}
-      SpringRestTemplate
-    {{- end }}
-    {{- if eq .type "Entry" }}
-      Tomcat
-    {{- end }}
+    endpointname: POST:/info
+    type: Entry
+    peer: ""
+    component: Tomcat
     iserror: false
     layer: Http
     tags:
-      {{- range .tags }}
-      {{- if eq .key "http.method" }}
+      {{- contains .tags }}
       - key: http.method
         value: POST
-      {{- end }}
-      {{- if eq .key "url" }}
       - key: url
         value: {{ notEmpty .value }}
-      {{- end }}
       {{- end }}
     logs: []
   {{- end }}

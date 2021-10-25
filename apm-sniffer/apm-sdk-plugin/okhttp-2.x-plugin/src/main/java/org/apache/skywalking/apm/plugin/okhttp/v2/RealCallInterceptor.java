@@ -75,10 +75,10 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
         Request request = (Request) objInst.getSkyWalkingDynamicField();
 
         ContextCarrier contextCarrier = new ContextCarrier();
-        ContextManager.inject(contextCarrier);
         HttpUrl requestUrl = request.httpUrl();
         AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri().getPath(), contextCarrier,
                 requestUrl.host() + ":" + requestUrl.port());
+        ContextManager.inject(contextCarrier);
         span.setComponent(ComponentsDefine.OKHTTP);
         Tags.HTTP.METHOD.set(span, request.method());
         Tags.URL.set(span, requestUrl.uri().toString());

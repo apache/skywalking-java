@@ -18,22 +18,12 @@
 
 package org.apache.skywalking.apm.plugin.okhttp.v2;
 
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.Request;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import org.apache.skywalking.apm.agent.core.context.CarrierItem;
-import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.okhttp.common.EnhanceRequiredInfo;
 
 /**
@@ -44,18 +34,6 @@ import org.apache.skywalking.apm.plugin.okhttp.common.EnhanceRequiredInfo;
  * called.
  */
 public class AsyncCallInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
-
-    private static Field FIELD_HEADERS_OF_REQUEST;
-
-    static {
-        try {
-            final Field field = Request.class.getDeclaredField("headers");
-            field.setAccessible(true);
-            FIELD_HEADERS_OF_REQUEST = field;
-        } catch (Exception ignore) {
-            FIELD_HEADERS_OF_REQUEST = null;
-        }
-    }
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
@@ -73,29 +51,8 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
         EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) objInst.getSkyWalkingDynamicField();
-        Request request = (Request) enhanceRequiredInfo.getRealCallEnhance().getSkyWalkingDynamicField();
-
-        HttpUrl requestUrl = request.httpUrl();
-        AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri()
-                .getPath(), requestUrl.host() + ":" + requestUrl.port());
+        ContextManager.createLocalSpan("Async/execute");
         ContextManager.continued(enhanceRequiredInfo.getContextSnapshot());
-        ContextCarrier contextCarrier = new ContextCarrier();
-        ContextManager.inject(contextCarrier);
-        span.setComponent(ComponentsDefine.OKHTTP);
-        Tags.HTTP.METHOD.set(span, request.method());
-        Tags.URL.set(span, requestUrl.uri().toString());
-        SpanLayer.asHttp(span);
-
-        if (FIELD_HEADERS_OF_REQUEST != null) {
-            Headers.Builder headerBuilder = request.headers().newBuilder();
-            CarrierItem next = contextCarrier.items();
-            while (next.hasNext()) {
-                next = next.next();
-                headerBuilder.set(next.getHeadKey(), next.getHeadValue());
-            }
-            FIELD_HEADERS_OF_REQUEST.set(request, headerBuilder.build());
-        }
-
     }
 
     @Override

@@ -86,6 +86,22 @@ public class RealCallInstrumentation extends ClassInstanceMethodsEnhancePluginDe
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("getResponseWithInterceptorChain");
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return "org.apache.skywalking.apm.plugin.okhttp.v2.CallInterceptor";
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named("enqueue").and(takesArguments(1));
                     }
 

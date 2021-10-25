@@ -23,6 +23,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,7 +53,7 @@ public class CaseController {
     public String okHttpScenario() {
         // Like gateway forward trace header.
         Request request = new Request.Builder().url("http://127.0.0.1:8080/okhttp2-scenario/case/receiveContext-0")
-                .header("sw8", "123456").build();
+                .build();
 
         new OkHttpClient().newCall(request).enqueue(new Callback() {
             @Override
@@ -64,7 +65,6 @@ public class CaseController {
             public void onResponse(Response response) throws IOException {
                 Request request = new Request.Builder().url(
                                 "http://127.0.0.1:8080/okhttp2-scenario/case/receiveContext-1")
-                        .header("sw8", "123456")
                         .build();
                 new OkHttpClient().newCall(request).execute();
             }

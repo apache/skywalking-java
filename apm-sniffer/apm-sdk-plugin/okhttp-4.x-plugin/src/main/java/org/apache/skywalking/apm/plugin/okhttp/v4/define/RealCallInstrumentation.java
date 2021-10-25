@@ -18,16 +18,16 @@
 
 package org.apache.skywalking.apm.plugin.okhttp.v4.define;
 
+import static net.bytebuddy.matcher.ElementMatchers.any;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
-
-import static net.bytebuddy.matcher.ElementMatchers.any;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 public class RealCallInstrumentation extends AbstractOkhttpInstrumentation {
 
@@ -48,56 +48,72 @@ public class RealCallInstrumentation extends AbstractOkhttpInstrumentation {
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
-            new ConstructorInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return any();
-                }
+        return new ConstructorInterceptPoint[]{
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return any();
+                    }
 
-                @Override
-                public String getConstructorInterceptor() {
-                    return INTERCEPT_CLASS;
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return INTERCEPT_CLASS;
+                    }
                 }
-            }
         };
     }
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("execute");
-                }
+        return new InstanceMethodsInterceptPoint[]{
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("execute");
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return INTERCEPT_CLASS;
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPT_CLASS;
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            },
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("enqueue").and(takesArguments(1));
-                }
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("getResponseWithInterceptorChain");
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return "org.apache.skywalking.apm.plugin.okhttp.common.EnqueueInterceptor";
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return "org.apache.skywalking.apm.plugin.okhttp.common.CallInterceptor";
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("enqueue").and(takesArguments(1));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return "org.apache.skywalking.apm.plugin.okhttp.common.EnqueueInterceptor";
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
                 }
-            }
         };
     }
 }

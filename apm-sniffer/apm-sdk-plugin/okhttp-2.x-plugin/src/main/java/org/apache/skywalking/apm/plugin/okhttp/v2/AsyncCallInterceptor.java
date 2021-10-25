@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.okhttp.common;
+package org.apache.skywalking.apm.plugin.okhttp.v2;
 
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -24,6 +24,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.plugin.okhttp.common.EnhanceRequiredInfo;
 
 /**
  * {@link AsyncCallInterceptor} get the `EnhanceRequiredInfo` instance from `SkyWalkingDynamicField` and then put it
@@ -52,7 +53,6 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
         EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) objInst.getSkyWalkingDynamicField();
         ContextManager.createLocalSpan("Async/execute");
         ContextManager.continued(enhanceRequiredInfo.getContextSnapshot());
-
     }
 
     @Override

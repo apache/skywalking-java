@@ -16,43 +16,24 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.okhttp.common;
+package org.apache.skywalking.apm.plugin.okhttp.v2;
 
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
 /**
- * {@link AsyncCallInterceptor} get the `EnhanceRequiredInfo` instance from `SkyWalkingDynamicField` and then put it
- * into `AsyncCall` instance when the `AsyncCall` constructor called.
- * <p>
- * {@link AsyncCallInterceptor} also create an exit span by using the `EnhanceRequiredInfo` when the `execute` method
- * called.
+ * {@link OnResponseInterceptor} validate the response code if it is great equal than 400. if so. the transaction status
+ * chang to `error`, or do nothing.
  */
-public class AsyncCallInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
-
-    @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        /**
-         * The first argument of constructor is not the `real` parameter when the enhance class is an inner class. This
-         * is the JDK compiler mechanism.
-         */
-        EnhancedInstance realCallInstance = (EnhancedInstance) allArguments[1];
-        Object enhanceRequireInfo = realCallInstance.getSkyWalkingDynamicField();
-
-        objInst.setSkyWalkingDynamicField(enhanceRequireInfo);
-    }
+public class OnResponseInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
-        EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) objInst.getSkyWalkingDynamicField();
-        ContextManager.createLocalSpan("Async/execute");
-        ContextManager.continued(enhanceRequiredInfo.getContextSnapshot());
-
+        ContextManager.createLocalSpan("Callback/onResponse");
     }
 
     @Override

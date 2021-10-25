@@ -37,6 +37,8 @@ Release Notes.
 * Fix version compatibility for JsonRPC4J plugin.
 * Add plugin to support Apache Kylin-jdbc 2.6.x 3.x 4.x
 * Fix instrumentation v2 API doesn't work for constructor instrumentation.
+* Add plugin to support okhttp 2.x
+* Optimize okhttp 3.x 4.x plugin to get span time cost precisely
 
 #### Documentation
 

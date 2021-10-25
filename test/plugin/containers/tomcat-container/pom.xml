@@ -43,7 +43,7 @@
                         <image>
                             <name>skywalking/agent-test-tomcat:jdk${java_major_version}-${project.version}</name>
                             <build>
-                                <from>tomcat:8.5-jdk${java_major_version}-openjdk</from>
+                                <from>tomcat:8.5-jdk8-openjdk</from>
                                 <workdir>/usr/local/skywalking/scenario</workdir>
                                 <env>
                                     <CATALINA_OPTS>""</CATALINA_OPTS>

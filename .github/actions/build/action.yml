@@ -58,8 +58,9 @@ runs:
       run: |
         echo "::group::Build Docker Image"
         # Retry one more time due to frequent "maven connection reset"
-        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip -P${{ inputs.java_version }} || \
-        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip -P${{ inputs.java_version }}
+        export java_major_version=${{ inputs.java_version }}
+        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip || \
+        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip
         echo "::endgroup::"
 
         echo "::group::Save Docker Image"

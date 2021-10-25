@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.okhttp.v4.define;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
@@ -85,7 +86,7 @@ public class RealCallInstrumentation extends AbstractOkhttpInstrumentation {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("getResponseWithInterceptorChain");
+                        return nameStartsWith("getResponseWithInterceptorChain");
                     }
 
                     @Override

@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.okhttp.common;
 
-import okhttp3.Response;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -34,16 +33,13 @@ public class OnResponseInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
-        Response response = (Response) allArguments[1];
-
-        if (response.code() >= 400) {
-            ContextManager.activeSpan().errorOccurred();
-        }
+        ContextManager.createLocalSpan("Callback/onResponse");
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
+        ContextManager.stopSpan();
         return ret;
     }
 

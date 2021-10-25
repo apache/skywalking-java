@@ -16,20 +16,41 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.okhttp.common;
+package org.apache.skywalking.apm.plugin.okhttp.v2;
 
+import com.squareup.okhttp.Request;
+import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.plugin.okhttp.common.EnhanceRequiredInfo;
 
-import java.lang.reflect.Method;
-
-public class OnFailureInterceptor implements InstanceMethodsAroundInterceptor {
+/**
+ * {@link EnqueueInterceptor} create a local span and the prefix of the span operation name is start with `Async` when
+ * the `enqueue` method called and also put the `ContextSnapshot` and `RealCall` instance into the
+ * `SkyWalkingDynamicField`.
+ */
+public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
-        ContextManager.createLocalSpan("Callback/onFailure");
+        EnhancedInstance callbackInstance = (EnhancedInstance) allArguments[0];
+        Request request = (Request) objInst.getSkyWalkingDynamicField();
+        ContextManager.createLocalSpan("Async" + request.httpUrl().uri().getPath());
+
+        /**
+         * Here is the process about how to trace the async function.
+         *
+         * 1. Storage `Request` object into `RealCall` instance when the constructor of `RealCall` called.
+         * 2. Put the `RealCall` instance to `CallBack` instance
+         * 3. Get the `RealCall` instance from `CallBack` and then Put the `RealCall` into `AsyncCall` instance
+         *    since the constructor of `RealCall` called.
+         * 5. Create the exit span by using the `RealCall` instance when `AsyncCall` method called.
+         */
+
+        callbackInstance.setSkyWalkingDynamicField(new EnhanceRequiredInfo(objInst, ContextManager.capture()));
     }
 
     @Override
@@ -43,5 +64,10 @@ public class OnFailureInterceptor implements InstanceMethodsAroundInterceptor {
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
+    }
+
+    @Override
+    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+        objInst.setSkyWalkingDynamicField(allArguments[1]);
     }
 }

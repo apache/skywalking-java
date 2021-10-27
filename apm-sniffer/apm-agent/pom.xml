@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>java-agent-sniffer</artifactId>
-        <version>8.8.0-SNAPSHOT</version>
+        <version>8.8.0</version>
     </parent>
 
     <artifactId>apm-agent</artifactId>
@@ -134,7 +134,7 @@
                                 <mkdir dir="${project.basedir}/../../skywalking-agent/config" />
                                 <mkdir dir="${project.basedir}/../../skywalking-agent/logs" />
                                 <copydir src="${project.basedir}/../config" dest="${project.basedir}/../../skywalking-agent/config" forceoverwrite="true" />
-                                <copydir src="${project.basedir}/../../dist-material" dest="${project.basedir}/../../skywalking-agent"/>
+                                <copydir src="${project.basedir}/../../dist-material" dest="${project.basedir}/../../skywalking-agent" />
                             </target>
                         </configuration>
                     </execution>

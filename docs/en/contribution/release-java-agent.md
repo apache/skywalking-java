@@ -82,12 +82,7 @@ This script takes care of the following things:
 1. Use your Apache ID to log in to `https://dist.apache.org/repos/dist/dev/skywalking/java-agent/`.
 1. Create a folder and name it by the release version and round, such as: `x.y.z`
 1. Upload the source code package to the folder with files ending with `.asc` and `.sha512`.
-    * Package name: `apache-skywalking-x.y.z-src.tar.gz`
-    * See Section "Build and sign the source code package" for more details 
 1. Upload the distribution package to the folder with files ending with `.asc` and `.sha512`.
-    * Package name:  `apache-skywalking-java-agent-x.y.z.tar.gz`
-    * See Section "Locate and download the distribution package in Apache Nexus Staging repositories" for more details.
-    * Create a `.sha512` package: `shasum -a 512 file > file.sha512`
 
 ## Make the internal announcements
 Send an announcement mail in dev mail list.

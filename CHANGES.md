@@ -39,6 +39,7 @@ Release Notes.
 * Fix instrumentation v2 API doesn't work for constructor instrumentation.
 * Add plugin to support okhttp 2.x
 * Optimize okhttp 3.x 4.x plugin to get span time cost precisely
+* Adapt message header properties of RocketMQ 4.9.x
 
 #### Documentation
 

@@ -16,20 +16,22 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.okhttp.common;
+package org.apache.skywalking.apm.plugin.okhttp.v2;
 
+import com.squareup.okhttp.Headers;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -42,6 +44,8 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
 
     private static Field FIELD_HEADERS_OF_REQUEST;
+
+    private static final ILog LOGGER = LogManager.getLogger(RealCallInterceptor.class);
 
     static {
         try {
@@ -71,9 +75,10 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
         Request request = (Request) objInst.getSkyWalkingDynamicField();
 
         ContextCarrier contextCarrier = new ContextCarrier();
-        HttpUrl requestUrl = request.url();
+        HttpUrl requestUrl = request.httpUrl();
         AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri().getPath(), contextCarrier,
                 requestUrl.host() + ":" + requestUrl.port());
+        ContextManager.inject(contextCarrier);
         span.setComponent(ComponentsDefine.OKHTTP);
         Tags.HTTP.METHOD.set(span, request.method());
         Tags.URL.set(span, requestUrl.uri().toString());

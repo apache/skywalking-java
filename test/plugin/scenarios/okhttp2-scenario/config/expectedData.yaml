@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: okhttp-scenario
+- serviceName: okhttp2-scenario
   segmentSize: ge 5
   segments:
   - segmentId: not null
     spans:
-    - operationName: Async/okhttp-case/case/receiveContext-0
+    - operationName: Async/okhttp2-scenario/case/receiveContext-0
       parentSpanId: 0
       spanId: 1
       startTime: nq 0
@@ -28,7 +28,7 @@ segmentItems:
       isError: false
       spanType: Local
       skipAnalysis: 'false'
-    - operationName: GET:/case/okhttp-case
+    - operationName: GET:/case/okhttp2-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -38,7 +38,7 @@ segmentItems:
       isError: false
       spanType: Entry
       tags:
-      - {key: url, value: 'http://localhost:8080/okhttp-case/case/okhttp-case'}
+      - {key: url, value: 'http://localhost:8080/okhttp2-scenario/case/okhttp2-scenario'}
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
   - segmentId: not null
@@ -53,12 +53,12 @@ segmentItems:
       isError: false
       spanType: Entry
       tags:
-      - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-0'}
+      - {key: url, value: 'http://127.0.0.1:8080/okhttp2-scenario/case/receiveContext-0'}
       - {key: http.method, value: GET}
       refs:
       - {parentEndpoint: Async/execute, networkAddress: '127.0.0.1:8080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
-          null, parentService: okhttp-scenario, traceId: not null}
+          null, parentService: okhttp2-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
@@ -72,16 +72,16 @@ segmentItems:
       isError: false
       spanType: Entry
       tags:
-      - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-1'}
+      - {key: url, value: 'http://127.0.0.1:8080/okhttp2-scenario/case/receiveContext-1'}
       - {key: http.method, value: GET}
       refs:
       - {parentEndpoint: Async/execute, networkAddress: '127.0.0.1:8080',
         refType: CrossProcess, parentSpanId: 3, parentTraceSegmentId: not null, parentServiceInstance: not
-          null, parentService: okhttp-scenario, traceId: not null}
+          null, parentService: okhttp2-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: /okhttp-case/case/receiveContext-0
+    - operationName: /okhttp2-scenario/case/receiveContext-0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -93,9 +93,8 @@ segmentItems:
       peer: 127.0.0.1:8080
       tags:
       - {key: http.method, value: GET}
-      - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-0'}
-      skipAnalysis: 'false'
-    - operationName: /okhttp-case/case/receiveContext-1
+      - {key: url, value: 'http://127.0.0.1:8080/okhttp2-scenario/case/receiveContext-0'}
+    - operationName: /okhttp2-scenario/case/receiveContext-1
       parentSpanId: 2
       spanId: 3
       spanLayer: Http
@@ -108,11 +107,12 @@ segmentItems:
       skipAnalysis: false
       tags:
       - {key: http.method, value: GET}
-      - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-1'}
+      - {key: url, value: 'http://127.0.0.1:8080/okhttp2-scenario/case/receiveContext-1'}
     - {operationName: Callback/onResponse, parentSpanId: 0, spanId: 2,
       spanLayer: Unknown, startTime: nq 0, endTime: nq 0, componentId: 0,
       isError: false, spanType: Local, peer: '', skipAnalysis: false}
     - operationName: Async/execute
+      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -124,7 +124,7 @@ segmentItems:
       peer: ''
       skipAnalysis: false
       refs:
-      - {parentEndpoint: 'GET:/case/okhttp-case', networkAddress: '', refType: CrossThread,
+      - {parentEndpoint: 'GET:/case/okhttp2-scenario', networkAddress: '', refType: CrossThread,
         parentSpanId: 1, parentTraceSegmentId: not null,
-        parentServiceInstance: not null, parentService: okhttp-scenario,
+        parentServiceInstance: not null, parentService: okhttp2-scenario,
         traceId: not null}

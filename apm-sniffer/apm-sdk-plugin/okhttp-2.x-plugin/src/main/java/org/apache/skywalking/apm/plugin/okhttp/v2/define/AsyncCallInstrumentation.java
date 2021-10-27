@@ -16,36 +16,26 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.okhttp.v4.define;
+package org.apache.skywalking.apm.plugin.okhttp.v2.define;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
-public class RealCallInstrumentation extends AbstractOkhttpInstrumentation {
+public class AsyncCallInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    /**
-     * Enhance class.
-     */
-    private static final String ENHANCE_CLASS = "okhttp3.internal.connection.RealCall";
 
     /**
      * Intercept class.
      */
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.okhttp.common.RealCallInterceptor";
-
-    @Override
-    protected ClassMatch enhanceClass() {
-        return NameMatch.byName(ENHANCE_CLASS);
-    }
+    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.okhttp.v2.AsyncCallInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -82,39 +72,12 @@ public class RealCallInstrumentation extends AbstractOkhttpInstrumentation {
                     public boolean isOverrideArgs() {
                         return false;
                     }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return nameStartsWith("getResponseWithInterceptorChain");
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return "org.apache.skywalking.apm.plugin.okhttp.common.CallInterceptor";
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("enqueue").and(takesArguments(1));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return "org.apache.skywalking.apm.plugin.okhttp.common.EnqueueInterceptor";
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
                 }
         };
+    }
+
+    @Override
+    protected ClassMatch enhanceClass() {
+        return byName("com.squareup.okhttp.Call$AsyncCall");
     }
 }

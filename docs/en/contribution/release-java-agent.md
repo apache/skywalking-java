@@ -164,7 +164,7 @@ Release Tag :
 
 Release CommitID :
 
- * https://github.com/apache/skywalking/tree/(Git Commit ID)
+ * https://github.com/apache/skywalking-java/tree/(Git Commit ID)
  * Git submodule
    * apm-protocol/apm-network/src/main/proto: https://github.com/apache/skywalking-data-collect-protocol/tree/(Git Commit ID)
 

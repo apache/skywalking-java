@@ -118,33 +118,33 @@ segmentItems:
         - {key: db.statement, value: hdel a}
       skipAnalysis: 'false'
     - operationName: Jedis/set
-        parentSpanId: 0
-        spanId: 8
-        spanLayer: Cache
-        startTime: nq 0
-        endTime: nq 0
-        componentId: 30
-        isError: false
-        spanType: Exit
-        peer: redis-server:6379
-        tags:
-          - { key: db.type, value: Redis }
-          - { key: db.statement, value: set key }
-        skipAnalysis: 'false'
+      parentSpanId: 0
+      spanId: 8
+      spanLayer: Cache
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 30
+      isError: false
+      spanType: Exit
+      peer: redis-server:6379
+      tags:
+        - { key: db.type, value: Redis }
+        - { key: db.statement, value: set key }
+      skipAnalysis: 'false'
     - operationName: Jedis/expire
-        parentSpanId: 0
-        spanId: 9
-        spanLayer: Cache
-        startTime: nq 0
-        endTime: nq 0
-        componentId: 30
-        isError: false
-        spanType: Exit
-        peer: redis-server:6379
-        tags:
-          - { key: db.type, value: Redis }
-          - { key: db.statement, value: expire key }
-        skipAnalysis: 'false'
+      parentSpanId: 0
+      spanId: 9
+      spanLayer: Cache
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 30
+      isError: false
+      spanType: Exit
+      peer: redis-server:6379
+      tags:
+        - { key: db.type, value: Redis }
+        - { key: db.statement, value: expire key }
+      skipAnalysis: 'false'
     - operationName: GET:/jedis-scenario/case/jedis-scenario
       parentSpanId: -1
       spanId: 0

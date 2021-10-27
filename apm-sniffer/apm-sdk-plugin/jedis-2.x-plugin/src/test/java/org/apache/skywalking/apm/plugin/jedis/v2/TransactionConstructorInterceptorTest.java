@@ -25,9 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 import redis.clients.jedis.Client;
-import redis.clients.jedis.Pipeline;
-
-import java.lang.reflect.Method;
 
 import static org.mockito.Mockito.verify;
 

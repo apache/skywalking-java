@@ -5,7 +5,7 @@ Release Notes.
 8.9.0
 ------------------
 
-
+* Support `Transaction` and fix duplicated methods enhancements for `jedis-2.x` plugin.
 
 #### Documentation
 

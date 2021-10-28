@@ -47,6 +47,11 @@ public class CaseController {
         try (RedisPipelineCommandExecutor command = new RedisPipelineCommandExecutor(redisHost, redisPort)) {
             command.pipelineExecute();
         }
+
+        try (RedisTransactionCommandExecutor command = new RedisTransactionCommandExecutor(redisHost, redisPort)) {
+            command.multiExecute();
+        }
+
         return SUCCESS;
     }
 

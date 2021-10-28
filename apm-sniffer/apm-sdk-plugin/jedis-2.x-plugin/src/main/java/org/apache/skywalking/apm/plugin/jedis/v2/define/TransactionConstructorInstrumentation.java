@@ -21,48 +21,43 @@ package org.apache.skywalking.apm.plugin.jedis.v2.define;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.DeclaredInstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.jedis.v2.RedisMethodMatch;
 
+import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class MultiKeyPipelineBaseInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class TransactionConstructorInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "redis.clients.jedis.MultiKeyPipelineBase";
-    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v2.JedisMethodInterceptor";
+    private static final String ENHANCE_CLASS = "redis.clients.jedis.Transaction";
+    private static final String TRANSACTION_CONSTRUCTION_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v2.TransactionConstructorInterceptor";
+    private static final String ARGUMENT_TYPE_NAME = "redis.clients.jedis.Client";
 
     @Override
-    public ClassMatch enhanceClass() {
+    protected ClassMatch enhanceClass() {
         return byName(ENHANCE_CLASS);
     }
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[]{
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return takesArgumentWithType(0, ARGUMENT_TYPE_NAME);
+                    }
+
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return TRANSACTION_CONSTRUCTION_INTERCEPT_CLASS;
+                    }
+                }
+        };
     }
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
-            new DeclaredInstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return RedisMethodMatch.INSTANCE.getJedisMethodMatcher();
-                }
-
-                @Override
-                public String getMethodsInterceptor() {
-                    return JEDIS_METHOD_INTERCEPT_CLASS;
-                }
-
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            }
-        };
+        return new InstanceMethodsInterceptPoint[0];
     }
 }

@@ -18,23 +18,12 @@
 
 package org.apache.skywalking.apm.plugin.okhttp.common;
 
-import okhttp3.Headers;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
-import org.apache.skywalking.apm.agent.core.context.CarrierItem;
-import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
+import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 /**
  * {@link AsyncCallInterceptor} get the `EnhanceRequiredInfo` instance from `SkyWalkingDynamicField` and then put it
@@ -44,18 +33,6 @@ import java.lang.reflect.Method;
  * called.
  */
 public class AsyncCallInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
-
-    private static Field FIELD_HEADERS_OF_REQUEST;
-
-    static {
-        try {
-            final Field field = Request.class.getDeclaredField("headers");
-            field.setAccessible(true);
-            FIELD_HEADERS_OF_REQUEST = field;
-        } catch (Exception ignore) {
-            FIELD_HEADERS_OF_REQUEST = null;
-        }
-    }
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
@@ -71,43 +48,23 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
+            MethodInterceptResult result) throws Throwable {
         EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) objInst.getSkyWalkingDynamicField();
-        Request request = (Request) enhanceRequiredInfo.getRealCallEnhance().getSkyWalkingDynamicField();
-
-        HttpUrl requestUrl = request.url();
-        AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri()
-                                                                    .getPath(), requestUrl.host() + ":" + requestUrl.port());
+        ContextManager.createLocalSpan("Async/execute");
         ContextManager.continued(enhanceRequiredInfo.getContextSnapshot());
-        ContextCarrier contextCarrier = new ContextCarrier();
-        ContextManager.inject(contextCarrier);
-        span.setComponent(ComponentsDefine.OKHTTP);
-        Tags.HTTP.METHOD.set(span, request.method());
-        Tags.URL.set(span, requestUrl.uri().toString());
-        SpanLayer.asHttp(span);
-
-        if (FIELD_HEADERS_OF_REQUEST != null) {
-            Headers.Builder headerBuilder = request.headers().newBuilder();
-            CarrierItem next = contextCarrier.items();
-            while (next.hasNext()) {
-                next = next.next();
-                headerBuilder.set(next.getHeadKey(), next.getHeadValue());
-            }
-            FIELD_HEADERS_OF_REQUEST.set(request, headerBuilder.build());
-        }
 
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
+            Object ret) throws Throwable {
         ContextManager.stopSpan();
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+            Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
     }
 }

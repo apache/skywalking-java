@@ -15,6 +15,10 @@
 
 FROM skywalking/skywalking-java:latest-java8
 
+ARG ENABLE_KAFKA_REPORTER
+
+RUN if [[ "${ENABLE_KAFKA_REPORTER}" == "true" ]]; then cp -rf /skywalking/agent/optional-reporter-plugins/* /skywalking/agent/plugins/ ; fi
+
 VOLUME /services
 ADD target/e2e-service-provider.jar /services/
 

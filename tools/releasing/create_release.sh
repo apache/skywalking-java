@@ -43,7 +43,7 @@ PRODUCT_NAME=${PRODUCT_NAME}-${RELEASE_VERSION}
 rm -rf ${PRODUCT_NAME}
 mkdir ${PRODUCT_NAME}
 
-git clone https://github.com/apache/skywalking.git ./${PRODUCT_NAME}
+git clone https://github.com/apache/skywalking-java.git ./${PRODUCT_NAME}
 cd ${PRODUCT_NAME}
 
 TAG_EXIST=`git tag -l ${TAG_NAME} | wc -l`
@@ -75,4 +75,5 @@ shasum -a 512 ${PRODUCT_NAME}-src.tgz > ${PRODUCT_NAME}-src.tgz.sha512
 
 # Build binary tar
 cd ${PRODUCT_NAME}
+export TAG=${RELEASE_VERSION}
 make dist

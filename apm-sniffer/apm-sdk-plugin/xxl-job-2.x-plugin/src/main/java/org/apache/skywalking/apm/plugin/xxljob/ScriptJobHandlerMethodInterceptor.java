@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.xxljob;
 
-import com.xxl.job.core.context.XxlJobHelper;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -29,7 +28,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
 
-import static org.apache.skywalking.apm.plugin.xxljob.Constants.JOB_PARAM;
+import static org.apache.skywalking.apm.plugin.xxljob.Constants.*;
 
 /**
  * Intercept method of {@link com.xxl.job.core.handler.impl.ScriptJobHandler#execute()}.
@@ -50,7 +49,9 @@ public class ScriptJobHandlerMethodInterceptor implements InstanceMethodsAroundI
         if (allArguments.length > 0) {
             jobParam = (String) allArguments[0];
         } else {
-            jobParam = XxlJobHelper.getJobParam();
+            Class<?> xxlJobHelper = Class.forName(XXL_JOB_HELPER);
+            Method getJobParam = xxlJobHelper.getMethod(XXL_JOB_HELPER_GET_PARAM_METHOD);
+            jobParam = (String) getJobParam.invoke(null);
         }
         span.tag(JOB_PARAM, jobParam);
     }

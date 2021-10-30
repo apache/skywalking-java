@@ -22,7 +22,7 @@ inputs:
   java_version:
     description: "The Java version under which this test case will run"
     required: false
-    default: "jdk8"
+    default: "8"
 runs:
   using: "composite"
   steps:

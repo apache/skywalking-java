@@ -80,6 +80,13 @@
             <artifactId>gson</artifactId>
             <version>${test.framework.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>http-client</artifactId>
+            <version>1.1.1.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -88,13 +95,27 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>com.rabbitmq</groupId>
+                            <artifactId>http-client</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+
                 <executions>
                     <execution>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
+                        <configuration>
+
+                        </configuration>
                     </execution>
                 </executions>
+
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

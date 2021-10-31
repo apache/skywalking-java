@@ -9,6 +9,8 @@ Release Notes.
 
 #### Documentation
 
+* Add a FAQ, `Why is `-Djava.ext.dirs` not supported?`.
+
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/99?closed=1)
 
 ------------------

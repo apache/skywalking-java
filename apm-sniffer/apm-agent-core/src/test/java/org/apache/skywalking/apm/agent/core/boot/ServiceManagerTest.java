@@ -32,6 +32,7 @@ import org.apache.skywalking.apm.agent.core.profile.ProfileTaskChannelService;
 import org.apache.skywalking.apm.agent.core.profile.ProfileTaskExecutionService;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelListener;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
+import org.apache.skywalking.apm.agent.core.remote.LogReportServiceClient;
 import org.apache.skywalking.apm.agent.core.remote.TraceSegmentServiceClient;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
 import org.apache.skywalking.apm.agent.core.test.tools.AgentServiceRule;
@@ -68,6 +69,7 @@ public class ServiceManagerTest {
         assertProfileTaskQueryService(ServiceManager.INSTANCE.findService(ProfileTaskChannelService.class));
         assertProfileTaskExecuteService(ServiceManager.INSTANCE.findService(ProfileTaskExecutionService.class));
         assertMeterRegisterService(ServiceManager.INSTANCE.findService(MeterService.class));
+        assertLogReporterServiceClient(ServiceManager.INSTANCE.findService(LogReportServiceClient.class));
 
         assertTracingContextListener();
         assertIgnoreTracingContextListener();
@@ -107,7 +109,7 @@ public class ServiceManagerTest {
         assertNotNull(service);
 
         List<GRPCChannelListener> listeners = getFieldValue(service, "listeners");
-        assertEquals(listeners.size(), 9);
+        assertEquals(listeners.size(), 10);
     }
 
     private void assertSamplingService(SamplingService service) {
@@ -123,6 +125,10 @@ public class ServiceManagerTest {
     }
 
     private void assertMeterRegisterService(MeterService service) {
+        assertNotNull(service);
+    }
+
+    private void assertLogReporterServiceClient(LogReportServiceClient service) {
         assertNotNull(service);
     }
 

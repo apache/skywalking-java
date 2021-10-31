@@ -19,11 +19,16 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - {operationName: Async/okhttp-case/case/receiveContext-0, operationId: 0, parentSpanId: 0,
-      spanId: 1, startTime: nq 0, endTime: nq 0, componentId: 0, isError: false, spanType: Local,
-      skipAnalysis: 'false'}
-    - operationName: /case/okhttp-case
-      operationId: 0
+    - operationName: Async/okhttp-case/case/receiveContext-0
+      parentSpanId: 0
+      spanId: 1
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      skipAnalysis: 'false'
+    - operationName: GET:/case/okhttp-case
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -38,8 +43,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: /case/receiveContext-0
-      operationId: 0
+    - operationName: GET:/case/receiveContext-0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -52,14 +56,13 @@ segmentItems:
       - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-0'}
       - {key: http.method, value: GET}
       refs:
-      - {parentEndpoint: /okhttp-case/case/receiveContext-0, networkAddress: '127.0.0.1:8080',
-        refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+      - {parentEndpoint: Async/execute, networkAddress: '127.0.0.1:8080',
+        refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: okhttp-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: /case/receiveContext-1
-      operationId: 0
+    - operationName: GET:/case/receiveContext-1
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -72,16 +75,15 @@ segmentItems:
       - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-1'}
       - {key: http.method, value: GET}
       refs:
-      - {parentEndpoint: /okhttp-case/case/receiveContext-0, networkAddress: '127.0.0.1:8080',
-        refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+      - {parentEndpoint: Async/execute, networkAddress: '127.0.0.1:8080',
+        refType: CrossProcess, parentSpanId: 3, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: okhttp-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: /okhttp-case/case/receiveContext-0
-      operationId: 0
-      parentSpanId: -1
-      spanId: 0
+      parentSpanId: 0
+      spanId: 1
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
@@ -92,8 +94,37 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-0'}
-      refs:
-      - {parentEndpoint: /case/okhttp-case, networkAddress: '', refType: CrossThread,
-        parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
-          null, parentService: okhttp-scenario, traceId: not null}
       skipAnalysis: 'false'
+    - operationName: /okhttp-case/case/receiveContext-1
+      parentSpanId: 2
+      spanId: 3
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 12
+      isError: false
+      spanType: Exit
+      peer: 127.0.0.1:8080
+      skipAnalysis: false
+      tags:
+      - {key: http.method, value: GET}
+      - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-1'}
+    - {operationName: Callback/onResponse, parentSpanId: 0, spanId: 2,
+      spanLayer: Unknown, startTime: nq 0, endTime: nq 0, componentId: 0,
+      isError: false, spanType: Local, peer: '', skipAnalysis: false}
+    - operationName: Async/execute
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: false
+      refs:
+      - {parentEndpoint: 'GET:/case/okhttp-case', networkAddress: '', refType: CrossThread,
+        parentSpanId: 1, parentTraceSegmentId: not null,
+        parentServiceInstance: not null, parentService: okhttp-scenario,
+        traceId: not null}

@@ -19,10 +19,15 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - {operationName: /is_static_method, operationId: 0, parentSpanId: 0, spanId: 1,
-      startTime: nq 0, endTime: nq 0, isError: false, spanType: Local, skipAnalysis: 'false'}
+    - operationName: /is_static_method
+      parentSpanId: 0
+      spanId: 1
+      startTime: nq 0
+      endTime: nq 0
+      isError: false
+      spanType: Local
+      skipAnalysis: 'false'
     - operationName: /is_static_method_args/id/123/a
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       startTime: nq 0
@@ -36,12 +41,15 @@ segmentItems:
       - logEvent:
         - {key: log_1, value: '3'}
       skipAnalysis: 'false'
-    - {operationName: test.apache.skywalking.apm.testcase.customize.service.TestService1.method(),
-      operationId: 0, parentSpanId: 0, spanId: 3, startTime: nq 0, endTime: nq 0,
-      isError: false, spanType: Local, skipAnalysis: 'false'}
-    - operationName: /method_2/str0
-      operationId: 0
+    - operationName: test.apache.skywalking.apm.testcase.customize.service.TestService1.method()
       parentSpanId: 0
+      spanId: 3
+      startTime: nq 0
+      endTime: nq 0
+      isError: false
+      spanType: Local
+      skipAnalysis: 'false'
+    - operationName: /method_2/str0
       spanId: 4
       startTime: nq 0
       endTime: nq 0
@@ -54,7 +62,6 @@ segmentItems:
         - {key: log_1, value: '123'}
       skipAnalysis: 'false'
     - operationName: /method_3/id/name/100
-      operationId: 0
       parentSpanId: 0
       spanId: 5
       startTime: nq 0
@@ -68,7 +75,6 @@ segmentItems:
         - {key: log_map, value: v1}
       skipAnalysis: 'false'
     - operationName: /is_2_static_method
-      operationId: 0
       parentSpanId: 0
       spanId: 6
       startTime: nq 0
@@ -82,7 +88,6 @@ segmentItems:
         - {key: log_1_1, value: '123'}
       skipAnalysis: 'false'
     - operationName: /method_4
-      operationId: 0
       parentSpanId: 0
       spanId: 7
       startTime: nq 0
@@ -93,7 +98,6 @@ segmentItems:
       - {key: tag_4_1, value: '1'}
       skipAnalysis: 'false'
     - operationName: /method_5
-      operationId: 0
       parentSpanId: 0
       spanId: 8
       startTime: nq 0
@@ -106,8 +110,7 @@ segmentItems:
       - logEvent:
         - {key: log_5_1, value: '123'}
       skipAnalysis: 'false'
-    - operationName: /case/customize
-      operationId: 0
+    - operationName: GET:/case/customize
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

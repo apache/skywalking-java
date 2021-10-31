@@ -247,6 +247,13 @@ public class Config {
         public static int BUFFER_SIZE = 60 * 10;
     }
 
+    public static class Log {
+        /**
+         * The max size of message to send to server.Default is 10 MB.
+         */
+        public static int MAX_MESSAGE_SIZE = 10 * 1024 * 1024;
+    }
+
     public static class Buffer {
         public static int CHANNEL_SIZE = 5;
 

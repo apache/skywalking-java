@@ -1,0 +1,120 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+segmentItems:
+  - serviceName: httpclient-5.x-scenario
+    segmentSize: ge 4
+    segments:
+      - segmentId: not null
+        spans:
+          - operationName: GET:/httpclient-5.x/back
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 1
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/back'}
+              - {key: http.method, value: GET}
+            refs:
+              - {parentEndpoint: httpasyncclient/local, networkAddress: '127.0.0.1:8080',
+                refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+                 null, parentService: httpclient-5.x-scenario, traceId: not null}
+            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
+          - operationName: /httpclient-5.x/back
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 26
+            isError: false
+            spanType: Exit
+            peer: 127.0.0.1:8080
+            tags:
+              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/back'}
+              - {key: http.method, value: GET}
+            skipAnalysis: 'false'
+          - operationName: httpasyncclient/local
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 26
+            isError: false
+            spanType: Local
+            peer: ''
+            refs:
+              - {parentEndpoint: GET:/httpclient-5.x/case/asyncGet, networkAddress: '',
+                refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                 null, parentService: httpclient-5.x-scenario, traceId: not null}
+            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
+          - operationName: GET:/httpclient-5.x/case/asyncGet
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 1
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/case/asyncGet'}
+              - {key: http.method, value: GET}
+            refs:
+              - {parentEndpoint: GET:/httpclient-5.x/case/get, networkAddress: '127.0.0.1:8080',
+                refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+                 null, parentService: httpclient-5.x-scenario, traceId: not null}
+            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
+          - operationName: /httpclient-5.x/case/asyncGet
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 2
+            isError: false
+            spanType: Exit
+            peer: 127.0.0.1:8080
+            tags:
+              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/case/asyncGet'}
+              - {key: http.method, value: GET}
+            skipAnalysis: 'false'
+          - operationName: GET:/httpclient-5.x/case/get
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 1
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/case/get'}
+              - {key: http.method, value: GET}
+            skipAnalysis: 'false'

@@ -190,7 +190,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: /druid-1.x-scenario/case/druid-1.x-scenario
+    - operationName: GET:/druid-1.x-scenario/case/druid-1.x-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

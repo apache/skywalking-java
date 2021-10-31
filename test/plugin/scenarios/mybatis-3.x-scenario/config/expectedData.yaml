@@ -20,7 +20,6 @@ segmentItems:
     - segmentId: not null
       spans:
       - operationName: Mysql/JDBI/PreparedStatement/execute
-        operationId: 0
         parentSpanId: 1
         spanId: 2
         spanLayer: Database
@@ -36,7 +35,6 @@ segmentItems:
         - {key: db.instance, value: ''}
         - {key: db.statement, value: 'insert into test.table_demo (name) values (?)'}
       - operationName: org.apache.ibatis.session.defaults.DefaultSqlSession.insert(java.lang.String,java.lang.Object)
-        operationId: 0
         parentSpanId: 0
         spanId: 1
         spanLayer: Unknown
@@ -50,7 +48,6 @@ segmentItems:
         tags:
         - {key: mybatis.mapper, value: test.apache.skywalking.apm.testcase.mybatis.mapper.DemoMapper.insert}
       - operationName: Mysql/JDBI/Connection/close
-        operationId: 0
         parentSpanId: 0
         spanId: 3
         spanLayer: Database
@@ -66,7 +63,6 @@ segmentItems:
           - {key: db.instance, value: ''}
           - {key: db.statement, value: ''}
       - operationName: Mysql/JDBI/PreparedStatement/execute
-        operationId: 0
         parentSpanId: 4
         spanId: 5
         spanLayer: Database
@@ -82,7 +78,6 @@ segmentItems:
         - {key: db.instance, value: ''}
         - {key: db.statement, value: 'insert into test.table_demo (name) values (?)'}
       - operationName: org.apache.ibatis.session.defaults.DefaultSqlSession.insert(java.lang.String,java.lang.Object)
-        operationId: 0
         parentSpanId: 0
         spanId: 4
         spanLayer: Unknown
@@ -96,7 +91,6 @@ segmentItems:
         tags:
         - {key: mybatis.mapper, value: test.apache.skywalking.apm.testcase.mybatis.mapper.DemoMapper.insert}
       - operationName: Mysql/JDBI/Connection/close
-        operationId: 0
         parentSpanId: 0
         spanId: 6
         spanLayer: Database
@@ -111,8 +105,7 @@ segmentItems:
         - {key: db.type, value: sql}
         - {key: db.instance, value: ''}
         - {key: db.statement, value: ''}
-      - operationName: /case/mybatis-case
-        operationId: 0
+      - operationName: GET:/case/mybatis-case
         parentSpanId: -1
         spanId: 0
         spanLayer: Http

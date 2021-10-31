@@ -58,6 +58,14 @@ public class URLParserTest {
     }
 
     @Test
+    public void testParseMysqlJDBCURLWitOutDatabase() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:mysql//primaryhost:3307?profileSQL=true");
+        assertThat(connectionInfo.getDBType(), is("Mysql"));
+        assertThat(connectionInfo.getDatabaseName(), is(""));
+        assertThat(connectionInfo.getDatabasePeer(), is("primaryhost:3307"));
+    }
+
+    @Test
     public void testParseMysqlJDBCURLWithConnectorJs() {
         ConnectionInfo connectionInfo = new URLParser().parser("jdbc:mysql:replication://master,slave1,slave2,slave3/test");
         assertThat(connectionInfo.getDBType(), is("Mysql"));

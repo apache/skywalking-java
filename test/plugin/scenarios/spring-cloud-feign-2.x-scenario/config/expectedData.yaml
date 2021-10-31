@@ -19,14 +19,13 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: /spring-cloud-feign-2.x-scenario/case/healthCheck
-            operationId: 0
+          - operationName: HEAD:/spring-cloud-feign-2.x-scenario/case/healthCheck
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -37,13 +36,12 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: /spring-cloud-feign-2.x-scenario/create/
-            operationId: 0
             parentSpanId: 1
             spanId: 2
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 11
             isError: false
             spanType: Exit
             peer: localhost:8080
@@ -52,13 +50,12 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/create/'}
             skipAnalysis: 'false'
           - operationName: Balancer/spring-cloud-feign-2.x-scenario/create/
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 11
             isError: false
             spanType: Local
             peer: ''
@@ -67,13 +64,12 @@ segmentItems:
               - {key: url, value: 'http://spring-cloud-feign-2.x-scenario/spring-cloud-feign-2.x-scenario/create/'}
             skipAnalysis: 'false'
           - operationName: /spring-cloud-feign-2.x-scenario/get/1
-            operationId: 0
             parentSpanId: 3
             spanId: 4
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 11
             isError: false
             spanType: Exit
             peer: localhost:8080
@@ -82,13 +78,12 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/get/1'}
             skipAnalysis: 'false'
           - operationName: Balancer/spring-cloud-feign-2.x-scenario/get/{id}
-            operationId: 0
             parentSpanId: 0
             spanId: 3
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 11
             isError: false
             spanType: Local
             peer: ''
@@ -97,7 +92,6 @@ segmentItems:
               - {key: url, value: 'http://spring-cloud-feign-2.x-scenario/spring-cloud-feign-2.x-scenario/get/1'}
             skipAnalysis: 'false'
           - operationName: /spring-cloud-feign-2.x-scenario/update/1
-            operationId: 0
             parentSpanId: 5
             spanId: 6
             spanLayer: Http
@@ -112,7 +106,6 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/update/1'}
             skipAnalysis: 'false'
           - operationName: Balancer/spring-cloud-feign-2.x-scenario/update/{id}
-            operationId: 0
             parentSpanId: 0
             spanId: 5
             spanLayer: Http
@@ -127,7 +120,6 @@ segmentItems:
               - {key: url, value: 'http://spring-cloud-feign-2.x-scenario/spring-cloud-feign-2.x-scenario/update/1'}
             skipAnalysis: 'false'
           - operationName: /spring-cloud-feign-2.x-scenario/delete/1
-            operationId: 0
             parentSpanId: 7
             spanId: 8
             spanLayer: Http
@@ -142,7 +134,6 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/delete/1'}
             skipAnalysis: 'false'
           - operationName: Balancer/spring-cloud-feign-2.x-scenario/delete/{id}
-            operationId: 0
             parentSpanId: 0
             spanId: 7
             spanLayer: Http
@@ -156,14 +147,13 @@ segmentItems:
               - {key: http.method, value: DELETE}
               - {key: url, value: 'http://spring-cloud-feign-2.x-scenario/spring-cloud-feign-2.x-scenario/delete/1'}
             skipAnalysis: 'false'
-          - operationName: /spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario
-            operationId: 0
+          - operationName: GET:/spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -173,14 +163,13 @@ segmentItems:
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: /spring-cloud-feign-2.x-scenario/create/
-            operationId: 0
+          - operationName: POST:/spring-cloud-feign-2.x-scenario/create/
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -188,21 +177,20 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/create/'}
               - {key: http.method, value: POST}
             refs:
-              - {parentEndpoint: /spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
+              - {parentEndpoint: GET:/spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
                  networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 2,
                  parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: spring-cloud-feign-2.x-scenario,
                  traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: /spring-cloud-feign-2.x-scenario/get/1
-            operationId: 0
+          - operationName: GET:/spring-cloud-feign-2.x-scenario/get/1
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -210,21 +198,20 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/get/1'}
               - {key: http.method, value: GET}
             refs:
-              - {parentEndpoint: /spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
+              - {parentEndpoint: GET:/spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
                  networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 4,
                  parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: spring-cloud-feign-2.x-scenario,
                  traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: /spring-cloud-feign-2.x-scenario/update/1
-            operationId: 0
+          - operationName: PUT:/spring-cloud-feign-2.x-scenario/update/1
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -232,21 +219,20 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/update/1'}
               - {key: http.method, value: PUT}
             refs:
-              - {parentEndpoint: /spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
+              - {parentEndpoint: GET:/spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
                  networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 6,
                  parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: spring-cloud-feign-2.x-scenario,
                  traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: /spring-cloud-feign-2.x-scenario/delete/1
-            operationId: 0
+          - operationName: DELETE:/spring-cloud-feign-2.x-scenario/delete/1
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -254,7 +240,7 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-2.x-scenario/delete/1'}
               - {key: http.method, value: DELETE}
             refs:
-              - {parentEndpoint: /spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
+              - {parentEndpoint: GET:/spring-cloud-feign-2.x-scenario/case/spring-cloud-feign-2.x-scenario,
                  networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 8,
                  parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: spring-cloud-feign-2.x-scenario,
                  traceId: not null}

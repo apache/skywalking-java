@@ -22,6 +22,7 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.FieldAccessor;
 import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.implementation.SuperMethodCall;
 import net.bytebuddy.implementation.bind.annotation.Morph;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -29,9 +30,11 @@ import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDef
 import org.apache.skywalking.apm.agent.core.plugin.EnhanceContext;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapInstrumentBoost;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.EnhanceException;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ConstructorInter;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.ConstructorInterceptV2Point;
@@ -105,14 +108,20 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
     protected DynamicType.Builder<?> enhanceInstance(TypeDescription typeDescription,
                                                      DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader,
                                                      EnhanceContext context) throws PluginException {
+        ConstructorInterceptPoint[] constructorInterceptPoints = getConstructorsInterceptPoints();
         InstanceMethodsInterceptV2Point[] instanceMethodsInterceptV2Points = getInstanceMethodsInterceptV2Points();
         String enhanceOriginClassName = typeDescription.getTypeName();
+
+        boolean existedConstructorInterceptPoint = false;
+        if (constructorInterceptPoints != null && constructorInterceptPoints.length > 0) {
+            existedConstructorInterceptPoint = true;
+        }
         boolean existedMethodsInterceptV2Points = false;
         if (instanceMethodsInterceptV2Points != null && instanceMethodsInterceptV2Points.length > 0) {
             existedMethodsInterceptV2Points = true;
         }
 
-        if (!existedMethodsInterceptV2Points) {
+        if (!existedConstructorInterceptPoint && !existedMethodsInterceptV2Points) {
             return newClassBuilder;
         }
 
@@ -123,6 +132,23 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                                                  .implement(EnhancedInstance.class)
                                                  .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
                 context.extendObjectCompleted();
+            }
+        }
+
+        if (existedConstructorInterceptPoint) {
+            for (ConstructorInterceptPoint constructorInterceptPoint : constructorInterceptPoints) {
+                if (isBootstrapInstrumentation()) {
+                    newClassBuilder = newClassBuilder.constructor(constructorInterceptPoint.getConstructorMatcher())
+                                                     .intercept(SuperMethodCall.INSTANCE.andThen(MethodDelegation.withDefaultConfiguration()
+                                                                                                                 .to(BootstrapInstrumentBoost
+                                                                                                                         .forInternalDelegateClass(constructorInterceptPoint
+                                                                                                                                                       .getConstructorInterceptor()))));
+                } else {
+                    newClassBuilder = newClassBuilder.constructor(constructorInterceptPoint.getConstructorMatcher())
+                                                     .intercept(SuperMethodCall.INSTANCE.andThen(MethodDelegation.withDefaultConfiguration()
+                                                                                                                 .to(new ConstructorInter(constructorInterceptPoint
+                                                                                                                                              .getConstructorInterceptor(), classLoader))));
+                }
             }
         }
 

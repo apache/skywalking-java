@@ -135,6 +135,7 @@ public class RestMappingMethodInterceptorTest {
                 Method m = mappingClass1.getClass().getMethod("getRequestURL");
                 when(request.getRequestURI()).thenReturn("/test/testRequestURL");
                 when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/getRequestURL"));
+                when(request.getMethod()).thenReturn("GET");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -147,7 +148,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "{GET}", "/getRequestURL");
+        assertHttpSpan(spans.get(0), "GET:", "/getRequestURL");
     }
 
     @Test
@@ -160,6 +161,7 @@ public class RestMappingMethodInterceptorTest {
                 Method m = mappingClass1.getClass().getMethod("postRequestURL");
                 when(request.getRequestURI()).thenReturn("/test/testRequestURL");
                 when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/postRequestURL"));
+                when(request.getMethod()).thenReturn("POST");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -173,7 +175,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "{POST}", "/postRequestURL");
+        assertHttpSpan(spans.get(0), "POST:", "/postRequestURL");
     }
 
     @Test
@@ -186,6 +188,7 @@ public class RestMappingMethodInterceptorTest {
                 Method m = mappingClass1.getClass().getMethod("putRequestURL");
                 when(request.getRequestURI()).thenReturn("/test/testRequestURL");
                 when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/putRequestURL"));
+                when(request.getMethod()).thenReturn("PUT");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -199,7 +202,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "{PUT}", "/putRequestURL");
+        assertHttpSpan(spans.get(0), "PUT:", "/putRequestURL");
     }
 
     @Test
@@ -213,6 +216,7 @@ public class RestMappingMethodInterceptorTest {
                 when(request.getRequestURI()).thenReturn("/test/testRequestURL");
                 when(request.getRequestURL()).thenReturn(
                     new StringBuffer("http://localhost:8080/test/deleteRequestURL"));
+                when(request.getMethod()).thenReturn("DELETE");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -226,7 +230,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "{DELETE}", "/deleteRequestURL");
+        assertHttpSpan(spans.get(0), "DELETE:", "/deleteRequestURL");
     }
 
     @Test
@@ -240,6 +244,7 @@ public class RestMappingMethodInterceptorTest {
                 when(request.getRequestURI()).thenReturn("/test/testRequestURL");
                 when(request.getRequestURL()).thenReturn(
                     new StringBuffer("http://localhost:8080/test/patchRequestURL"));
+                when(request.getMethod()).thenReturn("PATCH");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -252,7 +257,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "{PATCH}", "/patchRequestURL");
+        assertHttpSpan(spans.get(0), "PATCH:", "/patchRequestURL");
     }
 
     @Test
@@ -265,6 +270,7 @@ public class RestMappingMethodInterceptorTest {
                 Method m = mappingClass1.getClass().getMethod("dummy");
                 when(request.getRequestURI()).thenReturn("/test");
                 when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test"));
+                when(request.getMethod()).thenReturn("GET");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -278,7 +284,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "", "");
+        assertHttpSpan(spans.get(0), "GET:", "");
     }
 
     @Test
@@ -291,6 +297,7 @@ public class RestMappingMethodInterceptorTest {
                 Method m = mappingClass1.getClass().getMethod("getRequestURL");
                 when(request.getRequestURI()).thenReturn("/test/testRequestURL");
                 when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/getRequestURL"));
+                when(request.getMethod()).thenReturn("GET");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -304,7 +311,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "{GET}", "/getRequestURL");
+        assertHttpSpan(spans.get(0), "GET:", "/getRequestURL");
         List<LogDataEntity> logDataEntities = SpanHelper.getLogs(spans.get(0));
         assertThat(logDataEntities.size(), is(1));
         SpanAssert.assertException(logDataEntities.get(0), RuntimeException.class);
@@ -323,6 +330,7 @@ public class RestMappingMethodInterceptorTest {
                 when(request.getHeaderNames()).thenReturn(new Vector(Arrays.asList("Connection", "Cookie")).elements());
                 when(request.getHeaders("connection")).thenReturn(new Vector(Arrays.asList("keep-alive")).elements());
                 when(request.getHeaders("cookie")).thenReturn(new Vector(Arrays.asList("dummy cookies")).elements());
+                when(request.getMethod()).thenReturn("GET");
                 ServletRequestAttributes servletRequestAttributes = new ServletRequestAttributes(request, response);
                 RequestContextHolder.setRequestAttributes(servletRequestAttributes);
 
@@ -335,7 +343,7 @@ public class RestMappingMethodInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
 
-        assertHttpSpan(spans.get(0), "{GET}", "/getRequestURL");
+        assertHttpSpan(spans.get(0), "GET:", "/getRequestURL");
         SpanAssert.assertTag(spans.get(0), 2, "connection=[keep-alive]");
     }
 

@@ -19,8 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /xxl-job-2.x-scenario/case/simpleJob
-      operationId: 0
+    - operationName: GET:/xxl-job-2.x-scenario/case/simpleJob
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -39,7 +38,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /xxl-job-2.x-scenario/case/simpleJob
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -54,7 +52,6 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/simpleJob'}
     - operationName: xxl-job/SimpleJob/test.apache.skywalking.apm.testcase.xxljob.job.BeanJob
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -70,8 +67,7 @@ segmentItems:
       - {key: jobParam, value: 'k=1'}
   - segmentId: not null
     spans:
-    - operationName: /xxl-job-2.x-scenario/case/methodJob
-      operationId: 0
+    - operationName: GET:/xxl-job-2.x-scenario/case/methodJob
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -90,7 +86,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /xxl-job-2.x-scenario/case/methodJob
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -105,7 +100,6 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/methodJob'}
     - operationName: xxl-job/MethodJob/org.apache.skywalking.apm.testcase.xxljob.job.MethodJob.work
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -121,8 +115,7 @@ segmentItems:
       - {key: jobParam, value: 'k=2'}
   - segmentId: not null
     spans:
-    - operationName: /xxl-job-2.x-scenario/case/glueJob
-      operationId: 0
+    - operationName: GET:/xxl-job-2.x-scenario/case/glueJob
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -141,7 +134,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /xxl-job-2.x-scenario/case/glueJob
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -156,7 +148,6 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/glueJob'}
     - operationName: xxl-job/SimpleJob/com.xxl.job.service.handler.GlueJob
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -173,7 +164,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: xxl-job/ScriptJob/GLUE_SHELL/id/4
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown

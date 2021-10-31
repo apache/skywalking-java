@@ -19,14 +19,13 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: /spring-cloud-feign-1.2.x-scenario/case/healthCheck
-            operationId: 0
+          - operationName: HEAD:/spring-cloud-feign-1.2.x-scenario/case/healthCheck
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -36,14 +35,13 @@ segmentItems:
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: /spring-cloud-feign-1.2.x-scenario/get
-            operationId: 0
+          - operationName: GET:/spring-cloud-feign-1.2.x-scenario/get
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -51,7 +49,7 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-1.2.x-scenario/get'}
               - {key: http.method, value: GET}
             refs:
-              - {parentEndpoint: /spring-cloud-feign-1.2.x-scenario/case/spring-cloud-feign-1.2.x-scenario,
+              - {parentEndpoint: GET:/spring-cloud-feign-1.2.x-scenario/case/spring-cloud-feign-1.2.x-scenario,
                  networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: not null,
                  parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: spring-cloud-feign-1.2.x-scenario,
                  traceId: not null}
@@ -59,13 +57,12 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: /spring-cloud-feign-1.2.x-scenario/get
-            operationId: 0
             parentSpanId: 1
             spanId: 2
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 11
             isError: false
             spanType: Exit
             peer: localhost:8080
@@ -74,13 +71,12 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/spring-cloud-feign-1.2.x-scenario/get'}
             skipAnalysis: 'false'
           - operationName: Balancer/spring-cloud-feign-1.2.x-scenario/get
-            operationId: 0
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 11
             isError: false
             spanType: Local
             peer: ''
@@ -88,14 +84,13 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://spring-cloud-feign-1.2.x-scenario/spring-cloud-feign-1.2.x-scenario/get'}
             skipAnalysis: 'false'
-          - operationName: /spring-cloud-feign-1.2.x-scenario/case/spring-cloud-feign-1.2.x-scenario
-            operationId: 0
+          - operationName: GET:/spring-cloud-feign-1.2.x-scenario/case/spring-cloud-feign-1.2.x-scenario
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''

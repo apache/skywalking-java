@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.okhttp.common;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -33,9 +35,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 /**
  * {@link RealCallInterceptor} intercept the synchronous http calls by the discovery of okhttp.
@@ -62,20 +61,19 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
     /**
      * Get the {@link Request} from {@link EnhancedInstance}, then create {@link AbstractSpan} and set host,
      * port, kind, component, url from {@link Request}. Through the reflection of the way, set the http header
-     * of context data into {@link Request#headers}.
+     * of context data into {@link Request#headers()}.
      *
      * @param result change this result, if you want to truncate the method.
      */
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
+            MethodInterceptResult result) throws Throwable {
         Request request = (Request) objInst.getSkyWalkingDynamicField();
 
         ContextCarrier contextCarrier = new ContextCarrier();
         HttpUrl requestUrl = request.url();
-        AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri()
-                                                                    .getPath(), contextCarrier, requestUrl.host() + ":" + requestUrl
-            .port());
+        AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri().getPath(), contextCarrier,
+                requestUrl.host() + ":" + requestUrl.port());
         span.setComponent(ComponentsDefine.OKHTTP);
         Tags.HTTP.METHOD.set(span, request.method());
         Tags.URL.set(span, requestUrl.uri().toString());
@@ -100,7 +98,7 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
      */
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
+            Object ret) throws Throwable {
         Response response = (Response) ret;
         if (response != null) {
             int statusCode = response.code();
@@ -118,7 +116,7 @@ public class RealCallInterceptor implements InstanceMethodsAroundInterceptor, In
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+            Class<?>[] argumentsTypes, Throwable t) {
         AbstractSpan abstractSpan = ContextManager.activeSpan();
         abstractSpan.log(t);
     }

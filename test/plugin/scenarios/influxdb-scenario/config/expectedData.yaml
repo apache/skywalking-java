@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: InfluxDB/ping
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -33,8 +32,7 @@ segmentItems:
       tags:
       - {key: db.type, value: InfluxDB}
       skipAnalysis: 'false'
-    - operationName: /influxdb-scenario/case/healthCheck
-      operationId: 0
+    - operationName: HEAD:/influxdb-scenario/case/healthCheck
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -51,7 +49,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: InfluxDB/query
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -67,7 +64,6 @@ segmentItems:
       - {key: db.statement, value: 'CREATE DATABASE skywalking'}
       skipAnalysis: 'false'
     - operationName: InfluxDB/query
-      operationId: 0
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -83,7 +79,6 @@ segmentItems:
       - {key: db.statement, value: 'CREATE RETENTION POLICY one_day ON skywalking DURATION 1d REPLICATION 1 DEFAULT'}
       skipAnalysis: 'false'
     - operationName: InfluxDB/write
-      operationId: 0
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -99,7 +94,6 @@ segmentItems:
       - {key: db.statement, value: not null}
       skipAnalysis: 'false'
     - operationName: InfluxDB/query
-      operationId: 0
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -114,8 +108,7 @@ segmentItems:
       - {key: db.instance, value: skywalking}
       - {key: db.statement, value: 'SELECT * FROM heartbeat'}
       skipAnalysis: 'false'
-    - operationName: /influxdb-scenario/case/influxdb-scenario
-      operationId: 0
+    - operationName: GET:/influxdb-scenario/case/influxdb-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

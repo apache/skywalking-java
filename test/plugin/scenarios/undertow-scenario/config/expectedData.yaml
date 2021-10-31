@@ -20,7 +20,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /undertow-scenario/case/undertow
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -37,7 +36,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /undertow-routing-scenario/case/{context}
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -58,7 +56,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /undertow-scenario/case/undertow1
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -79,7 +76,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /undertow-routing-scenario/case/undertow
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -94,7 +90,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: UndertowDispatch
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown
@@ -112,7 +107,6 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /undertow-scenario/case/undertow1
-      operationId: 0
       parentSpanId: 0
       spanId: 1
       spanLayer: Http
@@ -127,7 +121,6 @@ segmentItems:
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
     - operationName: UndertowDispatch
-      operationId: 0
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown

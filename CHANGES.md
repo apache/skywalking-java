@@ -2,27 +2,11 @@ Changes by Version
 ==================
 Release Notes.
 
-8.8.0
+8.9.0
 ------------------
 
-* **Split Java agent from the main monorepo. It is a separate repository and going to release separately**.
-* Upgrade jdk 11 in dockerfile and remove unused java_opts.
-* DataCarrier changes a `#consume` API to add properties as a parameter to initialize consumer when
-  use `Class<? extends IConsumer<T>> consumerClass`.
-* Support Multiple DNS period resolving mechanism
-* Modify `Tags.STATUS_CODE` field name to `Tags.HTTP_RESPONSE_STATUS_CODE` and type from `StringTag` to `IntegerTag`, add `Tags.RPC_RESPONSE_STATUS_CODE` field to hold rpc response code value.
-* Fix kafka-reporter-plugin shade package conflict
-* Add all config items to `agent.conf` file for convenient containerization use cases.
-* Advanced Kafka Producer configuration enhancement.
-* Support mTLS for gRPC channel.
-* fix the bug that plugin record wrong time elapse for lettuce plugin
-* fix the bug that the wrong db.instance value displayed on Skywalking-UI when existing multi-database-instance on same host port pair.
-* Add thrift plugin support thrift TMultiplexedProcessor.
-* Add benchmark result for `exception-ignore` plugin and polish plugin guide.
-* Provide Alibaba Druid database connection pool plugin.
-* Provide HikariCP database connection pool plugin.
-* fix the bug that springMVC plugin will not stop span when exception throws.
 * Add support for extClassLoader
+* Support `Transaction` and fix duplicated methods enhancements for `jedis-2.x` plugin.
 
 #### Documentation
 

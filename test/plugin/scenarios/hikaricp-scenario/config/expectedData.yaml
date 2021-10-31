@@ -190,7 +190,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: /hikaricp-scenario/case/hikaricp-scenario
+    - operationName: GET:/hikaricp-scenario/case/hikaricp-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

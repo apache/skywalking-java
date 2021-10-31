@@ -90,6 +90,8 @@ jobs:
           - oracle-scenario
           - druid-1.x-scenario
           - hikaricp-scenario
+          - clickhouse-0.3.x-scenario
+          - kylin-jdbc-2.6.x-3.x-4.x-scenario
           - extclassloader-scenario
     steps:
       - uses: actions/checkout@v2

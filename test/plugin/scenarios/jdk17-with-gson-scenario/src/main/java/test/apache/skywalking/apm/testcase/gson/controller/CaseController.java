@@ -91,11 +91,11 @@ public class CaseController {
                         return null;
                     } else {
                         var recordComponents = clazz.getRecordComponents();
-                        var typeMap = new HashMap<String,TypeToken<?>>();
+                        var typeMap = new HashMap<String, TypeToken<?>>();
                         for (int i = 0; i < recordComponents.length; i++) {
                             typeMap.put(recordComponents[i].getName(), TypeToken.get(recordComponents[i].getGenericType()));
                         }
-                        var argsMap = new HashMap<String,Object>();
+                        var argsMap = new HashMap<String, Object>();
                         reader.beginObject();
                         while (reader.hasNext()) {
                             String name = reader.nextName();

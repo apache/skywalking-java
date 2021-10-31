@@ -64,7 +64,9 @@ jobs:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          java-version: 14
+          # temurin does not distribute non-lts version
+          distribution: 'zulu'
+          java-version: '14'
       - name: Run Test
         uses: ./.github/actions/run
         with:

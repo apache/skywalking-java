@@ -15,11 +15,11 @@
 # limitations under the License.
 segmentItems:
 - serviceName: extclassloader-scenario
-  segmentSize: gt 2
+  segmentSize: gt 0
   segments:
   - segmentId: not null
     spans:
-    - operationName: /extclassloader-scenario/case/receiveContext-0
+    - operationName: GET:/extclassloader-scenario/case/receiveContext-0
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -33,7 +33,7 @@ segmentItems:
       - {key: url, value: 'http://localhost:8080/extclassloader-scenario/case/receiveContext-0'}
       - {key: http.method, value: GET}
       refs:
-      - {parentEndpoint: /extclassloader-scenario/case/extclassloader-scenario, networkAddress: 'localhost:8080',
+      - {parentEndpoint: GET:/extclassloader-scenario/case/extclassloader-scenario, networkAddress: 'localhost:8080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: extclassloader-scenario, traceId: not null}
       skipAnalysis: 'false'
@@ -45,15 +45,15 @@ segmentItems:
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
-      componentId: 66
+      componentId: 2
       isError: false
       spanType: Exit
       peer: localhost:8080
       tags:
-      - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/extclassloader-scenario/case/receiveContext-0'}
+      - {key: http.method, value: GET}
       skipAnalysis: 'false'
-    - operationName: /extclassloader-scenario/case/extclassloader-scenario
+    - operationName: GET:/extclassloader-scenario/case/extclassloader-scenario
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

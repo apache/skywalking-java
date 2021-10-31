@@ -76,3 +76,6 @@ active it.
 
 - All plugins in `/plugins` folder are active. Remove the plugin jar, it disabled.
 - The default logging output folder is `/logs`.
+
+If you are using `Extension ClassLoader` for Java services, please refer
+to [Extension ClassLoader Setup](Extension-classloader.md) doc for more details.

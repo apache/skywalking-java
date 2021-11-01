@@ -269,13 +269,14 @@ export SW_VERSION=x.y.z
 git clone --depth 1 --branch v$SW_VERSION https://github.com/apache/skywalking-java.git
 cd skywalking-java
 
-svn co https://dist.apache.org/repos/dist/release/skywalking-java/$SW_VERSION release # (1)
+curl -O https://dist.apache.org/repos/dist/release/skywalking/java-agent/$SW_VERSION/apache-skywalking-java-agent-$SW_VERSION.tgz
+tar -xzvf apache-skywalking-java-agent-$SW_VERSION.tgz
 
-export SW_OUT=release
+export NAME=skywalking-java-agent
 export HUB=apache
 export TAG=$SW_VERSION
-export DIST=<the binary package name inside (1), e.g. apache-skywalking-apm-8.8.0.tar.gz>
-make docker.push -j 7
+
+make docker.push.java8 docker.push.java11
 ```
 
 ## Clean up the old releases

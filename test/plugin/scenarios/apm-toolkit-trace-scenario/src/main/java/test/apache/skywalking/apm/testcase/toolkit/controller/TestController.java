@@ -84,12 +84,41 @@ public class TestController {
             }
             return true;
         });
+        testService.asyncSupplierThenAccept(() -> {
+            try {
+                visit("http://localhost:8080/apm-toolkit-trace-scenario/case/asyncVisit/supplier");
+            } catch (IOException e) {
+                // ignore
+            }
+            return true;
+        }, c -> {
+            try {
+                visit("http://localhost:8080/apm-toolkit-trace-scenario/case/asyncVisit/consumer");
+            } catch (IOException e) {
+                // ignore
+            }
+        });
+        testService.asyncSupplierThenApply(() -> {
+            try {
+                visit("http://localhost:8080/apm-toolkit-trace-scenario/case/asyncVisit/supplier");
+            } catch (IOException e) {
+                // ignore
+            }
+            return true;
+        }, f -> {
+            try {
+                visit("http://localhost:8080/apm-toolkit-trace-scenario/case/asyncVisit/function");
+            } catch (IOException e) {
+                // ignore
+            }
+            return true;
+        });
 
         // meter
         MeterFactory.counter("test_counter").tag("ck1", "cv1").build().increment(2d);
         MeterFactory.gauge("test_gauge", () -> 1d).tag("gk1", "gv1").build();
         MeterFactory.histogram("test_histogram").tag("hk1", "hv1").steps(Arrays.asList(1d, 5d, 10d))
-                    .build().addValue(4d);
+                .build().addValue(4d);
         return SUCCESS;
     }
 
@@ -112,6 +141,18 @@ public class TestController {
 
     @RequestMapping("/asyncVisit/supplier")
     public String asyncVisitSupplier() {
+        ActiveSpan.tag(CORRELATION_CONTEXT_TAG_KEY, TraceContext.getCorrelation(CORRELATION_CONTEXT_KEY).orElse(""));
+        return SUCCESS;
+    }
+
+    @RequestMapping("/asyncVisit/consumer")
+    public String asyncVisitConsumer() {
+        ActiveSpan.tag(CORRELATION_CONTEXT_TAG_KEY, TraceContext.getCorrelation(CORRELATION_CONTEXT_KEY).orElse(""));
+        return SUCCESS;
+    }
+
+    @RequestMapping("/asyncVisit/function")
+    public String asyncVisitFunction() {
         ActiveSpan.tag(CORRELATION_CONTEXT_TAG_KEY, TraceContext.getCorrelation(CORRELATION_CONTEXT_KEY).orElse(""));
         return SUCCESS;
     }

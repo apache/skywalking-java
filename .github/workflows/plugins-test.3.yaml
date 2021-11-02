@@ -98,7 +98,7 @@ jobs:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
+          distribution: 'adopt'
           java-version: '8'
       - name: Install Oracle Libs
         if: matrix.case == 'oracle-scenario'

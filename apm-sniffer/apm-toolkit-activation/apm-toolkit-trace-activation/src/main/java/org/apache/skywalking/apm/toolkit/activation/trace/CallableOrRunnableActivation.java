@@ -41,6 +41,8 @@ public class CallableOrRunnableActivation extends ClassInstanceMethodsEnhancePlu
     private static final String CALL_METHOD_NAME = "call";
     private static final String RUN_METHOD_NAME = "run";
     private static final String GET_METHOD_NAME = "get";
+    private static final String APPLY_METHOD_NAME = "apply";
+    private static final String ACCEPT_METHOD_NAME = "accept";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -68,7 +70,9 @@ public class CallableOrRunnableActivation extends ClassInstanceMethodsEnhancePlu
                     return named(CALL_METHOD_NAME)
                         .and(takesArguments(0))
                         .or(named(RUN_METHOD_NAME).and(takesArguments(0)))
-                        .or(named(GET_METHOD_NAME).and(takesArguments(0)));
+                        .or(named(GET_METHOD_NAME).and(takesArguments(0)))
+                        .or(named(APPLY_METHOD_NAME).and(takesArguments(1)))
+                        .or(named(ACCEPT_METHOD_NAME).and(takesArguments(1)));
                 }
 
                 @Override

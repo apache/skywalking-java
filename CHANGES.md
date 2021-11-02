@@ -7,6 +7,7 @@ Release Notes.
 
 * Support `Transaction` and fix duplicated methods enhancements for `jedis-2.x` plugin.
 * Add ConsumerWrapper/FunctionWrapper to support CompletableFuture.x.thenAcceptAsync/thenApplyAsync.
+* Build CLI from Docker instead of source codes, add alpine based Docker image.
 
 #### Documentation
 

@@ -20,6 +20,7 @@ HUB ?= skywalking
 NAME ?= skywalking-java
 TAG ?= latest
 AGENT_PACKAGE ?= skywalking-agent
+CLI_VERSION ?= 0.9.0 # CLI version inside agent image should always use an Apache released artifact.
 
 .PHONY: build
 build:
@@ -33,21 +34,35 @@ dist: build
 
 # Docker build
 
-JAVA_VERSIONS := 8 11 12 13 14 15 16
-JAVA_VERSION = $(word 1, $@)
+base.adopt := java8 java11 java12 java13 java14 java15 java16
+base.temurin := java17
 
-.PHONY: $(JAVA_VERSIONS:%=java%)
-$(JAVA_VERSIONS:%=docker.java%): skywalking-agent
-	docker build --no-cache --build-arg BASE_IMAGE=adoptopenjdk/openjdk$(JAVA_VERSION:docker.java%=%):alpine-jre --build-arg DIST=$(AGENT_PACKAGE) . -t $(HUB)/$(NAME):$(TAG)-$(JAVA_VERSION:docker.%=%)
+base.all := alpine $(base.adopt) $(base.temurin)
+base.each = $(word 1, $@)
+
+base.image.alpine := alpine:3
+base.image.java8 := adoptopenjdk/openjdk8:alpine-jre
+base.image.java11 := adoptopenjdk/openjdk11:alpine-jre
+base.image.java12 := adoptopenjdk/openjdk12:alpine-jre
+base.image.java13 := adoptopenjdk/openjdk13:alpine-jre
+base.image.java14 := adoptopenjdk/openjdk14:alpine-jre
+base.image.java15 := adoptopenjdk/openjdk15:alpine-jre
+base.image.java16 := adoptopenjdk/openjdk16:alpine-jre
+base.image.java17 := eclipse-temurin:17-alpine
+
+.PHONY: $(base.all)
+$(base.all:%=docker.%): BASE_IMAGE=$($(base.each:docker.%=base.image.%))
+$(base.all:%=docker.%): docker.%: skywalking-agent
+	docker build --no-cache --build-arg BASE_IMAGE=$(BASE_IMAGE) --build-arg DIST=$(AGENT_PACKAGE) --build-arg SKYWALKING_CLI_VERSION=$(CLI_VERSION) . -t $(HUB)/$(NAME):$(TAG)-$(base.each:docker.%=%)
 
 .PHONY: docker
-docker: $(JAVA_VERSIONS:%=docker.java%)
+docker: $(base.all:%=docker.%)
 
 # Docker push
 
-.PHONY: $(JAVA_VERSIONS:%=docker.push.java%)
-$(JAVA_VERSIONS:%=docker.push.java%): $(JAVA_VERSIONS:%=docker.java%)
-	docker push $(HUB)/$(NAME):$(TAG)-$(JAVA_VERSION:docker.push.%=%)
+.PHONY: $(base.all:%=docker.push.%)
+$(base.all:%=docker.push.%): docker.push.%: docker.%
+	docker push $(HUB)/$(NAME):$(TAG)-$(base.each:docker.push.%=%)
 
 .PHONY: docker.push
-docker.push: $(JAVA_VERSIONS:%=docker.java%)
+docker.push: $(base.all:%=docker.%)

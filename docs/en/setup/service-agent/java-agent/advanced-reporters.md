@@ -32,4 +32,6 @@ plugin.kafka.producer_config_json={"delivery.timeout.ms": 12000, "compression.ty
 ```
 
 Currently, there are 2 ways to configure advanced configurations below. Notice that, the new way, configured in JSON format, will be overridden by `plugin.kafka.producer_config[key]=value` when they have the duplication keys.
+## Pulsar Reporter
+[Pulsar-reporter-plugin](https://github.com/SkyAPM/transporter-plugin-for-skywalking/blob/main/docs/en/pulsar/Pulsar-Reporter.md)
 

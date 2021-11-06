@@ -79,14 +79,14 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <base.image.java>adoptopenjdk/openjdk8:alpine-jre</base.image.java>
+                <base.image.java>adoptopenjdk/openjdk8:alpine</base.image.java>
                 <java.version>jdk8</java.version>
             </properties>
         </profile>
         <profile>
             <id>jdk14</id>
             <properties>
-                <base.image.java>adoptopenjdk/openjdk14:alpine-jre</base.image.java>
+                <base.image.java>adoptopenjdk/openjdk14:alpine</base.image.java>
                 <java.version>jdk14</java.version>
             </properties>
         </profile>

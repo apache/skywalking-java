@@ -20,7 +20,7 @@ The test framework provides `JVM-container` and `Tomcat-container` base images i
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `openjdk:8-buster` as the base image. `JVM-container` supports JDK14 and JDK17, which inherits `openjdk:14-buster` and `openjdk:17-buster`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK14 and JDK17 as well, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
 Take the following test projects as examples:

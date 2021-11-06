@@ -47,7 +47,7 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          java_version: 14
+          java_version: jdk14
 
   test:
     needs: [ build ]
@@ -64,11 +64,10 @@ jobs:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          # temurin does not distribute non-lts version
-          distribution: 'zulu'
-          java-version: '14'
+          distribution: adopt
+          java-version: 14
       - name: Run Test
         uses: ./.github/actions/run
         with:
           test_case: ${{ matrix.case }}
-          java_version: 14
+          java_version: jdk14

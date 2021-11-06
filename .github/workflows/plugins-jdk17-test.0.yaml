@@ -47,7 +47,7 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          java_version: 17
+          java_version: jdk17
 
   test:
     needs: [ build ]
@@ -70,4 +70,4 @@ jobs:
         uses: ./.github/actions/run
         with:
           test_case: ${{ matrix.case }}
-          java_version: 17
+          java_version: jdk17

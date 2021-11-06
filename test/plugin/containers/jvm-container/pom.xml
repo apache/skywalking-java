@@ -31,7 +31,6 @@
 
     <artifactId>jvm-container</artifactId>
     <name>SkyWalking JVM Runner Image</name>
-
     <build>
         <plugins>
             <plugin>
@@ -41,9 +40,9 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>skywalking/agent-test-jvm:jdk${java_major_version}-${project.version}</name>
+                            <name>skywalking/agent-test-jvm:${java.version}-${project.version}</name>
                             <build>
-                                <from>openjdk:${java_major_version}-buster</from>
+                                <from>${base.image.java}</from>
                                 <workdir>/usr/local/skywalking/scenario</workdir>
                                 <assembly>
                                     <mode>dir</mode>
@@ -53,6 +52,7 @@
                                 <runCmds>
                                     <run>chmod +x /usr/local/skywalking/run.sh</run>
                                     <run>tar -xvf ../tools/skywalking-mock-collector.tar.gz -C ../tools</run>
+                                    <run>apk add --no-cache bash curl</run>
                                 </runCmds>
                                 <cmd>["/usr/local/skywalking/run.sh"]</cmd>
                             </build>
@@ -71,5 +71,32 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>jdk8</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <base.image.java>adoptopenjdk/openjdk8:alpine-jre</base.image.java>
+                <java.version>jdk8</java.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk14</id>
+            <properties>
+                <base.image.java>adoptopenjdk/openjdk14:alpine-jre</base.image.java>
+                <java.version>jdk14</java.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk17</id>
+            <properties>
+                <base.image.java>eclipse-temurin:17-alpine</base.image.java>
+                <java.version>jdk17</java.version>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

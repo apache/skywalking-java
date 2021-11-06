@@ -157,9 +157,8 @@ sed -i '' '/<\/sourceDirectories>/i\'$'\n''<sourceDirectory>scenarios\/'"$scenar
 sed -i '/<\/sourceDirectories>/i <sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>' ./pom.xml
 
 if [[ "$force_build" == "on" ]]; then
-    java_version=$(echo $image_version | grep -oE "^jdk[0-9]+")
-    export java_major_version=${java_version:3}
-    ${mvnw} --batch-mode -f ${home}/pom.xml clean package -DskipTests
+    profile=$(echo ${image_version} | grep -oE "jdk[0-9]+")
+    ${mvnw} --batch-mode -f ${home}/pom.xml clean package -DskipTests -P${profile}
 fi
 # remove scenario_name into plugin/pom.xml
 sed -i '' '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml \

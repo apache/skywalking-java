@@ -83,8 +83,8 @@ jobs:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
-          java-version: '8'
+          distribution: adopt
+          java-version: 8
       - name: Run Plugin Test
         uses: ./.github/actions/run
         with:

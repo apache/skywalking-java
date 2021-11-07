@@ -41,12 +41,10 @@ public class InstanceJsonPropertiesUtil {
                 ));
         }
 
-        for (String key : Config.Agent.INSTANCE_PROPERTIES.keySet()) {
-            properties.add(KeyStringValuePair.newBuilder()
-                                             .setKey(key)
-                                             .setValue(Config.Agent.INSTANCE_PROPERTIES.get(key))
-                                             .build());
-        }
+        Agent.INSTANCE_PROPERTIES.forEach((key, val) -> properties.add(KeyStringValuePair.newBuilder()
+                                                                                         .setKey(key)
+                                                                                         .setValue(val)
+                                                                                         .build()));
         return properties;
     }
 }

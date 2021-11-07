@@ -37,14 +37,15 @@ public class InstanceJsonPropertiesUtil {
             Config.Agent.INSTANCE_PROPERTIES.putAll(
                 GSON.fromJson(
                     Config.Agent.INSTANCE_PROPERTIES_JSON,
-                    new TypeToken<Map<String, Object>>() {}.getType()
+                    new TypeToken<Map<String, Object>>() {
+                    }.getType()
                 ));
         }
 
-        Agent.INSTANCE_PROPERTIES.forEach((key, val) -> properties.add(KeyStringValuePair.newBuilder()
-                                                                                         .setKey(key)
-                                                                                         .setValue(val)
-                                                                                         .build()));
+        Config.Agent.INSTANCE_PROPERTIES.forEach((key, val) -> properties.add(KeyStringValuePair.newBuilder()
+                                                                                                .setKey(key)
+                                                                                                .setValue(val)
+                                                                                                .build()));
         return properties;
     }
 }

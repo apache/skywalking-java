@@ -32,24 +32,15 @@ public class InstanceJsonPropertiesUtil {
     public static List<KeyStringValuePair> parseProperties() {
         List<KeyStringValuePair> properties = new ArrayList<>();
 
+        if (StringUtil.isNotEmpty(Config.Agent.INSTANCE_PROPERTIES_JSON)) {
+            Config.Agent.INSTANCE_PROPERTIES.putAll(GSON.fromJson(Config.Agent.INSTANCE_PROPERTIES_JSON, Map.class));
+        }
+
         for (String key : Config.Agent.INSTANCE_PROPERTIES.keySet()) {
             properties.add(KeyStringValuePair.newBuilder()
                                              .setKey(key)
                                              .setValue(Config.Agent.INSTANCE_PROPERTIES.get(key))
                                              .build());
-        }
-
-        if (StringUtil.isNotEmpty(Config.Agent.INSTANCE_PROPERTIES_JSON)) {
-            Map<String, Object> jsonProperties = GSON.fromJson(Config.Agent.INSTANCE_PROPERTIES_JSON, Map.class);
-
-            for (String key : jsonProperties.keySet()) {
-                //replace and override old keyStringValuePair.
-                properties.removeIf(old -> old.getKey().equals(key));
-                properties.add(KeyStringValuePair.newBuilder()
-                                                 .setKey(key)
-                                                 .setValue(String.valueOf(jsonProperties.get(key)))
-                                                 .build());
-            }
         }
         return properties;
     }

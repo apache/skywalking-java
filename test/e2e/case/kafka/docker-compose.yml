@@ -100,7 +100,6 @@ services:
       SW_KAFKA_BOOTSTRAP_SERVERS: broker-a:9092,broker-b:9092
       SW_GET_TOPIC_TIMEOUT: 60
       SW_PLUGIN_KAFKA_TOPIC_LOGGING: skywalking-logs
-      SW_INSTANCE_PROPERTIES_JSON: "{\"org\": \"apache-skywalking\"}"
     ports:
       - 9090
     depends_on:

@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.agent.core.util;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,11 @@ public class InstanceJsonPropertiesUtil {
         List<KeyStringValuePair> properties = new ArrayList<>();
 
         if (StringUtil.isNotEmpty(Config.Agent.INSTANCE_PROPERTIES_JSON)) {
-            Config.Agent.INSTANCE_PROPERTIES.putAll(GSON.fromJson(Config.Agent.INSTANCE_PROPERTIES_JSON, Map.class));
+            Config.Agent.INSTANCE_PROPERTIES.putAll(
+                GSON.fromJson(
+                    Config.Agent.INSTANCE_PROPERTIES_JSON,
+                    new TypeToken<Map<String, Object>>() {}.getType()
+                ));
         }
 
         for (String key : Config.Agent.INSTANCE_PROPERTIES.keySet()) {

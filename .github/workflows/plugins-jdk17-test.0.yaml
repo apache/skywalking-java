@@ -32,7 +32,7 @@ on:
       - test/ci/*
 
 concurrency:
-  group: plugins-1-${{ github.event.pull_request.number || github.ref }}
+  group: plugins-jdk17-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -46,6 +46,8 @@ jobs:
           submodules: true
       - name: Build
         uses: ./.github/actions/build
+        with:
+          java_version: jdk17
 
   test:
     needs: [ build ]
@@ -55,37 +57,17 @@ jobs:
     strategy:
       matrix:
         case:
-          - h2-scenario
-          - httpasyncclient-scenario
-          - httpclient-3.x-scenario
-          - httpclient-4.3.x-scenario
-          - httpclient-5.x-scenario
-          - hystrix-scenario
-          - sentinel-scenario
-          - influxdb-scenario
-          - jdk-http-scenario
-          - jdk-threading-scenario
-          - jedis-scenario
-          - jetty-scenario
-          - kafka-scenario
-          - kotlin-coroutine-scenario
-          - lettuce-scenario
-          - mongodb-3.x-scenario
-          - mongodb-4.x-scenario
-          - netty-socketio-scenario
-          - postgresql-above9.4.1207-scenario
-          - mssql-jtds-scenario
-          - mssql-jdbc-scenario
-          - mybatis-3.x-scenario
+          - jdk17-with-gson-scenario
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          distribution: adopt
-          java-version: 8
-      - name: Run Plugin Test
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Run Test
         uses: ./.github/actions/run
         with:
           test_case: ${{ matrix.case }}
+          java_version: jdk17

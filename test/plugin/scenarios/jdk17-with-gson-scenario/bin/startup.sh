@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -13,6 +15,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-mysql.url=jdbc:mysql://mysql-server:3306/test?serverTimezone=CST&enabledTLSProtocols=TLSv1.2&useSSL=false
-mysql.username=root
-mysql.password=root
+
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar --enable-preview ${agent_opts} ${home}/../libs/jdk17-with-gson-scenario.jar &

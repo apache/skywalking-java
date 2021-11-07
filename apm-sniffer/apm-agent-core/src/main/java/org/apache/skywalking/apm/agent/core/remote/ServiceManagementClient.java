@@ -19,7 +19,6 @@
 package org.apache.skywalking.apm.agent.core.remote;
 
 import io.grpc.Channel;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -35,6 +34,7 @@ import org.apache.skywalking.apm.agent.core.jvm.LoadedLibraryCollector;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.os.OSUtil;
+import org.apache.skywalking.apm.agent.core.util.InstanceJsonPropertiesUtil;
 import org.apache.skywalking.apm.network.common.v3.Commands;
 import org.apache.skywalking.apm.network.common.v3.KeyStringValuePair;
 import org.apache.skywalking.apm.network.management.v3.InstancePingPkg;
@@ -69,14 +69,7 @@ public class ServiceManagementClient implements BootService, Runnable, GRPCChann
     public void prepare() {
         ServiceManager.INSTANCE.findService(GRPCChannelManager.class).addChannelListener(this);
 
-        SERVICE_INSTANCE_PROPERTIES = new ArrayList<>();
-
-        for (String key : Config.Agent.INSTANCE_PROPERTIES.keySet()) {
-            SERVICE_INSTANCE_PROPERTIES.add(KeyStringValuePair.newBuilder()
-                                                              .setKey(key)
-                                                              .setValue(Config.Agent.INSTANCE_PROPERTIES.get(key))
-                                                              .build());
-        }
+        SERVICE_INSTANCE_PROPERTIES = InstanceJsonPropertiesUtil.parseProperties();
     }
 
     @Override
@@ -108,7 +101,8 @@ public class ServiceManagementClient implements BootService, Runnable, GRPCChann
         if (GRPCChannelStatus.CONNECTED.equals(status)) {
             try {
                 if (managementServiceBlockingStub != null) {
-                    if (Math.abs(sendPropertiesCounter.getAndAdd(1)) % Config.Collector.PROPERTIES_REPORT_PERIOD_FACTOR == 0) {
+                    if (Math.abs(
+                        sendPropertiesCounter.getAndAdd(1)) % Config.Collector.PROPERTIES_REPORT_PERIOD_FACTOR == 0) {
 
                         managementServiceBlockingStub
                             .withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS)
@@ -118,7 +112,8 @@ public class ServiceManagementClient implements BootService, Runnable, GRPCChann
                                                                         .addAllProperties(OSUtil.buildOSInfo(
                                                                             Config.OsInfo.IPV4_LIST_SIZE))
                                                                         .addAllProperties(SERVICE_INSTANCE_PROPERTIES)
-                                                                        .addAllProperties(LoadedLibraryCollector.buildJVMInfo())
+                                                                        .addAllProperties(
+                                                                            LoadedLibraryCollector.buildJVMInfo())
                                                                         .build());
                     } else {
                         final Commands commands = managementServiceBlockingStub.withDeadlineAfter(

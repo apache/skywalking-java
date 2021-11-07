@@ -104,8 +104,17 @@ public class Config {
 
         /**
          * service instance properties e.g. agent.instance_properties[org]=apache
+         * Notice it will be overridden by `agent.instance_properties_json `, if the key duplication.
+         * For example: <code>e.g. agent.instance_properties_json = {"org": "apache-skywalking"}</code>
          */
+        @Deprecated
         public static Map<String, String> INSTANCE_PROPERTIES = new HashMap<>();
+
+        /**
+         * service instance properties in json format.
+         * e.g. agent.instance_properties_json = {"org": "apache-skywalking"}
+         */
+        public static String INSTANCE_PROPERTIES_JSON = "";
 
         /**
          * How depth the agent goes, when log cause exceptions.
@@ -169,7 +178,8 @@ public class Config {
          */
         public static long HEARTBEAT_PERIOD = 30;
         /**
-         * The agent sends the instance properties to the backend every `collector.heartbeat_period * collector.properties_report_period_factor` seconds
+         * The agent sends the instance properties to the backend every `collector.heartbeat_period *
+         * collector.properties_report_period_factor` seconds
          */
         public static int PROPERTIES_REPORT_PERIOD_FACTOR = 10;
         /**

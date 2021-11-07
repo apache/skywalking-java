@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.agent.core.kafka;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -37,6 +36,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.os.OSUtil;
 import org.apache.skywalking.apm.agent.core.remote.ServiceManagementClient;
+import org.apache.skywalking.apm.agent.core.util.InstanceJsonPropertiesUtil;
 import org.apache.skywalking.apm.network.common.v3.KeyStringValuePair;
 import org.apache.skywalking.apm.network.management.v3.InstancePingPkg;
 import org.apache.skywalking.apm.network.management.v3.InstanceProperties;
@@ -65,13 +65,7 @@ public class KafkaServiceManagementServiceClient implements BootService, Runnabl
         producerManager.addListener(this);
         topic = producerManager.formatTopicNameThenRegister(KafkaReporterPluginConfig.Plugin.Kafka.TOPIC_MANAGEMENT);
 
-        SERVICE_INSTANCE_PROPERTIES = new ArrayList<>();
-        for (String key : Config.Agent.INSTANCE_PROPERTIES.keySet()) {
-            SERVICE_INSTANCE_PROPERTIES.add(KeyStringValuePair.newBuilder()
-                                                              .setKey(key)
-                                                              .setValue(Config.Agent.INSTANCE_PROPERTIES.get(key))
-                                                              .build());
-        }
+        SERVICE_INSTANCE_PROPERTIES = InstanceJsonPropertiesUtil.parseProperties();
     }
 
     @Override

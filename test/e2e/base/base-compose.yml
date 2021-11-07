@@ -46,6 +46,8 @@ services:
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       SW_AGENT_INSTANCE_NAME: provider1
       SW_LOGGING_OUTPUT: CONSOLE
+      JAVA_TOOL_OPTIONS: -javaagent:/skywalking/agent/skywalking-agent.jar=agent.instance_properties[org]=apache
+      SW_INSTANCE_PROPERTIES_JSON: "{\"org\": \"apache-skywalking\"}"
     healthcheck:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 9090"]
       interval: 5s

@@ -14,7 +14,7 @@ property key | Description | Default |
 `agent.is_cache_enhanced_class`|If true, SkyWalking agent will cache all instrumented classes files to memory or disk files (decided by class cache mode), allow another java agent to enhance those classes that enhanced by SkyWalking agent. To use some Java diagnostic tools (such as BTrace, Arthas) to diagnose applications or add a custom java agent to enhance classes, you need to enable this feature. |`false`|
 `agent.class_cache_mode`|The instrumented classes cache mode: `MEMORY` or `FILE`. `MEMORY`: cache class bytes to memory, if instrumented classes is too many or too large, it may take up more memory. `FILE`: cache class bytes in `/class-cache` folder, automatically clean up cached class files when the application exits.|`MEMORY`|
 `agent.instance_name` |Instance name is the identity of an instance, should be unique in the service. If empty, SkyWalking agent will generate an 32-bit uuid. Default, use `UUID`@`hostname` as the instance name. Max length is 50(UTF-8 char)|`""`|
-`agent.instance_properties[key]=value` | Add service instance custom properties. Notice it will be overridden by `agent.instance_properties_json `, if the key duplication. | Not set|
+`agent.instance_properties[key]=value` | Add service instance custom properties. Notice it could be overridden by `agent.instance_properties_json `, if the key duplication. | Not set|
 `agent.instance_properties_json={"key":"value"}` | Add service instance custom properties in json format.  | Not set|
 `agent.cause_exception_depth`|How depth the agent goes, when log all cause exceptions.|`5`|
 `agent.force_reconnection_period `|Force reconnection period of grpc, based on grpc_channel_check_interval.|`1`|

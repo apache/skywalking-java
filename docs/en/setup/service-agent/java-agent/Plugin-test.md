@@ -20,17 +20,18 @@ The test framework provides `JVM-container` and `Tomcat-container` base images i
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `openjdk:8` as the base image. `JVM-container` supports JDK14, which inherits `openjdk:14`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK14 and JDK17 as well, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
 Take the following test projects as examples:
 * [sofarpc-scenario](../../../../../test/plugin/scenarios/sofarpc-scenario) is a single project case.
 * [webflux-scenario](../../../../../test/plugin/scenarios/webflux-scenario) is a case including multiple projects.
 * [jdk14-with-gson-scenario](../../../../../test/plugin/scenarios/jdk14-with-gson-scenario) is a single project case with JDK14.
+* [jdk17-with-gson-scenario](../../../../../test/plugin/scenarios/jdk17-with-gson-scenario) is a single project case with JDK17.
 
 ### Tomcat-container Image Introduction
 
-[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5.57-jdk8-openjdk` or `tomcat:8.5.57-jdk14-openjdk` as the base image.
+[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk14-openjdk` or `tomcat:8.5-jdk17-openjdk` as the base image.
 The test case project must be packaged as `project-name.war` by using `mvn package`.
 
 Take the following test project as an example

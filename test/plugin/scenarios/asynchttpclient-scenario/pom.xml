@@ -31,9 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <compiler.version>1.8</compiler.version>
-        <async-http-client.version>2.10.0</async-http-client.version>
-        <test.framework.version>4.1.2</test.framework.version>
-        <docker.image.version>${test.framework.version}</docker.image.version>
+        <test.framework.version>2.10.0</test.framework.version>
         <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
         <lombok.version>1.18.20</lombok.version>
         <log4j.version>2.8.1</log4j.version>
@@ -62,8 +60,7 @@
         <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
-            <version>${async-http-client.version}</version>
-            <scope>provided</scope>
+            <version>${test.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

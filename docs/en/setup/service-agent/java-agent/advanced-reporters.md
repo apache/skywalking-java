@@ -36,6 +36,8 @@ Currently, there are 2 ways to configure advanced configurations below. Notice t
 ## 3rd party reporters
 There are other reporter implementations from out of the Apache Software Foundation.
 
-## Pulsar Reporter
+### Pulsar Reporter
 Go to [Pulsar-reporter-plugin](https://github.com/SkyAPM/transporter-plugin-for-skywalking/blob/main/docs/en/pulsar/Pulsar-Reporter.md) for more details.
 
+### Rocketmq Reporter
+Go to [Rocketmq-reporter-plugin](https://github.com/SkyAPM/transporter-plugin-for-skywalking/blob/main/docs/en/rocketmq/Rocketmq-Reporter.md) for more details.

@@ -112,6 +112,6 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
                                       final Object[] allArguments,
                                       final Class<?>[] argumentsTypes,
                                       final Throwable t) {
-
+        ContextManager.activeSpan().log(t);
     }
 }

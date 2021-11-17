@@ -58,8 +58,8 @@ public class TraceIgnoreTest {
                 new String[]{"/eureka/**"}
         );
 
-//        Assert.assertFalse(service.trySampling("/eureka/apps"));
-//        Assert.assertTrue(service.trySampling("/consul/apps"));
+        Assert.assertFalse(service.trySampling("/eureka/apps"));
+        Assert.assertTrue(service.trySampling("/consul/apps"));
 
         Assert.assertFalse(service.trySampling("/eureka/apps/"));
         Assert.assertTrue(service.trySampling("/consul/apps/"));

@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.trace.ignore;
 
 import java.util.Properties;
+
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
@@ -38,7 +39,7 @@ public class TraceIgnoreTest {
 
     @Rule
     public final EnvironmentVariables environmentVariables = new EnvironmentVariables().set(
-        "SW_AGENT_TRACE_IGNORE_PATH", "path_test");
+            "SW_AGENT_TRACE_IGNORE_PATH", "path_test");
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
@@ -53,12 +54,15 @@ public class TraceIgnoreTest {
     public void testTraceIgnore() {
         SamplingService service = ServiceManager.INSTANCE.findService(SamplingService.class);
         Whitebox.setInternalState(
-            service, "patterns",
-            new String[] {"/eureka/**"}
+                service, "patterns",
+                new String[]{"/eureka/**"}
         );
 
-        Assert.assertFalse(service.trySampling("/eureka/apps"));
-        Assert.assertTrue(service.trySampling("/consul/apps"));
+//        Assert.assertFalse(service.trySampling("/eureka/apps"));
+//        Assert.assertTrue(service.trySampling("/consul/apps"));
+
+        Assert.assertFalse(service.trySampling("/eureka/apps/"));
+        Assert.assertTrue(service.trySampling("/consul/apps/"));
     }
 
     @Test
@@ -66,7 +70,7 @@ public class TraceIgnoreTest {
         Properties properties = new Properties();
         properties.put("trace.ignore_path", "${SW_AGENT_TRACE_IGNORE_PATH:/path/eureka/**}");
         properties.put("trace.ignore_path", PropertyPlaceholderHelper.INSTANCE.replacePlaceholders(
-            (String) properties.get("trace.ignore_path"), properties));
+                (String) properties.get("trace.ignore_path"), properties));
         ConfigInitializer.initialize(properties, IgnoreConfig.class);
         assertThat(IgnoreConfig.Trace.IGNORE_PATH, is("path_test"));
     }

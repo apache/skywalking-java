@@ -26,7 +26,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
 import org.apache.skywalking.apm.plugin.trace.ignore.conf.IgnoreConfig;
 import org.apache.skywalking.apm.plugin.trace.ignore.conf.IgnoreConfigInitializer;
-import org.apache.skywalking.apm.plugin.trace.ignore.matcher.TraceAntPathMatcher;
+import org.apache.skywalking.apm.plugin.trace.ignore.matcher.FastPathMatcher;
 import org.apache.skywalking.apm.plugin.trace.ignore.matcher.TracePathMatcher;
 import org.apache.skywalking.apm.util.StringUtil;
 
@@ -34,7 +34,7 @@ import org.apache.skywalking.apm.util.StringUtil;
 public class TraceIgnoreExtendService extends SamplingService {
     private static final ILog LOGGER = LogManager.getLogger(TraceIgnoreExtendService.class);
     private static final String PATTERN_SEPARATOR = ",";
-    private TracePathMatcher pathMatcher = new TraceAntPathMatcher();
+    private TracePathMatcher pathMatcher = new FastPathMatcher();
     private volatile String[] patterns = new String[]{};
     private TraceIgnorePatternWatcher traceIgnorePatternWatcher;
 

@@ -124,7 +124,7 @@ public class FastPathMatcher implements TracePathMatcher {
     private boolean multiWildcardMatch(String pat, int p, String str, int s) {
         // End of pattern, just check the end of string is '/' quickly.
         if (p >= pat.length() && s < str.length()) {
-            return str.charAt(str.length() - 1) != '/';
+            return true;
         }
 
         while (true) {

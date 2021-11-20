@@ -21,6 +21,13 @@ package org.apache.skywalking.apm.plugin.trace.ignore.matcher;
 public class FastPathMatcher implements TracePathMatcher {
     @Override
     public boolean match(String pattern, String path) {
+        if (pattern.indexOf(pattern.length() - 1) == '/') {
+            pattern = pattern.substring(0, pattern.length() - 2);
+        }
+        if (path.indexOf(path.length() - 1) == '/') {
+            path = path.substring(0, path.length() - 2);
+        }
+
         return normalMatch(pattern, 0, path, 0);
     }
 
@@ -83,6 +90,10 @@ public class FastPathMatcher implements TracePathMatcher {
 
     private boolean wildcardMatch(String pat, int p, String str, int s) {
         char pc = safeCharAt(pat, p);
+        //if pat already arrival end,and str in position of s is not '/',then return true
+        if (pc == '\u0000' && safeCharAt(str, s) != '/') {
+            return true;
+        }
 
         while (true) {
             char sc = safeCharAt(str, s);

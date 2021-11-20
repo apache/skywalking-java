@@ -9,6 +9,7 @@ Release Notes.
 * Add ConsumerWrapper/FunctionWrapper to support CompletableFuture.x.thenAcceptAsync/thenApplyAsync.
 * Build CLI from Docker instead of source codes, add alpine based Docker image.
 * Support set instance properties in json format.
+* Fix TracePathMatcher should match pattern "**" with paths end by "/"
 
 #### Documentation
 

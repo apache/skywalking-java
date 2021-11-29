@@ -9,6 +9,7 @@ Release Notes.
 * Add ConsumerWrapper/FunctionWrapper to support CompletableFuture.x.thenAcceptAsync/thenApplyAsync.
 * Build CLI from Docker instead of source codes, add alpine based Docker image.
 * Support set instance properties in json format.
+* Upgrade grpc-java to 1.42.1 and protoc to 3.19.1 to allow using native Mac osx-aarch_64 artifacts.
 
 #### Documentation
 

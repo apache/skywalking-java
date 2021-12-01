@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.plugin.pulsar;
 import org.apache.pulsar.client.impl.PulsarClientImpl;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.skywalking.apm.plugin.pulsar.common.ProducerEnhanceRequiredInfo;
 
 /**
  * Interceptor of pulsar producer constructor.
@@ -42,6 +43,7 @@ public class ProducerConstructorInterceptor implements InstanceConstructorInterc
          * can handle the service url provider which use a dynamic service url
          */
         producerEnhanceRequiredInfo.setServiceUrl(pulsarClient.getLookup().getServiceUrl());
+        producerEnhanceRequiredInfo.setPropertiesInjector(new MessagePropertiesInjectorV27());
         objInst.setSkyWalkingDynamicField(producerEnhanceRequiredInfo);
     }
 }

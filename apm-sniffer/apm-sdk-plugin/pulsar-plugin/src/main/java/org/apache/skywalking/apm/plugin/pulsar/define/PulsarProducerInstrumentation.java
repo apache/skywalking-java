@@ -18,16 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.define;
 
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import org.apache.skywalking.apm.plugin.pulsar.common.define.BasePulsarProducerInstrumentation;
 
 /**
  * Pulsar producer instrumentation.
@@ -47,57 +38,17 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
  * hard to pass the snapshot of span, because can't ensure that the CompletableFuture is completed after the skywalking
  * dynamic field was updated. But execution time of sync method will be inaccurate.
  */
-public class PulsarProducerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.pulsar.PulsarProducerInterceptor";
-    public static final String ENHANCE_CLASS = "org.apache.pulsar.client.impl.ProducerImpl";
-    public static final String ENHANCE_METHOD = "sendAsync";
-    public static final String ENHANCE_METHOD_TYPE = "org.apache.pulsar.client.impl.SendCallback";
+public class PulsarProducerInstrumentation extends BasePulsarProducerInstrumentation {
 
     public static final String CONSTRUCTOR_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.pulsar.ProducerConstructorInterceptor";
-    public static final String CONSTRUCTOR_INTERCEPTOR_FLAG = "org.apache.pulsar.client.impl.PulsarClientImpl";
 
     @Override
-    public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
-            new ConstructorInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return takesArgumentWithType(0, CONSTRUCTOR_INTERCEPTOR_FLAG);
-                }
-
-                @Override
-                public String getConstructorInterceptor() {
-                    return CONSTRUCTOR_INTERCEPTOR_CLASS;
-                }
-            }
-        };
+    protected String[] witnessClasses() {
+        return Constants.WITNESS_PULSAR_27X_CLASSES;
     }
 
     @Override
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_METHOD).and(takesArgumentWithType(1, ENHANCE_METHOD_TYPE));
-                }
-
-                @Override
-                public String getMethodsInterceptor() {
-                    return INTERCEPTOR_CLASS;
-                }
-
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            }
-        };
-    }
-
-    @Override
-    protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+    protected String getCustomConstructorInterceptor() {
+        return CONSTRUCTOR_INTERCEPTOR_CLASS;
     }
 }

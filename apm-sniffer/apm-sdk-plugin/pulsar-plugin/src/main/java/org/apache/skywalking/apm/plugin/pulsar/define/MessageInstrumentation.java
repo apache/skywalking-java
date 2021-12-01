@@ -18,54 +18,21 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.define;
 
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.matcher.BooleanMatcher;
-import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import org.apache.skywalking.apm.plugin.pulsar.common.define.BaseMessageInstrumentation;
 
 /**
  * Pulsar message instrumentation.
  * <p>
  * The message enhanced object is only for passing message reception span across threads.
  * <p>
- * Enhanced message object will be injected {@link org.apache.skywalking.apm.plugin.pulsar.MessageEnhanceRequiredInfo}
+ * Enhanced message object will be injected {@link org.apache.skywalking.apm.plugin.pulsar.common.MessageEnhanceRequiredInfo}
  * after message process method if consumer has a message listener.
  * </p>
  */
-public class MessageInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-
-    public static final String ENHANCE_CLASS = "org.apache.pulsar.client.impl.MessageImpl";
-    public static final String CONSTRUCTOR_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.pulsar.MessageConstructorInterceptor";
+public class MessageInstrumentation extends BaseMessageInstrumentation {
 
     @Override
-    public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[]{
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return new BooleanMatcher<>(true);
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return CONSTRUCTOR_INTERCEPTOR_CLASS;
-                    }
-                }
-        };
-    }
-
-    @Override
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[0];
-    }
-
-    @Override
-    protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+    protected String[] witnessClasses() {
+        return Constants.WITNESS_PULSAR_27X_CLASSES;
     }
 }

@@ -113,6 +113,8 @@
         <module>clickhouse-0.3.x-plugin</module>
         <module>kylin-jdbc-2.6.x-3.x-4.x-plugin</module>
         <module>okhttp-2.x-plugin</module>
+        <module>pulsar-common</module>
+        <module>pulsar-2.8.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

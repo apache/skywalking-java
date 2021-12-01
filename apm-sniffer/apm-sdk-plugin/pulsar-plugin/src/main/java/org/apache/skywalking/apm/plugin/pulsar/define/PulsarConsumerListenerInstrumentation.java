@@ -18,15 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.define;
 
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import org.apache.skywalking.apm.plugin.pulsar.common.define.BasePulsarConsumerListenerInstrumentation;
 
 /**
  * The pulsar consumer listener instrumentation use {@link org.apache.pulsar.client.api.MessageListener} as an enhanced
@@ -36,41 +28,10 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
  * all instances of {@link org.apache.pulsar.client.api.MessageListener} interface can let users get trace information
  * in message listener thread.
  */
-public class PulsarConsumerListenerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.pulsar.PulsarConsumerListenerInterceptor";
-    public static final String ENHANCE_METHOD = "getMessageListener";
-    public static final String ENHANCE_CLASS = "org.apache.pulsar.client.impl.conf.ConsumerConfigurationData";
+public class PulsarConsumerListenerInstrumentation extends BasePulsarConsumerListenerInstrumentation {
 
     @Override
-    protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
-    }
-
-    @Override
-    public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
-    }
-
-    @Override
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_METHOD);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return INTERCEPTOR_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                }
-        };
+    protected String[] witnessClasses() {
+        return Constants.WITNESS_PULSAR_27X_CLASSES;
     }
 }

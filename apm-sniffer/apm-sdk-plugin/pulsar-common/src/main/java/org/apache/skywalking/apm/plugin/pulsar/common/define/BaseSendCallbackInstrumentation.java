@@ -33,12 +33,12 @@ import org.apache.skywalking.apm.plugin.pulsar.common.SendCallbackInterceptor;
 /**
  * Pulsar producer send callback instrumentation.
  * <p>
- * The send callback enhanced object will use {@link SendCallbackEnhanceRequiredInfo}
+ * The send callback enhanced object will use {@link org.apache.skywalking.apm.plugin.pulsar.common.SendCallbackEnhanceRequiredInfo}
  * which {@link PulsarProducerInterceptor} set by skywalking dynamic field of
  * enhanced object.
  * <p>
  * When a callback is complete, {@link SendCallbackInterceptor} will continue
- * the {@link SendCallbackEnhanceRequiredInfo#getContextSnapshot()}.
+ * the {@link org.apache.skywalking.apm.plugin.pulsar.common.SendCallbackEnhanceRequiredInfo#getContextSnapshot()}.
  */
 public class BaseSendCallbackInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 

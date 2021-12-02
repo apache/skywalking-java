@@ -10,6 +10,7 @@ Release Notes.
 * Build CLI from Docker instead of source codes, add alpine based Docker image.
 * Support set instance properties in json format.
 * Upgrade grpc-java to 1.42.1 and protoc to 3.17.3 to allow using native Mac osx-aarch_64 artifacts.
+* Add doc about system environment variables to configurations.md
 
 #### Documentation
 

@@ -53,7 +53,7 @@ property key | Description | **System Environment Variable** | Default
 `profile.max_parallel`|Parallel monitor segment count|SW_AGENT_PROFILE_MAX_PARALLEL|`5`
 `profile.duration`|Max monitor segment time(minutes), if current segment monitor time out of limit, then stop it.|SW_AGENT_PROFILE_DURATION|`10`
 `profile.dump_max_stack_depth`|Max dump thread stack depth|SW_AGENT_PROFILE_DUMP_MAX_STACK_DEPTH|`500`
-`profile.snapshot_transport_buffer_size`|Snapshot transport to backend buffer size|SW_AGENT_PROFILE_SNAPSHOT_TRANSPORT_BUFFER_SIZE|`50`
+`profile.snapshot_transport_buffer_size`|Snapshot transport to backend buffer size|SW_AGENT_PROFILE_SNAPSHOT_TRANSPORT_BUFFER_SIZE|`4500`
 `meter.active`|If true, the agent collects and reports metrics to the backend.|SW_METER_ACTIVE|`true`
 `meter.report_interval`|Report meters interval. The unit is second|SW_METER_REPORT_INTERVAL|`20`
 `meter.max_meter_size`| Max size of the meter pool |SW_METER_MAX_METER_SIZE|`500`

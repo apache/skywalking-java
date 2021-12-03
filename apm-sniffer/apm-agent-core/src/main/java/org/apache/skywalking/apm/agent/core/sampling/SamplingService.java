@@ -78,8 +78,11 @@ public class SamplingService implements BootService {
     }
 
     /**
+     * When the sampling mechanism is on and the sample limited is not reached, the trace segment
+     * should be traced. If the sampling mechanism is off, it means that all trace segments should
+     * be traced.
      * @param operationName The first operation name of the new tracing context.
-     * @return true, if sampling mechanism is on, and getDefault the sampling factor successfully.
+     * @return true if should sample this trace segment. When sampling mechanism is on, return true if sample limited is not reached.
      */
     public boolean trySampling(String operationName) {
         if (on) {

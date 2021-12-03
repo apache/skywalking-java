@@ -63,7 +63,7 @@
 - okhttp-4.x
 - play-2.x
 - postgresql-8.x
-- pulsar
+- pulsar-2.2-2.7
 - quasar
 - quartz-scheduler-2.x
 - rabbitmq-5.x

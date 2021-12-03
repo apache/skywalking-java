@@ -64,7 +64,7 @@ metrics based on the tracing data.
   * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 2.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 5.x
-  * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.4.x
+  * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.9.x
   * Aliyun ONS 1.x (Optional¹)
 * NoSQL
   * Redis

@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-pulsar=org.apache.skywalking.apm.plugin.pulsar.define.SendCallbackInstrumentation
-pulsar=org.apache.skywalking.apm.plugin.pulsar.define.PulsarConsumerInstrumentation
-pulsar=org.apache.skywalking.apm.plugin.pulsar.define.PulsarConsumerListenerInstrumentation
-pulsar=org.apache.skywalking.apm.plugin.pulsar.define.PulsarProducerInstrumentation
-pulsar=org.apache.skywalking.apm.plugin.pulsar.define.MessageInstrumentation
-pulsar=org.apache.skywalking.apm.plugin.pulsar.define.TopicMessageInstrumentation
+pulsar-2.2-2.7=org.apache.skywalking.apm.plugin.pulsar.define.SendCallbackInstrumentation
+pulsar-2.2-2.7=org.apache.skywalking.apm.plugin.pulsar.define.PulsarConsumerInstrumentation
+pulsar-2.2-2.7=org.apache.skywalking.apm.plugin.pulsar.define.PulsarConsumerListenerInstrumentation
+pulsar-2.2-2.7=org.apache.skywalking.apm.plugin.pulsar.define.PulsarProducerInstrumentation
+pulsar-2.2-2.7=org.apache.skywalking.apm.plugin.pulsar.define.MessageInstrumentation
+pulsar-2.2-2.7=org.apache.skywalking.apm.plugin.pulsar.define.TopicMessageInstrumentation

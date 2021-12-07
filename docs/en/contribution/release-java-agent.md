@@ -82,12 +82,7 @@ This script takes care of the following things:
 1. Use your Apache ID to log in to `https://dist.apache.org/repos/dist/dev/skywalking/java-agent/`.
 1. Create a folder and name it by the release version and round, such as: `x.y.z`
 1. Upload the source code package to the folder with files ending with `.asc` and `.sha512`.
-    * Package name: `apache-skywalking-x.y.z-src.tar.gz`
-    * See Section "Build and sign the source code package" for more details 
 1. Upload the distribution package to the folder with files ending with `.asc` and `.sha512`.
-    * Package name:  `apache-skywalking-java-agent-x.y.z.tar.gz`
-    * See Section "Locate and download the distribution package in Apache Nexus Staging repositories" for more details.
-    * Create a `.sha512` package: `shasum -a 512 file > file.sha512`
 
 ## Make the internal announcements
 Send an announcement mail in dev mail list.
@@ -169,7 +164,7 @@ Release Tag :
 
 Release CommitID :
 
- * https://github.com/apache/skywalking/tree/(Git Commit ID)
+ * https://github.com/apache/skywalking-java/tree/(Git Commit ID)
  * Git submodule
    * apm-protocol/apm-network/src/main/proto: https://github.com/apache/skywalking-data-collect-protocol/tree/(Git Commit ID)
 
@@ -274,13 +269,14 @@ export SW_VERSION=x.y.z
 git clone --depth 1 --branch v$SW_VERSION https://github.com/apache/skywalking-java.git
 cd skywalking-java
 
-svn co https://dist.apache.org/repos/dist/release/skywalking-java/$SW_VERSION release # (1)
+curl -O https://dist.apache.org/repos/dist/release/skywalking/java-agent/$SW_VERSION/apache-skywalking-java-agent-$SW_VERSION.tgz
+tar -xzvf apache-skywalking-java-agent-$SW_VERSION.tgz
 
-export SW_OUT=release
+export NAME=skywalking-java-agent
 export HUB=apache
 export TAG=$SW_VERSION
-export DIST=<the binary package name inside (1), e.g. apache-skywalking-apm-8.8.0.tar.gz>
-make docker.push -j 7
+
+make docker.push.alpine docker.push.java8 docker.push.java11 docker.push.java17
 ```
 
 ## Clean up the old releases

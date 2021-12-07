@@ -16,15 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
 [[ -n $DEBUG_MODE ]] && export
 
-function exitOnError() {
+exitOnError() {
     echo -e "\033[31m[ERROR] $1\033[0m">&2
     exitAndClean 1
 }
 
-function exitAndClean() {
+exitAndClean() {
     [[ -n $DEBUG_MODE ]] && exit $1;
 
     [[ -f ${SCENARIO_HOME}/data/actualData.yaml ]] && rm -rf ${SCENARIO_HOME}/data/actualData.yaml
@@ -32,21 +31,23 @@ function exitAndClean() {
     exit $1
 }
 
-function healthCheck() {
+healthCheck() {
     HEALTH_CHECK_URL=$1
-    STATUS_CODE="-1"
+    STATUS=""
     TIMES=${TIMES:-150}
-    for ((i=1; i<=${TIMES}; i++));
+    i=1
+    while [[ $i -lt ${TIMES} ]];
     do
-        STATUS_CODE="$(curl --max-time 3 -Is ${HEALTH_CHECK_URL} | head -n 1)"
-        if [[ $STATUS_CODE == *"200"* ]]; then
-          echo "${HEALTH_CHECK_URL}: ${STATUS_CODE}"
+        STATUS=$(curl --max-time 3 -Is ${HEALTH_CHECK_URL} | grep -oE "HTTP/.*\s+200")
+        if [[ -n "$STATUS" ]]; then
+          echo "${HEALTH_CHECK_URL}: ${STATUS}"
           return 0
         fi
         sleep 2
+        i=$(($i + 1))
     done
 
-    exitOnError "${SCENARIO_NAME}-${SCENARIO_VERSION} url=${HEALTH_CHECK_URL}, status=${STATUS_CODE} health check failed!"
+    exitOnError "${SCENARIO_NAME}-${SCENARIO_VERSION} url=${HEALTH_CHECK_URL}, status=${STATUS} health check failed!"
 }
 
 if [[ -z "${SCENARIO_START_SCRIPT}" ]]; then
@@ -66,7 +67,7 @@ if [[ ! -f /var/run/${SCENARIO_NAME}/${SCENARIO_START_SCRIPT} ]]; then
 fi
 
 echo "To start mock collector"
-${TOOLS_HOME}/skywalking-mock-collector/bin/collector-startup.sh 1>${LOGS_HOME}/collector.out &
+bash ${TOOLS_HOME}/skywalking-mock-collector/bin/collector-startup.sh 1>${LOGS_HOME}/collector.out &
 healthCheck http://localhost:12800/receiveData
 
 # start applications
@@ -82,7 +83,8 @@ export agent_opts="
     -Dskywalking.agent.authentication=test-token
     -Dskywalking.meter.report_interval=1
     -Xms256m -Xmx256m ${agent_opts}"
-exec /var/run/${SCENARIO_NAME}/${SCENARIO_START_SCRIPT} 1>${LOGS_HOME}/scenario.out &
+
+bash /var/run/${SCENARIO_NAME}/${SCENARIO_START_SCRIPT} 1>${LOGS_HOME}/scenario.out &
 
 healthCheck ${SCENARIO_HEALTH_CHECK_URL}
 

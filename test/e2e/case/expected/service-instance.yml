@@ -20,6 +20,8 @@
   name: {{ notEmpty .name }}
   attributes:
   {{- contains .attributes }}
+  - name: org
+    value: apache-skywalking
   - name: OS Name
     value: Linux
   - name: hostname

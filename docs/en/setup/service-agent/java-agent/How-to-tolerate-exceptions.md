@@ -60,7 +60,7 @@ If an exception has the `@IgnoredException` annotation, the exception wouldn't b
 ```xml
    <dependency>
       <groupId>org.apache.skywalking</groupId>
-      <artifactId>apm-toolkit-log4j-1.x</artifactId>
+      <artifactId>apm-toolkit-trace</artifactId>
       <version>{project.release.version}</version>
    </dependency>
 ```

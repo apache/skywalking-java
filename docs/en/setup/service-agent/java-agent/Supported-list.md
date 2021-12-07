@@ -22,12 +22,12 @@ metrics based on the tracing data.
 * HTTP Client
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
-  * [Okhttp](https://github.com/square/okhttp) 3.x -> 4.x
+  * [Okhttp](https://github.com/square/okhttp) 2.x -> 3.x -> 4.x
   * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
   * [Spring RestTemplete](https://github.com/spring-projects/spring-framework) 4.x
   * [Jetty Client](http://www.eclipse.org/jetty/) 9
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
-  * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.x
+  * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
   * JRE HttpURLConnection (Optional²)
 * HTTP Gateway
   * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 3.x (Optional²)
@@ -64,7 +64,7 @@ metrics based on the tracing data.
   * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 2.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 5.x
-  * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.4.x
+  * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.9.x
   * Aliyun ONS 1.x (Optional¹)
 * NoSQL
   * Redis

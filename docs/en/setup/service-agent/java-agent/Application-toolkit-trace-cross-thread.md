@@ -57,6 +57,24 @@ or
             return "SupplierWrapper";
     })).thenAccept(System.out::println);
 ```
+* usage 4.
+```java
+    CompletableFuture.supplyAsync(SupplierWrapper.of(() -> {
+        return "SupplierWrapper";
+    })).thenAcceptAsync(ConsumerWrapper.of(c -> {
+        // your code visit(url)
+        System.out.println("ConsumerWrapper");
+    }));
+```
+or 
+```java
+    CompletableFuture.supplyAsync(SupplierWrapper.of(() -> {
+        return "SupplierWrapper";
+    })).thenApplyAsync(FunctionWrapper.of(f -> {
+        // your code visit(url)
+        return "FunctionWrapper";
+    }));
+```
 _Sample codes only_
 
 

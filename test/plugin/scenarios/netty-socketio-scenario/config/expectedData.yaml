@@ -64,8 +64,8 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: /socket.io/
-      parentSpanId: -1
-      spanId: 0
+      parentSpanId: 0
+      spanId: 1
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
@@ -74,6 +74,30 @@ segmentItems:
       spanType: Exit
       peer: not null
       tags:
-      - {key: http.method, value: not null}
-      - {key: url, value: not null}
+        - { key: http.method, value: not null }
+        - { key: url, value: not null }
+      skipAnalysis: 'false'
+    - operationName: Callback/onResponse
+      operationId: 0
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: false
+    - operationName: Async/execute
+      operationId: 0
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
       skipAnalysis: 'false'

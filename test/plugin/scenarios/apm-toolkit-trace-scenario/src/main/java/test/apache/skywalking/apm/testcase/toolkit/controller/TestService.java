@@ -23,11 +23,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.apache.skywalking.apm.toolkit.model.User;
 import org.apache.skywalking.apm.toolkit.trace.ActiveSpan;
 import org.apache.skywalking.apm.toolkit.trace.CallableWrapper;
 import org.apache.skywalking.apm.toolkit.trace.RunnableWrapper;
 import org.apache.skywalking.apm.toolkit.trace.SupplierWrapper;
+import org.apache.skywalking.apm.toolkit.trace.ConsumerWrapper;
+import org.apache.skywalking.apm.toolkit.trace.FunctionWrapper;
 import org.apache.skywalking.apm.toolkit.trace.Tag;
 import org.apache.skywalking.apm.toolkit.trace.Trace;
 import org.springframework.stereotype.Component;
@@ -103,6 +107,14 @@ public class TestService {
 
     public void asyncSupplier(Supplier<Boolean> supplier) {
         CompletableFuture.supplyAsync(SupplierWrapper.of(supplier));
+    }
+
+    public void asyncSupplierThenAccept(Supplier<Boolean> supplier, Consumer<Boolean> consumer) {
+        CompletableFuture.supplyAsync(SupplierWrapper.of(supplier)).thenAccept(ConsumerWrapper.of(consumer));
+    }
+
+    public void asyncSupplierThenApply(Supplier<Boolean> supplier, Function function) {
+        CompletableFuture.supplyAsync(SupplierWrapper.of(supplier)).thenApply(FunctionWrapper.of(function));
     }
 
     @Trace

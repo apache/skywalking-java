@@ -179,7 +179,7 @@ public class ProfileTaskChannelService implements BootService, Runnable, GRPCCha
      * add a new profiling snapshot, send to {@link #snapshotQueue}
      */
     public void addProfilingSnapshot(TracingThreadSnapshot snapshot) {
-        snapshotQueue.add(snapshot);
+        snapshotQueue.offer(snapshot);
     }
 
     /**

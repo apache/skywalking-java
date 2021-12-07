@@ -63,7 +63,7 @@
 - okhttp-4.x
 - play-2.x
 - postgresql-8.x
-- pulsar
+- pulsar-2.2-2.7
 - quasar
 - quartz-scheduler-2.x
 - rabbitmq-5.x
@@ -126,3 +126,5 @@
 - neo4j-4.x
 - clickhouse-0.3.x
 - kylin-jdbc-2.6.x-3.x-4.x
+- okhttp-2.x
+- pulsar-2.8.x

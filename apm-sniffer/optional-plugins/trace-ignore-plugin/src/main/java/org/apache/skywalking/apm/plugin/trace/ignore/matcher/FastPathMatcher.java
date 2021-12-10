@@ -21,12 +21,6 @@ package org.apache.skywalking.apm.plugin.trace.ignore.matcher;
 public class FastPathMatcher implements TracePathMatcher {
     @Override
     public boolean match(String pattern, String path) {
-        if (pattern.indexOf(pattern.length() - 1) == '/') {
-            pattern = pattern.substring(0, pattern.length() - 2);
-        }
-        if (path.indexOf(path.length() - 1) == '/') {
-            path = path.substring(0, path.length() - 2);
-        }
         return normalMatch(pattern, 0, path, 0);
     }
 
@@ -90,6 +84,22 @@ public class FastPathMatcher implements TracePathMatcher {
     private boolean wildcardMatch(String pat, int p, String str, int s) {
         char pc = safeCharAt(pat, p);
 
+        // End of pattern, check string only has zero or one '/' at end.
+        //             ↓        ↓
+        // pattern: a/*      a/*
+        //            ↓        ↓
+        // string:  a/bc/    a/bc
+        if (pc == 0) {
+            while (true) {
+                char sc = safeCharAt(str, s);
+                // No '/' found
+                if (sc == 0) return true;
+                // Check '/' is the last char of string
+                if (sc == '/') return s == str.length() - 1;
+                s++;
+            }
+        }
+
         while (true) {
             char sc = safeCharAt(str, s);
 
@@ -103,16 +113,11 @@ public class FastPathMatcher implements TracePathMatcher {
                     return normalMatch(pat, p + 1, str, s + 1);
                 }
 
-                //if pattern ends, and str ends with '/'
-                if(pc == '\u0000' && safeCharAt(str, s+1) == '\u0000'){
-                    return true;
-                }
-
                 // Not matched string in current path part.
-                //             ↓
-                // pattern:  a/*d
-                //              ↓
-                // string:   a/bc/
+                //             ↓        ↓
+                // pattern: a/*      a/*d
+                //              ↓        ↓
+                // string:  a/bc/    a/bc/
                 return false;
             }
 
@@ -133,6 +138,13 @@ public class FastPathMatcher implements TracePathMatcher {
     }
 
     private boolean multiWildcardMatch(String pat, int p, String str, int s) {
+        switch (safeCharAt(pat, p)) {
+            // End of pattern, just return true quickly.
+            case 0: return true;
+            // Skip next '/' for pattern to match zero path part.
+            case '/': p++;
+        }
+
         while (true) {
             // Try to enter normal mode, if not matched, increasing pointer of string and try again.
             if (!normalMatch(pat, p, str, s)) {

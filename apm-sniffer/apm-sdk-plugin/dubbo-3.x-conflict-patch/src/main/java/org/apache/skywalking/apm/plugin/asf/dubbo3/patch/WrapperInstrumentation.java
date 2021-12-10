@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.asf.dubbo.patch;
+package org.apache.skywalking.apm.plugin.asf.dubbo3.patch;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -45,6 +45,8 @@ public class WrapperInstrumentation extends ClassStaticMethodsEnhancePluginDefin
 
     private static final String GET_SERVER_CONTEXT_METHOD_NAME = "getServerContext";
 
+    private static final String CONTEXT_ATTACHMENT_TYPE_NAME = "org.apache.dubbo.rpc.RpcContextAttachment";
+
     @Override
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return new StaticMethodsInterceptPoint[] {
@@ -56,7 +58,7 @@ public class WrapperInstrumentation extends ClassStaticMethodsEnhancePluginDefin
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return "org.apache.skywalking.apm.plugin.asf.dubbo.patch.MakeWrapperInterceptor";
+                    return "org.apache.skywalking.apm.plugin.asf.dubbo3.patch.MakeWrapperInterceptor";
                 }
 
                 @Override
@@ -74,11 +76,12 @@ public class WrapperInstrumentation extends ClassStaticMethodsEnhancePluginDefin
 
     @Override
     protected List<WitnessMethod> witnessMethods() {
-        return Collections.singletonList(new WitnessMethod(
-            CONTEXT_TYPE_NAME,
-            named(GET_SERVER_CONTEXT_METHOD_NAME).and(
-                returns(named(CONTEXT_TYPE_NAME)))
-        ));
+        return Collections.singletonList(
+            new WitnessMethod(
+                CONTEXT_TYPE_NAME,
+                named(GET_SERVER_CONTEXT_METHOD_NAME).and(
+                    returns(named(CONTEXT_ATTACHMENT_TYPE_NAME)))
+            ));
     }
 
 }

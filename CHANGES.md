@@ -14,6 +14,7 @@ Release Notes.
 * Avoid `ProfileTaskChannelService.addProfilingSnapshot` throw IllegalStateException(Queue full) 
 * Increase `ProfileTaskChannelService.snapshotQueue` default size from 50 to 4500
 * Support 2.8 and 2.9 of pulsar client.
+* Add dubbo 3.x plugin.
 * Fix TracePathMatcher should match pattern "**" with paths end by "/"
 
 #### Documentation

@@ -14,4 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-dubbo-2.7.x=org.apache.skywalking.apm.plugin.asf.dubbo.patch.WrapperInstrumentation
+server:
+  port: 8080
+  servlet:
+    context-path: /dubbo-3.x-scenario
+

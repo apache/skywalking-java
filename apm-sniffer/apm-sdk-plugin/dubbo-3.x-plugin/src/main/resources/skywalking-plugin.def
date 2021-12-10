@@ -14,4 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-dubbo-2.7.x=org.apache.skywalking.apm.plugin.asf.dubbo.patch.WrapperInstrumentation
+dubbo-3.x=org.apache.skywalking.apm.plugin.asf.dubbo3.DubboProviderInstrumentation
+dubbo-3.x=org.apache.skywalking.apm.plugin.asf.dubbo3.DubboConsumerInstrumentation

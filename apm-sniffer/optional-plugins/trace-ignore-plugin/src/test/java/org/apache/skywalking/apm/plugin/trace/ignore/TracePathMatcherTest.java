@@ -109,7 +109,7 @@ public class TracePathMatcherTest {
         Assert.assertTrue(match);
         path = "eureka/test/list";
         match = pathMatcher.match(pattern, path);
-        Assert.assertFalse(match);
+        Assert.assertTrue(match);
 
         pattern = "/eureka/**/b/**/*.txt";
         path = "/eureka/a/aa/aaa/b/bb/bbb/xxxxxx.txt";

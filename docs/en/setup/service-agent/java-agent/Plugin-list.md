@@ -12,6 +12,8 @@
 - dbcp-2.x
 - druid-1.x
 - dubbo
+- dubbo-2.7.x
+- dubbo-3.x
 - ehcache-2.x
 - elastic-job-2.x
 - elasticjob-3.x

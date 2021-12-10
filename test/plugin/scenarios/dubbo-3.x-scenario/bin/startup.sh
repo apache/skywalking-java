@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,4 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-dubbo-2.7.x=org.apache.skywalking.apm.plugin.asf.dubbo.patch.WrapperInstrumentation
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -Dskywalking.plugin.dubbo.collect_consumer_arguments=true \
+-Dskywalking.plugin.dubbo.collect_provider_arguments=true -jar ${agent_opts} ${home}/../libs/dubbo-3.x-scenario.jar &

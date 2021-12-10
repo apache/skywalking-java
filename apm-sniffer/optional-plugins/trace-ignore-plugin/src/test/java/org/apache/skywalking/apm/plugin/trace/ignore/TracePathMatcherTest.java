@@ -28,87 +28,100 @@ public class TracePathMatcherTest {
     @Test
     public void testAntPathMatcher() {
         TracePathMatcher pathMatcher = new FastPathMatcher();
-        String patten = "/eureka/*";
+        String pattern = "/eureka/*";
         String path = "/eureka/apps";
-        boolean match = pathMatcher.match(patten, path);
+        boolean match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "/eureka/";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "/eureka/apps/";
-        match = pathMatcher.match(patten, path);
-        Assert.assertFalse(match);
+        match = pathMatcher.match(pattern, path);
+        Assert.assertTrue(match);
 
-        patten = "/eureka/*/";
+        pattern = "/eureka/**";
         path = "/eureka/apps/";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
+        Assert.assertTrue(match);
+
+        pattern = "/eureka/*/";
+        path = "/eureka/apps/";
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "/eureka/";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertFalse(match);
         path = "/eureka/apps/list";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
+        Assert.assertFalse(match);
+        path = "/eureka/test";
+        match = pathMatcher.match(pattern, path);
         Assert.assertFalse(match);
 
-        patten = "/eureka/**";
+        pattern = "/eureka/**";
         path = "/eureka/";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "/eureka/apps/test";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "/eureka/apps/test/";
-        match = pathMatcher.match(patten, path);
-        Assert.assertFalse(match);
+        match = pathMatcher.match(pattern, path);
+        Assert.assertTrue(match);
 
-        patten = "eureka/apps/?";
+        pattern = "eureka/apps/?";
         path = "eureka/apps/list";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertFalse(match);
         path = "eureka/apps/";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertFalse(match);
         path = "eureka/apps/a";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
 
-        patten = "eureka/**/lists";
+        pattern = "eureka/**/lists";
         path = "eureka/apps/lists";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "eureka/apps/test/lists";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "eureka/apps/test/";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertFalse(match);
         path = "eureka/apps/test";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertFalse(match);
 
-        patten = "eureka/**/test/**";
+        pattern = "eureka/**/test/**";
         path = "eureka/apps/test/list";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "eureka/apps/foo/test/list/bar";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "eureka/apps/foo/test/list/bar/";
-        match = pathMatcher.match(patten, path);
-        Assert.assertFalse(match);
+        match = pathMatcher.match(pattern, path);
+        Assert.assertTrue(match);
         path = "eureka/apps/test/list";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "eureka/test/list";
-        match = pathMatcher.match(patten, path);
-        Assert.assertFalse(match);
+        match = pathMatcher.match(pattern, path);
+        Assert.assertTrue(match);
 
-        patten = "/eureka/**/b/**/*.txt";
+        pattern = "/eureka/**/b/**/*.txt";
         path = "/eureka/a/aa/aaa/b/bb/bbb/xxxxxx.txt";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
         path = "/eureka/a/aa/aaa/b/bb/bbb/xxxxxx";
-        match = pathMatcher.match(patten, path);
+        match = pathMatcher.match(pattern, path);
+        Assert.assertFalse(match);
+
+        pattern = "abc/*";
+        path = "abc/foo/bar";
+        match = pathMatcher.match(pattern, path);
         Assert.assertFalse(match);
     }
 }

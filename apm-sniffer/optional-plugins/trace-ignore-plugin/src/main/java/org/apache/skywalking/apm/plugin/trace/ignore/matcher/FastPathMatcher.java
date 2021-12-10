@@ -84,6 +84,22 @@ public class FastPathMatcher implements TracePathMatcher {
     private boolean wildcardMatch(String pat, int p, String str, int s) {
         char pc = safeCharAt(pat, p);
 
+        // End of pattern, check string only has zero or one '/' at end.
+        //             ↓        ↓
+        // pattern: a/*      a/*
+        //            ↓        ↓
+        // string:  a/bc/    a/bc
+        if (pc == 0) {
+            while (true) {
+                char sc = safeCharAt(str, s);
+                // No '/' found
+                if (sc == 0) return true;
+                // Check '/' is the last char of string
+                if (sc == '/') return s == str.length() - 1;
+                s++;
+            }
+        }
+
         while (true) {
             char sc = safeCharAt(str, s);
 
@@ -122,9 +138,11 @@ public class FastPathMatcher implements TracePathMatcher {
     }
 
     private boolean multiWildcardMatch(String pat, int p, String str, int s) {
-        // End of pattern, just check the end of string is '/' quickly.
-        if (p >= pat.length() && s < str.length()) {
-            return str.charAt(str.length() - 1) != '/';
+        switch (safeCharAt(pat, p)) {
+            // End of pattern, just return true quickly.
+            case 0: return true;
+            // Skip next '/' for pattern to match zero path part.
+            case '/': p++;
         }
 
         while (true) {

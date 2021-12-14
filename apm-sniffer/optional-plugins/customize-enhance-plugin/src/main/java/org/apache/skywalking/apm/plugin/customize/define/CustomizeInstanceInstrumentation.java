@@ -21,8 +21,8 @@ package org.apache.skywalking.apm.plugin.customize.define;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassInstanceMethodsEnhancePluginDefineV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.InstanceMethodsInterceptV2Point;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 import org.apache.skywalking.apm.plugin.customize.conf.CustomizeConfiguration;
@@ -31,7 +31,7 @@ import org.apache.skywalking.apm.plugin.customize.conf.CustomizeConfiguration;
  * The instance of customize instrumentation.
  */
 
-public class CustomizeInstanceInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class CustomizeInstanceInstrumentation extends ClassInstanceMethodsEnhancePluginDefineV2 {
 
     private String enhanceClass;
 
@@ -45,20 +45,20 @@ public class CustomizeInstanceInstrumentation extends ClassInstanceMethodsEnhanc
     }
 
     @Override
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
+    public InstanceMethodsInterceptV2Point[] getInstanceMethodsInterceptV2Points() {
         final ElementMatcher matcher = CustomizeConfiguration.INSTANCE.getInterceptPoints(enhanceClass, false);
         if (matcher == null) {
-            return new InstanceMethodsInterceptPoint[0];
+            return new InstanceMethodsInterceptV2Point[0];
         } else {
-            return new InstanceMethodsInterceptPoint[] {
-                new InstanceMethodsInterceptPoint() {
+            return new InstanceMethodsInterceptV2Point[] {
+                new InstanceMethodsInterceptV2Point() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return matcher;
                     }
 
                     @Override
-                    public String getMethodsInterceptor() {
+                    public String getMethodsInterceptorV2() {
                         return "org.apache.skywalking.apm.plugin.customize.interceptor.CustomizeInstanceInterceptor";
                     }
 

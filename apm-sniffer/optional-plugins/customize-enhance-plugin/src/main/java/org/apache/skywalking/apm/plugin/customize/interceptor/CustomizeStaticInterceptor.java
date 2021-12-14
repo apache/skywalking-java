@@ -18,28 +18,29 @@
 
 package org.apache.skywalking.apm.plugin.customize.interceptor;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
-
 import java.lang.reflect.Method;
 
-public class CustomizeStaticInterceptor extends BaseInterceptorMethods implements StaticMethodsAroundInterceptor {
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.StaticMethodsAroundInterceptorV2;
+
+public class CustomizeStaticInterceptor extends BaseInterceptorMethods implements StaticMethodsAroundInterceptorV2 {
+
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
-        MethodInterceptResult result) {
-        super.beforeMethod(method, allArguments);
+        MethodInvocationContext context) {
+        super.beforeMethod(method, allArguments, context);
     }
 
     @Override
     public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
-        Object ret) {
-        super.afterMethod(method, ret);
+        Object ret, MethodInvocationContext context) {
+        super.afterMethod(method, ret, context);
         return ret;
     }
 
     @Override
     public void handleMethodException(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
-        Throwable t) {
+        Throwable t, MethodInvocationContext context) {
         super.handleMethodException(t);
     }
 }

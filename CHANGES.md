@@ -16,6 +16,7 @@ Release Notes.
 * Support 2.8 and 2.9 of pulsar client.
 * Add dubbo 3.x plugin.
 * Fix TracePathMatcher should match pattern "**" with paths end by "/"
+* Add support `returnedObj` expression for apm-customize-enhance-plugin
 
 #### Documentation
 

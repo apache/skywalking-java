@@ -34,7 +34,7 @@ public class CustomizeInstanceInterceptor extends BaseInterceptorMethods impleme
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
-        super.afterMethod(method);
+        super.afterMethod(method, ret);
         return ret;
     }
 

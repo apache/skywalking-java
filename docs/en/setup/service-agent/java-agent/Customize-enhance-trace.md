@@ -38,6 +38,15 @@ Implementing enhancements to custom classes requires two steps.
 	            <tag key="tag_os">arg[0].os.[1]</tag>
 	            <log key="log_map">arg[0].getM().['k1']</log>
 	        </method>
+	        <method method="retString(java.lang.String)" operation_name="/retString" static="false">
+	            <tag key="tag_ret">returnedObj</tag>
+	            <log key="log_map">returnedObj</log>
+	        </method>
+	        <method method="retModel0(test.apache.skywalking.apm.testcase.customize.model.Model0)"
+	          operation_name="/retModel0" static="false">
+	            <tag key="tag_ret">returnedObj.model1.id</tag>
+	            <log key="log_map">returnedObj.model1.getId()</log>
+	        </method>
 	    </class>
 	    <class class_name="test.apache.skywalking.testcase.customize.service.TestService2">
 	        <method method="staticMethod(java.lang.String,int.class)" operation_name="/is_2_static_method" static="true">
@@ -53,7 +62,6 @@ Implementing enhancements to custom classes requires two steps.
 	        </method>
 	    </class>
 	</enhanced>
-	```
 
 - Explanation of the configuration in the file
 
@@ -69,4 +77,5 @@ Implementing enhancements to custom classes requires two steps.
 	| arg[x]   | What it means is to get the input arguments. such as arg[0] is means get first arguments. |
 	| .[x]     | When the parsing object is Array or List, you can use it to get the object at the specified index. |
 	| .['key'] | When the parsing object is Map, you can get the map 'key' through it.|
+	| returnedObj | What it means is to get the return value. |
 

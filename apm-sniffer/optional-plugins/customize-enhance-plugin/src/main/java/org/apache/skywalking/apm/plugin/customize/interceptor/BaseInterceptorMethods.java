@@ -54,39 +54,93 @@ class BaseInterceptorMethods {
                     operationNameSuffix.append(CustomizeExpression.parseExpression(expression, context));
                 }
             }
-            if (tags != null && !tags.isEmpty()) {
-                for (Map.Entry<String, String> expression : tags.entrySet()) {
-                    spanTags.put(expression.getKey(), CustomizeExpression.parseExpression(expression.getValue(), context));
-                }
-            }
-            if (logs != null && !logs.isEmpty()) {
-                for (Map.Entry<String, String> entries : logs.entrySet()) {
-                    String expression = logs.get(entries.getKey());
-                    spanLogs.put(entries.getKey(), CustomizeExpression.parseExpression(expression, context));
-                }
-            }
+            evalAndPopulate(context, tags, spanTags);
+            evalAndPopulate(context, logs, spanLogs);
+
             operationName = operationNameSuffix.insert(0, operationName).toString();
 
             AbstractSpan span = ContextManager.createLocalSpan(operationName);
-            if (!spanTags.isEmpty()) {
-                for (Map.Entry<String, String> tag : spanTags.entrySet()) {
-                    span.tag(Tags.ofKey(tag.getKey()), tag.getValue());
-                }
-            }
-            if (!spanLogs.isEmpty()) {
-                span.log(System.currentTimeMillis(), spanLogs);
-            }
+            tagSpanTags(span, spanTags);
+            tagSpanLogs(span, spanLogs);
         }
     }
 
-    void afterMethod(Method method) {
-        ContextManager.stopSpan();
+    void afterMethod(Method method, Object ret) {
+        if (!ContextManager.isActive()) {
+            return;
+        }
+
+        if (ret == null) {
+            ContextManager.stopSpan();
+            return;
+        }
+
+        Map<String, Object> configuration = CustomizeConfiguration.INSTANCE.getConfiguration(method);
+        Map<String, Object> context = CustomizeExpression.evaluationReturnContext(ret);
+
+        Map<String, String> tags = MethodConfiguration.getTags(configuration);
+        Map<String, String> spanTags = new HashMap<String, String>();
+        Map<String, String> logs = MethodConfiguration.getLogs(configuration);
+        Map<String, String> spanLogs = new HashMap<String, String>();
+
+        evalReturnAndPopulate(context, tags, spanTags);
+        evalReturnAndPopulate(context, logs, spanLogs);
+
+        final AbstractSpan localSpan = ContextManager.activeSpan();
+        tagSpanTags(localSpan, spanTags);
+        tagSpanLogs(localSpan, spanLogs);
+
+        ContextManager.stopSpan(localSpan);
+
     }
 
     void handleMethodException(Throwable t) {
         if (ContextManager.isActive()) {
             ContextManager.activeSpan().log(t);
         }
+    }
+
+    private void evalAndPopulate(Map<String, Object> context, Map<String, String> exprMap, Map<String, String> toMap) {
+        if (exprMap != null && !exprMap.isEmpty()) {
+            for (Map.Entry<String, String> entry : exprMap.entrySet()) {
+                String expression = entry.getValue();
+                if (isReturnedObjExpression(expression)) {
+                    continue;
+                }
+                toMap.put(entry.getKey(), CustomizeExpression.parseExpression(expression, context));
+            }
+        }
+    }
+
+    private void evalReturnAndPopulate(Map<String, Object> context, Map<String, String> exprMap, Map<String, String> toMap) {
+        if (exprMap != null && !exprMap.isEmpty()) {
+            for (Map.Entry<String, String> entry : exprMap.entrySet()) {
+                String expression = entry.getValue();
+                if (!isReturnedObjExpression(expression)) {
+                    continue;
+                }
+                toMap.put(entry.getKey(), CustomizeExpression.parseReturnExpression(expression, context));
+            }
+        }
+    }
+
+    private void tagSpanTags(AbstractSpan span,  Map<String, String> spanTags) {
+        if (spanTags != null && !spanTags.isEmpty()) {
+            for (Map.Entry<String, String> tag : spanTags.entrySet()) {
+                span.tag(Tags.ofKey(tag.getKey()), tag.getValue());
+            }
+        }
+    }
+
+    private void tagSpanLogs(AbstractSpan span, Map<String, String> spanLogs) {
+        if (spanLogs != null && !spanLogs.isEmpty()) {
+            span.log(System.currentTimeMillis(), spanLogs);
+        }
+    }
+
+    private boolean isReturnedObjExpression(String expression) {
+        String[] es = expression.split("\\.");
+        return "returnedObj".equals(es[0]);
     }
 
 }

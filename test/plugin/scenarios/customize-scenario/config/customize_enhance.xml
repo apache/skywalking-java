@@ -43,6 +43,15 @@
             <tag key="tag_os">arg[0].os.[1]</tag>
             <log key="log_map">arg[0].getM().['k1']</log>
         </method>
+        <method method="retString(java.lang.String)" operation_name="/retString" static="false">
+            <tag key="tag_ret">returnedObj</tag>
+            <log key="log_map">returnedObj</log>
+        </method>
+        <method method="retModel0(test.apache.skywalking.apm.testcase.customize.model.Model0)"
+          operation_name="/retModel0" static="false">
+            <tag key="tag_ret">returnedObj.model1.id</tag>
+            <log key="log_map">returnedObj.model1.getId()</log>
+        </method>
     </class>
     <class class_name="test.apache.skywalking.apm.testcase.customize.service.TestService2">
         <method method="staticMethod(java.lang.String,int.class)" operation_name="/is_2_static_method" static="true">

@@ -33,7 +33,7 @@ public class CustomizeStaticInterceptor extends BaseInterceptorMethods implement
     @Override
     public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
         Object ret) {
-        super.afterMethod(method);
+        super.afterMethod(method, ret);
         return ret;
     }
 

@@ -20,8 +20,8 @@ package org.apache.skywalking.apm.plugin.customize.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassStaticMethodsEnhancePluginDefineV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsInterceptV2Point;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 import org.apache.skywalking.apm.plugin.customize.conf.CustomizeConfiguration;
@@ -30,7 +30,7 @@ import org.apache.skywalking.apm.plugin.customize.conf.CustomizeConfiguration;
  * The static of customize instrumentation.
  */
 
-public class CustomizeStaticInstrumentation extends ClassStaticMethodsEnhancePluginDefine {
+public class CustomizeStaticInstrumentation extends ClassStaticMethodsEnhancePluginDefineV2 {
     private String enhanceClass;
 
     public CustomizeStaticInstrumentation(String enhanceClass) {
@@ -38,20 +38,20 @@ public class CustomizeStaticInstrumentation extends ClassStaticMethodsEnhancePlu
     }
 
     @Override
-    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
+    public StaticMethodsInterceptV2Point[] getStaticMethodsInterceptV2Points() {
         final ElementMatcher matcher = CustomizeConfiguration.INSTANCE.getInterceptPoints(enhanceClass, true);
         if (matcher == null) {
-            return new StaticMethodsInterceptPoint[0];
+            return new StaticMethodsInterceptV2Point[0];
         } else {
-            return new StaticMethodsInterceptPoint[] {
-                new StaticMethodsInterceptPoint() {
+            return new StaticMethodsInterceptV2Point[] {
+                new StaticMethodsInterceptV2Point() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return matcher;
                     }
 
                     @Override
-                    public String getMethodsInterceptor() {
+                    public String getMethodsInterceptorV2() {
                         return "org.apache.skywalking.apm.plugin.customize.interceptor.CustomizeStaticInterceptor";
                     }
 

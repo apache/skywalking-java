@@ -44,4 +44,12 @@ public class TestService1 {
     public void method(Model0 m0, String str0, int count) {
 
     }
+
+    public String retString(String str0) {
+        return str0;
+    }
+
+    public Model0 retModel0(Model0 m0) {
+        return m0;
+    }
 }

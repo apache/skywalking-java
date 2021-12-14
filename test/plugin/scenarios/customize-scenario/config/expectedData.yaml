@@ -110,6 +110,32 @@ segmentItems:
       - logEvent:
         - {key: log_5_1, value: '123'}
       skipAnalysis: 'false'
+    - operationName: /retString
+      parentSpanId: 0
+      spanId: 9
+      startTime: nq 0
+      endTime: nq 0
+      isError: false
+      spanType: Local
+      tags:
+        - {key: tag_ret, value: 'str0'}
+      logs:
+        - logEvent:
+            - {key: log_map, value: 'str0'}
+      skipAnalysis: 'false'
+    - operationName: /retModel0
+      parentSpanId: 0
+      spanId: 10
+      startTime: nq 0
+      endTime: nq 0
+      isError: false
+      spanType: Local
+      tags:
+        - {key: tag_ret, value: '100'}
+      logs:
+        - logEvent:
+            - {key: log_map, value: '100'}
+      skipAnalysis: 'false'
     - operationName: GET:/case/customize
       parentSpanId: -1
       spanId: 0

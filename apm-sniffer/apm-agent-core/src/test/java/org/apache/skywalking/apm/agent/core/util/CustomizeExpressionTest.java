@@ -16,9 +16,8 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.customize.util;
+package org.apache.skywalking.apm.agent.core.util;
 
-import org.apache.skywalking.apm.agent.core.util.CustomizeExpression;
 import org.junit.Assert;
 import org.junit.Test;
 

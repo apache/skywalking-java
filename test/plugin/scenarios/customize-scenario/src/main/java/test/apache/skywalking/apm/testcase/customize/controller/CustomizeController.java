@@ -78,6 +78,9 @@ public class CustomizeController {
             add("a2");
         }}, 123);
 
+        testService1.retString("str0");
+        testService1.retModel0(m0);
+
         LOGGER.info(SUCCESS);
         return SUCCESS;
     }

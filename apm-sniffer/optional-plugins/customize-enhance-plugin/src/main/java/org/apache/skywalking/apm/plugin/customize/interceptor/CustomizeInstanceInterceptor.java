@@ -18,29 +18,29 @@
 
 package org.apache.skywalking.apm.plugin.customize.interceptor;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-
 import java.lang.reflect.Method;
 
-public class CustomizeInstanceInterceptor extends BaseInterceptorMethods implements InstanceMethodsAroundInterceptor {
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
+
+public class CustomizeInstanceInterceptor extends BaseInterceptorMethods implements InstanceMethodsAroundInterceptorV2 {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
-        super.beforeMethod(method, allArguments);
+        MethodInvocationContext context) throws Throwable {
+        super.beforeMethod(method, allArguments, context);
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
-        super.afterMethod(method);
+        Object ret, MethodInvocationContext context) throws Throwable {
+        super.afterMethod(method, ret, context);
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+        Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
         super.handleMethodException(t);
     }
 }

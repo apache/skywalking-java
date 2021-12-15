@@ -158,14 +158,15 @@ public class TagAnnotationTest {
         AbstractTracingSpan tracingSpan = spans.get(0);
         assertThat(tracingSpan.getOperationName(), is("testMethod"));
         SpanAssert.assertLogSize(tracingSpan, 0);
-        SpanAssert.assertTagSize(tracingSpan, 2);
+        SpanAssert.assertTagSize(tracingSpan, 3);
         List<TagValuePair> tags = SpanHelper.getTags(tracingSpan);
 
         assertThat(tags.get(0).getKey().key(), is("username"));
         assertThat(tags.get(0).getValue(), is("wangwu"));
         assertThat(tags.get(1).getKey().key(), is("info"));
         assertThat(tags.get(1).getValue(), is("username=wangwu,age=18"));
-
+        assertThat(tags.get(2).getKey().key(), is("info2"));
+        assertThat(tags.get(2).getValue(), is("username=wangwu,age=18"));
     }
 
     @Test
@@ -182,13 +183,15 @@ public class TagAnnotationTest {
         AbstractTracingSpan tracingSpan = spans.get(0);
         assertThat(tracingSpan.getOperationName(), is("testMethod"));
         SpanAssert.assertLogSize(tracingSpan, 0);
-        SpanAssert.assertTagSize(tracingSpan, 2);
+        SpanAssert.assertTagSize(tracingSpan, 3);
         List<TagValuePair> tags = SpanHelper.getTags(tracingSpan);
 
         assertThat(tags.get(0).getKey().key(), is("username"));
         assertThat(tags.get(0).getValue(), is("wangwu"));
         assertThat(tags.get(1).getKey().key(), is("info"));
         assertThat(tags.get(1).getValue(), is("username=wangwu,age=18"));
+        assertThat(tags.get(2).getKey().key(), is("info2"));
+        assertThat(tags.get(2).getValue(), is("username=wangwu,age=18"));
     }
 
     @Test
@@ -208,13 +211,15 @@ public class TagAnnotationTest {
         AbstractTracingSpan tracingSpan = spans.get(0);
         assertThat(tracingSpan.getOperationName(), is("testMethod"));
         SpanAssert.assertLogSize(tracingSpan, 0);
-        SpanAssert.assertTagSize(tracingSpan, 2);
+        SpanAssert.assertTagSize(tracingSpan, 3);
         List<TagValuePair> tags = SpanHelper.getTags(tracingSpan);
 
         assertThat(tags.get(0).getKey().key(), is("username"));
         assertThat(tags.get(0).getValue(), is("wangwu"));
         assertThat(tags.get(1).getKey().key(), is("info"));
         assertThat(tags.get(1).getValue(), is("username=wangwu,age=18"));
+        assertThat(tags.get(2).getKey().key(), is("info2"));
+        assertThat(tags.get(2).getValue(), is("username=wangwu,age=18"));
     }
 
     @Test
@@ -296,17 +301,29 @@ public class TagAnnotationTest {
             return new User(username, age);
         }
 
-        @Tags({@Tag(key = "username", value = "arg[0]"), @Tag(key = "info", value = "returnedObj.0.info")})
+        @Tags({
+            @Tag(key = "username", value = "arg[0]"),
+            @Tag(key = "info", value = "returnedObj.0.info"),
+            @Tag(key = "info2", value = "returnedObj.[0].info"),
+        })
         public List<User> testMethodWithReturnList(String username, Integer age) {
             return Arrays.asList(new User(username, age));
         }
 
-        @Tags({@Tag(key = "username", value = "arg[0]"), @Tag(key = "info", value = "returnedObj.0.info")})
+        @Tags({
+            @Tag(key = "username", value = "arg[0]"),
+            @Tag(key = "info", value = "returnedObj.0.info"),
+            @Tag(key = "info2", value = "returnedObj.[0].info"),
+        })
         public User[] testMethodWithReturnArray(String username, Integer age) {
             return new User[]{new User(username, age)};
         }
 
-        @Tags({@Tag(key = "username", value = "arg[0]"), @Tag(key = "info", value = "returnedObj.user.info")})
+        @Tags({
+            @Tag(key = "username", value = "arg[0]"),
+            @Tag(key = "info", value = "returnedObj.user.info"),
+            @Tag(key = "info2", value = "returnedObj.['user'].info")
+        })
         public Map<String, User> testMethodWithReturnMap(String username, Integer age) {
             Map<String, User> userMap = new HashMap<>();
             userMap.put("user", new User(username, age));

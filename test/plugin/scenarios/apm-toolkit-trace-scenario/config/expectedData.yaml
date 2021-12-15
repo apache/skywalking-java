@@ -153,6 +153,45 @@ segmentItems:
       - {key: p2, value: '16'}
       - {key: username, value: lisi}
       skipAnalysis: 'true'
+    - operationName: test.apache.skywalking.apm.testcase.toolkit.controller.TestService.testTagAnnotationReturnArray(java.lang.String,java.lang.Integer)
+      parentSpanId: 0
+      spanId: 11
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: username, value: lisi}
+      skipAnalysis: 'true'
+    - operationName: test.apache.skywalking.apm.testcase.toolkit.controller.TestService.testTagAnnotationReturnList(java.lang.String,java.lang.Integer)
+      parentSpanId: 0
+      spanId: 12
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: username, value: wangwu}
+      skipAnalysis: 'true'
+    - operationName: test.apache.skywalking.apm.testcase.toolkit.controller.TestService.testTagAnnotationReturnMap(java.lang.String,java.lang.Integer)
+      parentSpanId: 0
+      spanId: 13
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - {key: username, value: zhaoliu}
+      skipAnalysis: 'true'
     - operationName: GET:/case/tool-kit
       parentSpanId: -1
       spanId: 0

@@ -136,6 +136,45 @@ segmentItems:
         - logEvent:
             - {key: log_map, value: '100'}
       skipAnalysis: 'false'
+    - operationName: /retArray
+      parentSpanId: 0
+      spanId: 11
+      startTime: nq 0
+      endTime: nq 0
+      isError: false
+      spanType: Local
+      tags:
+        - {key: tag_ret, value: '1'}
+      logs:
+        - logEvent:
+            - {key: log_map, value: '2'}
+      skipAnalysis: 'false'
+    - operationName: /retList
+      parentSpanId: 0
+      spanId: 12
+      startTime: nq 0
+      endTime: nq 0
+      isError: false
+      spanType: Local
+      tags:
+        - {key: tag_ret, value: 'a2'}
+      logs:
+        - logEvent:
+            - {key: log_map, value: 'a3'}
+      skipAnalysis: 'false'
+    - operationName: /retMap
+      parentSpanId: 0
+      spanId: 13
+      startTime: nq 0
+      endTime: nq 0
+      isError: false
+      spanType: Local
+      tags:
+        - {key: tag_ret, value: 'v1'}
+      logs:
+        - logEvent:
+            - {key: log_map, value: 'v2'}
+      skipAnalysis: 'false'
     - operationName: GET:/case/customize
       parentSpanId: -1
       spanId: 0

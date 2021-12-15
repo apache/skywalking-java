@@ -81,6 +81,20 @@ public class CustomizeController {
         testService1.retString("str0");
         testService1.retModel0(m0);
 
+        testService2.retArray(new Object[] {
+            '1',
+            2,
+            "3"
+        });
+        testService2.retList(new ArrayList() {{
+            add("a2");
+            add("a3");
+        }});
+        testService2.retMap(new HashMap() {{
+            put("k1", "v1");
+            put("k2", "v2");
+        }});
+
         LOGGER.info(SUCCESS);
         return SUCCESS;
     }

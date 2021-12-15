@@ -18,6 +18,10 @@
 
 package test.apache.skywalking.apm.testcase.toolkit.controller;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -95,6 +99,26 @@ public class TestService {
     @Tag(key = "testTag", value = "arg[0]")
     public void testInfo(final String testInfoParam) {
         ActiveSpan.info("TestInfoMsg");
+    }
+
+    @Trace
+    @Tag(key = "username", value = "returnedObj.[0].username")
+    public User[] testTagAnnotationReturnArray(final String username, final Integer age) {
+        return new User[]{new User(username, age)};
+    }
+
+    @Trace
+    @Tag(key = "username", value = "returnedObj.[0].username")
+    public List<User> testTagAnnotationReturnList(final String username, final Integer age) {
+        return Arrays.asList(new User(username, age));
+    }
+
+    @Trace
+    @Tag(key = "username", value = "returnedObj.['user'].username")
+    public Map<String, User> testTagAnnotationReturnMap(final String username, final Integer age) {
+        Map<String, User> userMap = new HashMap<>();
+        userMap.put("user", new User(username, age));
+        return userMap;
     }
 
     public void asyncRunnable(Runnable runnable) {

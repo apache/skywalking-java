@@ -60,6 +60,18 @@ Implementing enhancements to custom classes requires two steps.
 	            <tag key="tag_5_1">arg[0].[0]</tag>
 	            <log key="log_5_1">arg[1]</log>
 	        </method>
+	        <method method="retArray([Ljava.lang.Object;)" operation_name="/retArray" static="false">
+              <tag key="tag_ret">returnedObj.[0]</tag>
+              <log key="log_map">returnedObj.[1]</log>
+          </method>
+          <method method="retList(java.util.List)" operation_name="/retList" static="false">
+              <tag key="tag_ret">returnedObj.[0]</tag>
+              <log key="log_map">returnedObj.[1]</log>
+          </method>
+          <method method="retMap(java.util.Map)" operation_name="/retMap" static="false">
+              <tag key="tag_ret">returnedObj.['k1']</tag>
+              <log key="log_map">returnedObj.['k2']</log>
+          </method>
 	    </class>
 	</enhanced>
 

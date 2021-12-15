@@ -40,13 +40,13 @@ public class BaseTagAnnotationInterceptor {
         if (tags != null && tags.value().length > 0) {
             for (final Tag tag : tags.value()) {
                 if (!TagUtil.isReturnTag(tag.value())) {
-                    TagUtil.tagParamsSpan(activeSpan, context, tag);
+                    TagUtil.tagSpan(activeSpan, context, tag);
                 }
             }
         }
         final Tag tag = method.getAnnotation(Tag.class);
         if (tag != null && !TagUtil.isReturnTag(tag.value())) {
-            TagUtil.tagParamsSpan(activeSpan, context, tag);
+            TagUtil.tagSpan(activeSpan, context, tag);
         }
     }
 
@@ -60,13 +60,13 @@ public class BaseTagAnnotationInterceptor {
         if (tags != null && tags.value().length > 0) {
             for (final Tag tag : tags.value()) {
                 if (TagUtil.isReturnTag(tag.value())) {
-                    TagUtil.tagReturnSpanSpan(localSpan, context, tag);
+                    TagUtil.tagSpan(localSpan, context, tag);
                 }
             }
         }
         final Tag tag = method.getAnnotation(Tag.class);
         if (tag != null && TagUtil.isReturnTag(tag.value())) {
-            TagUtil.tagReturnSpanSpan(localSpan, context, tag);
+            TagUtil.tagSpan(localSpan, context, tag);
         }
     }
 

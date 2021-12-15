@@ -17,6 +17,7 @@ Release Notes.
 * Add dubbo 3.x plugin.
 * Fix TracePathMatcher should match pattern "**" with paths end by "/"
 * Add support `returnedObj` expression for apm-customize-enhance-plugin
+* Enhance `returnedObj` expression to support Array, List and Map for apm-customize-enhance-plugin and `@Tag`
 
 #### Documentation
 

@@ -48,6 +48,38 @@ public class CustomizeExpressionTest {
         Assert.assertTrue("ext_v_2".equals(CustomizeExpression.parseExpression("arg[5].user.ext.['ext_k_2']", context)));
     }
 
+    @Test
+    public void testReturnExpression() {
+        Object[] allArguments = init();
+        Map<String, Object> evalCtx1 = CustomizeExpression.evaluationReturnContext(allArguments);
+        Assert.assertTrue("String_test".equals(CustomizeExpression.parseExpression("returnedObj.[0]", evalCtx1)));
+        Assert.assertTrue("1024".equals(CustomizeExpression.parseExpression("returnedObj.[1]", evalCtx1)));
+        Assert.assertTrue("v2_1".equals(CustomizeExpression.parseExpression("returnedObj.[2].['k2_1']", evalCtx1)));
+        Assert.assertTrue("test1".equals(CustomizeExpression.parseExpression("returnedObj.[3].[1]", evalCtx1)));
+        Assert.assertTrue("null".equals(CustomizeExpression.parseExpression("returnedObj.[3].[100]", evalCtx1)));
+        Assert.assertTrue("100".equals(CustomizeExpression.parseExpression("returnedObj.[4].id", evalCtx1)));
+        Assert.assertTrue("sw".equals(CustomizeExpression.parseExpression("returnedObj.[4].getName()", evalCtx1)));
+        Assert.assertTrue("ext_v_1".equals(CustomizeExpression.parseExpression("returnedObj.[4].ext.['ext_k_1']", evalCtx1)));
+        Assert.assertTrue("uuid".equals(CustomizeExpression.parseExpression("returnedObj.[5].uuid", evalCtx1)));
+        Assert.assertTrue("c".equals(CustomizeExpression.parseExpression("returnedObj.[5].orderIds.[0]", evalCtx1)));
+        Assert.assertTrue("2".equals(CustomizeExpression.parseExpression("returnedObj.[5].ids.[2]", evalCtx1)));
+        Assert.assertTrue("3".equals(CustomizeExpression.parseExpression("returnedObj.[5].ids.[1]", evalCtx1)));
+        Assert.assertTrue("open_id".equals(CustomizeExpression.parseExpression("returnedObj.[5].openId", evalCtx1)));
+        Assert.assertTrue("ext_v_2".equals(CustomizeExpression.parseExpression("returnedObj.[5].user.ext.['ext_k_2']", evalCtx1)));
+
+        Map<String, Object> evalCtx2 = CustomizeExpression.evaluationReturnContext("Simple text");
+        Assert.assertTrue("Simple text".equals(CustomizeExpression.parseExpression("returnedObj", evalCtx2)));
+
+        Map<String, Object> evalCtx3 = CustomizeExpression.evaluationReturnContext(newOrder());
+        Assert.assertTrue("uuid".equals(CustomizeExpression.parseExpression("returnedObj.uuid", evalCtx3)));
+        Assert.assertTrue("c".equals(CustomizeExpression.parseExpression("returnedObj.orderIds.[0]", evalCtx3)));
+        Assert.assertTrue("2".equals(CustomizeExpression.parseExpression("returnedObj.ids.[2]", evalCtx3)));
+        Assert.assertTrue("3".equals(CustomizeExpression.parseExpression("returnedObj.ids.[1]", evalCtx3)));
+        Assert.assertTrue("open_id".equals(CustomizeExpression.parseExpression("returnedObj.openId", evalCtx3)));
+        Assert.assertTrue("ext_v_2".equals(CustomizeExpression.parseExpression("returnedObj.user.ext.['ext_k_2']", evalCtx3)));
+
+    }
+
     private static Object[] init() {
         Object[] allArguments = new Object[6];
         allArguments[0] = "String_test";
@@ -74,6 +106,19 @@ public class CustomizeExpressionTest {
         });
         allArguments[5] = order;
         return allArguments;
+    }
+
+    private static Order newOrder() {
+        Map m2 = new HashMap();
+        m2.put("ext_k_2", "ext_v_2");
+        User user2 = new User(101, "sw0", m2);
+        List l1 = new ArrayList();
+        l1.add("c");
+        return new Order(999, "uuid", l1, user2, "open_id", new Object[] {
+            0,
+            3,
+            "2"
+        });
     }
 
     static class Order {

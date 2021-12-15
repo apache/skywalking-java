@@ -81,8 +81,8 @@ class BaseInterceptorMethods {
                     operationNameSuffix.append(CustomizeExpression.parseExpression(expression, evalContext));
                 }
             }
-            evalAndPopulate(evalContext, tags, spanTags);
-            evalAndPopulate(evalContext, logs, spanLogs);
+            evalAndPopulate(evalContext, false, tags, spanTags);
+            evalAndPopulate(evalContext, false, logs, spanLogs);
 
             operationName = operationNameSuffix.insert(0, operationName).toString();
             AbstractSpan localSpan = ContextManager.createLocalSpan(operationName);
@@ -121,8 +121,8 @@ class BaseInterceptorMethods {
         try {
             Map<String, Object> evalContext = CustomizeExpression.evaluationReturnContext(ret);
 
-            evalReturnAndPopulate(evalContext, tags, spanTags);
-            evalReturnAndPopulate(evalContext, logs, spanLogs);
+            evalAndPopulate(evalContext, true, tags, spanTags);
+            evalAndPopulate(evalContext, true, logs, spanLogs);
 
             tagSpanTags(localSpan, spanTags);
             tagSpanLogs(localSpan, spanLogs);
@@ -138,27 +138,15 @@ class BaseInterceptorMethods {
         ContextManager.activeSpan().log(t);
     }
 
-    private void evalAndPopulate(Map<String, Object> context, Map<String, String> exprMap, Map<String, String> toMap) {
-        if (exprMap != null && !exprMap.isEmpty()) {
-            for (Map.Entry<String, String> entry : exprMap.entrySet()) {
-                String expression = entry.getValue();
-                if (isReturnedObjExpression(expression)) {
-                    continue;
-                }
-                toMap.put(entry.getKey(), CustomizeExpression.parseExpression(expression, context));
-            }
-        }
-    }
-
-    private void evalReturnAndPopulate(Map<String, Object> context, Map<String, String> exprMap,
+    private void evalAndPopulate(Map<String, Object> context, boolean returnExpr, Map<String, String> exprMap,
         Map<String, String> toMap) {
         if (exprMap != null && !exprMap.isEmpty()) {
             for (Map.Entry<String, String> entry : exprMap.entrySet()) {
                 String expression = entry.getValue();
-                if (!isReturnedObjExpression(expression)) {
+                if (isReturnedObjExpression(expression) != returnExpr) {
                     continue;
                 }
-                toMap.put(entry.getKey(), CustomizeExpression.parseReturnExpression(expression, context));
+                toMap.put(entry.getKey(), CustomizeExpression.parseExpression(expression, context));
             }
         }
     }

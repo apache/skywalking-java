@@ -26,14 +26,9 @@ import org.apache.skywalking.apm.agent.core.util.CustomizeExpression;
 import org.apache.skywalking.apm.toolkit.trace.Tag;
 
 public class TagUtil {
-    public static void tagParamsSpan(final AbstractSpan span, final Map<String, Object> context,
+    public static void tagSpan(final AbstractSpan span, final Map<String, Object> context,
                                      final Tag tag) {
         new StringTag(tag.key()).set(span, CustomizeExpression.parseExpression(tag.value(), context));
-    }
-
-    public static void tagReturnSpanSpan(final AbstractSpan span, final Map<String, Object> context,
-                                         final Tag tag) {
-        new StringTag(tag.key()).set(span, CustomizeExpression.parseReturnExpression(tag.value(), context));
     }
 
     public static Boolean isReturnTag(String expression) {

@@ -19,6 +19,7 @@
 package test.apache.skywalking.apm.testcase.customize.service;
 
 import java.util.List;
+import java.util.Map;
 
 public class TestService2 {
 
@@ -32,5 +33,17 @@ public class TestService2 {
 
     public void method(List str0, int count) {
 
+    }
+
+    public Object[] retArray(Object[] objects) {
+        return objects;
+    }
+
+    public List retList(List str0) {
+        return str0;
+    }
+
+    public Map retMap(Map map) {
+        return map;
     }
 }

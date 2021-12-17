@@ -40,6 +40,7 @@ Release Notes.
 * Add plugin to support okhttp 2.x
 * Optimize okhttp 3.x 4.x plugin to get span time cost precisely
 * Adapt message header properties of RocketMQ 4.9.x
+* fix the bug httpasyncclient-4.x-plugin  has memory leak risk
 
 #### Documentation
 

@@ -37,6 +37,7 @@ public class LeaseRequestCompletedInterceptor implements InstanceMethodsAroundIn
             conn.getContext().setAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT, ContextManager.capture());
             conn.getContext().setAttribute(Constants.SKYWALKING_HTTP_CONTEXT, Constants.HTTP_CONTEXT_LOCAL.get());
         }
+        Constants.HTTP_CONTEXT_LOCAL.remove();
     }
 
     @Override

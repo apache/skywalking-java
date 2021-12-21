@@ -17,6 +17,7 @@ Release Notes.
 * Add dubbo 3.x plugin.
 * Fix TracePathMatcher should match pattern "**" with paths end by "/"
 * Add support `returnedObj` expression for apm-customize-enhance-plugin
+* Fix the bug that httpasyncclient-4.x-plugin  puts the dirty tracing context in the connection context
 
 #### Documentation
 

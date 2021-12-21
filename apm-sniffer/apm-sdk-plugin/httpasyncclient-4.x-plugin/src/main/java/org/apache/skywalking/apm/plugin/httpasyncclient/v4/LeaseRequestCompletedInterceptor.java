@@ -33,7 +33,7 @@ public class LeaseRequestCompletedInterceptor implements InstanceMethodsAroundIn
             MethodInterceptResult result) throws Throwable {
         PoolEntry entry = (PoolEntry) allArguments[0];
         NHttpConnection conn = (NHttpConnection) entry.getConnection();
-        if (ContextManager.isActive()) {
+        if (ContextManager.isActive() && !ContextManager.activeSpan().isExit()) {
             conn.getContext().setAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT, ContextManager.capture());
             conn.getContext().setAttribute(Constants.SKYWALKING_HTTP_CONTEXT, Constants.HTTP_CONTEXT_LOCAL.get());
         }

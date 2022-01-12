@@ -37,7 +37,7 @@ public class G1GCModule extends GCModule {
     }
 
     @Override
-    protected String getNormalGcName() {
+    protected String getNormalGCName() {
         return null;
     }
 }

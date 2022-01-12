@@ -38,7 +38,7 @@ public class ZGCModule extends GCModule {
     }
 
     @Override
-    protected String getNormalGcName() {
+    protected String getNormalGCName() {
         return "ZGC";
     }
 }

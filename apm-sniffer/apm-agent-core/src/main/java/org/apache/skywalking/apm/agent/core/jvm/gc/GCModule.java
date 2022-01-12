@@ -64,7 +64,7 @@ public abstract class GCModule implements GCMetricAccessor {
                 long time = bean.getCollectionTime();
                 gcTime = time - lastOGCCollectionTime;
                 lastOGCCollectionTime = time;
-            } else if (name.equals(getNormalGcName())) {
+            } else if (name.equals(getNormalGCName())) {
                 phrase = GCPhrase.NORMAL;
                 long collectionCount = bean.getCollectionCount();
                 gcCount = collectionCount - lastNormalGCCount;
@@ -87,5 +87,5 @@ public abstract class GCModule implements GCMetricAccessor {
 
     protected abstract String getNewGCName();
 
-    protected abstract String getNormalGcName();
+    protected abstract String getNormalGCName();
 }

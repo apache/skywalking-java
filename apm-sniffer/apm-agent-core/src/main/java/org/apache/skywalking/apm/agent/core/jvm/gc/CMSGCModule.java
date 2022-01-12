@@ -37,7 +37,7 @@ public class CMSGCModule extends GCModule {
     }
 
     @Override
-    protected String getNormalGcName() {
+    protected String getNormalGCName() {
         return null;
     }
 }

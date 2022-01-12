@@ -79,7 +79,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
             CarrierItem next = contextCarrier.items();
             while (next.hasNext()) {
                 next = next.next();
-                rpcContext.getAttachments().put(next.getHeadKey(), next.getHeadValue());
+                rpcContext.setAttachment(next.getHeadKey(), next.getHeadValue());
                 if (invocation.getAttachments().containsKey(next.getHeadKey())) {
                     invocation.getAttachments().remove(next.getHeadKey());
                 }

@@ -18,6 +18,7 @@ Release Notes.
 * Fix TracePathMatcher should match pattern "**" with paths end by "/"
 * Add support `returnedObj` expression for apm-customize-enhance-plugin
 * Fix the bug that httpasyncclient-4.x-plugin  puts the dirty tracing context in the connection context
+* support zgc gc time and count metric collect
 
 #### Documentation
 

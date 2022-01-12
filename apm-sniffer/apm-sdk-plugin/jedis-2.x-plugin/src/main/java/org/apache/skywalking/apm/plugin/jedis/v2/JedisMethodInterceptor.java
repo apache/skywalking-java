@@ -28,8 +28,12 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.util.StringUtil;
 
 public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor {
+
+    private static final String ABBR = "...";
+    private static final String DELIMITER_SPACE = " ";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -40,10 +44,19 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         Tags.DB_TYPE.set(span, "Redis");
         SpanLayer.asCache(span);
 
+        StringBuilder dbStatement = new StringBuilder(method.getName());
         if (allArguments.length > 0 && allArguments[0] instanceof String) {
-            Tags.DB_STATEMENT.set(span, method.getName() + " " + allArguments[0]);
+            String statement = (String) allArguments[0];
+            if (JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS && !StringUtil.isEmpty(statement)) {
+                dbStatement.append(DELIMITER_SPACE);
+                if (statement.length() > JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) {
+                    statement = statement.substring(0, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
+                }
+                dbStatement.append(statement);
+            }
+            Tags.DB_STATEMENT.set(span, dbStatement.toString());
         } else if (allArguments.length > 0 && allArguments[0] instanceof byte[]) {
-            Tags.DB_STATEMENT.set(span, method.getName());
+            Tags.DB_STATEMENT.set(span, dbStatement.toString());
         }
     }
 

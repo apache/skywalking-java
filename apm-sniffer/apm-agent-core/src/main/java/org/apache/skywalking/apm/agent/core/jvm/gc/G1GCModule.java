@@ -35,4 +35,9 @@ public class G1GCModule extends GCModule {
     protected String getNewGCName() {
         return "G1 Young Generation";
     }
+
+    @Override
+    protected String getNormalGcName() {
+        return null;
+    }
 }

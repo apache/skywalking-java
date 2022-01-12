@@ -21,24 +21,24 @@ package org.apache.skywalking.apm.agent.core.jvm.gc;
 import java.lang.management.GarbageCollectorMXBean;
 import java.util.List;
 
-public class ParallelGCModule extends GCModule {
-    public ParallelGCModule(List<GarbageCollectorMXBean> beans) {
+public class ZGCModule extends GCModule {
+
+    public ZGCModule(List<GarbageCollectorMXBean> beans) {
         super(beans);
     }
 
     @Override
     protected String getOldGCName() {
-        return "PS MarkSweep";
+        return null;
     }
 
     @Override
     protected String getNewGCName() {
-        return "PS Scavenge";
+        return null;
     }
 
     @Override
     protected String getNormalGcName() {
-        return null;
+        return "ZGC";
     }
-
 }

@@ -35,4 +35,9 @@ public class SerialGCModule extends GCModule {
     protected String getNewGCName() {
         return "Copy";
     }
+
+    @Override
+    protected String getNormalGcName() {
+        return null;
+    }
 }

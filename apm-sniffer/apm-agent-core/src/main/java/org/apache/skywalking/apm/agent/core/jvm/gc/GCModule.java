@@ -31,6 +31,8 @@ public abstract class GCModule implements GCMetricAccessor {
     private long lastYGCCount = 0;
     private long lastOGCCollectionTime = 0;
     private long lastYGCCollectionTime = 0;
+    private long lastNormalGCCount = 0;
+    private long lastNormalGCTime = 0;
 
     public GCModule(List<GarbageCollectorMXBean> beans) {
         this.beans = beans;
@@ -62,6 +64,15 @@ public abstract class GCModule implements GCMetricAccessor {
                 long time = bean.getCollectionTime();
                 gcTime = time - lastOGCCollectionTime;
                 lastOGCCollectionTime = time;
+            } else if (name.equals(getNormalGcName())) {
+                phrase = GCPhrase.NORMAL;
+                long collectionCount = bean.getCollectionCount();
+                gcCount = collectionCount - lastNormalGCCount;
+                lastNormalGCCount = collectionCount;
+
+                long time = bean.getCollectionTime();
+                gcTime = time - lastNormalGCTime;
+                lastNormalGCTime = time;
             } else {
                 continue;
             }
@@ -75,4 +86,6 @@ public abstract class GCModule implements GCMetricAccessor {
     protected abstract String getOldGCName();
 
     protected abstract String getNewGCName();
+
+    protected abstract String getNormalGcName();
 }

@@ -102,10 +102,15 @@ property key | Description | **System Environment Variable** | Default
 `plugin.springannotation.classname_match_regex` |  Match spring beans with regular expression for the class name. Multiple expressions could be separated by a comma. This only works when `Spring annotation plugin` has been activated. | SW_SPRINGANNOTATION_CLASSNAME_MATCH_REGEX | `All the spring beans tagged with @Bean,@Service,@Dao, or @Repository.` 
 `plugin.toolkit.log.transmit_formatted` | Whether or not to transmit logged data as formatted or un-formatted. | SW_PLUGIN_TOOLKIT_LOG_TRANSMIT_FORMATTED | `true` 
 `plugin.lettuce.trace_redis_parameters` | If set to true, the parameters of Redis commands would be collected by Lettuce agent.| SW_PLUGIN_LETTUCE_TRACE_REDIS_PARAMETERS | `false` 
-`plugin.lettuce.redis_parameter_max_length` | If set to positive number and `plugin.lettuce.trace_redis_parameters` is set to `true`, Redis command parameters would be collected and truncated to this length.| SW_PLUGIN_LETTUCE_REDIS_PARAMETER_MAX_LENGTH | `128` 
+`plugin.lettuce.redis_parameter_max_length` | If set to positive number and `plugin.lettuce.trace_redis_parameters` is set to `true`, Redis command parameters would be collected and truncated to this length.| SW_PLUGIN_LETTUCE_REDIS_PARAMETER_MAX_LENGTH | `128`
+`plugin.jedis.trace_redis_parameters` | If set to true, the parameters of Redis commands would be collected by Jedis agent.| SW_PLUGIN_JEDIS_TRACE_REDIS_PARAMETERS | `false`
+`plugin.jedis.redis_parameter_max_length` | If set to positive number and `plugin.jedis.trace_redis_parameters` is set to `true`, Redis command parameters would be collected and truncated to this length.| SW_PLUGIN_JEDIS_REDIS_PARAMETER_MAX_LENGTH | `128`
+`plugin.redisson.trace_redis_parameters` | If set to true, the parameters of Redis commands would be collected by Redisson agent.| SW_PLUGIN_REDISSON_TRACE_REDIS_PARAMETERS | `false`
+`plugin.redisson.redis_parameter_max_length` | If set to positive number and `plugin.redisson.trace_redis_parameters` is set to `true`, Redis command parameters would be collected and truncated to this length.| SW_PLUGIN_REDISSON_REDIS_PARAMETER_MAX_LENGTH | `128`
 `plugin.neo4j.trace_cypher_parameters`|If set to true, the parameters of the cypher would be collected.|SW_PLUGIN_NEO4J_TRACE_CYPHER_PARAMETERS|`false`
 `plugin.neo4j.cypher_parameters_max_length`|If set to positive number, the `db.cypher.parameters` would be truncated to this length, otherwise it would be completely saved, which may cause performance problem.|SW_PLUGIN_NEO4J_CYPHER_PARAMETERS_MAX_LENGTH|`512`
 `plugin.neo4j.cypher_body_max_length`|If set to positive number, the `db.statement` would be truncated to this length, otherwise it would be completely saved, which may cause performance problem.|SW_PLUGIN_NEO4J_CYPHER_BODY_MAX_LENGTH|`2048`
+
 
 # Dynamic Configurations
 All configurations above are static, if you need to change some agent settings at runtime, please read [CDS - Configuration Discovery Service document](configuration-discovery.md) for more details.

@@ -18,5 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -jar ${agent_opts} -Dredis.host=${REDIS_HOST} -Dredis.port=${REDIS_PORT} \
-${home}/../libs/jedis-scenario.jar &
+java -jar ${agent_opts} -Dredis.host=${REDIS_HOST} -Dredis.port=${REDIS_PORT} -Dskywalking.plugin.jedis.trace_redis_parameters=true ${home}/../libs/jedis-scenario.jar &

@@ -22,7 +22,7 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.skywalking.apm.network.language.agent.v3.GC;
-import org.apache.skywalking.apm.network.language.agent.v3.GCPhrase;
+import org.apache.skywalking.apm.network.language.agent.v3.GCPhase;
 
 public abstract class GCModule implements GCMetricAccessor {
     private List<GarbageCollectorMXBean> beans;
@@ -43,11 +43,11 @@ public abstract class GCModule implements GCMetricAccessor {
         List<GC> gcList = new LinkedList<GC>();
         for (GarbageCollectorMXBean bean : beans) {
             String name = bean.getName();
-            GCPhrase phrase;
+            GCPhase phase;
             long gcCount = 0;
             long gcTime = 0;
             if (name.equals(getNewGCName())) {
-                phrase = GCPhrase.NEW;
+                phase = GCPhase.NEW;
                 long collectionCount = bean.getCollectionCount();
                 gcCount = collectionCount - lastYGCCount;
                 lastYGCCount = collectionCount;
@@ -56,7 +56,7 @@ public abstract class GCModule implements GCMetricAccessor {
                 gcTime = time - lastYGCCollectionTime;
                 lastYGCCollectionTime = time;
             } else if (name.equals(getOldGCName())) {
-                phrase = GCPhrase.OLD;
+                phase = GCPhase.OLD;
                 long collectionCount = bean.getCollectionCount();
                 gcCount = collectionCount - lastOGCCount;
                 lastOGCCount = collectionCount;
@@ -65,7 +65,7 @@ public abstract class GCModule implements GCMetricAccessor {
                 gcTime = time - lastOGCCollectionTime;
                 lastOGCCollectionTime = time;
             } else if (name.equals(getNormalGCName())) {
-                phrase = GCPhrase.NORMAL;
+                phase = GCPhase.NORMAL;
                 long collectionCount = bean.getCollectionCount();
                 gcCount = collectionCount - lastNormalGCCount;
                 lastNormalGCCount = collectionCount;
@@ -77,7 +77,7 @@ public abstract class GCModule implements GCMetricAccessor {
                 continue;
             }
 
-            gcList.add(GC.newBuilder().setPhrase(phrase).setCount(gcCount).setTime(gcTime).build());
+            gcList.add(GC.newBuilder().setPhase(phase).setCount(gcCount).setTime(gcTime).build());
         }
 
         return gcList;

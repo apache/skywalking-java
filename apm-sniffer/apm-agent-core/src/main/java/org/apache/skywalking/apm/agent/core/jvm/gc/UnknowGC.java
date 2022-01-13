@@ -21,14 +21,14 @@ package org.apache.skywalking.apm.agent.core.jvm.gc;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.skywalking.apm.network.language.agent.v3.GC;
-import org.apache.skywalking.apm.network.language.agent.v3.GCPhrase;
+import org.apache.skywalking.apm.network.language.agent.v3.GCPhase;
 
 public class UnknowGC implements GCMetricAccessor {
     @Override
     public List<GC> getGCList() {
         List<GC> gcList = new LinkedList<GC>();
-        gcList.add(GC.newBuilder().setPhrase(GCPhrase.NEW).build());
-        gcList.add(GC.newBuilder().setPhrase(GCPhrase.OLD).build());
+        gcList.add(GC.newBuilder().setPhase(GCPhase.NEW).build());
+        gcList.add(GC.newBuilder().setPhase(GCPhase.OLD).build());
         return gcList;
     }
 }

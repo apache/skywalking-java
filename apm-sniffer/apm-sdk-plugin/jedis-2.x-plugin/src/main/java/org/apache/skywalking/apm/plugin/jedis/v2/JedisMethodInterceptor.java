@@ -44,20 +44,23 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         Tags.DB_TYPE.set(span, "Redis");
         SpanLayer.asCache(span);
 
-        StringBuilder dbStatement = new StringBuilder(method.getName());
         if (allArguments.length > 0 && allArguments[0] instanceof String) {
-            String statement = (String) allArguments[0];
-            if (JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS && !StringUtil.isEmpty(statement)) {
-                dbStatement.append(DELIMITER_SPACE);
-                if (statement.length() > JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) {
-                    statement = statement.substring(0, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
-                }
-                dbStatement.append(statement);
-            }
-            Tags.DB_STATEMENT.set(span, dbStatement.toString());
+            Tags.DB_STATEMENT.set(span, getDBStatement(method.getName(), (String) allArguments[0]));
         } else if (allArguments.length > 0 && allArguments[0] instanceof byte[]) {
-            Tags.DB_STATEMENT.set(span, dbStatement.toString());
+            Tags.DB_STATEMENT.set(span, method.getName());
         }
+    }
+
+    private String getDBStatement(String methodName, String argument) {
+        StringBuilder dbStatement = new StringBuilder(methodName);
+        if (JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS && !StringUtil.isEmpty(argument)) {
+            dbStatement.append(DELIMITER_SPACE);
+            if (argument.length() > JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) {
+                argument = argument.substring(0, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
+            }
+            dbStatement.append(argument);
+        }
+        return dbStatement.toString();
     }
 
     @Override

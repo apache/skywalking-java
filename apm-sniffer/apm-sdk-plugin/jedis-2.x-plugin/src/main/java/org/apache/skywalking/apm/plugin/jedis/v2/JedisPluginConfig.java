@@ -9,7 +9,7 @@ public class JedisPluginConfig {
             /**
              * If set to true, the parameters of the Redis command would be collected.
              */
-            public static boolean TRACE_REDIS_PARAMETERS = false;
+            public static boolean TRACE_REDIS_PARAMETERS = true;
             /**
              * For the sake of performance, SkyWalking won't save Redis parameter string into the tag.
              * If TRACE_REDIS_PARAMETERS is set to true, the first {@code REDIS_PARAMETER_MAX_LENGTH} parameter

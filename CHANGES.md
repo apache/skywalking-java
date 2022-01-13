@@ -20,7 +20,7 @@ Release Notes.
 * Fix the bug that httpasyncclient-4.x-plugin  puts the dirty tracing context in the connection context
 * Compatible with the versions after dubbo-2.7.14
 * Follow protocol grammar fix `GCPhrase -> GCPhase`.
-* Support zgc gc time and count metric collect
+* Support ZGC GC time and count metric collect. (Require 9.0.0 OAP)
 
 #### Documentation
 

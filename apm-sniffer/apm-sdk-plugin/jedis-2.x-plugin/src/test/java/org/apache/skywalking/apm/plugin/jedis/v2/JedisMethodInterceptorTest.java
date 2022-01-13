@@ -69,6 +69,8 @@ public class JedisMethodInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
+        JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS = true;
+
         allArgument = new Object[] {
             "OperationKey",
             "OperationValue"

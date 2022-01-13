@@ -28,8 +28,12 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.util.StringUtil;
 
 public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor {
+
+    private static final String ABBR = "...";
+    private static final String DELIMITER_SPACE = " ";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -41,10 +45,22 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         SpanLayer.asCache(span);
 
         if (allArguments.length > 0 && allArguments[0] instanceof String) {
-            Tags.DB_STATEMENT.set(span, method.getName() + " " + allArguments[0]);
+            Tags.DB_STATEMENT.set(span, getDBStatement(method.getName(), (String) allArguments[0]));
         } else if (allArguments.length > 0 && allArguments[0] instanceof byte[]) {
             Tags.DB_STATEMENT.set(span, method.getName());
         }
+    }
+
+    private String getDBStatement(String methodName, String argument) {
+        StringBuilder dbStatement = new StringBuilder(methodName);
+        if (JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS && !StringUtil.isEmpty(argument)) {
+            dbStatement.append(DELIMITER_SPACE);
+            if (argument.length() > JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) {
+                argument = argument.substring(0, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
+            }
+            dbStatement.append(argument);
+        }
+        return dbStatement.toString();
     }
 
     @Override

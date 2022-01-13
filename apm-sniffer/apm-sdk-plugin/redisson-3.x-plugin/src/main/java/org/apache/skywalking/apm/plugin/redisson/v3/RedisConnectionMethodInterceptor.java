@@ -44,6 +44,10 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
     private static final ILog LOGGER = LogManager.getLogger(RedisConnectionMethodInterceptor.class);
 
+    private static final String ABBR = "...";
+    private static final String QUESTION_MARK = "?";
+    private static final String DELIMITER_SPACE = " ";
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
@@ -81,9 +85,14 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
     private void addCommandData(StringBuilder dbStatement, CommandData commandData) {
         dbStatement.append(commandData.getCommand().getName());
-        if (commandData.getParams() != null) {
+        if (RedissonPluginConfig.Plugin.Redisson.TRACE_REDIS_PARAMETERS && commandData.getParams() != null) {
             for (Object param : commandData.getParams()) {
-                dbStatement.append(" ").append(param instanceof ByteBuf ? "?" : String.valueOf(param.toString()));
+                dbStatement.append(DELIMITER_SPACE);
+                String paramStr = param instanceof ByteBuf ? QUESTION_MARK : String.valueOf(param.toString());
+                if (paramStr.length() > RedissonPluginConfig.Plugin.Redisson.REDIS_PARAMETER_MAX_LENGTH) {
+                    paramStr = paramStr.substring(0, RedissonPluginConfig.Plugin.Redisson.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
+                }
+                dbStatement.append(paramStr);
             }
         }
     }

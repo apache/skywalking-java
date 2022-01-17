@@ -12,7 +12,7 @@ Apache SkyWalking Java Agent
 
 SkyWalking-Java: The Java Agent for Apache SkyWalking, which provides the native tracing/metrics/logging abilities for Java projects.
 
-SkyWalking: an APM(application performance monitor) system, especially designed for microservices, cloud native and container-based (Docker, Kubernetes, Mesos) architectures.
+SkyWalking: an APM(application performance monitor) system, especially designed for microservices, cloud native and container-based (Docker and Kubernetes) architectures.
 
 # Documentation
 - [Official documentation](https://skywalking.apache.org/docs/#JavaAgent)

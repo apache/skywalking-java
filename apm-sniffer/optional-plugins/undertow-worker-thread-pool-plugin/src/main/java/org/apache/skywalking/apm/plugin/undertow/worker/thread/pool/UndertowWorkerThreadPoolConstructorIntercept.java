@@ -18,17 +18,42 @@
 
 package org.apache.skywalking.apm.plugin.undertow.worker.thread.pool;
 
+import com.google.common.collect.ImmutableMap;
+import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.agent.core.theadpool.ThreadPoolName;
-import org.apache.skywalking.apm.agent.core.theadpool.ThreadPoolRegister;
 
 public class UndertowWorkerThreadPoolConstructorIntercept implements InstanceConstructorInterceptor {
+
+    private static final String THREAD_POOL_NAME = "undertow_worker_pool";
+
+    private static final Map<String, Function<ThreadPoolExecutor, Supplier<Double>>> METRIC_MAP = ImmutableMap.of(
+            "core_pool_size",
+            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getCorePoolSize(),
+            "max_pool_size",
+            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getMaximumPoolSize(),
+            "pool_size",
+            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getPoolSize(),
+            "queue_size",
+            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getQueue().size(),
+            "active_size",
+            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getActiveCount());
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) objInst;
-        ThreadPoolRegister.registerThreadPoolSource(ThreadPoolName.UNDERTOW_WORKER_POOL, threadPoolExecutor);
+        buildThreadPoolMeterMetric(threadPoolExecutor);
+    }
+
+    private void buildThreadPoolMeterMetric(ThreadPoolExecutor threadPoolExecutor) {
+        String threadPoolMeterName = "thread_pool";
+        String poolNameTag = "pool_name";
+        String metricTypeTag = "metric_type";
+        METRIC_MAP.forEach((key, value) -> MeterFactory.gauge(threadPoolMeterName, value.apply(threadPoolExecutor))
+                .tag(poolNameTag, THREAD_POOL_NAME).tag(metricTypeTag, key).build());
     }
 }

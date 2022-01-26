@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG BASE_IMAGE='adoptopenjdk/openjdk8:alpine-jre'
+ARG BASE_IMAGE='eclipse-temurin:8-jre'
 
 ARG SKYWALKING_CLI_VERSION
 
@@ -24,7 +24,7 @@ FROM $BASE_IMAGE
 
 ARG DIST=skywalking-agent
 
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl || true
 
 LABEL maintainer="kezhenxu94@apache.org"
 

@@ -22,7 +22,9 @@ Release Notes.
 * Follow protocol grammar fix `GCPhrase -> GCPhase`.
 * Support ZGC GC time and count metric collect. (Require 9.0.0 OAP)
 * Support configuration for collecting redis parameters for jedis-2.x and redisson-3.x plugin.
+* Migrate base images to Temurin and add images for ARM.
 * Support ShardingSphere 5.0.0
+
 #### Documentation
 
 * Add a FAQ, `Why is `-Djava.ext.dirs` not supported?`.

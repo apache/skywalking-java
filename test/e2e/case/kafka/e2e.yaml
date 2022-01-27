@@ -18,17 +18,13 @@
 setup:
   env: compose
   file: docker-compose.yml
-  timeout: 1200
+  timeout: 20m
   init-system-environment: ../../script/env
   steps:
     - name: install yq
       command: bash test/e2e/script/prepare/install.sh yq
     - name: install swctl
       command: bash test/e2e/script/prepare/install.sh swctl
-
-cleanup:
-  # always never success failure
-  on: always
 
 trigger:
   action: http

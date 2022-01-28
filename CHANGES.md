@@ -25,6 +25,7 @@ Release Notes.
 * Migrate base images to Temurin and add images for ARM.
 * (Plugin Test) Fix compiling issues in many plugin tests due to they didn't lock the Spring version, and Spring 3 is
   incompatible with 2.x APIs and JDK8 compiling.
+* Support ShardingSphere 5.0.0
 
 #### Documentation
 

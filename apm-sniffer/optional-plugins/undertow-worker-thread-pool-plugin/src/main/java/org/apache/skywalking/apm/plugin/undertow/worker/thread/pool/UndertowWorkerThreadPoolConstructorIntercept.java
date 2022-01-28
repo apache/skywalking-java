@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.undertow.worker.thread.pool;
 
-import com.google.common.collect.ImmutableMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Function;
@@ -31,17 +31,13 @@ public class UndertowWorkerThreadPoolConstructorIntercept implements InstanceCon
 
     private static final String THREAD_POOL_NAME = "undertow_worker_pool";
 
-    private static final Map<String, Function<ThreadPoolExecutor, Supplier<Double>>> METRIC_MAP = ImmutableMap.of(
-            "core_pool_size",
-            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getCorePoolSize(),
-            "max_pool_size",
-            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getMaximumPoolSize(),
-            "pool_size",
-            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getPoolSize(),
-            "queue_size",
-            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getQueue().size(),
-            "active_size",
-            (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getActiveCount());
+    private static final Map<String, Function<ThreadPoolExecutor, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<ThreadPoolExecutor, Supplier<Double>>>() {{
+        put("core_pool_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getCorePoolSize());
+        put("max_pool_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getMaximumPoolSize());
+        put("pool_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getPoolSize());
+        put("queue_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getQueue().size());
+        put("active_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getActiveCount());
+    }};
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
@@ -54,6 +50,6 @@ public class UndertowWorkerThreadPoolConstructorIntercept implements InstanceCon
         String poolNameTag = "pool_name";
         String metricTypeTag = "metric_type";
         METRIC_MAP.forEach((key, value) -> MeterFactory.gauge(threadPoolMeterName, value.apply(threadPoolExecutor))
-                .tag(poolNameTag, THREAD_POOL_NAME).tag(metricTypeTag, key).build());
+                        .tag(poolNameTag, THREAD_POOL_NAME).tag(metricTypeTag, key).build());
     }
 }

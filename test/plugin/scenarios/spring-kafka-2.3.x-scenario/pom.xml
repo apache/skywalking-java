@@ -30,7 +30,7 @@
         <compiler.version>1.8</compiler.version>
         <test.framework.version>2.3.3.RELEASE</test.framework.version>
         <log4j.version>2.6.2</log4j.version>
-        <spring-boot-version>2.3.2.RELEASE</spring-boot-version>
+        <spring.boot.version>2.3.2.RELEASE</spring.boot.version>
         <kafka-version>2.3.1</kafka-version>
         <okhttp-version>3.0.0</okhttp-version>
     </properties>
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot-version}</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -78,6 +78,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
                 <executions>
                     <execution>
                         <goals>

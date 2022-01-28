@@ -21,9 +21,8 @@ import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.plugin.jdbc.connectionurl.parser.URLParser;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
@@ -34,11 +33,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * {@link PoolingSetUrlSourceInterceptor} intercepted the method of Druid set url and register metric monitor.
+ * {@link PoolingAddDruidDataSourceInterceptor} intercepted the method of druid addDataSource and register metric monitor.
  */
-public class PoolingSetUrlSourceInterceptor implements InstanceMethodsAroundInterceptor {
+public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
-    private static final ILog LOGGER = LogManager.getLogger(PoolingSetUrlSourceInterceptor.class);
+    private static final ILog LOGGER = LogManager.getLogger(PoolingAddDruidDataSourceInterceptor.class);
 
     private static final Map<String, Function<DruidDataSource, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<DruidDataSource, Supplier<Double>>>();
 
@@ -55,17 +54,17 @@ public class PoolingSetUrlSourceInterceptor implements InstanceMethodsAroundInte
     }
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
 
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Object ret) {
         if (LOGGER.isInfoEnable()) {
             LOGGER.info("metric druid init");
         }
-        DruidDataSource druidDataSource = (DruidDataSource) objInst;
-        ConnectionInfo connectionInfo = URLParser.parser((String) allArguments[0]);
+        DruidDataSource druidDataSource = (DruidDataSource) allArguments[0];
+        ConnectionInfo connectionInfo = URLParser.parser(druidDataSource.getUrl());
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
         METRIC_MAP.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(druidDataSource))
                 .tag("name", tagValue).tag("status", key).build());
@@ -73,7 +72,7 @@ public class PoolingSetUrlSourceInterceptor implements InstanceMethodsAroundInte
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Throwable t) {
 
     }
 }

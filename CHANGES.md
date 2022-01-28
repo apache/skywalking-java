@@ -26,6 +26,7 @@ Release Notes.
 * (Plugin Test) Fix compiling issues in many plugin tests due to they didn't lock the Spring version, and Spring 3 is
   incompatible with 2.x APIs and JDK8 compiling.
 * Support ShardingSphere 5.0.0
+* Bump up gRPC to 1.44.0, fix relative CVEs.
 
 #### Documentation
 

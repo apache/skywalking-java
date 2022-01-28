@@ -24,7 +24,7 @@ folders if you are using IntelliJ IDE.
 # Building Docker images
 
 After you have [compiled the project](#compiling-project) and have generated the `skywalking-agent` folder, you can
-build Docker images. [`make docker`] builds the agent Docker images based on `alpine` image and `java8 ~ java 17`
+build Docker images. [`make docker`] builds the agent Docker images based on `alpine` image, `java8`, `java11` and `java 17`
 images by default. If you want to only build part of the images, add suffix `.alpine` or `.java<x>` to the `make`
 target, for example:
 

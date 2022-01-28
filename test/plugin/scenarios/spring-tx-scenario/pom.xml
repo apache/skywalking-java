@@ -58,6 +58,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${test.framework.version}</version>
                 <executions>
                     <execution>
                         <goals>

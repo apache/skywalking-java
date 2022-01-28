@@ -17,7 +17,6 @@
 
 package org.apache.skywalking.apm.plugin.hikaricp;
 
-import com.google.common.collect.ImmutableMap;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariPoolMXBean;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
@@ -28,6 +27,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.plugin.jdbc.connectionurl.parser.URLParser;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -38,12 +38,14 @@ import java.util.function.Supplier;
 public class HikariDataSourceConstructorInterceptor implements InstanceConstructorInterceptor {
     private static final String METER_NAME = "datasource";
     private static final ILog LOGGER = LogManager.getLogger(HikariDataSourceConstructorInterceptor.class);
+    private static final Map<String, Function<HikariPoolMXBean, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<HikariPoolMXBean, Supplier<Double>>>();
 
-    private static final Map<String, Function<HikariPoolMXBean, Supplier<Double>>> METRIC_MAP = ImmutableMap.of(
-            "activeConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getActiveConnections(),
-            "totalConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getTotalConnections(),
-            "idleConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) (hikariPoolMXBean.getIdleConnections()),
-            "threadsAwaitingConnection", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getThreadsAwaitingConnection());
+    static {
+        METRIC_MAP.put("activeConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getActiveConnections());
+        METRIC_MAP.put("totalConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getTotalConnections());
+        METRIC_MAP.put("idleConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) (hikariPoolMXBean.getIdleConnections()));
+        METRIC_MAP.put("threadsAwaitingConnection", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getThreadsAwaitingConnection());
+    }
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {

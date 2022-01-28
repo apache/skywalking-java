@@ -39,7 +39,6 @@ import java.util.function.Supplier;
 public class PoolingSetUrlSourceInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
     private static final ILog LOGGER = LogManager.getLogger(PoolingSetUrlSourceInterceptor.class);
-
     private static final Map<String, Function<BasicDataSource, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<BasicDataSource, Supplier<Double>>>();
 
     static {
@@ -51,7 +50,6 @@ public class PoolingSetUrlSourceInterceptor implements InstanceMethodsAroundInte
         METRIC_MAP.put("minIdle", (BasicDataSource basicDataSource) -> () -> (double) basicDataSource.getMinIdle());
         METRIC_MAP.put("initialSize", (BasicDataSource basicDataSource) -> () -> (double) basicDataSource.getInitialSize());
     }
-
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {

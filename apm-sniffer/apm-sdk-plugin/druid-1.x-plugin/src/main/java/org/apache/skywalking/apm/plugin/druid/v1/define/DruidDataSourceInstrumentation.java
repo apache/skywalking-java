@@ -25,9 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInte
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
-import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
@@ -41,6 +39,7 @@ public class DruidDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
     private static final String ENHANCE_CLASS = "com.alibaba.druid.pool.DruidDataSource";
     private static final String ENHANCE_METHOD = "getConnection";
     private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.druid.v1.PoolingGetConnectInterceptor";
+    private static final String INTERCEPTOR_URL_CLASS = "org.apache.skywalking.apm.plugin.druid.v1.PoolingSetUrlSourceInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -86,6 +85,22 @@ public class DruidDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
                     public boolean isOverrideArgs() {
                         return false;
                     }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("setUrl").and(takesArgument(0, String.class));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPTOR_URL_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
                 }
         };
     }
@@ -94,4 +109,10 @@ public class DruidDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return new StaticMethodsInterceptPoint[0];
     }
+
+    @Override
+    public boolean isBootstrapInstrumentation() {
+        return true;
+    }
+
 }

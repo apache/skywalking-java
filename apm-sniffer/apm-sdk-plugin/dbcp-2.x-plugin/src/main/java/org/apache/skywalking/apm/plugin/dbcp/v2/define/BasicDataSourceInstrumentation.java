@@ -25,16 +25,18 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInte
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
  * BasicDataSource provides a "one stop shopping" solution for database connection pool solution
  * basic requirements. BasicDataSource#getConnection() creates (if necessary) and return a connection.
+ * BasicDataSource#setUrl(String) set url
  */
 public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String ENHANCE_CLASS = "org.apache.commons.dbcp2.BasicDataSource";
     private static final String CONNECT_GET_INTERCEPTOR = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingGetConnectInterceptor";
+    private static final String INTERCEPTOR_URL_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingSetUrlSourceInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -48,7 +50,7 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
+        return new InstanceMethodsInterceptPoint[]{
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
@@ -64,6 +66,22 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
                     public boolean isOverrideArgs() {
                         return false;
                     }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("setUrl").and(takesArgument(0, String.class));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPTOR_URL_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
                 }
         };
     }
@@ -71,5 +89,10 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
     @Override
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return new StaticMethodsInterceptPoint[0];
+    }
+
+    @Override
+    public boolean isBootstrapInstrumentation() {
+        return true;
     }
 }

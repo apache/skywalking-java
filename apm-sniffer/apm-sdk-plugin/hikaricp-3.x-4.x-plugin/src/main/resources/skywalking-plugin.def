@@ -16,3 +16,4 @@
 
 hikaricp-3.x/4.x=org.apache.skywalking.apm.plugin.hikaricp.define.HikariProxyConnectionInstrumentation
 hikaricp-3.x/4.x=org.apache.skywalking.apm.plugin.hikaricp.define.HikariDataSourceInstrumentation
+hikaricp-3.x/4.x=org.apache.skywalking.apm.plugin.hikaricp.define.HikariPoolInstrumentation

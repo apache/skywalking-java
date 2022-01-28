@@ -34,35 +34,34 @@ dist: build
 
 # Docker build
 
-base.adopt := java8 java11 java12 java13 java14 java15 java16
-base.temurin := java17
-
-base.all := alpine $(base.adopt) $(base.temurin)
+base.all := alpine java8 java11 java17
 base.each = $(word 1, $@)
 
 base.image.alpine := alpine:3
-base.image.java8 := adoptopenjdk/openjdk8:alpine-jre
-base.image.java11 := adoptopenjdk/openjdk11:alpine-jre
-base.image.java12 := adoptopenjdk/openjdk12:alpine-jre
-base.image.java13 := adoptopenjdk/openjdk13:alpine-jre
-base.image.java14 := adoptopenjdk/openjdk14:alpine-jre
-base.image.java15 := adoptopenjdk/openjdk15:alpine-jre
-base.image.java16 := adoptopenjdk/openjdk16:alpine-jre
-base.image.java17 := eclipse-temurin:17-alpine
+base.image.java8 := eclipse-temurin:8-jre
+base.image.java11 := eclipse-temurin:11-jre
+base.image.java17 := eclipse-temurin:17-jre
+
+docker.%: PLATFORMS =
+docker.%: LOAD_OR_PUSH = --load
+docker.push.%: PLATFORMS = --platform linux/amd64,linux/arm64
+docker.push.%: LOAD_OR_PUSH = --push
 
 .PHONY: $(base.all)
 $(base.all:%=docker.%): BASE_IMAGE=$($(base.each:docker.%=base.image.%))
-$(base.all:%=docker.%): docker.%: skywalking-agent
-	docker build --no-cache --build-arg BASE_IMAGE=$(BASE_IMAGE) --build-arg DIST=$(AGENT_PACKAGE) --build-arg SKYWALKING_CLI_VERSION=$(CLI_VERSION) . -t $(HUB)/$(NAME):$(TAG)-$(base.each:docker.%=%)
+$(base.all:%=docker.%): FINAL_TAG=$(TAG)-$(base.each:docker.%=%)
+$(base.all:%=docker.push.%): BASE_IMAGE=$($(base.each:docker.push.%=base.image.%))
+$(base.all:%=docker.push.%): FINAL_TAG=$(TAG)-$(base.each:docker.push.%=%)
+$(base.all:%=docker.%) $(base.all:%=docker.push.%): skywalking-agent
+	docker buildx create --use --driver docker-container --name skywalking_main > /dev/null 2>&1 || true
+	docker buildx build $(PLATFORMS) $(LOAD_OR_PUSH) \
+        --no-cache \
+        --build-arg BASE_IMAGE=$(BASE_IMAGE) \
+        --build-arg DIST=$(AGENT_PACKAGE) \
+        --build-arg SKYWALKING_CLI_VERSION=$(CLI_VERSION) \
+        . -t $(HUB)/$(NAME):$(FINAL_TAG)
+	docker buildx rm skywalking_main || true
 
-.PHONY: docker
+.PHONY: docker docker.push
 docker: $(base.all:%=docker.%)
-
-# Docker push
-
-.PHONY: $(base.all:%=docker.push.%)
-$(base.all:%=docker.push.%): docker.push.%: docker.%
-	docker push $(HUB)/$(NAME):$(TAG)-$(base.each:docker.push.%=%)
-
-.PHONY: docker.push
-docker.push: $(base.all:%=docker.%)
+docker.push: $(base.all:%=docker.push.%)

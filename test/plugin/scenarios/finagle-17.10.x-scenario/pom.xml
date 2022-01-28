@@ -31,7 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
         <test.framework.version>17.10.0</test.framework.version>
-        <spring-boot-version>2.1.6.RELEASE</spring-boot-version>
+        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
         <lombok.version>1.18.20</lombok.version>
     </properties>
 
@@ -42,7 +42,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-version}</version>
+                <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -102,6 +102,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
                 <executions>
                     <execution>
                         <goals>

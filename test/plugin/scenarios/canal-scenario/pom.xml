@@ -34,7 +34,7 @@
 
         <log4j.version>2.6.2</log4j.version>
         <spring.version>4.3.8.RELEASE</spring.version>
-        <spring-boot-version>1.5.2.RELEASE</spring-boot-version>
+        <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
     </properties>
 
     <dependencies>
@@ -97,17 +97,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>${spring-boot-version}</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <version>${spring-boot-version}</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot-version}</version>
+            <version>${spring.boot.version}</version>
         </dependency>
     </dependencies>
 
@@ -117,6 +117,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
                 <executions>
                     <execution>
                         <goals>

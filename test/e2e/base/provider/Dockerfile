@@ -17,11 +17,11 @@ FROM skywalking/skywalking-java:latest-java8
 
 ARG ENABLE_KAFKA_REPORTER
 
-RUN if [[ "${ENABLE_KAFKA_REPORTER}" == "true" ]]; then cp -rf /skywalking/agent/optional-reporter-plugins/* /skywalking/agent/plugins/ ; fi
+RUN if [ "${ENABLE_KAFKA_REPORTER}" = "true" ]; then cp -rf /skywalking/agent/optional-reporter-plugins/* /skywalking/agent/plugins/ ; fi
 
 VOLUME /services
 ADD target/e2e-service-provider.jar /services/
 
 ENV JAVA_OPTS=""
 
-CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-provider.jar"]
+CMD ["bash", "-c", "java $JAVA_OPTS -jar /services/e2e-service-provider.jar"]

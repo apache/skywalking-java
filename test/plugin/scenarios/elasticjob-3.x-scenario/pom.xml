@@ -34,7 +34,7 @@
         <test.framework.version>3.0.0</test.framework.version>
         <docker.image.version>${test.framework.version}</docker.image.version>
 
-        <spring-boot-version>2.1.6.RELEASE</spring-boot-version>
+        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
         <h2-version>1.4.184</h2-version>
         <okhttp-version>3.0.0</okhttp-version>
     </properties>
@@ -46,7 +46,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-version}</version>
+                <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>${spring-boot-version}</version>
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -97,6 +97,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
                 <executions>
                     <execution>
                         <goals>

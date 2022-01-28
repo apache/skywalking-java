@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-undertow-worker-thread-pool-plugin=org.apache.skywalking.apm.plugin.undertow.worker.thread.pool.define.UndertowWorkerThreadPoolInstrumentation
+undertow-worker-thread-pool=org.apache.skywalking.apm.plugin.undertow.worker.thread.pool.define.UndertowWorkerThreadPoolInstrumentation

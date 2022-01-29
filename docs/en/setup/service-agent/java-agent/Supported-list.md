@@ -135,11 +135,12 @@ metrics based on the tracing data.
   * [logback](https://github.com/qos-ch/logback) 1.2.x
 * ORM
   * [MyBatis](https://github.com/mybatis/mybatis-3) 3.4.x -> 3.5.x
-* Thread Pool
-  * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
 
 # Meter Plugins
 The meter plugin provides the advanced metrics collections, which are not a part of tracing.
+
+* Thread Pool
+  * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
 
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository, 

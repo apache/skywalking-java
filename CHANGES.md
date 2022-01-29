@@ -4,7 +4,7 @@ Release Notes.
 
 8.10.0
 ------------------
-
+* Support Java thread pool metric collect.
 
 
 #### Documentation

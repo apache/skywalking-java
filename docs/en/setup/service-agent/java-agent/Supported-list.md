@@ -139,6 +139,9 @@ metrics based on the tracing data.
 # Meter Plugins
 The meter plugin provides the advanced metrics collections, which are not a part of tracing.
 
+* Thread Pool
+  * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
+
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository, 
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

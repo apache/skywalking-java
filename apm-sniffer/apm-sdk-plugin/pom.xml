@@ -117,6 +117,7 @@
         <module>okhttp-2.x-plugin</module>
         <module>pulsar-common</module>
         <module>pulsar-2.8.x-plugin</module>
+        <module>undertow-worker-thread-pool-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

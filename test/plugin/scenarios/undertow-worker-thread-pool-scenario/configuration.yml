@@ -18,5 +18,3 @@ type: jvm
 entryService: http://localhost:8080/undertow-worker-thread-pool-scenario/case/undertow-worker-thread-pool-scenario
 healthCheck: http://localhost:8080/undertow-worker-thread-pool-scenario/case/healthCheck
 startScript: ./bin/startup.sh
-runningMode: with_optional
-withPlugins: apm-undertow-worker-thread-pool-plugin-*.jar

@@ -4,7 +4,7 @@ Release Notes.
 
 8.10.0
 ------------------
-* Support Undertwo thread pool metrics collecting.
+* Support Undertow thread pool metrics collecting.
 
 
 #### Documentation

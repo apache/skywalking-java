@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 meterItems:
-  - serviceName: undertow-worker-thread-pool-scenario
+  - serviceName: tomcat-thread-pool-scenario
     meterSize: 5
     meters:
       - meterId:

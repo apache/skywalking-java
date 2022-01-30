@@ -391,6 +391,7 @@
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
 <sourceDirectory>scenarios/okhttp-scenario</sourceDirectory>
+<sourceDirectory>scenarios/tomcat-thread-pool-scenario</sourceDirectory>
                     </sourceDirectories>
                     <resourceIncludes>
                         **/*.properties,

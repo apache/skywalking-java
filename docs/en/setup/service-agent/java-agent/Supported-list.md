@@ -141,7 +141,7 @@ The meter plugin provides the advanced metrics collections, which are not a part
 
 * Thread Pool
   * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
-  * [Tomcat](https://github.com/apache/tomcat) 8.5.x -> 9.0.x
+  * [Tomcat](https://github.com/apache/tomcat) 7.0.x -> 10.0.x
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository, 
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

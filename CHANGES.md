@@ -5,6 +5,7 @@ Release Notes.
 8.10.0
 ------------------
 * Support Undertow thread pool metrics collecting.
+* add curl tag for SpringMVC, which is useful to reproduce problem and fix it.
 
 
 #### Documentation

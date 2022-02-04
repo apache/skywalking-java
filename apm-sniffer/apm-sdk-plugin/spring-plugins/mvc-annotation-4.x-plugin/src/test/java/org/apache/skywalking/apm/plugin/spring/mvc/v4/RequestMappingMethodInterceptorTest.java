@@ -40,6 +40,7 @@ import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.EnhanceRequireObjectCache;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.PathMappingCache;
+import org.apache.skywalking.apm.plugin.spring.mvc.commons.SpringMVCPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.interceptor.RequestMappingMethodInterceptor;
 import org.junit.Before;
 import org.junit.Rule;
@@ -117,6 +118,9 @@ public class RequestMappingMethodInterceptorTest {
 
     @Test
     public void testWithoutSerializedContextData() throws Throwable {
+
+        SpringMVCPluginConfig.Plugin.SpringMVC.GENERATE_CURL_COMMAND = true;
+
         SpringTestCaseHelper.createCaseHandler(request, response, new SpringTestCaseHelper.CaseHandler() {
             @Override
             public void handleCase() throws Throwable {
@@ -138,6 +142,8 @@ public class RequestMappingMethodInterceptorTest {
 
     @Test
     public void testWithOccurException() throws Throwable {
+        SpringMVCPluginConfig.Plugin.SpringMVC.GENERATE_CURL_COMMAND = true;
+
         SpringTestCaseHelper.createCaseHandler(request, response, new SpringTestCaseHelper.CaseHandler() {
             @Override
             public void handleCase() throws Throwable {
@@ -172,6 +178,7 @@ public class RequestMappingMethodInterceptorTest {
         assertThat(span.getOperationName(), is("GET:/test/testRequestURL"));
         assertComponent(span, ComponentsDefine.SPRING_MVC_ANNOTATION);
         SpanAssert.assertTag(span, 0, "http://localhost:8080/test/testRequestURL");
+        SpanAssert.assertTag(span, "http.curl", "curl 'http://localhost:8080/test/testRequestURL' -X GET ");
         assertThat(span.isEntry(), is(true));
         SpanAssert.assertLayer(span, SpanLayer.HTTP);
     }

@@ -20,10 +20,12 @@ package org.apache.skywalking.apm.agent.test.helper;
 
 import java.util.Collections;
 import java.util.List;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.util.TagValuePair;
+import org.apache.skywalking.apm.util.StringUtil;
 
 public class SpanHelper {
     public static int getParentSpanId(AbstractSpan tracingSpan) {
@@ -91,6 +93,51 @@ public class SpanHelper {
         }
 
         return Collections.emptyList();
+    }
+
+    public static TagValuePair getTag(AbstractSpan tracingSpan, String tagKey) {
+        if (StringUtil.isEmpty(tagKey)) {
+            return null;
+        }
+        try {
+            List<TagValuePair> tags = FieldGetter.get2LevelParentFieldValue(tracingSpan, "tags");
+            if (tags == null) {
+                return null;
+            }
+
+            TagValuePair tag = tags.stream()
+                    .filter(
+                            tagValuePair -> tagValuePair != null
+                                    && null != tagValuePair.getKey()
+                                    && tagKey.equals(tagValuePair.getKey().key())
+                    )
+                    .findAny()
+                    .orElse(null);
+
+            return tag;
+        } catch (Exception e) {
+            try {
+                List<TagValuePair> tags = FieldGetter.getParentFieldValue(tracingSpan, "tags");
+                if (tags == null) {
+                    return null;
+                }
+
+                TagValuePair tag = tags.stream()
+                        .filter(
+                                tagValuePair -> tagValuePair != null
+                                        && null != tagValuePair.getKey()
+                                        && tagKey.equals(tagValuePair.getKey().key())
+                        )
+                        .findAny()
+                        .orElse(null);
+
+                return tag;
+            } catch (Exception e1) {
+
+            }
+        }
+
+        return null;
     }
 
     public static SpanLayer getLayer(AbstractSpan tracingSpan) {

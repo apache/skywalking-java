@@ -72,6 +72,12 @@ public class SpanAssert {
         assertThat(SpanHelper.getTags(span).get(index).getValue(), is(value));
     }
 
+    public static void assertTag(AbstractSpan span, String tagKey, String value) {
+
+        assertNotNull(SpanHelper.getTag(span, tagKey));
+        assertThat(SpanHelper.getTag(span, tagKey).getValue(), is(value));
+    }
+
     public static void assertOccurException(AbstractSpan span, boolean excepted) {
         assertThat(SpanHelper.getErrorOccurred(span), is(excepted));
     }

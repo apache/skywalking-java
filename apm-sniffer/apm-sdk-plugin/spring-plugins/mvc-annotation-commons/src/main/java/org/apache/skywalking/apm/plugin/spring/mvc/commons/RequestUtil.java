@@ -17,10 +17,14 @@
 
 package org.apache.skywalking.apm.plugin.spring.mvc.commons;
 
+import java.util.Arrays;
+import java.util.Optional;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
+import org.apache.skywalking.apm.plugin.spring.mvc.commons.SpringMVCPluginConfig.Plugin.Http;
 import org.apache.skywalking.apm.util.StringUtil;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +56,79 @@ public class RequestUtil {
             tagValue = SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD > 0 ?
                     StringUtil.cut(tagValue, SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD) : tagValue;
             Tags.HTTP.PARAMS.set(span, tagValue);
+        }
+    }
+
+    public static void generateCurlCommand(HttpServletRequest request, AbstractSpan span) {
+        if (null == request) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("curl '");
+        sb.append(request.getRequestURL().toString());
+        if (StringUtil.isNotEmpty(request.getQueryString())) {
+            sb.append("?");
+            sb.append(request.getQueryString());
+        }
+        sb.append("' -X ");
+        sb.append(request.getMethod());
+        sb.append(" ");
+        addHttpHeaders4Curl(sb, request);
+        addHttpRequestBody4Curl(sb, request);
+
+        Tags.HTTP.CURL.set(span, sb.toString());
+    }
+
+    private static void addHttpHeaders4Curl(StringBuilder sb, HttpServletRequest httpServletRequest) {
+        if (null == httpServletRequest
+                || null == httpServletRequest.getHeaderNames()
+                || !httpServletRequest.getHeaderNames().hasMoreElements()) {
+            return;
+        }
+
+        Enumeration<String> names = httpServletRequest.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            sb.append("-H '");
+            sb.append(name);
+            sb.append(": ");
+            addHeaderValue2String4Curl(sb, Arrays.asList(httpServletRequest.getHeader(name)));
+            sb.append("' ");
+        }
+    }
+
+    private static void addHeaderValue2String4Curl(StringBuilder sb, List<String> value) {
+        if (CollectionUtil.isEmpty(value)) {
+            return;
+        }
+
+        int headerLengthLimit = SpringMVCPluginConfig.Plugin.Http.HTTP_HEADERS_LENGTH_THRESHOLD;
+        for (int i = 0; i < value.size(); i++) {
+            sb.append(StringUtil.cut(value.get(i), headerLengthLimit));
+            if (i != value.size() - 1) {
+                sb.append(",");
+            }
+        }
+
+        return;
+    }
+
+    private static void addHttpRequestBody4Curl(StringBuilder sb, HttpServletRequest httpRequest) {
+        if (!HttpMethod.POST.toString().equals(httpRequest.getMethod())) {
+            return;
+        }
+
+        String requestBody = Optional.ofNullable(httpRequest.getParameterMap())
+                .map(map -> map.keySet().stream().findFirst().orElse(null))
+                .orElse(null);
+        int bodyLengthLimit = Http.HTTP_PARAMS_LENGTH_THRESHOLD;
+        requestBody = StringUtil.cut(requestBody, bodyLengthLimit);
+
+        if (null != requestBody) {
+            sb.append("-d '");
+            sb.append(requestBody);
+            sb.append("'");
         }
     }
 

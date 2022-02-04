@@ -37,6 +37,16 @@ public class SpringMVCPluginConfig {
              * request.
              */
             public static boolean COLLECT_HTTP_PARAMS = false;
+
+            /**
+             * This config item controls that whether the SpringMVC plugin should generate curl command of the
+             * request, Which is useful for reproduce bug and debug.
+             *
+             * Like,
+             * curl http://127.0.0.1:8080/api/hello -X POST -H 'auth-token: xxx' -H 'Content-Type: application/json;charset=UTF-8' -d '{"name":"chenzz"}'
+             *
+             */
+            public static boolean GENERATE_CURL_COMMAND = false;
         }
 
         @PluginConfig(root = SpringMVCPluginConfig.class)

@@ -114,6 +114,10 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
                         RequestUtil.collectHttpParam(httpServletRequest, span);
                     }
 
+                    if (SpringMVCPluginConfig.Plugin.SpringMVC.GENERATE_CURL_COMMAND) {
+                        RequestUtil.generateCurlCommand(httpServletRequest, span);
+                    }
+
                     if (!CollectionUtil.isEmpty(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS)) {
                         RequestUtil.collectHttpHeaders(httpServletRequest, span);
                     }

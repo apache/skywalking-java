@@ -118,6 +118,7 @@
         <module>pulsar-common</module>
         <module>pulsar-2.8.x-plugin</module>
         <module>undertow-worker-thread-pool-plugin</module>
+        <module>tomcat-thread-pool-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

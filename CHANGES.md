@@ -5,7 +5,7 @@ Release Notes.
 8.10.0
 ------------------
 * Support Undertow thread pool metrics collecting.
-
+* Support Tomcat thread pool metric collect.
 
 #### Documentation
 

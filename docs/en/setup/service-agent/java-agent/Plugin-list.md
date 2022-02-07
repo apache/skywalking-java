@@ -131,3 +131,4 @@
 - okhttp-2.x
 - pulsar-2.8.x
 - undertow-worker-thread-pool
+- tomcat-thread-pool

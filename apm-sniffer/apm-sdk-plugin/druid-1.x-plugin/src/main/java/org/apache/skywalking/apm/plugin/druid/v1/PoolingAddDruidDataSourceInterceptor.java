@@ -17,7 +17,7 @@
 
 package org.apache.skywalking.apm.plugin.druid.v1;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidDataSourceMBean;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
@@ -39,18 +39,18 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
     private static final String METER_NAME = "datasource";
     private static final ILog LOGGER = LogManager.getLogger(PoolingAddDruidDataSourceInterceptor.class);
 
-    private static final Map<String, Function<DruidDataSource, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<DruidDataSource, Supplier<Double>>>();
+    private static final Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<DruidDataSourceMBean, Supplier<Double>>>();
 
     static {
-        METRIC_MAP.put("activeCount", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getActiveCount());
-        METRIC_MAP.put("poolingCount", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getPoolingCount());
-        METRIC_MAP.put("idleCount", (DruidDataSource druidDataSource) -> () -> (double) (druidDataSource.getPoolingCount() - druidDataSource.getActiveCount()));
-        METRIC_MAP.put("lockQueueLength", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getLockQueueLength());
-        METRIC_MAP.put("maxWaitThreadCount", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getMaxWaitThreadCount());
-        METRIC_MAP.put("commitCount", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getCommitCount());
-        METRIC_MAP.put("connectCount", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getConnectCount());
-        METRIC_MAP.put("connectError", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getConnectErrorCount());
-        METRIC_MAP.put("createError", (DruidDataSource druidDataSource) -> () -> (double) druidDataSource.getCreateErrorCount());
+        METRIC_MAP.put("activeCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getActiveCount());
+        METRIC_MAP.put("poolingCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getPoolingCount());
+        METRIC_MAP.put("idleCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) (druidDataSource.getPoolingCount() - druidDataSource.getActiveCount()));
+        METRIC_MAP.put("lockQueueLength", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getLockQueueLength());
+        METRIC_MAP.put("maxWaitThreadCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getMaxWaitThreadCount());
+        METRIC_MAP.put("commitCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCommitCount());
+        METRIC_MAP.put("connectCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectCount());
+        METRIC_MAP.put("connectError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectErrorCount());
+        METRIC_MAP.put("createError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCreateErrorCount());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
         if (LOGGER.isInfoEnable()) {
             LOGGER.info("metric druid init");
         }
-        DruidDataSource druidDataSource = (DruidDataSource) allArguments[0];
+        DruidDataSourceMBean druidDataSource = (DruidDataSourceMBean) allArguments[0];
         ConnectionInfo connectionInfo = URLParser.parser(druidDataSource.getUrl());
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
         METRIC_MAP.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(druidDataSource))

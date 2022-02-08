@@ -221,3 +221,50 @@ segmentItems:
       tags:
         - {key: url, value: 'http://localhost:8080/dbcp-2.x-scenario/case/dbcp-2.x-scenario'}
         - {key: http.method, value: GET}
+
+meterItems:
+  - serviceName: dbcp-2.x-scenario
+    meterSize: 7
+    meters:
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: numActive}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: maxTotal}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: numIdle}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: maxWaitMillis}
+        singleValue: ge 0
+      - meterId:
+          name: datasource
+          tags:
+            - {name: name, value: test_mysql-server:3306}
+            - {name: status, value: maxIdle}
+        singleValue: ge 0
+      - meterId:
+          name: datasource
+          tags:
+            - {name: name, value: test_mysql-server:3306}
+            - {name: status, value: minIdle}
+        singleValue: ge 0
+       - meterId:
+         name: datasource
+         tags:
+           - {name: name, value: test_mysql-server:3306}
+           - {name: status, value: initialSize}
+         singleValue: ge 0

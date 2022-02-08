@@ -26,7 +26,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
@@ -37,7 +36,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String ENHANCE_CLASS = "org.apache.commons.dbcp2.BasicDataSource";
     private static final String CONNECT_GET_INTERCEPTOR = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingGetConnectInterceptor";
-    private static final String INTERCEPTOR_URL_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingSetUrlSourceInterceptor";
+    private static final String INTERCEPTOR_URL_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingSetUrlInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -71,7 +70,7 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("setUrl").and(takesArgument(0, String.class));
+                        return named("setUrl");
                     }
 
                     @Override
@@ -90,10 +89,5 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
     @Override
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return new StaticMethodsInterceptPoint[0];
-    }
-
-    @Override
-    public boolean isBootstrapInstrumentation() {
-        return true;
     }
 }

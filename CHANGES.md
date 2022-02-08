@@ -6,6 +6,9 @@ Release Notes.
 ------------------
 * Support Undertow thread pool metrics collecting.
 * Support Tomcat thread pool metric collect.
+* Support Druid Connection pool metrics collecting.
+* Support HikariCP Connection pool metrics collecting.
+* Support Dbcp2 Connection pool metrics collecting.
 
 #### Documentation
 

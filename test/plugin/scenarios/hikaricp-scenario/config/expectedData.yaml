@@ -203,3 +203,67 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/hikaricp-scenario/case/hikaricp-scenario'}
       - {key: http.method, value: GET}
+meterItems:
+  - serviceName: hikaricp-scenario
+    meterSize: 10
+    meters:
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: activeConnections}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: totalConnections}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: idleConnections}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: threadsAwaitingConnection}
+        singleValue: ge 0
+      - meterId:
+          name: datasource
+          tags:
+            - {name: name, value: test_mysql-server:3306}
+            - {name: status, value: connectionTimeout}
+        singleValue: ge 0
+      - meterId:
+          name: datasource
+          tags:
+            - {name: name, value: test_mysql-server:3306}
+            - {name: status, value: validationTimeout}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: idleTimeout}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: leakDetectionThreshold}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: minimumIdle}
+        singleValue: ge 0
+      - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: maximumPoolSize}
+        singleValue: ge 0

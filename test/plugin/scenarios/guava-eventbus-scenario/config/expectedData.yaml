@@ -26,7 +26,7 @@ segmentItems:
             spanLayer: Unknown
             startTime: nq 0
             endTime: nq 0
-            componentId: 122
+            componentId: 123
             isError: false
             spanType: Local
             peer: ''
@@ -55,7 +55,7 @@ segmentItems:
             spanLayer: Unknown
             startTime: nq 0
             endTime: nq 0
-            componentId: 122
+            componentId: 123
             isError: false
             spanType: Local
             peer: ''

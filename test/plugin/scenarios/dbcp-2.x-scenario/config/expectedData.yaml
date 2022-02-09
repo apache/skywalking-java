@@ -221,7 +221,6 @@ segmentItems:
       tags:
         - {key: url, value: 'http://localhost:8080/dbcp-2.x-scenario/case/dbcp-2.x-scenario'}
         - {key: http.method, value: GET}
-
 meterItems:
   - serviceName: dbcp-2.x-scenario
     meterSize: 7

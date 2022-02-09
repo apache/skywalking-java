@@ -18,8 +18,6 @@
 package org.apache.skywalking.apm.plugin.dbcp.v2;
 
 import org.apache.commons.dbcp2.BasicDataSourceMXBean;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -38,19 +36,6 @@ import java.util.function.Supplier;
  */
 public class PoolingSetUrlInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
-    private static final ILog LOGGER = LogManager.getLogger(PoolingSetUrlInterceptor.class);
-    private static final Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<BasicDataSourceMXBean, Supplier<Double>>>();
-
-    static {
-        METRIC_MAP.put("numActive", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getNumActive());
-        METRIC_MAP.put("maxTotal", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxTotal());
-        METRIC_MAP.put("numIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) (basicDataSource.getNumIdle()));
-        METRIC_MAP.put("maxWaitMillis", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxWaitMillis());
-        METRIC_MAP.put("maxIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxIdle());
-        METRIC_MAP.put("minIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMinIdle());
-        METRIC_MAP.put("initialSize", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getInitialSize());
-    }
-
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
 
@@ -58,13 +43,12 @@ public class PoolingSetUrlInterceptor implements InstanceMethodsAroundIntercepto
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        if (LOGGER.isInfoEnable()) {
-            LOGGER.info("metric dbcp init");
-        }
         BasicDataSourceMXBean basicDataSource = (BasicDataSourceMXBean) objInst;
         ConnectionInfo connectionInfo = URLParser.parser((String) allArguments[0]);
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
-        METRIC_MAP.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(basicDataSource))
+        Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap = new HashMap();
+        initMetrics(metricMap);
+        metricMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(basicDataSource))
                 .tag("name", tagValue).tag("status", key).build());
         return ret;
     }
@@ -72,5 +56,15 @@ public class PoolingSetUrlInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
 
+    }
+
+    private void initMetrics(Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap) {
+        metricMap.put("numActive", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getNumActive());
+        metricMap.put("maxTotal", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxTotal());
+        metricMap.put("numIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) (basicDataSource.getNumIdle()));
+        metricMap.put("maxWaitMillis", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxWaitMillis());
+        metricMap.put("maxIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxIdle());
+        metricMap.put("minIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMinIdle());
+        metricMap.put("initialSize", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getInitialSize());
     }
 }

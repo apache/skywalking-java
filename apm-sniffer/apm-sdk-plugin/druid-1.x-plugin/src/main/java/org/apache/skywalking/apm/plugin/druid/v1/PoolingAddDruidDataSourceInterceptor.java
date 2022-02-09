@@ -18,8 +18,6 @@
 package org.apache.skywalking.apm.plugin.druid.v1;
 
 import com.alibaba.druid.pool.DruidDataSourceMBean;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
@@ -37,21 +35,6 @@ import java.util.function.Supplier;
  */
 public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
-    private static final ILog LOGGER = LogManager.getLogger(PoolingAddDruidDataSourceInterceptor.class);
-
-    private static final Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<DruidDataSourceMBean, Supplier<Double>>>();
-
-    static {
-        METRIC_MAP.put("activeCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getActiveCount());
-        METRIC_MAP.put("poolingCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getPoolingCount());
-        METRIC_MAP.put("idleCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) (druidDataSource.getPoolingCount() - druidDataSource.getActiveCount()));
-        METRIC_MAP.put("lockQueueLength", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getLockQueueLength());
-        METRIC_MAP.put("maxWaitThreadCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getMaxWaitThreadCount());
-        METRIC_MAP.put("commitCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCommitCount());
-        METRIC_MAP.put("connectCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectCount());
-        METRIC_MAP.put("connectError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectErrorCount());
-        METRIC_MAP.put("createError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCreateErrorCount());
-    }
 
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
@@ -60,13 +43,12 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
 
     @Override
     public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Object ret) {
-        if (LOGGER.isInfoEnable()) {
-            LOGGER.info("metric druid init");
-        }
         DruidDataSourceMBean druidDataSource = (DruidDataSourceMBean) allArguments[0];
         ConnectionInfo connectionInfo = URLParser.parser(druidDataSource.getUrl());
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
-        METRIC_MAP.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(druidDataSource))
+        Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap = new HashMap();
+        initMetrics(metricMap);
+        metricMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(druidDataSource))
                 .tag("name", tagValue).tag("status", key).build());
         return ret;
     }
@@ -74,5 +56,17 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
     @Override
     public void handleMethodException(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Throwable t) {
 
+    }
+
+    private void initMetrics(Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap) {
+        metricMap.put("activeCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getActiveCount());
+        metricMap.put("poolingCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getPoolingCount());
+        metricMap.put("idleCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) (druidDataSource.getPoolingCount() - druidDataSource.getActiveCount()));
+        metricMap.put("lockQueueLength", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getLockQueueLength());
+        metricMap.put("maxWaitThreadCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getMaxWaitThreadCount());
+        metricMap.put("commitCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCommitCount());
+        metricMap.put("connectCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectCount());
+        metricMap.put("connectError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectErrorCount());
+        metricMap.put("createError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCreateErrorCount());
     }
 }

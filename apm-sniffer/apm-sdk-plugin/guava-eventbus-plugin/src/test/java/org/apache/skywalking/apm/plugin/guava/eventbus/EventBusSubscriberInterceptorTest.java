@@ -21,13 +21,12 @@ package org.apache.skywalking.apm.plugin.guava.eventbus;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.mockito.PowerMockito.when;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.MockContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
@@ -37,7 +36,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
@@ -51,20 +49,36 @@ public class EventBusSubscriberInterceptorTest {
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
     private EventWrapper eventWrapper;
-    @Mock
-    private Method method;
+    private EnhancedInstance enhancedInstance;
+    private SubscriberInfo subscriberInfo;
 
     @Before
     public void setUp() throws Exception {
         interceptor = new EventBusSubscriberInterceptor();
-        when(method.getName()).thenReturn("testMethod");
         eventWrapper = EventWrapper.wrapEvent(new Object(), MockContextSnapshot.INSTANCE.mockContextSnapshot());
+        enhancedInstance = new EnhancedInstance() {
+            private Object value;
+
+            @Override
+            public Object getSkyWalkingDynamicField() {
+                return value;
+            }
+
+            @Override
+            public void setSkyWalkingDynamicField(Object value) {
+                this.value = value;
+            }
+        };
+        subscriberInfo = new SubscriberInfo();
+        subscriberInfo.setMethodName("testMethodName");
+        subscriberInfo.setClassName("testClassName");
     }
 
     @Test
     public void test() throws Throwable {
         Object[] arguments = new Object[] {eventWrapper};
-        interceptor.beforeMethod(null, method, arguments, new Class[1], null);
+        enhancedInstance.setSkyWalkingDynamicField(subscriberInfo);
+        interceptor.beforeMethod(enhancedInstance, null, arguments, new Class[1], null);
         interceptor.afterMethod(null, null, null, null, null);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));

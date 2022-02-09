@@ -218,4 +218,6 @@ public class ComponentsDefine {
     public static final OfficialComponent CLICKHOUSE_JDBC_DRIVER = new OfficialComponent(119, "ClickHouse-jdbc-driver");
 
     public static final OfficialComponent APACHE_KYLIN_JDBC_DRIVER = new OfficialComponent(121, "apache-kylin-jdbc-driver");
+
+    public static final OfficialComponent GUAVA_EVENT_BUS = new OfficialComponent(122, "GuavaEventBus");
 }

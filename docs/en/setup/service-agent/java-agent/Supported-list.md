@@ -135,6 +135,8 @@ metrics based on the tracing data.
   * [logback](https://github.com/qos-ch/logback) 1.2.x
 * ORM
   * [MyBatis](https://github.com/mybatis/mybatis-3) 3.4.x -> 3.5.x
+* Event
+  * [GuavaEventBus](https://github.com/google/guava) 19.x -> 31.x-jre
 
 # Meter Plugins
 The meter plugin provides the advanced metrics collections, which are not a part of tracing.

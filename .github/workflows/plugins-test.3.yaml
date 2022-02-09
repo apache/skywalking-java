@@ -92,6 +92,7 @@ jobs:
           - hikaricp-scenario
           - clickhouse-0.3.x-scenario
           - kylin-jdbc-2.6.x-3.x-4.x-scenario
+          - guava-eventbus-scenario
     steps:
       - uses: actions/checkout@v2
         with:

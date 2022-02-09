@@ -46,8 +46,7 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
         DruidDataSourceMBean druidDataSource = (DruidDataSourceMBean) allArguments[0];
         ConnectionInfo connectionInfo = URLParser.parser(druidDataSource.getUrl());
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
-        Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap = new HashMap();
-        initMetrics(metricMap);
+        Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap = getMetrics();
         metricMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(druidDataSource))
                 .tag("name", tagValue).tag("status", key).build());
         return ret;
@@ -58,7 +57,8 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
 
     }
 
-    private void initMetrics(Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap) {
+    private Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> getMetrics() {
+        Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap = new HashMap();
         metricMap.put("activeCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getActiveCount());
         metricMap.put("poolingCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getPoolingCount());
         metricMap.put("idleCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) (druidDataSource.getPoolingCount() - druidDataSource.getActiveCount()));
@@ -68,5 +68,6 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
         metricMap.put("connectCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectCount());
         metricMap.put("connectError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getConnectErrorCount());
         metricMap.put("createError", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCreateErrorCount());
+        return metricMap;
     }
 }

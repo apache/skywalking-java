@@ -51,9 +51,8 @@ public class PoolingSealInterceptor implements InstanceMethodsAroundInterceptor 
         HikariDataSource hikariDataSource = (HikariDataSource) objInst;
         ConnectionInfo connectionInfo = URLParser.parser(hikariDataSource.getJdbcUrl());
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
-        final Map<String, Function<HikariPoolMXBean, Supplier<Double>>> poolMetricMap = new HashMap();
-        final Map<String, Function<HikariConfigMXBean, Supplier<Double>>> metricConfigMap = new HashMap();
-        initMetrics(metricConfigMap, poolMetricMap);
+        final Map<String, Function<HikariPoolMXBean, Supplier<Double>>> poolMetricMap = getPoolMetrics();
+        final Map<String, Function<HikariConfigMXBean, Supplier<Double>>> metricConfigMap = getConfigMetrics();
         poolMetricMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(hikariDataSource.getHikariPoolMXBean()))
                 .tag("name", tagValue).tag("status", key).build());
         metricConfigMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(hikariDataSource))
@@ -66,17 +65,23 @@ public class PoolingSealInterceptor implements InstanceMethodsAroundInterceptor 
 
     }
 
-    private void initMetrics(Map<String, Function<HikariConfigMXBean, Supplier<Double>>> metricConfigMap, Map<String, Function<HikariPoolMXBean, Supplier<Double>>> poolMetricMap) {
+    private Map<String, Function<HikariPoolMXBean, Supplier<Double>>> getPoolMetrics() {
+        final Map<String, Function<HikariPoolMXBean, Supplier<Double>>> poolMetricMap = new HashMap();
+        poolMetricMap.put("activeConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getActiveConnections());
+        poolMetricMap.put("totalConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getTotalConnections());
+        poolMetricMap.put("idleConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getIdleConnections());
+        poolMetricMap.put("threadsAwaitingConnection", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getThreadsAwaitingConnection());
+        return poolMetricMap;
+    }
+
+    private Map<String, Function<HikariConfigMXBean, Supplier<Double>>> getConfigMetrics() {
+        final Map<String, Function<HikariConfigMXBean, Supplier<Double>>> metricConfigMap = new HashMap();
         metricConfigMap.put("connectionTimeout", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getConnectionTimeout());
         metricConfigMap.put("validationTimeout", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getValidationTimeout());
         metricConfigMap.put("idleTimeout", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getIdleTimeout());
         metricConfigMap.put("leakDetectionThreshold", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getLeakDetectionThreshold());
         metricConfigMap.put("minimumIdle", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getMinimumIdle());
         metricConfigMap.put("maximumPoolSize", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getMaximumPoolSize());
-        poolMetricMap.put("activeConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getActiveConnections());
-        poolMetricMap.put("totalConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getTotalConnections());
-        poolMetricMap.put("idleConnections", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getIdleConnections());
-        poolMetricMap.put("threadsAwaitingConnection", (HikariPoolMXBean hikariPoolMXBean) -> () -> (double) hikariPoolMXBean.getThreadsAwaitingConnection());
-
+        return metricConfigMap;
     }
 }

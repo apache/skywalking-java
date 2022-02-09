@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  */
 public class PoolingSetUrlInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
-    
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
 
@@ -47,8 +47,7 @@ public class PoolingSetUrlInterceptor implements InstanceMethodsAroundIntercepto
         BasicDataSourceMXBean basicDataSource = (BasicDataSourceMXBean) objInst;
         ConnectionInfo connectionInfo = URLParser.parser((String) allArguments[0]);
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
-        Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap = new HashMap();
-        initMetrics(metricMap);
+        Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap = getMetrics();
         metricMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(basicDataSource))
                 .tag("name", tagValue).tag("status", key).build());
         return ret;
@@ -59,7 +58,8 @@ public class PoolingSetUrlInterceptor implements InstanceMethodsAroundIntercepto
 
     }
 
-    private void initMetrics(Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap) {
+    private Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> getMetrics() {
+        Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap = new HashMap();
         metricMap.put("numActive", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getNumActive());
         metricMap.put("maxTotal", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxTotal());
         metricMap.put("numIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) (basicDataSource.getNumIdle()));
@@ -67,5 +67,6 @@ public class PoolingSetUrlInterceptor implements InstanceMethodsAroundIntercepto
         metricMap.put("maxIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxIdle());
         metricMap.put("minIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMinIdle());
         metricMap.put("initialSize", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getInitialSize());
+        return metricMap;
     }
 }

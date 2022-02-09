@@ -36,6 +36,7 @@ import java.util.function.Supplier;
  */
 public class PoolingSetUrlInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
+    
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
 

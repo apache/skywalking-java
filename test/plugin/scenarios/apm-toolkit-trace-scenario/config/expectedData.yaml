@@ -481,7 +481,7 @@ segmentItems:
       skipAnalysis: 'true'
 meterItems:
 - serviceName: apm-toolkit-trace-scenario
-  meterSize: 3
+  meterSize: 8
   meters:
     - meterId:
         name: test_counter
@@ -502,3 +502,33 @@ meterItems:
         - 1.0
         - 5.0
         - 10.0
+    - meterId:
+        name: thread_pool
+        tags:
+          - {name: metric_type, value: core_pool_size}
+          - {name: pool_name, value: tomcat_execute_pool}
+      singleValue: ge 1
+    - meterId:
+        name: thread_pool
+        tags:
+          - {name: metric_type, value: max_pool_size}
+          - {name: pool_name, value: tomcat_execute_pool}
+      singleValue: ge 1
+    - meterId:
+        name: thread_pool
+        tags:
+          - {name: metric_type, value: pool_size}
+          - {name: pool_name, value: tomcat_execute_pool}
+      singleValue: ge 0
+    - meterId:
+        name: thread_pool
+        tags:
+          - {name: metric_type, value: active_size}
+          - {name: pool_name, value: tomcat_execute_pool}
+      singleValue: ge 0
+    - meterId:
+        name: thread_pool
+        tags:
+          - {name: metric_type, value: queue_size}
+          - {name: pool_name, value: tomcat_execute_pool}
+      singleValue: ge 0

@@ -35,7 +35,7 @@ metrics based on the tracing data.
   * Mysql Driver 5.x, 6.x, 8.x
   * Oracle Driver (Optional¹)
   * H2 Driver 1.3.x -> 1.4.x
-  * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0-beta
+  * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0
   * PostgreSQL Driver 8.x, 9.x, 42.x
   * Mariadb Driver 2.x, 1.8
   * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17
@@ -141,6 +141,9 @@ metrics based on the tracing data.
 # Meter Plugins
 The meter plugin provides the advanced metrics collections, which are not a part of tracing.
 
+* Thread Pool
+  * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
+  * [Tomcat](https://github.com/apache/tomcat) 7.0.x -> 10.0.x
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository, 
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

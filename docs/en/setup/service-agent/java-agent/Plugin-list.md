@@ -79,7 +79,7 @@
 - sharding-sphere-3.x
 - sharding-sphere-4.0.0
 - sharding-sphere-4.1.0
-- shardingsphere-5.0.0-beta
+- sharding-sphere-5.0.0
 - sofarpc
 - solrj-7.x
 - spring-annotation
@@ -130,4 +130,6 @@
 - kylin-jdbc-2.6.x-3.x-4.x
 - okhttp-2.x
 - pulsar-2.8.x
+- undertow-worker-thread-pool
+- tomcat-thread-pool
 - guava-eventbus

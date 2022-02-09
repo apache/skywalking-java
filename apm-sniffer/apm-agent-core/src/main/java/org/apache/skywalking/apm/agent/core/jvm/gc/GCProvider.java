@@ -63,7 +63,7 @@ public enum GCProvider {
             // Serial collector ( -XX:+UseSerialGC )
             return new SerialGCModule(beans);
         } else if (name.indexOf("ZGC") > -1) {
-            // Serial collector ( -XX:+UseZGC )
+            // Z garbage collector ( -XX:+UseZGC )
             return new ZGCModule(beans);
         } else {
             // Unknown

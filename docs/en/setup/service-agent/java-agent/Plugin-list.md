@@ -74,7 +74,6 @@
 - rocketMQ-3.x
 - rocketMQ-4.x
 - sentinel-1.x
-- servicecomb-0.x
 - servicecomb-1.x
 - sharding-sphere-3.x
 - sharding-sphere-4.0.0

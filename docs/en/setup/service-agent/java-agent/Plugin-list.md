@@ -131,3 +131,4 @@
 - pulsar-2.8.x
 - undertow-worker-thread-pool
 - tomcat-thread-pool
+- guava-eventbus

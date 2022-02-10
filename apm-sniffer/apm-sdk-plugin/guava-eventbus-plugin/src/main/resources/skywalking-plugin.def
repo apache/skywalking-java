@@ -14,6 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-1.1.0
-1.2.1
-1.3.0
+guava-eventbus=org.apache.skywalking.apm.plugin.guava.eventbus.define.EventBusDispatcherInstrumentation
+guava-eventbus=org.apache.skywalking.apm.plugin.guava.eventbus.define.EventBusSubscriberInstrumentation

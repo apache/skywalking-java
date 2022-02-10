@@ -537,25 +537,25 @@ meterItems:
         tags:
           - {name: name, value: test_mysql-server:3306}
           - {name: status, value: numActive}
-        singleValue: ge 0
-    - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: maxTotal}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: numIdle}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: maxTotal}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: maxWaitMillis}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: numIdle}
       singleValue: ge 0
+    - meterId:
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: maxWaitMillis}
+      singleValue: ge -1
     - meterId:
         name: datasource
         tags:
@@ -569,41 +569,41 @@ meterItems:
           - {name: status, value: minIdle}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: initialSize}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: initialSize}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: activeCount}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: activeCount}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: poolingCount}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: poolingCount}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: idleCount}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: idleCount}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: lockQueueLength}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: lockQueueLength}
       singleValue: ge 0
     - meterId:
         name: datasource
         tags:
           - {name: name, value: test_mysql-server:3306}
           - {name: status, value: maxWaitThreadCount}
-      singleValue: ge 0
+      singleValue: ge -1
     - meterId:
         name: datasource
         tags:
@@ -611,10 +611,10 @@ meterItems:
           - {name: status, value: commitCount}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: connectCount}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: connectCount}
       singleValue: ge 0
     - meterId:
         name: datasource
@@ -623,34 +623,34 @@ meterItems:
           - {name: status, value: connectError}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: createError}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: createError}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: activeConnections}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: activeConnections}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: totalConnections}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: totalConnections}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: idleConnections}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: idleConnections}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: threadsAwaitingConnection}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: threadsAwaitingConnection}
       singleValue: ge 0
     - meterId:
         name: datasource
@@ -665,26 +665,26 @@ meterItems:
           - {name: status, value: validationTimeout}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: idleTimeout}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: idleTimeout}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: leakDetectionThreshold}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: leakDetectionThreshold}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: minimumIdle}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
+          - {name: status, value: minimumIdle}
       singleValue: ge 0
     - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
+        name: datasource
+        tags:
+          - {name: name, value: test_mysql-server:3306}
         - {name: status, value: maximumPoolSize}
       singleValue: ge 0

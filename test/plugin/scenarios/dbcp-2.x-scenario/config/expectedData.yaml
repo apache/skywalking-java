@@ -248,7 +248,7 @@ meterItems:
       tags:
       - {name: name, value: test_mysql-server:3306}
       - {name: status, value: maxWaitMillis}
-    singleValue: ge 0
+    singleValue: ge -1
   - meterId:
       name: datasource
       tags:

@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.testcase.dubbo3.services.impl;
 
-
 import org.apache.skywalking.apm.testcase.dubbo3.services.ExceptionService;
 
 public class ExceptionServiceImpl implements ExceptionService {

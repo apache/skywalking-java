@@ -18,7 +18,11 @@
 
 package org.apache.skywalking.apm.testcase.dubbo3;
 
-import org.apache.dubbo.config.*;
+import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.skywalking.apm.testcase.dubbo3.services.ExceptionService;
 import org.apache.skywalking.apm.testcase.dubbo3.services.GreetService;

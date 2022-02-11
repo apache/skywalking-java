@@ -16,3 +16,4 @@
 
 druid-1.x=org.apache.skywalking.apm.plugin.druid.v1.define.DruidPooledConnectionInstrumentation
 druid-1.x=org.apache.skywalking.apm.plugin.druid.v1.define.DruidDataSourceInstrumentation
+druid-1.x=org.apache.skywalking.apm.plugin.druid.v1.define.DruidDataSourceStatManagerInstrumentation

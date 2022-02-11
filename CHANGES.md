@@ -9,6 +9,9 @@ Release Notes.
 * Remove plugin for ServiceComb Java Chassis 0.x
 * Add Guava EventBus plugin.
 * Fix Dubbo 3.x plugin's tracing problem.
+* Support Druid Connection pool metrics collecting.
+* Support HikariCP Connection pool metrics collecting.
+* Support Dbcp2 Connection pool metrics collecting.
 
 #### Documentation
 

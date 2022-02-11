@@ -17,8 +17,6 @@
 
 package org.apache.skywalking.apm.plugin.dbcp.v2;
 
-import org.apache.commons.dbcp2.BasicDataSourceMXBean;
-import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -26,13 +24,9 @@ import org.apache.skywalking.apm.plugin.jdbc.connectionurl.parser.URLParser;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
- * {@link PoolingSetUrlInterceptor} intercepted the method of DBCP set url and register metric monitor.
+ * {@link PoolingSetUrlInterceptor} intercepted the method of DBCP set url Get parameters.
  */
 public class PoolingSetUrlInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
@@ -44,29 +38,16 @@ public class PoolingSetUrlInterceptor implements InstanceMethodsAroundIntercepto
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        BasicDataSourceMXBean basicDataSource = (BasicDataSourceMXBean) objInst;
         ConnectionInfo connectionInfo = URLParser.parser((String) allArguments[0]);
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
-        Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap = getMetrics();
-        metricMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(basicDataSource))
-                .tag("name", tagValue).tag("status", key).build());
-        return ret;
+        if (tagValue != null) {
+            objInst.setSkyWalkingDynamicField(tagValue);
+        }
+         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
 
-    }
-
-    private Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> getMetrics() {
-        Map<String, Function<BasicDataSourceMXBean, Supplier<Double>>> metricMap = new HashMap();
-        metricMap.put("numActive", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getNumActive());
-        metricMap.put("maxTotal", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxTotal());
-        metricMap.put("numIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) (basicDataSource.getNumIdle()));
-        metricMap.put("maxWaitMillis", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxWaitMillis());
-        metricMap.put("maxIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxIdle());
-        metricMap.put("minIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMinIdle());
-        metricMap.put("initialSize", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getInitialSize());
-        return metricMap;
     }
 }

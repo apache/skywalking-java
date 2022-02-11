@@ -20,7 +20,13 @@ package org.apache.skywalking.apm.plugin.asf.dubbo3;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
-import org.apache.dubbo.rpc.*;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.Result;
+import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.rpc.RpcContextAttachment;
+import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -138,10 +144,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     }
 
     /**
-     * to judge if current is in provider side.
-     *
-     * @param rpcInvocation
-     * @return
+     * To judge if current is in provider side.
      */
     private static boolean isProvider(RpcInvocation rpcInvocation) {
         Invoker<?> invoker = rpcInvocation.getInvoker();

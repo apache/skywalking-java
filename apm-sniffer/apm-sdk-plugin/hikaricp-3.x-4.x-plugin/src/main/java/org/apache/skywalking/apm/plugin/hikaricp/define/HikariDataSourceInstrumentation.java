@@ -41,6 +41,7 @@ public class HikariDataSourceInstrumentation extends ClassInstanceMethodsEnhance
     private static final String ENHANCE_CLASS = "com.zaxxer.hikari.HikariDataSource";
     private static final String ENHANCE_METHOD = "getConnection";
     private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.hikaricp.PoolingGetConnectInterceptor";
+    private static final String SEAL_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.hikaricp.PoolingSealInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -80,6 +81,22 @@ public class HikariDataSourceInstrumentation extends ClassInstanceMethodsEnhance
                     @Override
                     public String getMethodsInterceptor() {
                         return INTERCEPTOR_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("seal");
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return SEAL_INTERCEPTOR_CLASS;
                     }
 
                     @Override

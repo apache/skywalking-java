@@ -37,7 +37,7 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
     private static final String ENHANCE_CLASS = "org.apache.commons.dbcp2.BasicDataSource";
     private static final String CONNECT_GET_INTERCEPTOR = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingGetConnectInterceptor";
     private static final String INTERCEPTOR_URL_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingSetUrlInterceptor";
-    private static final String INTERCEPTOR_CREATE_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingCreateDataSourceInterceptor";
+    private static final String INTERCEPTOR_CREATE_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingJmxRegisterInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -87,7 +87,7 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("createDataSource");
+                        return named("jmxRegister");
                     }
 
                     @Override

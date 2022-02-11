@@ -40,10 +40,8 @@ public class PoolingSetUrlInterceptor implements InstanceMethodsAroundIntercepto
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
         ConnectionInfo connectionInfo = URLParser.parser((String) allArguments[0]);
         String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
-        if (tagValue != null) {
-            objInst.setSkyWalkingDynamicField(tagValue);
-        }
-         return ret;
+        objInst.setSkyWalkingDynamicField(tagValue);
+        return ret;
     }
 
     @Override

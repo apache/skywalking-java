@@ -30,9 +30,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * {@link PoolingCreateDataSourceInterceptor} intercepted the method of DBCP createDataSource  register metric monitor.
+ * {@link PoolingJmxRegisterInterceptor} intercepted the method of DBCP jmxRegister  register metric monitor.
  */
-public class PoolingCreateDataSourceInterceptor implements InstanceMethodsAroundInterceptor {
+public class PoolingJmxRegisterInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String METER_NAME = "datasource";
 
     @Override

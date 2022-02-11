@@ -65,7 +65,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         Invoker invoker = (Invoker) allArguments[0];
         Invocation invocation = (Invocation) allArguments[1];
 
-        boolean isConsumer = !isProvider((RpcInvocation) invocation);
+        boolean isConsumer = !isProvider(invocation);
 
         RpcContextAttachment attachment = isConsumer ? RpcContext.getClientAttachment() : RpcContext.getServerAttachment();
         URL requestURL = invoker.getUrl();
@@ -117,14 +117,6 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
         Result result = (Result) ret;
-        try {
-            if (result != null && result.getException() != null) {
-                dealException(result.getException());
-            }
-        } catch (RpcException e) {
-            dealException(e);
-        }
-
         ContextManager.stopSpan();
         return ret;
     }
@@ -146,8 +138,8 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     /**
      * To judge if current is in provider side.
      */
-    private static boolean isProvider(RpcInvocation rpcInvocation) {
-        Invoker<?> invoker = rpcInvocation.getInvoker();
+    private static boolean isProvider(Invocation invocation) {
+        Invoker<?> invoker = invocation.getInvoker();
         return invoker.getUrl()
                 .getParameter("side", "consumer")
                 .equals("provider");

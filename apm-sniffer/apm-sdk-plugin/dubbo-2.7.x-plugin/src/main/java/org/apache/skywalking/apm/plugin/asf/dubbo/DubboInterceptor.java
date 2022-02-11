@@ -110,14 +110,6 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
         Result result = (Result) ret;
-        try {
-            if (result != null && result.getException() != null) {
-                dealException(result.getException());
-            }
-        } catch (RpcException e) {
-            dealException(e);
-        }
-
         ContextManager.stopSpan();
         return ret;
     }

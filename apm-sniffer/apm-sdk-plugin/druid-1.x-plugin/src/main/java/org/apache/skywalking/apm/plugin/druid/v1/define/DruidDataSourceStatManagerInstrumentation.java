@@ -22,25 +22,23 @@ import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
  * Druid is a database connection pool from Alibaba inc.
  * <p>
  * DruidDataSource provides a "one stop" solution for database connection pool solution
- * basic requirements. DruidDataSource#getConnection() or DruidDataSource#getConnection(String, String)
- * creates (if necessary) and return a connection.
+ * basic requirements. DruidDataSourceStatManager.addDataSource(Object dataSource, String name)
  */
-public class DruidDataSourceInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    private static final String ENHANCE_CLASS = "com.alibaba.druid.pool.DruidDataSource";
-    private static final String ENHANCE_METHOD = "getConnection";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.druid.v1.PoolingGetConnectInterceptor";
+public class DruidDataSourceStatManagerInstrumentation extends ClassStaticMethodsEnhancePluginDefine {
+    private static final String ENHANCE_CLASS = "com.alibaba.druid.stat.DruidDataSourceStatManager";
+    private static final String ENHANCE_METHOD = "addDataSource";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.druid.v1.PoolingAddDruidDataSourceInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -54,27 +52,16 @@ public class DruidDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
-                new InstanceMethodsInterceptPoint() {
+        return new InstanceMethodsInterceptPoint[0];
+    }
+
+    @Override
+    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
+        return new StaticMethodsInterceptPoint[]{
+                new StaticMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_METHOD).and(takesNoArguments());
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return INTERCEPTOR_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_METHOD).and(takesArguments(String.class, String.class));
+                        return named(ENHANCE_METHOD).and(takesArguments(Object.class, String.class));
                     }
 
                     @Override
@@ -89,10 +76,4 @@ public class DruidDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
                 }
         };
     }
-
-    @Override
-    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[0];
-    }
-
 }

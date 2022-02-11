@@ -31,10 +31,13 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 /**
  * BasicDataSource provides a "one stop shopping" solution for database connection pool solution
  * basic requirements. BasicDataSource#getConnection() creates (if necessary) and return a connection.
+ * BasicDataSource#setUrl(String) set url
  */
 public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String ENHANCE_CLASS = "org.apache.commons.dbcp2.BasicDataSource";
     private static final String CONNECT_GET_INTERCEPTOR = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingGetConnectInterceptor";
+    private static final String INTERCEPTOR_URL_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingSetUrlInterceptor";
+    private static final String INTERCEPTOR_CREATE_CLASS = "org.apache.skywalking.apm.plugin.dbcp.v2.PoolingJmxRegisterInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -48,7 +51,7 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
+        return new InstanceMethodsInterceptPoint[]{
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
@@ -58,6 +61,38 @@ public class BasicDataSourceInstrumentation extends ClassInstanceMethodsEnhanceP
                     @Override
                     public String getMethodsInterceptor() {
                         return CONNECT_GET_INTERCEPTOR;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("setUrl");
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPTOR_URL_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("jmxRegister");
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPTOR_CREATE_CLASS;
                     }
 
                     @Override

@@ -18,12 +18,33 @@
 
 package org.apache.skywalking.apm.testcase.dubbo3.services.impl;
 
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
+import org.apache.skywalking.apm.testcase.dubbo3.services.ExceptionService;
 import org.apache.skywalking.apm.testcase.dubbo3.services.GreetService;
 
 public class GreetServiceImpl implements GreetService {
 
+    private RegistryConfig registryConfig = new RegistryConfig("zookeeper://127.0.0.1:2181");
+
     @Override
     public String doBusiness(String s) {
+        try {
+            ReferenceConfig<ExceptionService> referenceConfig = new ReferenceConfig<>();
+            referenceConfig.setRegistry(registryConfig);
+            referenceConfig.setInterface(ExceptionService.class);
+            referenceConfig.setScope("remote");
+            referenceConfig.setInjvm(false);
+            referenceConfig.setTimeout(500000);
+            referenceConfig.setAsync(false);
+            referenceConfig.setCheck(false);
+
+            ExceptionService exceptionService = referenceConfig.get();
+            exceptionService.exceptionCall();
+        } catch (Exception e) {
+            // do nothing
+            e.printStackTrace();
+        }
         return "{name:'" + s + "'}";
     }
 }

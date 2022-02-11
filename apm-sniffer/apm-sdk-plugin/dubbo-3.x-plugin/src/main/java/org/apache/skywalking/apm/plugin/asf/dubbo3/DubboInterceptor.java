@@ -18,15 +18,9 @@
 
 package org.apache.skywalking.apm.plugin.asf.dubbo3;
 
-import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.URL;
-import org.apache.dubbo.rpc.Invocation;
-import org.apache.dubbo.rpc.Invoker;
-import org.apache.dubbo.rpc.Result;
-import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.RpcContextAttachment;
-import org.apache.dubbo.rpc.RpcException;
-import org.apache.dubbo.rpc.RpcServiceContext;
+import org.apache.dubbo.common.constants.CommonConstants;
+import org.apache.dubbo.rpc.*;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -65,15 +59,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         Invoker invoker = (Invoker) allArguments[0];
         Invocation invocation = (Invocation) allArguments[1];
 
-        RpcServiceContext serviceContext = RpcContext.getServiceContext();
-        boolean isConsumer;
-        URL url = serviceContext.getUrl();
-        if (url == null) {
-            url = serviceContext.getConsumerUrl();
-            isConsumer = url != null;
-        } else {
-            isConsumer = serviceContext.isConsumerSide();
-        }
+        boolean isConsumer = !isProvider((RpcInvocation) invocation);
 
         RpcContextAttachment attachment = isConsumer ? RpcContext.getClientAttachment() : RpcContext.getServerAttachment();
         URL requestURL = invoker.getUrl();
@@ -149,6 +135,19 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     private void dealException(Throwable throwable) {
         AbstractSpan span = ContextManager.activeSpan();
         span.log(throwable);
+    }
+
+    /**
+     * to judge if current is in provider side.
+     *
+     * @param rpcInvocation
+     * @return
+     */
+    private static boolean isProvider(RpcInvocation rpcInvocation) {
+        Invoker<?> invoker = rpcInvocation.getInvoker();
+        return invoker.getUrl()
+                .getParameter("side", "consumer")
+                .equals("provider");
     }
 
     /**

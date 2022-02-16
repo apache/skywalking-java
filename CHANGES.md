@@ -11,6 +11,7 @@ Release Notes.
 * Support Druid Connection pool metrics collecting.
 * Support HikariCP Connection pool metrics collecting.
 * Support Dbcp2 Connection pool metrics collecting.
+* Ignored the synthetic constructor created by java agent.
 
 #### Documentation
 

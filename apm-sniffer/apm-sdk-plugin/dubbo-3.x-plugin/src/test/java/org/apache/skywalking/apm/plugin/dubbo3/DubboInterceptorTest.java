@@ -108,6 +108,7 @@ public class DubboInterceptorTest {
         when(invocation.getMethodName()).thenReturn("test");
         when(invocation.getParameterTypes()).thenReturn(new Class[] {String.class});
         when(invocation.getArguments()).thenReturn(new Object[] {"abc"});
+        when(invocation.getInvoker()).thenReturn(invoker);
         when(RpcContext.getServiceContext()).thenReturn(serviceContext);
         when(serviceContext.getUrl()).thenReturn(null);
         when(serviceContext.getConsumerUrl()).thenReturn(url);
@@ -175,9 +176,8 @@ public class DubboInterceptorTest {
 
     @Test
     public void testProviderWithAttachment() throws Throwable {
-        when(serviceContext.getUrl()).thenReturn(
-            URL.valueOf("dubbo://127.0.0.1:20880/org.apache.skywalking.apm.test.TestDubboService"));
-        when(serviceContext.getConsumerUrl()).thenReturn(null);
+        when(invoker.getUrl()).thenReturn(
+            URL.valueOf("dubbo://127.0.0.1:20880/org.apache.skywalking.apm.test.TestDubboService?side=provider"));
         when(RpcContext.getServerAttachment()).thenReturn(contextAttachment);
         when(contextAttachment.getAttachment(
             SW8CarrierItem.HEADER_NAME)).thenReturn(

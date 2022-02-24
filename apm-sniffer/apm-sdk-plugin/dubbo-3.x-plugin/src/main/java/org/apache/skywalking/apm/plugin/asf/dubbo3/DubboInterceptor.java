@@ -115,6 +115,10 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
         Result result = (Result) ret;
+        if (result != null && result.getException() != null) {
+            dealException(result.getException());
+        }
+
         ContextManager.stopSpan();
         return ret;
     }
@@ -138,6 +142,9 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
      */
     private static boolean isProvider(Invocation invocation) {
         Invoker<?> invoker = invocation.getInvoker();
+        // As RpcServiceContext may not been reset when it's role switched from provider
+        // to consumer in the same thread, but RpcInvocation is always correctly bounded
+        // to the current request or serve request, https://github.com/apache/skywalking-java/pull/110
         return invoker.getUrl()
                 .getParameter("side", "consumer")
                 .equals("provider");

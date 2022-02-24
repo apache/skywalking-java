@@ -24,6 +24,7 @@ import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.rpc.RpcException;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -109,6 +110,14 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
         Result result = (Result) ret;
+        try {
+            if (result != null && result.getException() != null) {
+                dealException(result.getException());
+            }
+        } catch (RpcException e) {
+            dealException(e);
+        }
+
         ContextManager.stopSpan();
         return ret;
     }

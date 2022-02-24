@@ -63,7 +63,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         Invoker invoker = (Invoker) allArguments[0];
         Invocation invocation = (Invocation) allArguments[1];
 
-        boolean isConsumer = !isProvider(invocation);
+        boolean isConsumer = isConsumer(invocation);
 
         RpcContextAttachment attachment = isConsumer ? RpcContext.getClientAttachment() : RpcContext.getServerAttachment();
         URL requestURL = invoker.getUrl();
@@ -140,14 +140,14 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     /**
      * To judge if current is in provider side.
      */
-    private static boolean isProvider(Invocation invocation) {
+    private static boolean isConsumer(Invocation invocation) {
         Invoker<?> invoker = invocation.getInvoker();
         // As RpcServiceContext may not been reset when it's role switched from provider
         // to consumer in the same thread, but RpcInvocation is always correctly bounded
         // to the current request or serve request, https://github.com/apache/skywalking-java/pull/110
         return invoker.getUrl()
-                .getParameter("side", "consumer")
-                .equals("provider");
+                .getParameter("side", "provider")
+                .equals("consumer");
     }
 
     /**

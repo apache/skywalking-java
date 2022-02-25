@@ -24,7 +24,9 @@ import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.rpc.model.ApplicationModel;
+import org.apache.skywalking.apm.testcase.dubbo3.services.ExceptionService;
 import org.apache.skywalking.apm.testcase.dubbo3.services.GreetService;
+import org.apache.skywalking.apm.testcase.dubbo3.services.impl.ExceptionServiceImpl;
 import org.apache.skywalking.apm.testcase.dubbo3.services.impl.GreetServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -60,6 +62,19 @@ public class Application {
             serviceConfig.setInterface(GreetService.class);
             serviceConfig.setRef(new GreetServiceImpl());
             serviceConfig.setTimeout(5000);
+            serviceConfig.export();
+            return serviceConfig;
+        }
+
+        @Bean(destroyMethod = "unexport")
+        public ServiceConfig<ExceptionService> service2() {
+            ServiceConfig<ExceptionService> serviceConfig = new ServiceConfig<>();
+            serviceConfig.setApplication(applicationConfig);
+            serviceConfig.setRegistry(registryConfig);
+            serviceConfig.setProtocol(protocolConfig);
+            serviceConfig.setInterface(ExceptionService.class);
+            serviceConfig.setRef(new ExceptionServiceImpl());
+            serviceConfig.setTimeout(500000);
             serviceConfig.export();
             return serviceConfig;
         }

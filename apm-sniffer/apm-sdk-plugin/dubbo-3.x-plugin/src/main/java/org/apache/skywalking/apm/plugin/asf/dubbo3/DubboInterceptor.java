@@ -18,15 +18,13 @@
 
 package org.apache.skywalking.apm.plugin.asf.dubbo3;
 
-import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.URL;
+import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.RpcContextAttachment;
-import org.apache.dubbo.rpc.RpcException;
-import org.apache.dubbo.rpc.RpcServiceContext;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -65,15 +63,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         Invoker invoker = (Invoker) allArguments[0];
         Invocation invocation = (Invocation) allArguments[1];
 
-        RpcServiceContext serviceContext = RpcContext.getServiceContext();
-        boolean isConsumer;
-        URL url = serviceContext.getUrl();
-        if (url == null) {
-            url = serviceContext.getConsumerUrl();
-            isConsumer = url != null;
-        } else {
-            isConsumer = serviceContext.isConsumerSide();
-        }
+        boolean isConsumer = isConsumer(invocation);
 
         RpcContextAttachment attachment = isConsumer ? RpcContext.getClientAttachment() : RpcContext.getServerAttachment();
         URL requestURL = invoker.getUrl();
@@ -125,12 +115,8 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
         Result result = (Result) ret;
-        try {
-            if (result != null && result.getException() != null) {
-                dealException(result.getException());
-            }
-        } catch (RpcException e) {
-            dealException(e);
+        if (result != null && result.getException() != null) {
+            dealException(result.getException());
         }
 
         ContextManager.stopSpan();
@@ -149,6 +135,19 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     private void dealException(Throwable throwable) {
         AbstractSpan span = ContextManager.activeSpan();
         span.log(throwable);
+    }
+
+    /**
+     * To judge if current is in provider side.
+     */
+    private static boolean isConsumer(Invocation invocation) {
+        Invoker<?> invoker = invocation.getInvoker();
+        // As RpcServiceContext may not been reset when it's role switched from provider
+        // to consumer in the same thread, but RpcInvocation is always correctly bounded
+        // to the current request or serve request, https://github.com/apache/skywalking-java/pull/110
+        return invoker.getUrl()
+                .getParameter("side", "provider")
+                .equals("consumer");
     }
 
     /**

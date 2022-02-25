@@ -18,53 +18,97 @@ segmentItems:
   - serviceName: dubbo-3.x-scenario
     segmentSize: ge 3
     segments:
-      - segmentId: not null
-        spans:
-          - operationName: org.apache.skywalking.apm.testcase.dubbo3.services.GreetService.doBusiness(String)
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: RPCFramework
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 3
-            isError: false
-            spanType: Entry
-            peer: not null
-            tags:
-              - {key: url, value: not null}
-              - {key: arguments, value: helloWorld}
-            refs:
-              - {parentEndpoint: GET:/dubbo-3.x-scenario/case/dubbo, networkAddress: not null,
-                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
-                 parentServiceInstance: not null, parentService: dubbo-3.x-scenario, traceId: not null}
-            skipAnalysis: 'false'
-      - segmentId: not null
-        spans:
-          - operationName: org.apache.skywalking.apm.testcase.dubbo3.services.GreetService.doBusiness(String)
-            parentSpanId: 0
-            spanId: 1
-            spanLayer: RPCFramework
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 3
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - {key: url, value: not null}
-              - {key: arguments, value: helloWorld}
-            skipAnalysis: 'false'
-          - operationName: GET:/dubbo-3.x-scenario/case/dubbo
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Http
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 1
-            isError: false
-            spanType: Entry
-            peer: ''
-            tags:
-              - {key: url, value: 'http://localhost:8080/dubbo-3.x-scenario/case/dubbo'}
-              - {key: http.method, value: GET}
-            skipAnalysis: 'false'
+    - segmentId: not null
+      spans:
+      - operationName: org.apache.skywalking.apm.testcase.dubbo3.services.ExceptionService.exceptionCall()
+        parentSpanId: -1
+        spanId: 0
+        spanLayer: RPCFramework
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 3
+        isError: true
+        spanType: Entry
+        peer: not null
+        tags:
+        - { key: url, value: not null }
+        logs:
+        - logEvent:
+          - { key: event, value: error }
+          - { key: error.kind, value: java.lang.RuntimeException }
+          - { key: message, value: test exception! }
+          - { key: "stack", value: "not null" }
+        refs:
+        - { parentEndpoint: org.apache.skywalking.apm.testcase.dubbo3.services.GreetService.doBusiness(String), networkAddress: not null,
+            refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not null,
+            parentService: dubbo-3.x-scenario, traceId: not null }
+        skipAnalysis: 'false'
+    - segmentId: not null
+      spans:
+      - operationName: org.apache.skywalking.apm.testcase.dubbo3.services.ExceptionService.exceptionCall()
+        parentSpanId: 0
+        spanId: 1
+        spanLayer: RPCFramework
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 3
+        isError: true
+        spanType: Exit
+        peer: not null
+        tags:
+        - { key: url, value: not null }
+        logs:
+        - logEvent:
+          - { key: event, value: error }
+          - { key: error.kind, value: java.lang.RuntimeException }
+          - { key: message, value: test exception! }
+          - { key: "stack", value: "not null" }
+        skipAnalysis: 'false'
+      - operationName: org.apache.skywalking.apm.testcase.dubbo3.services.GreetService.doBusiness(String)
+        parentSpanId: -1
+        spanId: 0
+        spanLayer: RPCFramework
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 3
+        isError: false
+        spanType: Entry
+        peer: not null
+        tags:
+        - {key: url, value: not null}
+        - {key: arguments, value: helloWorld}
+        refs:
+        - {parentEndpoint: GET:/dubbo-3.x-scenario/case/dubbo, networkAddress: not null,
+           refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
+           parentServiceInstance: not null, parentService: dubbo-3.x-scenario, traceId: not null}
+        skipAnalysis: 'false'
+    - segmentId: not null
+      spans:
+      - operationName: org.apache.skywalking.apm.testcase.dubbo3.services.GreetService.doBusiness(String)
+        parentSpanId: 0
+        spanId: 1
+        spanLayer: RPCFramework
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 3
+        isError: false
+        spanType: Exit
+        peer: not null
+        tags:
+        - {key: url, value: not null}
+        - {key: arguments, value: helloWorld}
+        skipAnalysis: 'false'
+      - operationName: GET:/dubbo-3.x-scenario/case/dubbo
+        parentSpanId: -1
+        spanId: 0
+        spanLayer: Http
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 1
+        isError: false
+        spanType: Entry
+        peer: ''
+        tags:
+        - {key: url, value: 'http://localhost:8080/dubbo-3.x-scenario/case/dubbo'}
+        - {key: http.method, value: GET}
+        skipAnalysis: 'false'

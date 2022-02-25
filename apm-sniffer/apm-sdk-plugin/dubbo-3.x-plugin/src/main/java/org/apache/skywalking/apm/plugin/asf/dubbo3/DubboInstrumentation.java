@@ -33,11 +33,9 @@ import java.util.List;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.returns;
 
-public class DubboInstrumentationBase extends ClassInstanceMethodsEnhancePluginDefine {
+public class DubboInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    public static final String PROVIDER_ENHANCE_CLASS = "org.apache.dubbo.monitor.support.MonitorFilter";
-
-    public static final String CONSUMER_ENHANCE_CLASS = "org.apache.dubbo.monitor.support.MonitorClusterFilter";
+    public static final String ENHANCE_CLASS = "org.apache.dubbo.monitor.support.MonitorFilter";
 
     public static final String INTERCEPT_POINT_METHOD = "invoke";
 
@@ -49,15 +47,9 @@ public class DubboInstrumentationBase extends ClassInstanceMethodsEnhancePluginD
 
     public static final String CONTEXT_ATTACHMENT_TYPE_NAME = "org.apache.dubbo.rpc.RpcContextAttachment";
 
-    private final String enhanceClassName;
-
-    public DubboInstrumentationBase(String enhanceClassName) {
-        this.enhanceClassName = enhanceClassName;
-    }
-
     @Override
     protected ClassMatch enhanceClass() {
-        return NameMatch.byName(enhanceClassName);
+        return NameMatch.byName(ENHANCE_CLASS);
     }
 
     @Override

@@ -87,39 +87,52 @@ public class DubboInterceptorTest {
     @Mock
     private RpcContextAttachment contextAttachment;
     @Mock
-    private Invoker invoker;
+    private Invoker consumerInvoker;
     @Mock
-    private Invocation invocation;
+    private Invoker providerInvoker;
+    @Mock
+    private Invocation consumerInvocation;
+    @Mock
+    private Invocation providerInvocation;
     @Mock
     private MethodInterceptResult methodInterceptResult;
     @Mock
     private Result result;
 
-    private Object[] allArguments;
+    private Object[] consumerArguments;
+    private Object[] providerArguments;
     private Class[] argumentTypes;
+    private static final URL CONSUMER_URL = URL.valueOf("dubbo://127.0.0.1:20880/org.apache.skywalking.apm.test.TestDubboService?side=consumer");
+    private static final URL PROVIDER_URL = URL.valueOf("dubbo://127.0.0.1:20880/org.apache.skywalking.apm.test.TestDubboService?side=provider");
 
     @Before
     public void setUp() throws Exception {
         dubboInterceptor = new DubboInterceptor();
 
         PowerMockito.mockStatic(RpcContext.class);
-        URL url = URL.valueOf("dubbo://127.0.0.1:20880/org.apache.skywalking.apm.test.TestDubboService");
-        when(invoker.getUrl()).thenReturn(url);
-        when(invocation.getMethodName()).thenReturn("test");
-        when(invocation.getParameterTypes()).thenReturn(new Class[] {String.class});
-        when(invocation.getArguments()).thenReturn(new Object[] {"abc"});
-        when(RpcContext.getServiceContext()).thenReturn(serviceContext);
-        when(serviceContext.getUrl()).thenReturn(null);
-        when(serviceContext.getConsumerUrl()).thenReturn(url);
+        when(consumerInvoker.getUrl()).thenReturn(CONSUMER_URL);
+        when(consumerInvocation.getMethodName()).thenReturn("test");
+        when(consumerInvocation.getParameterTypes()).thenReturn(new Class[] {String.class});
+        when(consumerInvocation.getArguments()).thenReturn(new Object[] {"abc"});
+        when(consumerInvocation.getInvoker()).thenReturn(consumerInvoker);
         when(RpcContext.getClientAttachment()).thenReturn(contextAttachment);
+        consumerArguments = new Object[] {
+                consumerInvoker,
+                consumerInvocation
+        };
 
-        allArguments = new Object[] {
-            invoker,
-            invocation
+        when(providerInvoker.getUrl()).thenReturn(PROVIDER_URL);
+        when(providerInvocation.getMethodName()).thenReturn("test");
+        when(providerInvocation.getParameterTypes()).thenReturn(new Class[] {String.class});
+        when(providerInvocation.getArguments()).thenReturn(new Object[] {"abc"});
+        when(providerInvocation.getInvoker()).thenReturn(providerInvoker);
+        providerArguments = new Object[] {
+                providerInvoker,
+                providerInvocation
         };
         argumentTypes = new Class[] {
-            invoker.getClass(),
-            invocation.getClass()
+            consumerInvoker.getClass(),
+            consumerInvocation.getClass()
         };
         Config.Agent.SERVICE_NAME = "DubboTestCases-APP";
     }
@@ -140,8 +153,8 @@ public class DubboInterceptorTest {
 
     @Test
     public void testConsumerWithAttachment() throws Throwable {
-        dubboInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
-        dubboInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, result);
+        dubboInterceptor.beforeMethod(enhancedInstance, null, consumerArguments, argumentTypes, methodInterceptResult);
+        dubboInterceptor.afterMethod(enhancedInstance, null, consumerArguments, argumentTypes, result);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
@@ -152,10 +165,10 @@ public class DubboInterceptorTest {
 
     @Test
     public void testConsumerWithException() throws Throwable {
-        dubboInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
+        dubboInterceptor.beforeMethod(enhancedInstance, null, consumerArguments, argumentTypes, methodInterceptResult);
         dubboInterceptor.handleMethodException(
-            enhancedInstance, null, allArguments, argumentTypes, new RuntimeException());
-        dubboInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, result);
+            enhancedInstance, null, consumerArguments, argumentTypes, new RuntimeException());
+        dubboInterceptor.afterMethod(enhancedInstance, null, consumerArguments, argumentTypes, result);
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         assertConsumerTraceSegmentInErrorCase(traceSegment);
@@ -165,8 +178,8 @@ public class DubboInterceptorTest {
     public void testConsumerWithResultHasException() throws Throwable {
         when(result.getException()).thenReturn(new RuntimeException());
 
-        dubboInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
-        dubboInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, result);
+        dubboInterceptor.beforeMethod(enhancedInstance, null, consumerArguments, argumentTypes, methodInterceptResult);
+        dubboInterceptor.afterMethod(enhancedInstance, null, consumerArguments, argumentTypes, result);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
@@ -175,16 +188,14 @@ public class DubboInterceptorTest {
 
     @Test
     public void testProviderWithAttachment() throws Throwable {
-        when(serviceContext.getUrl()).thenReturn(
-            URL.valueOf("dubbo://127.0.0.1:20880/org.apache.skywalking.apm.test.TestDubboService"));
-        when(serviceContext.getConsumerUrl()).thenReturn(null);
+        when(providerInvoker.getUrl()).thenReturn(PROVIDER_URL);
         when(RpcContext.getServerAttachment()).thenReturn(contextAttachment);
         when(contextAttachment.getAttachment(
             SW8CarrierItem.HEADER_NAME)).thenReturn(
             "1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA=");
 
-        dubboInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
-        dubboInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, result);
+        dubboInterceptor.beforeMethod(enhancedInstance, null, providerArguments, argumentTypes, methodInterceptResult);
+        dubboInterceptor.afterMethod(enhancedInstance, null, providerArguments, argumentTypes, result);
         assertProvider();
     }
 

@@ -54,3 +54,5 @@ spec:
         - name: JAVA_TOOL_OPTIONS
           value: "-javaagent:/skywalking/agent/skywalking-agent.jar"
 ```
+
+To use the java agent more natively, you can try the [java agent injector](https://github.com/apache/skywalking-swck/blob/master/docs/java-agent-injector.md) to inject the agent image as a sidecar.

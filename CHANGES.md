@@ -15,6 +15,7 @@ Release Notes.
 * Ignore the synthetic constructor created by the agent in the Spring patch plugin.
 
 #### Documentation
+* Add link about java agent injector.
 
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/120?closed=1)

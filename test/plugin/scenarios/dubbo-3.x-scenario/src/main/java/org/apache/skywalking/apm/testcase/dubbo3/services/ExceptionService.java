@@ -16,12 +16,9 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.asf.dubbo3;
+package org.apache.skywalking.apm.testcase.dubbo3.services;
 
-public class DubboProviderInstrumentation extends DubboInstrumentationBase {
+public interface ExceptionService {
 
-    public DubboProviderInstrumentation() {
-        super(PROVIDER_ENHANCE_CLASS);
-    }
-
+    void exceptionCall();
 }

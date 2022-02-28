@@ -16,12 +16,13 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.asf.dubbo3;
+package org.apache.skywalking.apm.testcase.dubbo3.services.impl;
 
-public class DubboConsumerInstrumentation extends DubboInstrumentationBase {
+import org.apache.skywalking.apm.testcase.dubbo3.services.ExceptionService;
 
-    public DubboConsumerInstrumentation() {
-        super(CONSUMER_ENHANCE_CLASS);
+public class ExceptionServiceImpl implements ExceptionService {
+    @Override
+    public void exceptionCall() {
+        throw new RuntimeException("test exception!");
     }
-
 }

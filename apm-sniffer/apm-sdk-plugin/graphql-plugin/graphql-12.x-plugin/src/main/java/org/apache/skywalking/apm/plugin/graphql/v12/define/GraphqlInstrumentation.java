@@ -64,6 +64,9 @@ public class GraphqlInstrumentation extends ClassInstanceMethodsEnhancePluginDef
 
     @Override
     protected String[] witnessClasses() {
-        return new String[] {"graphql.cachecontrol.CacheControl"};
+        return new String[] {
+                "graphql.cachecontrol.CacheControl",
+                "graphql.execution.ExecutionPath"
+        };
     }
 }

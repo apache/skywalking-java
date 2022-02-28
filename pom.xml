@@ -36,6 +36,7 @@
         <module>apm-protocol</module>
         <module>apm-sniffer</module>
         <module>apm-application-toolkit</module>
+        <module>tomcat-10.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

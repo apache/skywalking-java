@@ -59,6 +59,8 @@ public class WebFluxWebClientInterceptor implements InstanceMethodsAroundInterce
             final String remotePeer = getIPAndPort(uri);
             AbstractSpan span = ContextManager.createExitSpan(operationName, remotePeer);
 
+            // get ContextSnapshot from reactor context,  the snapshot is set to reactor context by any other plugin
+            // such as spring-webflux-5.x-plugin
             final Optional<Object> optional = ctx.getOrEmpty("SKYWALKING_CONTEXT_SNAPSHOT");
             optional.ifPresent(snapshot -> ContextManager.continued((ContextSnapshot) snapshot));
 

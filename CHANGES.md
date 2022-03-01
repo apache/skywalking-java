@@ -13,6 +13,8 @@ Release Notes.
 * Support HikariCP Connection pool metrics collecting.
 * Support Dbcp2 Connection pool metrics collecting.
 * Ignore the synthetic constructor created by the agent in the Spring patch plugin.
+* Add witness class for vertx-core-3.x plugin.
+* Add witness class for graphql plugin.
 
 #### Documentation
 * Add link about java agent injector.

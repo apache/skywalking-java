@@ -74,4 +74,9 @@ public class ServerConnectionHandleMessageInstrumentation extends ClassInstanceM
                 SERVER_CONNECTION_ENHANCE_CLASS //ver. 3.0.0 - 3.5.0
         );
     }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[] {"io.vertx.core.http.impl.WebSocketFrameFactoryImpl"};
+    }
 }

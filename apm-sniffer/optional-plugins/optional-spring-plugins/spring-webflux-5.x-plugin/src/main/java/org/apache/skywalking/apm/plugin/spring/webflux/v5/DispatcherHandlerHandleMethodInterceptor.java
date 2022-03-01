@@ -18,8 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.spring.webflux.v5;
 
-import java.lang.reflect.Method;
-import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -40,6 +38,9 @@ import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
 import org.springframework.web.util.pattern.PathPattern;
 import reactor.core.publisher.Mono;
+
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class DispatcherHandlerHandleMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -74,7 +75,7 @@ public class DispatcherHandlerHandleMethodInterceptor implements InstanceMethods
         span.prepareForAsync();
         ContextManager.stopSpan(span);
 
-        exchange.getAttributes().put("SKYWALING_SPAN", span);
+        exchange.getAttributes().put("SKYWALKING_SPAN", span);
     }
 
     private void maybeSetPattern(AbstractSpan span, ServerWebExchange exchange) {
@@ -92,28 +93,37 @@ public class DispatcherHandlerHandleMethodInterceptor implements InstanceMethods
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
+
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
 
-        AbstractSpan span = (AbstractSpan) exchange.getAttributes().get("SKYWALING_SPAN");
+        AbstractSpan span = (AbstractSpan) exchange.getAttributes().get("SKYWALKING_SPAN");
+        Mono<Void> monoReturn = (Mono<Void>) ret;
 
-                return ((Mono) ret).doFinally(s -> {
+        // add skywalking context snapshot to reactor context.
+        EnhancedInstance instance = getInstance(allArguments[0]);
+        if (instance != null && instance.getSkyWalkingDynamicField() != null) {
+            monoReturn = monoReturn.subscriberContext(
+                    c -> c.put("SKYWALKING_CONTEXT_SNAPSHOT", instance.getSkyWalkingDynamicField()));
+        }
 
-                    if (span != null) {
-                        maybeSetPattern(span, exchange);
-                        try {
+        return monoReturn.doFinally(s -> {
 
-                            HttpStatus httpStatus = exchange.getResponse().getStatusCode();
-                            // fix webflux-2.0.0-2.1.0 version have bug. httpStatus is null. not support
-                            if (httpStatus != null) {
-                                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
-                                if (httpStatus.isError()) {
-                                    span.errorOccurred();
-                                }
-                            }
-                        } finally {
-                            span.asyncFinish();
+            if (span != null) {
+                maybeSetPattern(span, exchange);
+                try {
+
+                    HttpStatus httpStatus = exchange.getResponse().getStatusCode();
+                    // fix webflux-2.0.0-2.1.0 version have bug. httpStatus is null. not support
+                    if (httpStatus != null) {
+                        Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
+                        if (httpStatus.isError()) {
+                            span.errorOccurred();
                         }
                     }
+                } finally {
+                    span.asyncFinish();
+                }
+            }
         });
     }
 

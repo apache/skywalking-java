@@ -17,6 +17,7 @@ Release Notes.
 * Ignore the synthetic constructor created by the agent in the Spring patch plugin.
 * Add witness class for vertx-core-3.x plugin.
 * Add witness class for graphql plugin.
+* [Test] Add `tomcat:10.0-jdk8-openjdk` and `tomcat:10.1-jdk11-openjdk` as plugin test base images.
 
 #### Documentation
 * Add link about java agent injector.

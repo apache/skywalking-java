@@ -99,6 +99,20 @@
                 <base.image.tomcat>tomcat:8.5-jdk17-openjdk</base.image.tomcat>
                 <java.version>jdk17</java.version>
             </properties>
-       </profile>
+        </profile>
+        <profile>
+            <id>jdk8-tomcat10.0</id>
+            <properties>
+                <base.image.tomcat>tomcat:10.0-jdk8-openjdk</base.image.tomcat>
+                <java.version>jdk8</java.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdk11-tomcat10.1</id>
+            <properties>
+                <base.image.tomcat>tomcat:10.1-jdk11-openjdk</base.image.tomcat>
+                <java.version>jdk11</java.version>
+            </properties>
+        </profile>
     </profiles>
 </project>

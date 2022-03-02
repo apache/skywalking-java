@@ -31,7 +31,7 @@ Take the following test projects as examples:
 
 ### Tomcat-container Image Introduction
 
-[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk14-openjdk` or `tomcat:8.5-jdk17-openjdk` as the base image.
+[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk14-openjdk`, `tomcat:8.5-jdk17-openjdk`, `tomcat:10.0-jdk8-openjdk`, or `tomcat:10.1-jdk11-openjdk` as the base image.
 The test case project must be packaged as `project-name.war` by using `mvn package`.
 
 Take the following test project as an example

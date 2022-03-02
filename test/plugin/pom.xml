@@ -131,9 +131,6 @@
                     <sourceDirectories>
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-<sourceDirectory>scenarios/dbcp-2.x-scenario</sourceDirectory>
-<sourceDirectory>scenarios/druid-1.x-scenario</sourceDirectory>
-<sourceDirectory>scenarios/druid-1.x</sourceDirectory>
                     </sourceDirectories>
                     <resourceIncludes>
                         **/*.properties,

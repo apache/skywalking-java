@@ -94,6 +94,7 @@ jobs:
           - kylin-jdbc-2.6.x-3.x-4.x-scenario
           - undertow-worker-thread-pool-scenario
           - tomcat-thread-pool-scenario
+          - tomcat-10.x-scenario
           - guava-eventbus-scenario
     steps:
       - uses: actions/checkout@v2

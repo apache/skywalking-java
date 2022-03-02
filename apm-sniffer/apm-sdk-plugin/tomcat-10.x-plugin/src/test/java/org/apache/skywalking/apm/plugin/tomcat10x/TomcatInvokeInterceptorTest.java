@@ -113,7 +113,6 @@ public class TomcatInvokeInterceptorTest {
     public void testWithoutSerializedContextData() throws Throwable {
         tomcatInvokeInterceptor.beforeMethod(enhancedInstance, null, arguments, argumentType, methodInterceptResult);
         tomcatInvokeInterceptor.afterMethod(enhancedInstance, null, arguments, argumentType, null);
-
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);

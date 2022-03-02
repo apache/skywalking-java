@@ -28,7 +28,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.plugin.tomcat10x.Constants;
 
 public class ForwardInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
 
@@ -37,7 +36,7 @@ public class ForwardInterceptor implements InstanceMethodsAroundInterceptor, Ins
                              MethodInterceptResult result) throws Throwable {
         if (ContextManager.isActive()) {
             AbstractSpan abstractTracingSpan = ContextManager.activeSpan();
-            Map<String, String> eventMap = new HashMap<String, String>();
+            Map<String, String> eventMap = new HashMap<>();
             eventMap.put("forward-url", objInst.getSkyWalkingDynamicField() == null ? "" : String.valueOf(objInst.getSkyWalkingDynamicField()));
             abstractTracingSpan.log(System.currentTimeMillis(), eventMap);
             ContextManager.getRuntimeContext().put(Constants.FORWARD_REQUEST_FLAG, true);

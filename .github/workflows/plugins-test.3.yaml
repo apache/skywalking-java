@@ -55,7 +55,7 @@ jobs:
     strategy:
       matrix:
         case:
-          - mysql-scenario
+#          - mysql-scenario
           - undertow-scenario
           - webflux-scenario
           - zookeeper-scenario

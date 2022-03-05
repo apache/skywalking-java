@@ -53,7 +53,6 @@ public class VertxCoreController extends AbstractVerticle {
                         });
                     }
                 });
-        System.out.println("done");
     }
 
     private void executeTest(RoutingContext routingContext) {

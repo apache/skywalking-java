@@ -63,6 +63,7 @@ jobs:
           - spring-4.1.x-scenario
           - spring-4.3.x-scenario
           - spring-async-scenario
+          - vertx-core-4.x-scenario
           - vertx-eventbus-3.x-scenario
           - vertx-web-3.54minus-scenario
           - vertx-web-3.6plus-scenario

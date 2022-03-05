@@ -17,6 +17,7 @@ Release Notes.
 * Ignore the synthetic constructor created by the agent in the Spring patch plugin.
 * Add witness class for vertx-core-3.x plugin.
 * Add witness class for graphql plugin.
+* Add vertx-core-4.x plugin.
 
 #### Documentation
 * Add link about java agent injector.

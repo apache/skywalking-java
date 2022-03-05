@@ -117,6 +117,7 @@
 - toolkit-exception
 - undertow-2.x-plugin
 - vertx-core-3.x
+- vertx-core-4.x
 - xxl-job-2.x
 - zookeeper-3.4.x
 - mssql-jtds-1.x

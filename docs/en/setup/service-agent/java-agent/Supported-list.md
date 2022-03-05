@@ -112,8 +112,8 @@ metrics based on the tracing data.
   * [Fastjson](https://github.com/alibaba/fastjson) 1.2.x (Optional²)
   * [Jackson](https://github.com/FasterXML/jackson) 2.x (Optional²)
 * Vert.x Ecosystem
-  * Vert.x Eventbus 3.2+
-  * Vert.x Web 3.x
+  * Vert.x Eventbus 3.2 -> 4.x
+  * Vert.x Web 3.x -> 4.x
 * Thread Schedule Framework
   * [Spring @Async](https://github.com/spring-projects/spring-framework) 4.x and 5.x
   * [Quasar](https://github.com/puniverse/quasar) 0.7.x

@@ -57,7 +57,7 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
 
             ContextCarrier contextCarrier = getContextCarrier(headers);
             AbstractSpan span = toEntrySpan(
-                    "{" + serverRequest.method() + "}" + serverRequest.uri(),
+                    String.join(":", serverRequest.method().name(), serverRequest.uri()),
                     contextCarrier,
                     context
             );
@@ -65,7 +65,7 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
             Tags.HTTP.METHOD.set(span, serverRequest.method().toString());
             Tags.URL.set(span, serverRequest.absoluteURI());
 
-            return toAsyncSpan(context, span);
+            return toAsyncSpan(context, span, false);
         } else if (request instanceof Message) {
             Message serverRequest = (Message) request;
 
@@ -73,7 +73,7 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
             AbstractSpan span = toEntrySpan(serverRequest.address(), contextCarrier, context);
             SpanLayer.asRPCFramework(span);
 
-            return toAsyncSpan(context, span);
+            return toAsyncSpan(context, span, false);
         }
 
         return null;
@@ -164,10 +164,12 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
         return contextCarrier;
     }
 
-    private AbstractSpan toAsyncSpan(Context context, AbstractSpan span) {
+    private AbstractSpan toAsyncSpan(Context context, AbstractSpan span, boolean isExitSpan) {
         //Context.putLocal(String) changes to Context.putLocal(Object) from 4.0.x to 4.1.x, so direct access local map
         Map<Object, Object> contextMap = ((ContextInternal) context).localContextData();
-        contextMap.put("sw.context-snapshot", ContextManager.capture());
+        if (!isExitSpan) {
+            contextMap.put("sw.context-snapshot", ContextManager.capture());
+        }
 
         AbstractSpan asyncSpan = span.prepareForAsync();
         ContextManager.stopSpan();
@@ -181,7 +183,7 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
             next = next.next();
             headers.accept(next.getHeadKey(), next.getHeadValue());
         }
-        return toAsyncSpan(context, span);
+        return toAsyncSpan(context, span, true);
     }
 
     private AbstractSpan toEntrySpan(String operationName, ContextCarrier contextCarrier, Context context) {

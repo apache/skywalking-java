@@ -19,7 +19,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: '{HEAD}/vertx-core-4-scenario/case/healthCheck'
+          - operationName: HEAD:/vertx-core-4-scenario/case/healthCheck
             operationId: 0
             parentSpanId: -1
             spanId: 0
@@ -69,7 +69,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             refs:
-              - {parentEndpoint: '{GET}/vertx-core-4-scenario/case/executeTest', networkAddress: '',
+              - {parentEndpoint: 'GET:/vertx-core-4-scenario/case/executeTest', networkAddress: '',
                  refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: vertx-core-4.x-scenario,
                  traceId: not null}
@@ -94,7 +94,7 @@ segmentItems:
                  traceId: not null}
       - segmentId: not null
         spans:
-          - operationName: '{GET}/vertx-core-4-scenario/case/executeTest'
+          - operationName: GET:/vertx-core-4-scenario/case/executeTest
             operationId: 0
             parentSpanId: -1
             spanId: 0
@@ -117,7 +117,7 @@ segmentItems:
                  traceId: not null}
       - segmentId: not null
         spans:
-          - operationName: '{GET}/vertx-core-4-scenario/case/core-case'
+          - operationName: GET:/vertx-core-4-scenario/case/core-case
             operationId: 0
             parentSpanId: -1
             spanId: 0
@@ -152,7 +152,7 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/vertx-core-4-scenario/case/executeTest'}
               - {key: http.status_code, value: '200'}
             refs:
-              - {parentEndpoint: '{GET}/vertx-core-4-scenario/case/core-case', networkAddress: '',
+              - {parentEndpoint: 'GET:/vertx-core-4-scenario/case/core-case', networkAddress: '',
                  refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: vertx-core-4.x-scenario,
                  traceId: not null}
@@ -171,7 +171,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             refs:
-              - {parentEndpoint: local-message-receiver, networkAddress: '', refType: CrossThread,
-                 parentSpanId: 0, parentTraceSegmentId: not null,
+              - {parentEndpoint: 'GET:/vertx-core-4-scenario/case/executeTest', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: vertx-core-4.x-scenario,
                  traceId: not null}

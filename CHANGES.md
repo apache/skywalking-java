@@ -18,6 +18,7 @@ Release Notes.
 * Add witness class for vertx-core-3.x plugin.
 * Add witness class for graphql plugin.
 * Add vertx-core-4.x plugin.
+* Add graphql-16plus plugin.
 
 #### Documentation
 * Add link about java agent injector.

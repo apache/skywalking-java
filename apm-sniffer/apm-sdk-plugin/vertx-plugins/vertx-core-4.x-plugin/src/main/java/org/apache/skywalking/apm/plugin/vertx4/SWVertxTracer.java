@@ -127,12 +127,14 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
                     remotePeer = (String) enhancedInstance.getSkyWalkingDynamicField();
                 }
             }
+
             ContextCarrier contextCarrier = new ContextCarrier();
             AbstractSpan span = toExitSpan(clientRequest.address(), remotePeer, contextCarrier, context);
             SpanLayer.asRPCFramework(span);
 
             return toExitAsyncSpan(context, headers, contextCarrier, span);
         }
+
         return null;
     }
 
@@ -178,6 +180,7 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
 
     private AbstractSpan toExitAsyncSpan(Context context, BiConsumer<String, String> headers,
                                          ContextCarrier contextCarrier, AbstractSpan span) {
+        ContextManager.inject(contextCarrier);
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {
             next = next.next();

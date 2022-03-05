@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.vertx4;
 
 import io.vertx.core.Context;
 import io.vertx.core.eventbus.Message;
+import io.vertx.core.eventbus.impl.clustered.ClusteredMessage;
 import io.vertx.core.impl.ContextInternal;
 import io.vertx.core.spi.observability.HttpRequest;
 import io.vertx.core.spi.observability.HttpResponse;
@@ -34,6 +35,7 @@ import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.util.HashMap;
@@ -118,8 +120,15 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
         } else if (request instanceof Message) {
             Message clientRequest = (Message) request;
 
+            String remotePeer = "localhost";
+            if (clientRequest instanceof ClusteredMessage) {
+                EnhancedInstance enhancedInstance = (EnhancedInstance) clientRequest;
+                if (enhancedInstance.getSkyWalkingDynamicField() != null) {
+                    remotePeer = (String) enhancedInstance.getSkyWalkingDynamicField();
+                }
+            }
             ContextCarrier contextCarrier = new ContextCarrier();
-            AbstractSpan span = toExitSpan(clientRequest.address(), "localhost", contextCarrier, context);
+            AbstractSpan span = toExitSpan(clientRequest.address(), remotePeer, contextCarrier, context);
             SpanLayer.asRPCFramework(span);
 
             return toExitAsyncSpan(context, headers, contextCarrier, span);

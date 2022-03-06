@@ -19,6 +19,7 @@ Release Notes.
 * Add witness class for graphql plugin.
 * Add vertx-core-4.x plugin.
 * Renamed graphql-12.x-plugin to graphql-12.x-15.x-plugin and graphql-12.x-scenario to graphql-12.x-15.x-scenario.
+* Add graphql-16plus plugin.
 
 #### Documentation
 * Add link about java agent injector.

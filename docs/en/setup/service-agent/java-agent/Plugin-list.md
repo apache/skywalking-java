@@ -27,6 +27,7 @@
 - graphql-8.x
 - graphql-9.x
 - graphql-12.x-15.x
+- graphql-16plus
 - grpc-1.x
 - gson-2.8.x
 - guava-cache

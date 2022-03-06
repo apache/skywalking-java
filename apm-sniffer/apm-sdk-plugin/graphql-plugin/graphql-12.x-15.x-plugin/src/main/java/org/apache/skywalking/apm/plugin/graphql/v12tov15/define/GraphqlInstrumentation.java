@@ -16,7 +16,7 @@
  *
  */
 
- package org.apache.skywalking.apm.plugin.graphql.v12.define;
+ package org.apache.skywalking.apm.plugin.graphql.v12tov15.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -29,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class GraphqlInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.graphql.v12.GraphqlInterceptor";
+    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.graphql.v12tov15.GraphqlInterceptor";
     public static final String ENHANCE_CLASS = "graphql.execution.ExecutionStrategy";
     public static final String ENHANCE_METHOD_DISPATCH = "resolveFieldWithInfo";
 

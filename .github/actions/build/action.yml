@@ -64,14 +64,14 @@ runs:
         # Retry one more time due to frequent "maven connection reset"
         ./mvnw --batch-mode -f test/plugin/pom.xml \
           -Dmaven.test.skip \
-          -Dbase_image_java=${{ inpuits.base_image_java }} \
-          -Dbase_image_tomcat=${{ inpuits.base_image_tomcat }} \
+          -Dbase_image_java=${{ inputs.base_image_java }} \
+          -Dbase_image_tomcat=${{ inputs.base_image_tomcat }} \
           -Dcontainer_image_version=1.0.0 \
           clean package || \
         ./mvnw --batch-mode -f test/plugin/pom.xml \
           -Dmaven.test.skip \
-          -Dbase_image_java=${{ inpuits.base_image_java }} \
-          -Dbase_image_tomcat=${{ inpuits.base_image_tomcat }} \
+          -Dbase_image_java=${{ inputs.base_image_java }} \
+          -Dbase_image_tomcat=${{ inputs.base_image_tomcat }} \
           -Dcontainer_image_version=1.0.0 \
           clean package
         echo "::endgroup::"

@@ -124,7 +124,7 @@ metrics based on the tracing data.
 * Kotlin
   * [Coroutine](https://kotlinlang.org/docs/reference/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
 * GraphQL
-  * [Graphql](https://github.com/graphql-java) 8.0 -> 15.x
+  * [Graphql](https://github.com/graphql-java) 8.0 -> 17.x
 * Pool
   * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
   * [Alibaba Druid](https://github.com/alibaba/druid) 1.x

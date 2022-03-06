@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>${project.build.directory}/graphql-12.x-scenario.jar</source>
+            <source>${project.build.directory}/graphql-12.x-15.x-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>

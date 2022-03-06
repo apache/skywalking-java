@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-graphql=org.apache.skywalking.apm.plugin.graphql.v9.define.GraphqlInstrumentation
+graphql-9.x=org.apache.skywalking.apm.plugin.graphql.v9.define.GraphqlInstrumentation

@@ -31,7 +31,7 @@
     <modules>
         <module>graphql-8.x-plugin</module>
         <module>graphql-9.x-plugin</module>
-        <module>graphql-12.x-plugin</module>
+        <module>graphql-12.x-15.x-plugin</module>
         <module>graphql-16plus-plugin</module>
     </modules>
 

@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.graphql.v12;
+package org.apache.skywalking.apm.plugin.graphql.v12tov15;
 
 import graphql.execution.ExecutionPath;
 import graphql.execution.ExecutionStrategyParameters;

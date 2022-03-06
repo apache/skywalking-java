@@ -70,4 +70,5 @@ jobs:
         uses: ./.github/actions/run
         with:
           test_case: ${{ matrix.case }}
-          java_version: jdk17
+          base_image_java: eclipse-temurin:17-alpine
+          base_image_tomcat: tomcat:8.5-jdk17-openjdk

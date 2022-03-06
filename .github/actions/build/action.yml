@@ -19,10 +19,14 @@
 name: "Build Plugin Agent"
 description: "Build Plugin Agent before running a plugin test"
 inputs:
-  java_version:
-    description: "The Java version under which this test case will run"
+  base_image_java:
+    description: "The Java Docker image under which this test case will run"
     required: false
-    default: "jdk8"
+    default: "adoptopenjdk/openjdk8:alpine"
+  base_image_tomcat:
+    description: "The Tomcat Docker image under which this test case will run"
+    required: false
+    default: "tomcat:8.5-jdk8-openjdk"
 runs:
   using: "composite"
   steps:
@@ -58,14 +62,24 @@ runs:
       run: |
         echo "::group::Build Docker Image"
         # Retry one more time due to frequent "maven connection reset"
-        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip -P${{ inputs.java_version }} || \
-        ./mvnw --batch-mode -f test/plugin/pom.xml clean package -Dmaven.test.skip -P${{ inputs.java_version }}
+        ./mvnw --batch-mode -f test/plugin/pom.xml \
+          -Dmaven.test.skip \
+          -Dbase_image_java=${{ inpuits.base_image_java }} \
+          -Dbase_image_tomcat=${{ inpuits.base_image_tomcat }} \
+          -Dcontainer_image_version=1.0.0 \
+          clean package || \
+        ./mvnw --batch-mode -f test/plugin/pom.xml \
+          -Dmaven.test.skip \
+          -Dbase_image_java=${{ inpuits.base_image_java }} \
+          -Dbase_image_tomcat=${{ inpuits.base_image_tomcat }} \
+          -Dcontainer_image_version=1.0.0 \
+          clean package
         echo "::endgroup::"
 
         echo "::group::Save Docker Image"
         mkdir -p test-containers
-        docker save -o test-containers/skywalking-agent-test-jvm-${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-jvm:${{ inputs.java_version }}-1.0.0
-        docker save -o test-containers/skywalking-agent-test-tomcat-${{ inputs.java_version }}-1.0.0.tgz skywalking/agent-test-tomcat:${{ inputs.java_version }}-1.0.0
+        docker save -o test-containers/skywalking-agent-test-jvm-1.0.0.tgz skywalking/agent-test-jvm:1.0.0
+        docker save -o test-containers/skywalking-agent-test-tomcat-1.0.0.tgz skywalking/agent-test-tomcat:1.0.0
         echo "::endgroup::"
     - uses: actions/upload-artifact@v2
       name: Upload Test Containers

@@ -25,6 +25,7 @@
 - feign-pathvar-9.x
 - finagle
 - graphql
+- graphql-16plus
 - grpc-1.x
 - gson-2.8.x
 - guava-cache

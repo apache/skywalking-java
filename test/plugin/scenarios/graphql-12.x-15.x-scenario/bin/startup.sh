@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -jar ${agent_opts} ${home}/../libs/graphql-12.x-scenario.jar &
+java -jar ${agent_opts} ${home}/../libs/graphql-12.x-15.x-scenario.jar &

@@ -40,9 +40,9 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>skywalking/agent-test-jvm:${java.version}-${project.version}</name>
+                            <name>skywalking/agent-test-jvm:${container_image_version}</name>
                             <build>
-                                <from>${base.image.java}</from>
+                                <from>${base_image_java}</from>
                                 <workdir>/usr/local/skywalking/scenario</workdir>
                                 <assembly>
                                     <mode>dir</mode>
@@ -71,32 +71,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>jdk8</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <base.image.java>adoptopenjdk/openjdk8:alpine</base.image.java>
-                <java.version>jdk8</java.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>jdk14</id>
-            <properties>
-                <base.image.java>adoptopenjdk/openjdk14:alpine</base.image.java>
-                <java.version>jdk14</java.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>jdk17</id>
-            <properties>
-                <base.image.java>eclipse-temurin:17-alpine</base.image.java>
-                <java.version>jdk17</java.version>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>

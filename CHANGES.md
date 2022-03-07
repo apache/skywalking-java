@@ -20,6 +20,7 @@ Release Notes.
 * Add vertx-core-4.x plugin.
 * Renamed graphql-12.x-plugin to graphql-12.x-15.x-plugin and graphql-12.x-scenario to graphql-12.x-15.x-scenario.
 * Add graphql-16plus plugin.
+* [Test] Support to configure plugin test base images.
 
 #### Documentation
 * Add link about java agent injector.

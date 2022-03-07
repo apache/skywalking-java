@@ -20,7 +20,8 @@ The test framework provides `JVM-container` and `Tomcat-container` base images i
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK14 and JDK17 as well, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK14 and JDK17 as well in CI, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`. 
+It is supported to custom the base Java docker image by specify `base_image_java`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
 Take the following test projects as examples:
@@ -31,7 +32,8 @@ Take the following test projects as examples:
 
 ### Tomcat-container Image Introduction
 
-[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk14-openjdk` or `tomcat:8.5-jdk17-openjdk` as the base image.
+[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk14-openjdk`, `tomcat:8.5-jdk17-openjdk` as the base image.
+It is supported to custom the base Tomcat docker image by specify `base_image_tomcat`.
 The test case project must be packaged as `project-name.war` by using `mvn package`.
 
 Take the following test project as an example

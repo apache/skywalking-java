@@ -30,7 +30,9 @@ jacoco_home="${home}"/../jacoco
 scenarios_home="${home}/scenarios"
 num_of_testcases=
 
-image_version="jdk8-1.0.0"
+container_image_version="1.0.0"
+base_image_java="adoptopenjdk/openjdk8:alpine"
+base_image_tomcat="tomcat:8.5-jdk8-openjdk"
 jacoco_version="${JACOCO_VERSION:-0.8.6}"
 
 os="$(uname)"
@@ -40,6 +42,9 @@ print_help() {
     echo -e "\t-f, --force_build \t\t do force to build Plugin-Test tools and images"
     echo -e "\t--cleanup, \t\t\t remove the related images and directories"
     echo -e "\t--debug, \t\t\t to save the log files and actualData.yaml"
+    echo -e "\t--container_image_version, \t specify the container docker image version. default 1.0.0"
+    echo -e "\t--base_image_java, \t\t specify the base java image name. the default is \"adoptopenjdk/openjdk8:alpine\""
+    echo -e "\t--base_image_tomcat, \t\t specify the base tomcat image name. the default is \"tomcat:8.5-jdk8-openjdk\""
 }
 
 parse_commandline() {
@@ -56,12 +61,26 @@ parse_commandline() {
             --debug)
                 debug_mode="on";
                 ;;
-            --image_version)
-                image_version="$2"
+            --container_image_version)
+                container_image_version="$2"
                 shift
                 ;;
-            --image_version=*)
-                image_version="${_key##--image_version=}"
+            --container_image_version=*)
+                container_image_version="${_key##--container_image_version=}"
+                ;;
+            --base_image_java)
+                base_image_java="$2"
+                shift
+                ;;
+            --base_image_java=*)
+                base_image_java="${_key##--base_image_java=}"
+                ;;
+            --base_image_tomcat)
+                base_image_tomcat="$2"
+                shift
+                ;;
+            --base_image_tomcat=*)
+                base_image_tomcat="${_key##--base_image_tomcat=}"
                 ;;
             -h|--help)
                 print_help
@@ -157,8 +176,13 @@ sed -i '' '/<\/sourceDirectories>/i\'$'\n''<sourceDirectory>scenarios\/'"$scenar
 sed -i '/<\/sourceDirectories>/i <sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>' ./pom.xml
 
 if [[ "$force_build" == "on" ]]; then
-    profile=$(echo ${image_version} | grep -oE "jdk[0-9]+")
-    ${mvnw} --batch-mode -f ${home}/pom.xml clean package -DskipTests -P${profile}
+    ${mvnw} --batch-mode \
+      -f ${home}/pom.xml \
+      -DskipTests \
+      -Dbase_image_java=${base_image_java} \
+      -Dbase_image_tomcat=${base_image_tomcat} \
+      -Dcontainer_image_version=${container_image_version} \
+      clean package
 fi
 # remove scenario_name into plugin/pom.xml
 sed -i '' '/<sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>/d' ./pom.xml \
@@ -224,7 +248,7 @@ do
         -Dagent.dir=${_agent_home} \
         -Djacoco.home=${jacoco_home} \
         -Ddebug.mode=${debug_mode} \
-        -Ddocker.image.version=${image_version} \
+        -Ddocker.image.version=${container_image_version} \
         ${plugin_runner_helper} 1>${case_work_logs_dir}/helper.log
 
     [[ $? -ne 0 ]] && exitWithMessage "${testcase_name}, generate script failure!"

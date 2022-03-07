@@ -47,7 +47,8 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          java_version: jdk14
+          base_image_java: adoptopenjdk/openjdk14:alpine
+          base_image_tomcat: tomcat:8.5-jdk14-openjdk
 
   test:
     needs: [ build ]
@@ -70,4 +71,4 @@ jobs:
         uses: ./.github/actions/run
         with:
           test_case: ${{ matrix.case }}
-          java_version: jdk14
+

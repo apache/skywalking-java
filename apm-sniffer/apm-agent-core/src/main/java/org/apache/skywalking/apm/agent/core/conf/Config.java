@@ -19,9 +19,7 @@
 package org.apache.skywalking.apm.agent.core.conf;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.logging.core.LogLevel;
 import org.apache.skywalking.apm.agent.core.logging.core.LogOutput;
@@ -38,15 +36,41 @@ public class Config {
     public static class Agent {
         /**
          * Namespace isolates headers in cross process propagation. The HEADER name will be `HeaderName:Namespace`.
+         *
+         * @since 8.10.0 namespace would be added as {@link #SERVICE_NAME} suffix.
          */
+        @Length(20)
         public static String NAMESPACE = "";
 
         /**
-         * Service name is showed in skywalking-ui. Suggestion: set a unique name for each service, service instance
-         * nodes share the same code
+         * Service name is showed on the UI. Suggestion: set a unique name for each service, service instance nodes
+         * share the same code
+         *
+         * @since 8.10.0 ${service name} = [${group name}::]${logic name}|${NAMESPACE}|${CLUSTER}
+         *
+         * The group name, namespace and cluster are optional. Once they are all blank, service name would be the final
+         * name.
          */
         @Length(50)
         public static String SERVICE_NAME = "";
+
+        /**
+         * Cluster defines the physical cluster in a data center or same network segment. In one cluster, IP address
+         * should be unique identify.
+         *
+         * The cluster name would be
+         *
+         * 1. Add as {@link #SERVICE_NAME} suffix.
+         *
+         * 2. Add as exit span's peer, ${CLUSTER} / original peer
+         *
+         * 3. Cross Process Propagation Header's value addressUsedAtClient[index=8] (Target address of this request used
+         * on the client end).
+         *
+         * @since 8.10.0
+         */
+        @Length(20)
+        public static String CLUSTER = "";
 
         /**
          * Authentication active is based on backend setting, see application.yml for more details. For most scenarios,
@@ -61,8 +85,8 @@ public class Config {
         public static int SAMPLE_N_PER_3_SECS = -1;
 
         /**
-         * If the operation name of the first span is included in this set, this segment should be ignored.
-         * Multiple values should be separated by `,`.
+         * If the operation name of the first span is included in this set, this segment should be ignored. Multiple
+         * values should be separated by `,`.
          */
         public static String IGNORE_SUFFIX = ".jpg,.jpeg,.js,.css,.png,.bmp,.gif,.ico,.mp3,.mp4,.html,.svg";
 
@@ -103,16 +127,8 @@ public class Config {
         public volatile static String INSTANCE_NAME = "";
 
         /**
-         * service instance properties e.g. agent.instance_properties[org]=apache
-         * Notice it will be overridden by `agent.instance_properties_json `, if the key duplication.
-         * For example: <code>e.g. agent.instance_properties_json = {"org": "apache-skywalking"}</code>
-         */
-        @Deprecated
-        public static Map<String, String> INSTANCE_PROPERTIES = new HashMap<>();
-
-        /**
-         * service instance properties in json format.
-         * e.g. agent.instance_properties_json = {"org": "apache-skywalking"}
+         * service instance properties in json format. e.g. agent.instance_properties_json = {"org":
+         * "apache-skywalking"}
          */
         public static String INSTANCE_PROPERTIES_JSON = "";
 

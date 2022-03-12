@@ -3,8 +3,9 @@ This is the properties list supported in `agent/config/agent.config`.
 
 property key | Description | **System Environment Variable** | Default 
 ----------- | ---------- | --------- | --------- 
+`agent.service_name` | The service name to represent a logic group providing the same capabilities/logic. Suggestion: set a unique name for every logic service group, service instance nodes share the same code, Max length is 50(UTF-8 char). Optional, once `service_name` follows `<group name>::<logic name>` format, OAP server assigns the group name to the service metadata.| SW_AGENT_NAME | `Your_ApplicationName`
 `agent.namespace` | Namespace isolates headers in cross process propagation. The HEADER name will be `HeaderName:Namespace`. | SW_AGENT_NAMESPACE | Not set 
-`agent.service_name` | The service name to represent a logic group providing the same capabilities/logic. Suggestion: set a unique name for every logic service group, service instance nodes share the same code, Max length is 50(UTF-8 char). Optional, once `service_name` follows `<group name>::<logic name>` format, OAP server assigns the group name to the service metadata.| SW_AGENT_NAME | `Your_ApplicationName` 
+`agent.cluster` | Cluster defines the physical cluster in a data center or same network segment. | SW_AGENT_CLUSTER | Not set
 `agent.sample_n_per_3_secs`|Negative or zero means off, by default.SAMPLE_N_PER_3_SECS means sampling N TraceSegment in 3 seconds tops.|SW_AGENT_SAMPLE|Not set
 `agent.authentication`|Authentication active is based on backend setting, see application.yml for more details.For most scenarios, this needs backend extensions, only basic match auth provided in default implementation.|SW_AGENT_AUTHENTICATION|Not set
 `agent.trace_segment_ref_limit_per_span`|The max number of TraceSegmentRef in a single span to keep memory cost estimatable.|SW_TRACE_SEGMENT_LIMIT |500 

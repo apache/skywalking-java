@@ -45,6 +45,8 @@ import org.apache.skywalking.apm.agent.core.profile.ProfileStatusReference;
 import org.apache.skywalking.apm.agent.core.profile.ProfileTaskExecutionService;
 import org.apache.skywalking.apm.util.StringUtil;
 
+import static org.apache.skywalking.apm.agent.core.conf.Config.Agent.CLUSTER;
+
 /**
  * The <code>TracingContext</code> represents a core tracing logic controller. It build the final {@link
  * TracingContext}, by the stack mechanism, which is similar with the codes work.
@@ -322,7 +324,7 @@ public class TracingContext implements AbstractTracerContext {
      * @see ExitSpan
      */
     @Override
-    public AbstractSpan createExitSpan(final String operationName, final String remotePeer) {
+    public AbstractSpan createExitSpan(final String operationName, String remotePeer) {
         if (isLimitMechanismWorking()) {
             NoopExitSpan span = new NoopExitSpan(remotePeer);
             return push(span);
@@ -334,6 +336,8 @@ public class TracingContext implements AbstractTracerContext {
         if (parentSpan != null && parentSpan.isExit()) {
             exitSpan = parentSpan;
         } else {
+            // Since 8.10.0
+            remotePeer = StringUtil.isEmpty(CLUSTER) ? remotePeer : CLUSTER + "/" + remotePeer;
             final int parentSpanId = parentSpan == null ? -1 : parentSpan.getSpanId();
             exitSpan = new ExitSpan(spanIdGenerator++, parentSpanId, operationName, remotePeer, owner);
             push(exitSpan);

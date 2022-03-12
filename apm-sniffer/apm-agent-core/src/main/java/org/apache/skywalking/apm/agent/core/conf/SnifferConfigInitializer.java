@@ -38,6 +38,8 @@ import org.apache.skywalking.apm.util.ConfigInitializer;
 import org.apache.skywalking.apm.util.PropertyPlaceholderHelper;
 import org.apache.skywalking.apm.util.StringUtil;
 
+import static org.apache.skywalking.apm.agent.core.conf.Constants.SERVICE_NAME_PART_CONNECTOR;
+
 /**
  * The <code>SnifferConfigInitializer</code> initializes all configs in several way.
  */
@@ -98,6 +100,15 @@ public class SnifferConfigInitializer {
 
         if (StringUtil.isEmpty(Config.Agent.SERVICE_NAME)) {
             throw new ExceptionInInitializerError("`agent.service_name` is missing.");
+        } else {
+            if (StringUtil.isNotEmpty(Config.Agent.NAMESPACE) || StringUtil.isNotEmpty(Config.Agent.CLUSTER)) {
+                Config.Agent.SERVICE_NAME = StringUtil.join(
+                    SERVICE_NAME_PART_CONNECTOR,
+                    Config.Agent.SERVICE_NAME,
+                    Config.Agent.NAMESPACE,
+                    Config.Agent.CLUSTER
+                );
+            }
         }
         if (StringUtil.isEmpty(Config.Collector.BACKEND_SERVICE)) {
             throw new ExceptionInInitializerError("`collector.backend_service` is missing.");

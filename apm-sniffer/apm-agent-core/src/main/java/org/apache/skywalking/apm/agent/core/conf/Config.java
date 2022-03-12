@@ -35,9 +35,12 @@ public class Config {
 
     public static class Agent {
         /**
-         * Namespace isolates headers in cross process propagation. The HEADER name will be `HeaderName:Namespace`.
+         * Namespace represents a subnet, such as kubernetes namespace, or 172.10.*.*.
          *
          * @since 8.10.0 namespace would be added as {@link #SERVICE_NAME} suffix.
+         *
+         * Removed namespace isolating headers in cross process propagation. The HEADER name was
+         * `HeaderName:Namespace`.
          */
         @Length(20)
         public static String NAMESPACE = "";

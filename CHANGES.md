@@ -5,7 +5,8 @@ Release Notes.
 8.10.0
 ------------------
 
-* [Important] Make namespace concept as a part of service naming format.
+* [Important] Namespace represents a subnet, such as kubernetes namespace, or 172.10.*.*. Make namespace concept as a
+  part of service naming format.
 * [Important] Add cluster concept, also as a part of service naming format. The cluster name would be
     1. Add as {@link #SERVICE_NAME} suffix.
     2. Add as exit span's peer, ${CLUSTER} / original peer
@@ -31,6 +32,7 @@ Release Notes.
   Recommend `agent.instance_properties_json`.
 * The namespace and cluster would be reported as instance properties, keys are `namespace` and `cluster`. Notice, if
   instance_properties_json includes these two keys, they would be overrided by the agent core.
+* [Breaking Change] Remove the namespace from `cross process propagation` key.
 
 #### Documentation
 

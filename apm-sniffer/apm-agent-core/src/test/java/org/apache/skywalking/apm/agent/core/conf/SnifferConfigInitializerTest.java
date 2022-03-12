@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.agent.core.conf;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -40,8 +42,12 @@ public class SnifferConfigInitializerTest {
      * variables are reverted after the test.
      */
     @Rule
-    public final EnvironmentVariables environmentVariables = new EnvironmentVariables().set("AGENT_SERVICE_NAME", "testAppFromSystemEnv")
-                                                                                       .set("AGENT_COLLECTOR_SERVER", "localhost:11111");
+    public final EnvironmentVariables environmentVariables = new EnvironmentVariables().set(
+                                                                                           "AGENT_SERVICE_NAME", "testAppFromSystemEnv")
+                                                                                       .set(
+                                                                                           "AGENT_COLLECTOR_SERVER",
+                                                                                           "localhost:11111"
+                                                                                       );
 
     @Test
     public void testLoadConfigFromJavaAgentDir() throws AgentPackageNotFoundException, ConfigNotFoundException {
@@ -66,7 +72,7 @@ public class SnifferConfigInitializerTest {
     @Test
     public void testConfigOverriding() throws AgentPackageNotFoundException, ConfigNotFoundException {
         System.setProperty("skywalking.agent.service_name", "testAppFromSystem");
-        System.setProperty("skywalking.agent.instance_properties[key1]", "value1");
+        System.setProperty("skywalking.agent.instance_properties_json", "{\"key1\": \"value1\", \"key2\": \"value2\"}");
         System.setProperty("skywalking.agent.instance_properties[key2]", "value2");
         System.setProperty("skywalking.collector.backend_service", "127.0.0.1:8090");
         String agentOptions = "agent.service_name=testAppFromAgentOptions,logging.level=debug";
@@ -74,8 +80,13 @@ public class SnifferConfigInitializerTest {
         assertThat(Config.Agent.SERVICE_NAME, is("testAppFromAgentOptions"));
         assertThat(Config.Collector.BACKEND_SERVICE, is("127.0.0.1:8090"));
         assertThat(Config.Logging.LEVEL, is(LogLevel.DEBUG));
-        assertThat(Config.Agent.INSTANCE_PROPERTIES.get("key1"), is("value1"));
-        assertThat(Config.Agent.INSTANCE_PROPERTIES.get("key2"), is("value2"));
+        Map<String, String> json = new Gson().fromJson(
+            Config.Agent.INSTANCE_PROPERTIES_JSON,
+            new TypeToken<Map<String, String>>() {
+            }.getType()
+        );
+        assertThat(json.get("key1"), is("value1"));
+        assertThat(json.get("key2"), is("value2"));
     }
 
     @Test
@@ -85,8 +96,14 @@ public class SnifferConfigInitializerTest {
         properties.put("collector.backend_service", "${AGENT_COLLECTOR_SERVER:127.0.0.1:8090}");
         properties.put("logging.level", "INFO");
         PropertyPlaceholderHelper placeholderHelper = PropertyPlaceholderHelper.INSTANCE;
-        properties.put("agent.service_name", placeholderHelper.replacePlaceholders((String) properties.get("agent.service_name"), properties));
-        properties.put("collector.backend_service", placeholderHelper.replacePlaceholders((String) properties.get("collector.backend_service"), properties));
+        properties.put(
+            "agent.service_name",
+            placeholderHelper.replacePlaceholders((String) properties.get("agent.service_name"), properties)
+        );
+        properties.put(
+            "collector.backend_service",
+            placeholderHelper.replacePlaceholders((String) properties.get("collector.backend_service"), properties)
+        );
         ConfigInitializer.initialize(properties, Config.class);
         assertThat(Config.Agent.SERVICE_NAME, is("testAppFromSystemEnv"));
         assertThat(Config.Collector.BACKEND_SERVICE, is("localhost:11111"));

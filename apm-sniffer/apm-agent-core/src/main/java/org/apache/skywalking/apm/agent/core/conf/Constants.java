@@ -24,4 +24,6 @@ public class Constants {
     public static String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
 
     public static String EMPTY_STRING = "";
+
+    public static char SERVICE_NAME_PART_CONNECTOR = '|';
 }

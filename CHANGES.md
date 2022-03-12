@@ -35,6 +35,8 @@ Release Notes.
 #### Documentation
 
 * Add link about java agent injector.
+* Update configurations doc, remove `agent.instance_properties[key]=value`.
+* Update configurations doc, add `agent.cluster` and update `agent.namespace`.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/120?closed=1)
 

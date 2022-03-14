@@ -17,15 +17,16 @@
 
 package test.apache.skywalking.apm.testcase.sc.webflux.projectB.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @RestController
 public class TestAnnotationController {
+
+    @Autowired
+    DbOperate dbOperate;
 
     @RequestMapping("/testcase/annotation/healthCheck")
     public String healthCheck() {
@@ -58,5 +59,13 @@ public class TestAnnotationController {
     @GetMapping("/testcase/annotation/mono/hello")
     public Mono<String> hello(@RequestBody(required = false) String body) {
         return Mono.just("Hello World");
+    }
+
+    @RequestMapping("/testcase/subscribeOn/elastic")
+    public Mono<Mono<String>> boudElastic(@RequestBody(required = false) String body){
+        return Mono.just(body).subscribeOn(Schedulers.elastic()).map(param -> {
+            return dbOperate.selectOne(param);
+        });
+
     }
 }

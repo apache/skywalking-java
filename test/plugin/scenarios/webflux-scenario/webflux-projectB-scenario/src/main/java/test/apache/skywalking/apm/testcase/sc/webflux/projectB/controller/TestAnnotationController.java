@@ -61,8 +61,8 @@ public class TestAnnotationController {
         return Mono.just("Hello World");
     }
 
-    @RequestMapping("/testcase/subscribeOn/elastic")
-    public Mono<Mono<String>> boudElastic(@RequestBody(required = false) String body){
+    @GetMapping("/testcase/subscribeOn/elastic")
+    public Mono<Mono<String>> boudElastic(@RequestParam(required = false) String body){
         return Mono.just(body).subscribeOn(Schedulers.elastic()).map(param -> {
             return dbOperate.selectOne(param);
         });

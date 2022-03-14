@@ -12,11 +12,9 @@ import reactor.core.scheduler.Schedulers;
  */
 @Service
 public class DbOperate {
-
-    public Mono<String> selectOne(String param) {
-        return Mono.just("hello").subscribeOn(Schedulers.elastic()).map(hello -> {
-            return hello + param;
-        });
+    // This method is to generate an annotation trace for testing
+    public String selectOne(String param) {
+        return "hello"+param;
     }
 
 }

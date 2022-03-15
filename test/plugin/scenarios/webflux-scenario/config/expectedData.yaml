@@ -40,6 +40,27 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
+    - operationName: /testcase/subscribeOn/elastic
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: not null
+      endTime: not null
+      componentId: 67
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:18080/testcase/subscribeOn/elastic'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
+        parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: not null, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
     - operationName: /testcase/annotation/error
       parentSpanId: -1
       spanId: 0

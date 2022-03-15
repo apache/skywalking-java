@@ -47,6 +47,7 @@ public class TestController {
         visit("http://" + hostBAddress + "/notFound");
         visit("http://" + hostBAddress + "/testcase/annotation/mono/hello");
         testGet("http://" + hostBAddress + "/testcase/webclient/server");
+        visit("http://" + hostBAddress + "/testcase/subscribeOn/elastic?body=siver");
         return "test";
     }
 

@@ -28,7 +28,6 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
 
-
 public class ScheduledScalarRunMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
@@ -39,7 +38,8 @@ public class ScheduledScalarRunMethodInterceptor implements InstanceMethodsAroun
             final ContextSnapshot contextSnapshot = (ContextSnapshot) storedField;
             ContextManager.continued(contextSnapshot);
         }
-        span.setComponent(ComponentsDefine.SPRING_WEBFLUX);
+        span.setComponent(ComponentsDefine.JDK_THREADING);
+        objInst.setSkyWalkingDynamicField(span);
     }
 
     @Override

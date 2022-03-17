@@ -30,7 +30,6 @@ import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
-
 public class ScheduledScalarRunInstrumentation  extends ClassInstanceMethodsEnhancePluginDefine {
 
     @Override

@@ -32,7 +32,7 @@ import test.apache.skywalking.apm.testcase.sc.webflux.projectB.controller.db.DbO
 public class TestAnnotationController {
 
     @Autowired
-    DbOperate dbOperate;
+    private DbOperate dbOperate;
 
     @RequestMapping("/testcase/annotation/healthCheck")
     public String healthCheck() {
@@ -69,9 +69,11 @@ public class TestAnnotationController {
 
     @GetMapping("/testcase/subscribeOn/elastic")
     public Mono<String> boudElastic(@RequestParam(required = true) String body) {
-        return Mono.just(body).subscribeOn(Schedulers.elastic()).map(param -> {
+        final Mono<String> mono = Mono.just(body).subscribeOn(Schedulers.elastic()).map(param -> {
             return dbOperate.selectOne() + param;
         });
+        final String s = mono.toFuture().get();
+        return mono;
 
     }
 }

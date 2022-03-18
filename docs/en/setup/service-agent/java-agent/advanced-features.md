@@ -2,7 +2,6 @@
 
 * Set the settings through system properties for config file override. Read [setting override](Setting-override.md).
 * Use gRPC TLS to link backend. See [open TLS](TLS.md)
-* Monitor a big cluster by different SkyWalking services. Use [Namespace](Namespace.md) to isolate the context propagation.
 * Set client [token](Token-auth.md) if backend open the token authentication.
 * Application Toolkit, are a collection of libraries, provided by SkyWalking APM. Using them, you have a bridge between your application and SkyWalking APM agent.
     * If you want your codes to interact with SkyWalking agent, including `getting trace id`, `setting tags`, `propagating custom data` etc.. Try [SkyWalking manual APIs](Application-toolkit-trace.md).

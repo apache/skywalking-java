@@ -18,10 +18,9 @@
 
 package org.apache.skywalking.apm.plugin.okhttp.common;
 
-import okhttp3.Request;
+import okhttp3.Call;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
@@ -32,13 +31,12 @@ import java.lang.reflect.Method;
  * the `enqueue` method called and also put the `ContextSnapshot` and `RealCall` instance into the
  * `SkyWalkingDynamicField`.
  */
-public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
+public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
-        EnhancedInstance callbackInstance = (EnhancedInstance) allArguments[0];
-        Request request = (Request) objInst.getSkyWalkingDynamicField();
-        ContextManager.createLocalSpan("Async" + request.url().uri().getPath());
+        final Call call = (Call) objInst;
+        ContextManager.createLocalSpan("Async" + call.request().url().uri().getPath());
 
         /**
          * Here is the process about how to trace the async function.
@@ -50,12 +48,14 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor, Ins
          * 5. Create the exit span by using the `RealCall` instance when `AsyncCall` method called.
          */
 
-        callbackInstance.setSkyWalkingDynamicField(new EnhanceRequiredInfo(objInst, ContextManager.capture()));
+        objInst.setSkyWalkingDynamicField(new EnhanceRequiredInfo(objInst, ContextManager.capture()));
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
+        //help gc
+        objInst.setSkyWalkingDynamicField(null);
         ContextManager.stopSpan();
         return ret;
     }
@@ -64,10 +64,5 @@ public class EnqueueInterceptor implements InstanceMethodsAroundInterceptor, Ins
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
-    }
-
-    @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        objInst.setSkyWalkingDynamicField(allArguments[1]);
     }
 }

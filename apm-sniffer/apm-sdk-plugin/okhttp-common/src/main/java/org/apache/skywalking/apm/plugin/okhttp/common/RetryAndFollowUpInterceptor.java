@@ -21,9 +21,9 @@ package org.apache.skywalking.apm.plugin.okhttp.common;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import okhttp3.Response;
+import okhttp3.Interceptor;
+
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -35,7 +35,13 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
-public class CallInterceptor implements InstanceMethodsAroundInterceptor {
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+/**
+ * {@link RetryAndFollowUpInterceptor} intercept the synchronous http calls by the discovery of okhttp.
+ */
+public class RetryAndFollowUpInterceptor implements InstanceMethodsAroundInterceptor {
 
     private static Field FIELD_HEADERS_OF_REQUEST;
 
@@ -49,19 +55,27 @@ public class CallInterceptor implements InstanceMethodsAroundInterceptor {
         }
     }
 
+    /**
+     * Get the {@link Request} from {@link EnhancedInstance}, then create {@link AbstractSpan} and set host,
+     * port, kind, component, url from {@link Request}. Through the reflection of the way, set the http header
+     * of context data into {@link Request#headers()}.
+     *
+     * @param result change this result, if you want to truncate the method.
+     */
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
-        Request request = (Request) objInst.getSkyWalkingDynamicField();
-        HttpUrl requestUrl = request.url();
-        AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri()
-                .getPath(), requestUrl.host() + ":" + requestUrl.port());
+        Request request = ((Interceptor.Chain) allArguments[0]).request();
+
         ContextCarrier contextCarrier = new ContextCarrier();
-        ContextManager.inject(contextCarrier);
+        HttpUrl requestUrl = request.url();
+        AbstractSpan span = ContextManager.createExitSpan(requestUrl.uri().getPath(), contextCarrier,
+                requestUrl.host() + ":" + requestUrl.port());
         span.setComponent(ComponentsDefine.OKHTTP);
         Tags.HTTP.METHOD.set(span, request.method());
         Tags.URL.set(span, requestUrl.uri().toString());
         SpanLayer.asHttp(span);
+
         if (FIELD_HEADERS_OF_REQUEST != null) {
             Headers.Builder headerBuilder = request.headers().newBuilder();
             CarrierItem next = contextCarrier.items();
@@ -73,6 +87,12 @@ public class CallInterceptor implements InstanceMethodsAroundInterceptor {
         }
     }
 
+    /**
+     * Get the status code from {@link Response}, when status code greater than 400, it means there was some errors in
+     * the server. Finish the {@link AbstractSpan}.
+     *
+     * @param ret the method's original return value.
+     */
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             Object ret) throws Throwable {
@@ -85,13 +105,16 @@ public class CallInterceptor implements InstanceMethodsAroundInterceptor {
                 Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
             }
         }
+
         ContextManager.stopSpan();
+
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
             Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
+        AbstractSpan abstractSpan = ContextManager.activeSpan();
+        abstractSpan.log(t);
     }
 }

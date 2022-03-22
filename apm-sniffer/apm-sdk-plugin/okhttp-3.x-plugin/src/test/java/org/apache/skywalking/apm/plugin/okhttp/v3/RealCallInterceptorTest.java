@@ -25,7 +25,7 @@ import okhttp3.Response;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
-import org.apache.skywalking.apm.plugin.okhttp.common.RealCallInterceptor;
+import org.apache.skywalking.apm.plugin.okhttp.common.RetryAndFollowUpInterceptor;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class RealCallInterceptorTest {
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
 
-    private RealCallInterceptor realCallInterceptor;
+    private RetryAndFollowUpInterceptor retryAndFollowUpInterceptor;
 
     @Mock
     private OkHttpClient client;
@@ -99,23 +99,16 @@ public class RealCallInterceptorTest {
             request.getClass(),
             Boolean.class
         };
-        realCallInterceptor = new RealCallInterceptor();
-    }
-
-    @Test
-    public void testOnConstruct() {
-        realCallInterceptor.onConstruct(enhancedInstance, allArguments);
-        assertThat(enhancedInstance.getSkyWalkingDynamicField(), is(allArguments[1]));
+        retryAndFollowUpInterceptor = new RetryAndFollowUpInterceptor();
     }
 
     @Test
     public void testMethodsAround() throws Throwable {
-        realCallInterceptor.onConstruct(enhancedInstance, allArguments);
-        realCallInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
+        retryAndFollowUpInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
 
         Response response = mock(Response.class);
         when(response.code()).thenReturn(200);
-        realCallInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, response);
+        retryAndFollowUpInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, response);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
@@ -127,12 +120,11 @@ public class RealCallInterceptorTest {
 
     @Test
     public void testMethodsAroundError() throws Throwable {
-        realCallInterceptor.onConstruct(enhancedInstance, allArguments);
-        realCallInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
+        retryAndFollowUpInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
 
         Response response = mock(Response.class);
         when(response.code()).thenReturn(404);
-        realCallInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, response);
+        retryAndFollowUpInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, response);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
@@ -153,14 +145,13 @@ public class RealCallInterceptorTest {
 
     @Test
     public void testException() throws Throwable {
-        realCallInterceptor.onConstruct(enhancedInstance, allArguments);
-        realCallInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
+        retryAndFollowUpInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
 
-        realCallInterceptor.handleMethodException(enhancedInstance, null, allArguments, argumentTypes, new NullPointerException("testException"));
+        retryAndFollowUpInterceptor.handleMethodException(enhancedInstance, null, allArguments, argumentTypes, new NullPointerException("testException"));
 
         Response response = mock(Response.class);
         when(response.code()).thenReturn(200);
-        realCallInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, response);
+        retryAndFollowUpInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, response);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);

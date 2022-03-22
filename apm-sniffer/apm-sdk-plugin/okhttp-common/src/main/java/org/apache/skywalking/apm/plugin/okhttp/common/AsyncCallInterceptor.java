@@ -40,7 +40,7 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
          * The first argument of constructor is not the `real` parameter when the enhance class is an inner class. This
          * is the JDK compiler mechanism.
          */
-        EnhancedInstance realCallInstance = (EnhancedInstance) allArguments[1];
+        EnhancedInstance realCallInstance = (EnhancedInstance) allArguments[0];
         Object enhanceRequireInfo = realCallInstance.getSkyWalkingDynamicField();
 
         objInst.setSkyWalkingDynamicField(enhanceRequireInfo);
@@ -50,6 +50,8 @@ public class AsyncCallInterceptor implements InstanceConstructorInterceptor, Ins
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
         EnhanceRequiredInfo enhanceRequiredInfo = (EnhanceRequiredInfo) objInst.getSkyWalkingDynamicField();
+        //help gc
+        objInst.setSkyWalkingDynamicField(null);
         ContextManager.createLocalSpan("Async/execute");
         ContextManager.continued(enhanceRequiredInfo.getContextSnapshot());
 

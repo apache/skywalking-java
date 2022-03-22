@@ -32,7 +32,9 @@ Release Notes.
   Recommend `agent.instance_properties_json`.
 * The namespace and cluster would be reported as instance properties, keys are `namespace` and `cluster`. Notice, if
   instance_properties_json includes these two keys, they would be overrided by the agent core.
-* [Breaking Change] Remove the namespace from `cross process propagation` key.
+* [Breaking Change] Remove the namespace from `cross process propagation` key. 
+* Fix the bug that okhttp-3.x-plugin  bug that repeated interception when invoke http request synchronously and  intercepting lower-level methods to prevents user  rewriting the request after the interception.
+
 
 #### Documentation
 

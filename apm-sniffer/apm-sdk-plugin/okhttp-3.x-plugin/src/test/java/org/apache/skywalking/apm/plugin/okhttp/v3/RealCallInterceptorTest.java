@@ -19,6 +19,8 @@
 package org.apache.skywalking.apm.plugin.okhttp.v3;
 
 import java.util.List;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -44,11 +46,11 @@ import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
+import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
@@ -67,6 +69,8 @@ public class RealCallInterceptorTest {
     private OkHttpClient client;
 
     private Request request;
+
+    private Interceptor.Chain chain;
 
     private Object[] allArguments;
     private Class[] argumentTypes;
@@ -88,22 +92,25 @@ public class RealCallInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
+        chain = mock(Interceptor.Chain.class);
         request = new Request.Builder().url("http://skywalking.org").build();
+        when(chain.request()).thenReturn(request);
         allArguments = new Object[] {
-            client,
-            request,
-            false
+                chain,
+                request,
+                false
         };
         argumentTypes = new Class[] {
-            client.getClass(),
-            request.getClass(),
-            Boolean.class
+                client.getClass(),
+                request.getClass(),
+                Boolean.class
         };
         retryAndFollowUpInterceptor = new RetryAndFollowUpInterceptor();
     }
 
     @Test
     public void testMethodsAround() throws Throwable {
+
         retryAndFollowUpInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
 
         Response response = mock(Response.class);
@@ -120,6 +127,7 @@ public class RealCallInterceptorTest {
 
     @Test
     public void testMethodsAroundError() throws Throwable {
+
         retryAndFollowUpInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, null);
 
         Response response = mock(Response.class);
@@ -161,6 +169,6 @@ public class RealCallInterceptorTest {
         SpanAssert.assertOccurException(spans.get(0), true);
         SpanAssert.assertLogSize(spans.get(0), 1);
         SpanAssert.assertException(SpanHelper.getLogs(spans.get(0))
-                                             .get(0), NullPointerException.class, "testException");
+                .get(0), NullPointerException.class, "testException");
     }
 }

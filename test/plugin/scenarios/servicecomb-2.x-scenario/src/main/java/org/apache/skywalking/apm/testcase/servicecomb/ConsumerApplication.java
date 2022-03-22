@@ -32,24 +32,8 @@ public class ConsumerApplication {
     public static void main(String[] args) throws Exception {
         try {
             new SpringApplicationBuilder().web(WebApplicationType.NONE).sources(ConsumerApplication.class).run(args);
-           /* registerSchema();
-            RestTemplate template = RestTemplateBuilder.create();
-            String str = template
-                .getForObject("cse://codefirsttest_server/servicecomb/case",
-                    String.class);
-            System.out.println(str);*/
-            /*Log4jUtils.init();
-            BeanUtils.init();*/
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-    public static void registerSchema(){
-        RegistrationManager.INSTANCE.getSwaggerLoader().registerSwagger("codefirst",
-            "codefirsttest_server",
-            "codeFirstSpringmvcHelloClient", CodeFirstPojoConsumerHelloImpl.class);
-        RegistrationManager.INSTANCE.getSwaggerLoader().registerSwagger("codefirst",
-            "codefirsttest_server",
-            "CodeFirstPojoHelloProviderImpl", CodeFirstPojoHelloProviderImpl.class);
     }
 }

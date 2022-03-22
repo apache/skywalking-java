@@ -40,9 +40,6 @@ public class CodeFirstPojoConsumerHelloImpl {
     @RpcReference(microserviceName = "codefirsttest", schemaId = "codeFirstHello")
     private Hello hello;
 
-    @Autowired
-    Person person;
-
     @RequestMapping(path = "/case", method = RequestMethod.GET)
     @ApiOperation(value = "a simple test interface", nickname = "case")
     public String say() {
@@ -58,6 +55,7 @@ public class CodeFirstPojoConsumerHelloImpl {
     @RequestMapping(path = "/case1", method = RequestMethod.GET)
     @ApiOperation(value = "a simple test interface", nickname = "case1")
     public String say1(@RequestParam String name) {
+        Person person = new Person();
         person.setName(name);
         String repo = "hello";
         try {

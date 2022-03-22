@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: servicecomb-1.x-scenario
+- serviceName: servicecomb-2.x-scenario
   segmentSize: gt 2
   segments:
   - segmentId: not null
@@ -32,7 +32,7 @@ segmentItems:
       tags:
       - {key: url, value: /sayHi}
       refs:
-      - {parentEndpoint: codefirst.codeFirstSpringmvcHelloClient.yaml.say, networkAddress: not
+      - {parentEndpoint: codefirst.codeFirstSpringmvcHelloClient.say, networkAddress: not
           null, refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not
           null, parentServiceInstance: not null, parentService: not null, traceId: not
           null}
@@ -52,7 +52,7 @@ segmentItems:
       tags:
       - {key: url, value: /sayHi}
       skipAnalysis: 'false'
-    - operationName: codefirst.codeFirstSpringmvcHelloClient.yaml.say
+    - operationName: codefirst.codeFirstSpringmvcHelloClient.say
       parentSpanId: -1
       spanId: 0
       spanLayer: RPCFramework

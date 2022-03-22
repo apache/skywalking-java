@@ -34,12 +34,11 @@ server:
   port: 8080
 
 # java-chassis configurations
-
-APPLICATION_ID: codefirst
-service_description:
-  name: codefirsttest
-  version: 0.0.1
 servicecomb:
+  service:
+    application: codefirst
+    name: codefirsttest
+    version: 0.0.1
   rest:
     address: 0.0.0.0:8080
   handler:

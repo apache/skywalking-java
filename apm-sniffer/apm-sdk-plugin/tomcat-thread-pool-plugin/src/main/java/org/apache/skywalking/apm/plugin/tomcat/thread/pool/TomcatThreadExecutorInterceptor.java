@@ -20,12 +20,12 @@ package org.apache.skywalking.apm.plugin.tomcat.thread.pool;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 
 public class TomcatThreadExecutorInterceptor implements InstanceConstructorInterceptor {
 

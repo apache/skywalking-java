@@ -31,5 +31,16 @@
     <name>tomcat-thread-pool-plugin</name>
     <url>http://maven.apache.org</url>
 
+    <properties>
+        <tomcat.version>8.0.36</tomcat.version>
+    </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

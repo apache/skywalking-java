@@ -26,7 +26,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 public class TomcatThreadExecutorInterceptor implements InstanceConstructorInterceptor {
 
     private static final String METER_NAME = "thread_pool";
-    private static final String METRIC_POOL_NAME_TAG_NAME = "metric_type";
+    private static final String METRIC_POOL_NAME_TAG_NAME = "pool_name";
     private static final String THREAD_POOL_NAME = "tomcat_execute_pool";
     private static final String METRIC_TYPE_TAG_NAME = "metric_type";
 

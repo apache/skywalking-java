@@ -527,9 +527,9 @@ public class TracingContext implements AbstractTracerContext {
      */
     private AbstractSpan push(AbstractSpan span) {
         if (primaryEndpoint == null) {
-            primaryEndpoint = new PrimaryEndpoint(span.isEntry(), span.getOperationName());
+            primaryEndpoint = new PrimaryEndpoint(span.isEntry(), span);
         } else {
-            primaryEndpoint.set(span.isEntry(), span.getOperationName());
+            primaryEndpoint.set(span.isEntry(), span);
         }
         activeSpanStack.addLast(span);
         this.extensionContext.handle(span);
@@ -580,20 +580,24 @@ public class TracingContext implements AbstractTracerContext {
     private class PrimaryEndpoint {
         private boolean isEntry;
         @Getter
-        private String name;
+        private AbstractSpan span;
 
-        private PrimaryEndpoint(final boolean isEntry, final String name) {
+        private PrimaryEndpoint(final boolean isEntry, final AbstractSpan span) {
             this.isEntry = isEntry;
-            this.name = name;
+            this.span = span;
         }
 
         /**
          * Set endpoint name according to priority
          */
-        private void set(final boolean isEntry, final String name) {
+        private void set(final boolean isEntry, final AbstractSpan span) {
             if (!this.isEntry && isEntry) {
-                this.name = name;
+                this.span = span;
             }
+        }
+
+        private String getName() {
+            return span.getOperationName();
         }
     }
 }

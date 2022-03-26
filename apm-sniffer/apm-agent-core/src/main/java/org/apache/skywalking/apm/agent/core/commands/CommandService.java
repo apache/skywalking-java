@@ -71,8 +71,6 @@ public class CommandService implements BootService, Runnable {
 
                 commandExecutorService.execute(command);
                 serialNumberCache.add(command.getSerialNumber());
-            } catch (InterruptedException e) {
-                LOGGER.error(e, "Failed to take commands.");
             } catch (CommandExecutionException e) {
                 LOGGER.error(e, "Failed to execute command[{}].", e.command().getCommand());
             } catch (Throwable e) {

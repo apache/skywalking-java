@@ -75,6 +75,7 @@ public class CommandService implements BootService, Runnable {
                 LOGGER.error(e, "Failed to take commands.");
                 // restore the interrupted status
                 Thread.currentThread().interrupt();
+                break;
             } catch (CommandExecutionException e) {
                 LOGGER.error(e, "Failed to execute command[{}].", e.command().getCommand());
             } catch (Throwable e) {

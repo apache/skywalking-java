@@ -21,11 +21,12 @@ package org.apache.skywalking.apm.toolkit.opentracing;
 import io.opentracing.SpanContext;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ByteBufferContext implements SpanContext {
-    static final Charset CHARSET = Charset.forName("UTF-8");
+    static final Charset CHARSET = StandardCharsets.UTF_8;
 
     static final byte NO_ENTRY = 0;
     static final byte ENTRY = 1;

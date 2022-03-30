@@ -38,10 +38,18 @@ import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine
  * </p>
  */
 public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final String NETTY_ROUTING_FILTERED_ATTR = NettyRoutingFilterInterceptor.class.getName() + ".alreadyFiltered";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
+        ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
+        if (isAlreadyFiltered(exchange)) {
+            return;
+        }
+
+        setAlreadyFiltered(exchange);
+
         EnhancedInstance enhancedInstance = getInstance(allArguments[0]);
 
         AbstractSpan span = ContextManager.createLocalSpan("SpringCloudGateway/RoutingFilter");
@@ -49,6 +57,14 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
             ContextManager.continued((ContextSnapshot) enhancedInstance.getSkyWalkingDynamicField());
         }
         span.setComponent(SPRING_CLOUD_GATEWAY);
+    }
+
+    private static void setAlreadyFiltered(ServerWebExchange exchange) {
+        exchange.getAttributes().put(NETTY_ROUTING_FILTERED_ATTR, true);
+    }
+
+    private static boolean isAlreadyFiltered(ServerWebExchange exchange) {
+        return exchange.getAttributeOrDefault(NETTY_ROUTING_FILTERED_ATTR, false);
     }
 
     private EnhancedInstance getInstance(Object o) {

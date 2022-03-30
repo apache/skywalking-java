@@ -59,7 +59,7 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
         span.setComponent(SPRING_CLOUD_GATEWAY);
     }
 
-    private static void setAlreadyFiltered(ServerWebExchange exchange) {
+    private static void isTraced(ServerWebExchange exchange) {
         exchange.getAttributes().put(NETTY_ROUTING_FILTERED_ATTR, true);
     }
 

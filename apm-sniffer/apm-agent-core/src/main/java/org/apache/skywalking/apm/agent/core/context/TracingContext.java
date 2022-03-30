@@ -78,12 +78,11 @@ public class TracingContext implements AbstractTracerContext {
      * LinkedList#getLast()} instead of {@link #pop()}, {@link #push(AbstractSpan)}, {@link #peek()}
      */
     private LinkedList<AbstractSpan> activeSpanStack = new LinkedList<>();
+
     /**
-     * @since 7.0.0 SkyWalking support lazy injection through {@link ExitTypeSpan#inject(ContextCarrier)}. Due to that,
-     * the {@link #activeSpanStack} could be blank by then, this is a pointer forever to the first span, even the main
-     * thread tracing has been finished.
+     * @since 8.10.0 replace the removed "firstSpan"(before 8.10.0) reference. see {@link PrimaryEndpoint} for more details.
      */
-    private AbstractSpan firstSpan = null;
+    private PrimaryEndpoint primaryEndpoint = null;
 
     /**
      * A counter for the next span.
@@ -175,7 +174,7 @@ public class TracingContext implements AbstractTracerContext {
         carrier.setSpanId(exitSpan.getSpanId());
         carrier.setParentService(Config.Agent.SERVICE_NAME);
         carrier.setParentServiceInstance(Config.Agent.INSTANCE_NAME);
-        carrier.setParentEndpoint(first().getOperationName());
+        carrier.setParentEndpoint(primaryEndpoint.getName());
         carrier.setAddressUsedAtClient(peer);
 
         this.correlationContext.inject(carrier);
@@ -212,7 +211,7 @@ public class TracingContext implements AbstractTracerContext {
             segment.getTraceSegmentId(),
             activeSpan().getSpanId(),
             getPrimaryTraceId(),
-            first().getOperationName(),
+            primaryEndpoint.getName(),
             this.correlationContext,
             this.extensionContext
         );
@@ -527,8 +526,10 @@ public class TracingContext implements AbstractTracerContext {
      * @param span the {@code span} to push
      */
     private AbstractSpan push(AbstractSpan span) {
-        if (firstSpan == null) {
-            firstSpan = span;
+        if (primaryEndpoint == null) {
+            primaryEndpoint = new PrimaryEndpoint(span);
+        } else {
+            primaryEndpoint.set(span);
         }
         activeSpanStack.addLast(span);
         this.extensionContext.handle(span);
@@ -543,10 +544,6 @@ public class TracingContext implements AbstractTracerContext {
             return null;
         }
         return activeSpanStack.getLast();
-    }
-
-    private AbstractSpan first() {
-        return firstSpan;
     }
 
     private boolean isLimitMechanismWorking() {
@@ -571,5 +568,34 @@ public class TracingContext implements AbstractTracerContext {
 
     public ProfileStatusReference profileStatus() {
         return this.profileStatus;
+    }
+
+    /**
+     * Primary endpoint name is used for endpoint dependency. The name pick policy according to priority is
+     * 1. Use the first entry span's operation name
+     * 2. Use the first span's operation name
+     *
+     * @since 8.10.0
+     */
+    private class PrimaryEndpoint {
+        @Getter
+        private AbstractSpan span;
+
+        private PrimaryEndpoint(final AbstractSpan span) {
+            this.span = span;
+        }
+
+        /**
+         * Set endpoint name according to priority
+         */
+        private void set(final AbstractSpan span) {
+            if (!this.span.isEntry() && span.isEntry()) {
+                this.span = span;
+            }
+        }
+
+        private String getName() {
+            return span.getOperationName();
+        }
     }
 }

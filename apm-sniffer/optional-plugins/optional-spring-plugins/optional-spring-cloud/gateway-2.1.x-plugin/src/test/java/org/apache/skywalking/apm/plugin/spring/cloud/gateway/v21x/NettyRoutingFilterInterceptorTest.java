@@ -58,8 +58,8 @@ public class NettyRoutingFilterInterceptorTest {
     public void setUp() throws Exception {
     }
 
-    private static final String NETTY_ROUTING_FILTERED_ATTR =
-            NettyRoutingFilterInterceptor.class.getName() + ".alreadyFiltered";
+    private static final String NETTY_ROUTING_FILTER_TRACED_ATTR =
+            NettyRoutingFilterInterceptor.class.getName() + ".isTraced";
 
     private final ServerWebExchange exchange = new ServerWebExchange() {
         Map<String, Object> attributes = new HashMap<>();
@@ -145,16 +145,16 @@ public class NettyRoutingFilterInterceptorTest {
     };
 
     @Test
-    public void testAlreadyFiltered() throws Throwable {
+    public void testIsTraced() throws Throwable {
         interceptor.beforeMethod(null, null, new Object[]{exchange}, null, null);
         interceptor.afterMethod(null, null, null, null, null);
-        Assert.assertEquals(exchange.getAttributes().get(NETTY_ROUTING_FILTERED_ATTR), true);
+        Assert.assertEquals(exchange.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
         Assert.assertNotNull(ContextManager.activeSpan());
 
         ContextManager.stopSpan();
 
         interceptor.beforeMethod(null, null, new Object[]{exchange}, null, null);
         interceptor.afterMethod(null, null, null, null, null);
-        Assert.assertEquals(exchange.getAttributes().get(NETTY_ROUTING_FILTERED_ATTR), true);
+        Assert.assertEquals(exchange.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
     }
 }

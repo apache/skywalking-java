@@ -24,8 +24,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
+import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
+import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -43,11 +48,18 @@ import reactor.core.publisher.Mono;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
 public class NettyRoutingFilterInterceptorTest {
+    private final NettyRoutingFilterInterceptor interceptor = new NettyRoutingFilterInterceptor();
+    @Rule
+    public AgentServiceRule serviceRule = new AgentServiceRule();
+    @SegmentStoragePoint
+    private SegmentStorage segmentStorage;
+
+    @Before
+    public void setUp() throws Exception {
+    }
 
     private static final String NETTY_ROUTING_FILTERED_ATTR =
             NettyRoutingFilterInterceptor.class.getName() + ".alreadyFiltered";
-
-    private final NettyRoutingFilterInterceptor interceptor = new NettyRoutingFilterInterceptor();
 
     private final ServerWebExchange exchange = new ServerWebExchange() {
         Map<String, Object> attributes = new HashMap<>();

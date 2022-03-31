@@ -34,6 +34,7 @@ Release Notes.
   instance_properties_json includes these two keys, they would be overrided by the agent core.
 * [Breaking Change] Remove the namespace from `cross process propagation` key.
 * Make sure the parent endpoint in tracing context from existing first ENTRY span, rather than first span only.
+* Fix the bug that maybe causing memory leak and repeated traceId when use gateway-2.1.x-plugin or gateway-3.x-plugin.
 
 #### Documentation
 

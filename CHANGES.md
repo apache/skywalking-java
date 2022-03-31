@@ -13,6 +13,7 @@ Release Notes.
     3. Cross Process Propagation Header's value addressUsedAtClient[index=8] (Target address of this request used on the
        client end).
 * Support Undertow thread pool metrics collecting.
+* support record the real result of kafka message processing at the business side.
 * Support Tomcat thread pool metric collect.
 * Remove plugin for ServiceComb Java Chassis 0.x
 * Add Guava EventBus plugin.

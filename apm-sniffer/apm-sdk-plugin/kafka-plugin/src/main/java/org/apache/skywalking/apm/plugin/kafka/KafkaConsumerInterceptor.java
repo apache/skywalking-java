@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.kafka;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.header.Header;
@@ -33,9 +35,11 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.kafka.define.Constants;
 import org.apache.skywalking.apm.plugin.kafka.define.KafkaContext;
+import org.apache.skywalking.apm.toolkit.trace.msg.TraceMsg;
 
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +48,17 @@ public class KafkaConsumerInterceptor implements InstanceMethodsAroundIntercepto
 
     public static final String OPERATE_NAME_PREFIX = "Kafka/";
     public static final String CONSUMER_OPERATE_NAME = "/Consumer/";
+    private static final Gson GSON = new Gson();
+
+    private static boolean TRACE_MSG_OPEN;
+
+    public KafkaConsumerInterceptor() {
+        try {
+            Class.forName("org.apache.skywalking.apm.toolkit.trace.msg.TraceMsg");
+            TRACE_MSG_OPEN = true;
+        } catch (ClassNotFoundException exception) {
+        }
+    }
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -83,14 +98,21 @@ public class KafkaConsumerInterceptor implements InstanceMethodsAroundIntercepto
             for (List<ConsumerRecord<?, ?>> consumerRecords : records.values()) {
                 for (ConsumerRecord<?, ?> record : consumerRecords) {
                     ContextCarrier contextCarrier = new ContextCarrier();
-
+                    HashMap<String, String> traceDataMap = new HashMap<>();
                     CarrierItem next = contextCarrier.items();
                     while (next.hasNext()) {
                         next = next.next();
                         Iterator<Header> iterator = record.headers().headers(next.getHeadKey()).iterator();
                         if (iterator.hasNext()) {
-                            next.setHeadValue(new String(iterator.next().value(), StandardCharsets.UTF_8));
+                            String headValue = new String(iterator.next().value(), StandardCharsets.UTF_8);
+                            next.setHeadValue(headValue);
+                            if (TRACE_MSG_OPEN) {
+                                traceDataMap.put(next.getHeadKey(), headValue);
+                            }
                         }
+                    }
+                    if (TRACE_MSG_OPEN) {
+                        injectIntoTraceMessage(record.value(), traceDataMap);
                     }
                     ContextManager.extract(contextCarrier);
                 }
@@ -99,6 +121,15 @@ public class KafkaConsumerInterceptor implements InstanceMethodsAroundIntercepto
         }
         return ret;
     }
+
+
+    private void injectIntoTraceMessage(Object object, Map<String, String> traceDataMap) {
+        if (object instanceof TraceMsg) {
+            TraceMsg traceMsg = (TraceMsg) object;
+            traceMsg.setTraceData(GSON.toJson(traceDataMap));
+        }
+    }
+
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,

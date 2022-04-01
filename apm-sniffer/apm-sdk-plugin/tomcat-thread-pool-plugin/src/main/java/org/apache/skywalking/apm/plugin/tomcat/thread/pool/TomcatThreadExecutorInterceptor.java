@@ -18,37 +18,40 @@
 
 package org.apache.skywalking.apm.plugin.tomcat.thread.pool;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 
 public class TomcatThreadExecutorInterceptor implements InstanceConstructorInterceptor {
 
+    private static final String METER_NAME = "thread_pool";
+    private static final String METRIC_POOL_NAME_TAG_NAME = "pool_name";
     private static final String THREAD_POOL_NAME = "tomcat_execute_pool";
-    private static final Map<String, Function<ThreadPoolExecutor, Supplier<Double>>> METRIC_MAP = new HashMap<String, Function<ThreadPoolExecutor, Supplier<Double>>>() {{
-        put("core_pool_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getCorePoolSize());
-        put("max_pool_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getMaximumPoolSize());
-        put("pool_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getPoolSize());
-        put("queue_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getQueue().size());
-        put("active_size", (ThreadPoolExecutor threadPoolExecutor) -> () -> (double) threadPoolExecutor.getActiveCount());
-    }};
+    private static final String METRIC_TYPE_TAG_NAME = "metric_type";
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) objInst;
-        buildThreadPoolMeterMetric(threadPoolExecutor);
-    }
-
-    private void buildThreadPoolMeterMetric(ThreadPoolExecutor threadPoolExecutor) {
-        String threadPoolMeterName = "thread_pool";
-        String poolNameTag = "pool_name";
-        String metricTypeTag = "metric_type";
-        METRIC_MAP.forEach((key, value) -> MeterFactory.gauge(threadPoolMeterName, value.apply(threadPoolExecutor))
-                .tag(poolNameTag, THREAD_POOL_NAME).tag(metricTypeTag, key).build());
+        MeterFactory.gauge(METER_NAME, () -> (double) threadPoolExecutor.getCorePoolSize())
+                    .tag(METRIC_POOL_NAME_TAG_NAME, THREAD_POOL_NAME)
+                    .tag(METRIC_TYPE_TAG_NAME, "core_pool_size")
+                    .build();
+        MeterFactory.gauge(METER_NAME, () -> (double) threadPoolExecutor.getMaximumPoolSize())
+                    .tag(METRIC_POOL_NAME_TAG_NAME, THREAD_POOL_NAME)
+                    .tag(METRIC_TYPE_TAG_NAME, "max_pool_size")
+                    .build();
+        MeterFactory.gauge(METER_NAME, () -> (double) threadPoolExecutor.getPoolSize())
+                    .tag(METRIC_POOL_NAME_TAG_NAME, THREAD_POOL_NAME)
+                    .tag(METRIC_TYPE_TAG_NAME, "pool_size")
+                    .build();
+        MeterFactory.gauge(METER_NAME, () -> (double) threadPoolExecutor.getQueue().size())
+                    .tag(METRIC_POOL_NAME_TAG_NAME, THREAD_POOL_NAME)
+                    .tag(METRIC_TYPE_TAG_NAME, "queue_size")
+                    .build();
+        MeterFactory.gauge(METER_NAME, () -> (double) threadPoolExecutor.getActiveCount())
+                    .tag(METRIC_POOL_NAME_TAG_NAME, THREAD_POOL_NAME)
+                    .tag(METRIC_TYPE_TAG_NAME, "active_size")
+                    .build();
     }
 }

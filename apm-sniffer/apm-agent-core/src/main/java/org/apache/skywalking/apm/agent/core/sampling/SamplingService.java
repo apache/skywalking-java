@@ -18,8 +18,6 @@
 
 package org.apache.skywalking.apm.agent.core.sampling;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -54,14 +52,6 @@ public class SamplingService implements BootService {
 
     private SamplingRateWatcher samplingRateWatcher;
 
-    private volatile boolean avgCpuLoadLimitOn = false;
-
-    private volatile OperatingSystemMXBean operatingSystemMXBean;
-
-    private volatile int processorNum;
-
-    private volatile double avgCpuLoad;
-
     @Override
     public void prepare() {
     }
@@ -73,16 +63,6 @@ public class SamplingService implements BootService {
                                .registerAgentConfigChangeWatcher(samplingRateWatcher);
 
         handleSamplingRateChanged();
-
-        // todo CDS
-        if (Config.Agent.SAMPLE_AVG_CPU_LOAD_LIMIT > 0) {
-            avgCpuLoadLimitOn = true;
-            operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-            processorNum = operatingSystemMXBean.getAvailableProcessors();
-            Executors.newSingleThreadScheduledExecutor(new DefaultNamedThreadFactory("SamplingService refreshAvgCpuLoad"))
-                    .scheduleAtFixedRate(new RunnableWithExceptionProtection(this::refreshAvgCpuLoad, t -> LOGGER.error("SamplingService refreshAvgCpuLoad unexpected exception.", t)),
-                            0, 1, TimeUnit.SECONDS);
-        }
     }
 
     @Override
@@ -105,12 +85,6 @@ public class SamplingService implements BootService {
      * @return true if should sample this trace segment. When sampling mechanism is on, return true if sample limited is not reached.
      */
     public boolean trySampling(String operationName) {
-        if (avgCpuLoadLimitOn) {
-            if (avgCpuLoad > Config.Agent.SAMPLE_AVG_CPU_LOAD_LIMIT) {
-                return false;
-            }
-        }
-
         if (on) {
             int factor = samplingFactorHolder.get();
             if (factor < samplingRateWatcher.getSamplingRate()) {
@@ -162,9 +136,4 @@ public class SamplingService implements BootService {
             }
         }
     }
-
-    private void refreshAvgCpuLoad() {
-        avgCpuLoad = operatingSystemMXBean.getSystemLoadAverage() / processorNum;
-    }
-
 }

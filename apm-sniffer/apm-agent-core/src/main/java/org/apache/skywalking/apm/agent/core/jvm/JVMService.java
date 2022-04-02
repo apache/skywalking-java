@@ -48,6 +48,8 @@ public class JVMService implements BootService, Runnable {
     private volatile ScheduledFuture<?> sendMetricFuture;
     private JVMMetricsSender sender;
 
+    private volatile double cpuUsagePercent;
+
     @Override
     public void prepare() throws Throwable {
         sender = ServiceManager.INSTANCE.findService(JVMMetricsSender.class);
@@ -104,8 +106,16 @@ public class JVMService implements BootService, Runnable {
             jvmBuilder.setClazz(ClassProvider.INSTANCE.getClassMetrics());
 
             sender.offer(jvmBuilder.build());
+
+            // refresh cpu usage percent
+            cpuUsagePercent = jvmBuilder.getCpu().getUsagePercent();
         } catch (Exception e) {
             LOGGER.error(e, "Collect JVM info fail.");
         }
     }
+
+    public double getCpuUsagePercent() {
+        return this.cpuUsagePercent;
+    }
+
 }

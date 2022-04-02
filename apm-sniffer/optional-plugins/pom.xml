@@ -44,6 +44,7 @@
     <modules>
         <module>optional-spring-plugins</module>
         <module>trace-ignore-plugin</module>
+        <module>trace-cpu-limit-plugin</module>
         <module>gson-2.8.x-plugin</module>
         <module>zookeeper-3.4.x-plugin</module>
         <module>customize-enhance-plugin</module>

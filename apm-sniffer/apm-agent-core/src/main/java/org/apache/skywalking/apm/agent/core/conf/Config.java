@@ -87,8 +87,6 @@ public class Config {
          */
         public static int SAMPLE_N_PER_3_SECS = -1;
 
-        public static double SAMPLE_AVG_CPU_LOAD_LIMIT = -1;
-
         /**
          * If the operation name of the first span is included in this set, this segment should be ignored. Multiple
          * values should be separated by `,`.

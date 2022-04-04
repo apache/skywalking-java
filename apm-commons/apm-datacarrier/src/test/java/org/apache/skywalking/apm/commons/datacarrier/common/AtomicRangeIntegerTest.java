@@ -49,19 +49,22 @@ public class AtomicRangeIntegerTest {
     @Test
     @Benchmark
     public void testGetAndIncrementV1Performance() {
-        ATOMIC_V1.getAndIncrement();
+        final int result = ATOMIC_V1.getAndIncrement();
+        Assert.assertTrue(result >= 0 && result <= 100);
     }
 
     @Test
     @Benchmark
     public void testGetAndIncrementV2Performance() {
-        ATOMIC_V2.getAndIncrement();
+        final int result = ATOMIC_V2.getAndIncrement();
+        Assert.assertTrue(result >= 0 && result <= 100);
     }
 
     @Test
     @Benchmark
     public void testGetAndIncrementV3Performance() {
-        ATOMIC_V3.getAndIncrement();
+        final int result = ATOMIC_V3.getAndIncrement();
+        Assert.assertTrue(result >= 0 && result <= 100);
     }
 
     public static void main(String[] args) throws RunnerException {

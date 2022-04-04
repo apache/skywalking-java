@@ -29,7 +29,7 @@ public class SkywalkingCounterTest {
 
     @Test
     public void testCounter() {
-        // Creating a simple micrometer counter
+        // Creating a simplified micrometer counter
         final SkywalkingMeterRegistry registry = new SkywalkingMeterRegistry();
         Counter counter = registry.counter("test_counter", "skywalking", "test");
 

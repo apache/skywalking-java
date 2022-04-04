@@ -169,7 +169,7 @@ public class ContextManager implements BootService {
     }
 
     /**
-     * If not sure has the active span, use this method, will be causing NPE when has no active span, use
+     * Using this method will cause NPE if active span does not exist. If one is not sure whether there is an active span, use
      * ContextManager::isActive method to determine whether there has the active span.
      */
     public static AbstractSpan activeSpan() {

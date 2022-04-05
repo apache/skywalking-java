@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.toolkit.meter;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -27,8 +28,8 @@ public class HistogramTest {
     @Test
     public void testBuild() {
         // normal
-        MeterFactory.histogram("test_histogram1").steps(Arrays.asList(1d, 5d, 10d)).minValue(-10)
-            .tag("k1", "v1").build();
+        Assert.assertNotNull(MeterFactory.histogram("test_histogram1").steps(Arrays.asList(1d, 5d, 10d)).minValue(-10)
+                .tag("k1", "v1").build());
     }
 
 }

@@ -18,13 +18,14 @@
 
 package org.apache.skywalking.apm.toolkit.meter;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class CounterTest {
 
     @Test
     public void testBuild() {
-        MeterFactory.counter("test_counter").tag("k1", "v1").build();
+        Assert.assertNotNull(MeterFactory.counter("test_counter").tag("k1", "v1").build());
     }
 
 }

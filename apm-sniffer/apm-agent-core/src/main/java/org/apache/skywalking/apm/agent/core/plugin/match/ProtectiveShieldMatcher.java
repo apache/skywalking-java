@@ -29,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
  * So I build this protective shield by a nested matcher. When the origin matcher(s) can't resolve the type, the
  * SkyWalking agent ignores this types.
  * <p>
- * Notice: this ignore mechanism may miss some instrumentations, but at most cases, it's same. If missing happens,
+ * Notice: this ignores mechanism may miss some instrumentation, but at most cases, it's same. If missing happens,
  * please pay attention to the WARNING logs.
  */
 public class ProtectiveShieldMatcher<T> extends ElementMatcher.Junction.AbstractBase<T> {

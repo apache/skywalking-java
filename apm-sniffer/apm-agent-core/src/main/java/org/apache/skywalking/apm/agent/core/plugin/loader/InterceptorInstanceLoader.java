@@ -40,7 +40,7 @@ public class InterceptorInstanceLoader {
 
     /**
      * Load an instance of interceptor, and keep it singleton. Create {@link AgentClassLoader} for each
-     * targetClassLoader, as an extend classloader. It can load interceptor classes from plugins, activations folders.
+     * targetClassLoader, as an extensible classloader. It can load interceptor classes from plugins, activations folders.
      *
      * @param className         the interceptor class, which is expected to be found
      * @param targetClassLoader the class loader for current application context

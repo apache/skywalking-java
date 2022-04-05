@@ -32,7 +32,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideC
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
 
 /**
- * The actual byte-buddy's interceptor to intercept class instance methods. In this class, it provide a bridge between
+ * The actual byte-buddy's interceptor to intercept class instance methods. In this class, it provides a bridge between
  * byte-buddy and sky-walking plugin.
  */
 public class InstMethodsInterV2WithOverrideArgs {

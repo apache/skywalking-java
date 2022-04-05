@@ -31,7 +31,7 @@ import org.apache.skywalking.apm.network.trace.component.command.ProfileTaskComm
 /**
  * Command executor service, acts like a routing executor that controls all commands' execution, is responsible for
  * managing all the mappings between commands and their executors, one can simply invoke {@link #execute(BaseCommand)}
- * and it will routes the command to corresponding executor.
+ * and it will route the command to corresponding executor.
  * <p>
  * Registering command executor for new command in {@link #commandExecutorMap} is required to support new command.
  */

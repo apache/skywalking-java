@@ -94,7 +94,7 @@ public class Config {
         public static String IGNORE_SUFFIX = ".jpg,.jpeg,.js,.css,.png,.bmp,.gif,.ico,.mp3,.mp4,.html,.svg";
 
         /**
-         * The max number of TraceSegmentRef in a single span to keep memory cost estimatable.
+         * The max number of TraceSegmentRef in a single span to keep memory cost estimable.
          */
         public static int TRACE_SEGMENT_REF_LIMIT_PER_SPAN = 500;
 
@@ -225,7 +225,7 @@ public class Config {
 
     public static class Profile {
         /**
-         * If true, skywalking agent will enable profile when user create a new profile task. Otherwise disable
+         * If true, skywalking agent will enable profile when user create a new profile task. Otherwise, disable
          * profile.
          */
         public static boolean ACTIVE = true;
@@ -310,7 +310,7 @@ public class Config {
 
         /**
          * The max history log files. When rollover happened, if log files exceed this number, then the oldest file will
-         * be delete. Negative or zero means off, by default.
+         * be deleted. Negative or zero means off, by default.
          */
         public static int MAX_HISTORY_FILES = -1;
 

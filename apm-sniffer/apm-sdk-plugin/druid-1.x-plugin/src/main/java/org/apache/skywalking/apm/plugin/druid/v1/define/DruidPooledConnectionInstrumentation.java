@@ -31,7 +31,8 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 /**
  * Druid is a database connection pool from Alibaba inc.
  * <p>
- * Druid use DruidPooledConnection which is the delegating implementation of Connection. All the methods from the Connection interface simply check to see that the Connection is active.
+ * Druid use DruidPooledConnection which is the delegating implementation of Connection. All the
+ * methods from the Connection interface simply check to see that the Connection is active.
  * DruidPooledConnection#close() close/return connection.
  */
 public class DruidPooledConnectionInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {

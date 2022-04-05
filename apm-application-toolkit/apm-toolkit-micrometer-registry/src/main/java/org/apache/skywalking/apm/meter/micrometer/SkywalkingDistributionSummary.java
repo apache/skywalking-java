@@ -47,7 +47,7 @@ public class SkywalkingDistributionSummary extends AbstractDistributionSummary {
     private final Counter sum;
 
     /**
-     * MaxAmount in this summary
+     * Max amount in this summary
      */
     private final Gauge max;
     private final DoubleAccumulator maxAdder;

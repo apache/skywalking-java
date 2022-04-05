@@ -34,7 +34,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
  * org.apache.http.impl.nio.client.MinimalHttpAsyncClient#execute(HttpAsyncRequestProducer, HttpAsyncResponseConsumer,
  * HttpContext, FutureCallback) and InternalHttpAsyncClient#execute(HttpAsyncRequestProducer, HttpAsyncResponseConsumer,
  * HttpContext, FutureCallback) can be instrumented for single request.pipeline is not support now for some complex
- * situation.this is run in main thread.
+ * situation. This is run in main thread.
  */
 public class HttpAsyncClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 

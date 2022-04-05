@@ -29,7 +29,7 @@ import org.apache.skywalking.apm.plugin.httpasyncclient.v4.wrapper.HttpAsyncResp
 import java.lang.reflect.Method;
 
 /**
- * in main thread,hold the context in thread local so we can read in the same thread.
+ * in main thread,hold the context in thread local, so we can read in the same thread.
  */
 public class HttpAsyncClientInterceptor implements InstanceMethodsAroundInterceptor {
 

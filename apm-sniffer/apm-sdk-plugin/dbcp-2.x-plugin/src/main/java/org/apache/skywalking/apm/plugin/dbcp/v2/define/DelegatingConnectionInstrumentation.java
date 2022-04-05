@@ -29,8 +29,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
- * DBCP use DelegatingConnection which is the delegating implementation of Connection.All of
- * the methods from the Connection interface simply check to see that the Connection is active.
+ * DBCP use DelegatingConnection which is the delegating implementation of Connection.All the methods from the Connection interface simply check to see that the Connection is active.
  * DelegatingConnection#close() close/return connection.
  */
 public class DelegatingConnectionInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {

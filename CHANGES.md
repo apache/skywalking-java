@@ -35,7 +35,7 @@ Release Notes.
 * [Breaking Change] Remove the namespace from `cross process propagation` key.
 * Make sure the parent endpoint in tracing context from existing first ENTRY span, rather than first span only.
 * Fix the bug that maybe causing memory leak and repeated traceId when use gateway-2.1.x-plugin or gateway-3.x-plugin.
-* Fix Grpc 1.x plugin's tracing problem
+* Fix Grpc 1.x plugin could leak context due to gRPC cancelled.
 
 #### Documentation
 

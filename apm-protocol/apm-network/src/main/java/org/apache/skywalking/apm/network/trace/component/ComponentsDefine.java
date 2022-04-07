@@ -220,4 +220,6 @@ public class ComponentsDefine {
     public static final OfficialComponent APACHE_KYLIN_JDBC_DRIVER = new OfficialComponent(121, "apache-kylin-jdbc-driver");
 
     public static final OfficialComponent GUAVA_EVENT_BUS = new OfficialComponent(123, "GuavaEventBus");
+
+    public static final OfficialComponent APACHE_SHENYU = new OfficialComponent(124, "Apache-ShenYu");
 }

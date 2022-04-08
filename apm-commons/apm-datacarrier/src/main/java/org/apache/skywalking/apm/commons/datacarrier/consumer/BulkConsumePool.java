@@ -45,7 +45,7 @@ public class BulkConsumePool implements ConsumerPool {
     }
 
     @Override
-    synchronized public void add(String name, Channels channels, IConsumer consumer) {
+    public synchronized void add(String name, Channels channels, IConsumer consumer) {
         MultipleChannelsConsumer multipleChannelsConsumer = getLowestPayload();
         multipleChannelsConsumer.addNewTarget(channels, consumer);
     }

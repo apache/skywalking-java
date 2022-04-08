@@ -54,7 +54,7 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
      * inject to the {@link RpcContext#getClientAttachment} for transport to provider side.
      * <p>
      * <h2>Provider:</h2> The serialized trace context data will extract from
-     * {@link RpcContext#getServerAttachment}. current trace segment will ref if the serialize context data is not
+     * {@link RpcContext#getServerAttachment}. current trace segment will ref if the serialization context data is not
      * null.
      */
     @Override

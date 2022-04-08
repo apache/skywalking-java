@@ -47,6 +47,8 @@ import reactor.core.publisher.Mono;
  */
 public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
+    public static final String SHENYU_AGENT_TRACE_ID = "shenyu-agent-trace-id";
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
@@ -73,7 +75,10 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         SpanLayer.asHttp(span);
         Tags.URL.set(span, exchange.getRequest().getURI().toString());
         HTTP.METHOD.set(span, exchange.getRequest().getMethodValue());
-        instance.setSkyWalkingDynamicField(ContextManager.capture());
+
+        ContextSnapshot snapshot = ContextManager.capture();
+        exchange.getAttributes().put("SHENYU_AGENT_TRACE_ID", snapshot.getTraceId().getId());
+        instance.setSkyWalkingDynamicField(snapshot);
         span.prepareForAsync();
         ContextManager.stopSpan(span);
 
@@ -100,9 +105,7 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         }
 
         return monoReturn
-                .doOnError(throwable -> {
-                    span.errorOccurred().log(throwable);
-                })
+                .doOnError(throwable -> span.errorOccurred().log(throwable))
                 .doFinally(s -> {
                         try {
                             HttpStatus httpStatus = exchange.getResponse().getStatusCode();

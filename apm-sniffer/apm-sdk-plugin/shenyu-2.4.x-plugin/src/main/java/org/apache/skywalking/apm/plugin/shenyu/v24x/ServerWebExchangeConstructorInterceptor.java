@@ -28,7 +28,7 @@ public class ServerWebExchangeConstructorInterceptor implements InstanceConstruc
 
     /**
      * ServerWebExchange object will cross all plugins. That is, all plugins can access it.
-     * we can put snapshot to this object（by objInst.setSkyWalkingDynamicField(snapshot)）
+     * we can put snapshot to this object. by objInst.setSkyWalkingDynamicField(snapshot).
      * Later plugins can continue this snapshot when another thread executes.
      */
     @Override

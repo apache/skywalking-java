@@ -58,11 +58,14 @@ public class InitRouterRunner implements CommandLineRunner {
                 InputStream ruleStream = getClass().getResourceAsStream(rulePath)) {
 
             Map<String, PluginData> pluginDataMap = JSON.parseObject(pluginStream,
-                    new TypeReference<Map<String, PluginData>>(){}.getType(), Feature.AllowComment);
+                    new TypeReference<Map<String, PluginData>>() {
+                    }.getType(), Feature.AllowComment);
             Map<String, List<SelectorData>> selectorDataMap = JSON.parseObject(selectorStream,
-                    new TypeReference<Map<String, List<SelectorData>>>(){}.getType(), Feature.AllowComment);
+                    new TypeReference<Map<String, List<SelectorData>>>() {
+                    }.getType(), Feature.AllowComment);
             Map<String, List<RuleData>> ruleDataMap = JSON.parseObject(ruleStream,
-                    new TypeReference<Map<String, List<RuleData>>>(){}.getType(), Feature.AllowComment);
+                    new TypeReference<Map<String, List<RuleData>>>() {
+                    }.getType(), Feature.AllowComment);
 
             pluginDataMap.values().forEach(subscriber::onSubscribe);
             selectorDataMap.values().stream().flatMap(Collection::stream)

@@ -25,6 +25,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
  * ServerWebExchange Constructor Interceptor.
  */
 public class ServerWebExchangeConstructorInterceptor implements InstanceConstructorInterceptor {
+
+    /**
+     * ServerWebExchange object will cross all plugins. That is, all plugins can access it.
+     * we can put snapshot to this object（by objInst.setSkyWalkingDynamicField(snapshot)）
+     * Later plugins can continue this snapshot when another thread executes.
+     */
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
     }

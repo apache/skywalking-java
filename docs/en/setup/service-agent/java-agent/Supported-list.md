@@ -31,6 +31,7 @@ metrics based on the tracing data.
   * JRE HttpURLConnection (Optional²)
 * HTTP Gateway
   * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 3.x (Optional²)
+  * [Apache ShenYu](https://shenyu.apache.org) 2.4.x
 * JDBC
   * Mysql Driver 5.x, 6.x, 8.x
   * Oracle Driver (Optional¹)

@@ -136,4 +136,4 @@
 - undertow-worker-thread-pool
 - tomcat-thread-pool
 - guava-eventbus
-- shenyu-2.4.x （Please must active spring-webflux-5.x-plugin plugin when you install agent in shenyu）
+- shenyu-2.4.x （Please must active optional spring-webflux-5.x-plugin plugin when you install agent in shenyu）

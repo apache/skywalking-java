@@ -1,0 +1,347 @@
+/**
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+*/
+{
+  "1512230008264994816": [
+    {
+      "id": "1512230008290160640",
+      "name": "/http",
+      "pluginName": "contextPath",
+      "selectorId": "1512230008264994816",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"contextPath\":\"/http\"}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "match",
+          "paramName": "/",
+          "paramValue": "/http/**"
+        }
+      ]
+    }
+  ],
+  "1512230008105611264": [
+    {
+      "id": "1512230008223051776",
+      "name": "/http/order/path/**/name",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "match",
+          "paramName": "/",
+          "paramValue": "/http/order/path/**/name"
+        }
+      ]
+    },
+    {
+      "id": "1512230008755728384",
+      "name": "/http/order",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/order"
+        }
+      ]
+    },
+    {
+      "id": "1512230009120632832",
+      "name": "/http/order/save",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/order/save"
+        }
+      ]
+    },
+    {
+      "id": "1512230009321959424",
+      "name": "/http/order/path/**",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "match",
+          "paramName": "/",
+          "paramValue": "/http/order/path/**"
+        }
+      ]
+    },
+    {
+      "id": "1512230009363902464",
+      "name": "/http/order/oauth2/test",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/order/oauth2/test"
+        }
+      ]
+    },
+    {
+      "id": "1512230009397456896",
+      "name": "/http/test/**",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "match",
+          "paramName": "/",
+          "paramValue": "/http/test/**"
+        }
+      ]
+    },
+    {
+      "id": "1512230009481342976",
+      "name": "/http/order/findById",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/order/findById"
+        }
+      ]
+    },
+    {
+      "id": "1512230009514897408",
+      "name": "/http/",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/"
+        }
+      ]
+    },
+    {
+      "id": "1512230009586200576",
+      "name": "/http/post/hi",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/post/hi"
+        }
+      ]
+    },
+    {
+      "id": "1512230009607172096",
+      "name": "/http/shenyu/client/hi",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/shenyu/client/hi"
+        }
+      ]
+    },
+    {
+      "id": "1512230009632337920",
+      "name": "/http/shenyu/client/timeout",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/shenyu/client/timeout"
+        }
+      ]
+    },
+    {
+      "id": "1512230009712029696",
+      "name": "/http/shenyu/client/hello",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/shenyu/client/hello"
+        }
+      ]
+    },
+    {
+      "id": "1512230009728806912",
+      "name": "/http/request/**",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "match",
+          "paramName": "/",
+          "paramValue": "/http/request/**"
+        }
+      ]
+    },
+    {
+      "id": "1512230009787527168",
+      "name": "/http/hello",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/hello"
+        }
+      ]
+    },
+    {
+      "id": "1512230009804304384",
+      "name": "/http/shenyu/client/post/hi",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/shenyu/client/post/hi"
+        }
+      ]
+    },
+    {
+      "id": "1512230009955299328",
+      "name": "/http/hi",
+      "pluginName": "divide",
+      "selectorId": "1512230008105611264",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/hi"
+        }
+      ]
+    }
+  ]
+}

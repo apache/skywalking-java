@@ -34,6 +34,8 @@ import net.bytebuddy.matcher.ElementMatcher;
  */
 public class ServerWebExchangeInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
+    private static final String SHENYU_WITNESS_CLASS = "org.apache.shenyu.plugin.global.GlobalPlugin";
+
     private static final String ENHANCE_CLASS = "org.springframework.web.server.adapter.DefaultServerWebExchange";
 
     private static final String INTERCEPT_CLASS =
@@ -64,5 +66,13 @@ public class ServerWebExchangeInstrumentation extends ClassInstanceMethodsEnhanc
     @Override
     protected ClassMatch enhanceClass() {
         return byName(ENHANCE_CLASS);
+    }
+
+    /**
+     * Avoid interfering with other spring-related plugins.
+     */
+    @Override
+    protected String[] witnessClasses() {
+        return new String[]{SHENYU_WITNESS_CLASS};
     }
 }

@@ -18,5 +18,7 @@ type: jvm
 entryService: http://localhost:9195/http/order/findById
 healthCheck: http://localhost:9195/http/health/check
 startScript: ./bin/startup.sh
+runningMode: with_optional
+withPlugins: apm-spring-webflux-5.x-plugin-*.jar
 environment:
 dependencies:

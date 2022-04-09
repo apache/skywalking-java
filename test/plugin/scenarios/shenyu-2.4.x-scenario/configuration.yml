@@ -15,8 +15,8 @@
 # limitations under the License.
 
 type: jvm
-entryService: http://localhost:8189/order/save
-healthCheck: http://localhost:8080/http/healthCheck
+entryService: http://localhost:9195/http/order/findById
+healthCheck: http://localhost:9195/http/health/check
 startScript: ./bin/startup.sh
 environment:
 dependencies:

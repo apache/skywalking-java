@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
  * http health check endpoint.
  */
 @RestController
-@RequestMapping("/http")
+@RequestMapping("/health")
 public class HealthController {
 
-    @RequestMapping("/healthCheck")
+    @RequestMapping("/check")
     public String healthCheck() {
         return "ok";
     }

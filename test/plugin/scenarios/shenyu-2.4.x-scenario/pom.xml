@@ -20,22 +20,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <groupId>org.apache.skywalking.apm.testcase</groupId>
+    <groupId>org.apache.skywalking</groupId>
     <artifactId>shenyu-2.4.x-scenario</artifactId>
     <version>1.0.0</version>
-    <modules>
-        <module>shenyu-dist</module>
-        <module>shenyu-gateway</module>
-        <module>shenyu-http</module>
-    </modules>
     <packaging>pom</packaging>
 
     <modelVersion>4.0.0</modelVersion>
 
+    <modules>
+        <module>shenyu-gateway</module>
+        <module>shenyu-http</module>
+        <module>shenyu-dist</module>
+    </modules>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
-        <test.framework.version>2.2.2.RELEASE</test.framework.version>
+        <test.framework.version>2.4.2</test.framework.version>
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
         <shenyu.gateway.version>2.4.2</shenyu.gateway.version>
         <lombok.version>1.18.20</lombok.version>
@@ -57,7 +58,7 @@
             <dependency>
                 <groupId>org.apache.shenyu</groupId>
                 <artifactId>shenyu-spring-boot-starter-gateway</artifactId>
-                <version>${shenyu.gateway.version}</version>
+                <version>${test.framework.version}</version>
             </dependency>
             <!--just for test-->
             <dependency>

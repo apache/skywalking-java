@@ -13,14 +13,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 segmentItems:
   - serviceName: shenyu-http
     segmentSize: nq 0
     segments:
       - segmentId: not null
         spans:
-          - operationName: POST:/order/save
+          - operationName: GET:/order/findById
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -31,38 +30,21 @@ segmentItems:
             spanType: Entry
             peer: ''
             tags:
-              - {key: url, value: not null}
+              - {key: url, value: 'http://localhost:8189/order/findById'}
               - {key: http.method, value: GET}
             refs:
-              - {parentEndpoint: /order/save, networkAddress: 'localhost:9195',
-                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
-                 parentServiceInstance: not null, parentService: not null, traceId: not null}
+              - {parentEndpoint: /order/findById, networkAddress: 'localhost:8189',
+                 refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: 'Apache-ShenYu', traceId: not null}
             skipAnalysis: 'false'
-  - serviceName: shenyu-gateway
+  - serviceName: Apache-ShenYu
     segmentSize: nq 0
     segments:
       - segmentId: not null
         spans:
-          - operationName: /http/order/save
+          - operationName: /order/findById
             parentSpanId: -1
             spanId: 0
-            spanLayer: Http
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 124
-            isError: false
-            spanType: Entry
-            peer: not null
-            tags:
-              - {key: url, value: 'http://localhost:9195/http/order/save'}
-              - {key: http.method, value: POST}
-              - {key: http.status_code, value: '200'}
-            skipAnalysis: 'false'
-      - segmentId: not null
-        spans:
-          - operationName: /order/save
-            parentSpanId: 0
-            spanId: 1
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
@@ -71,20 +53,28 @@ segmentItems:
             spanType: Exit
             peer: 'localhost:8189'
             tags:
-              - {key: url, value: not null}
+              - {key: url, value: 'http://localhost:8189/order/findById'}
+              - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
+            refs:
+              - { parentEndpoint: /http/order/findById, networkAddress: '',
+                  refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
+                  parentServiceInstance: not null, parentService: 'Apache-ShenYu', traceId: not null }
             skipAnalysis: 'false'
-          - operationName: POST:/order/save
+      - segmentId: not null
+        spans:
+          - operationName: /http/order/findById
             parentSpanId: -1
             spanId: 0
+            spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: 61
+            componentId: 124
             isError: false
-            spanType: Local
+            spanType: Entry
             peer: ''
-            refs:
-              - {parentEndpoint: '/http/order/save', networkAddress: '', refType: CrossThread,
-                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not null,
-                 parentService: not null, traceId: not null}
+            tags:
+              - {key: url, value: 'http://localhost:9195/http/order/findById'}
+              - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             skipAnalysis: 'false'

@@ -54,7 +54,7 @@ public class OrderController {
      * @return the order dto
      */
     @GetMapping("/findById")
-    public OrderDTO findById(@RequestParam("id") final String id) {
+    public OrderDTO findById(@RequestParam(value = "id", required = false, defaultValue = "1") final String id) {
         return build(id, "hello world findById");
     }
 

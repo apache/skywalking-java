@@ -32,7 +32,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-webflux.version>5.0.0.RELEASE</spring-webflux.version>
+        <spring-webflux.version>5.3.18</spring-webflux.version>
     </properties>
 
 

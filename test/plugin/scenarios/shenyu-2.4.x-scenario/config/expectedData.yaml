@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-  - serviceName: shenyu-http
+  - serviceName: http-provider
     segmentSize: nq 0
     segments:
       - segmentId: not null
@@ -35,9 +35,10 @@ segmentItems:
             refs:
               - {parentEndpoint: /order/findById, networkAddress: 'localhost:8189',
                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null,
-                 parentServiceInstance: not null, parentService: 'Apache-ShenYu', traceId: not null}
+                 parentServiceInstance: not null, parentService: 'shenyu-gateway', traceId: not null}
             skipAnalysis: 'false'
-  - serviceName: Apache-ShenYu
+
+  - serviceName: shenyu-gateway
     segmentSize: nq 0
     segments:
       - segmentId: not null
@@ -59,7 +60,7 @@ segmentItems:
             refs:
               - { parentEndpoint: /http/order/findById, networkAddress: '',
                   refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
-                  parentServiceInstance: not null, parentService: 'Apache-ShenYu', traceId: not null }
+                  parentServiceInstance: not null, parentService: 'shenyu-gateway', traceId: not null }
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
@@ -77,4 +78,43 @@ segmentItems:
               - {key: url, value: 'http://localhost:9195/http/order/findById'}
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
+            refs:
+              - { parentEndpoint: GET:/entry/http-service, networkAddress: 'localhost:9195',
+                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
+                  parentServiceInstance: not null, parentService: 'entry-service', traceId: not null }
             skipAnalysis: 'false'
+
+  - serviceName: entry-service
+    segmentSize: nq 0
+    segments:
+      - segmentId: not null
+        spans:
+          - operationName: /http/order/findById
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 13
+            isError: false
+            spanType: Exit
+            peer: 'localhost:9195'
+            tags:
+              - {key: url, value: 'http://localhost:9195/http/order/findById'}
+              - {key: http.method, value: GET}
+            skipAnalysis: 'false'
+          - operationName: GET:/entry/http-service
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - { key: url, value: 'http://localhost:8888/entry/http-service' }
+              - { key: http.method, value: GET }
+            skipAnalysis: 'false'
+

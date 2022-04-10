@@ -33,6 +33,11 @@
 
     <files>
         <file>
+            <source>../shenyu-entry/target/shenyu-entry.jar</source>
+            <outputDirectory>./libs</outputDirectory>
+            <fileMode>0775</fileMode>
+        </file>
+        <file>
             <source>../shenyu-gateway/target/shenyu-gateway.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>

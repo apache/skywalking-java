@@ -18,7 +18,12 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -jar ${agent_opts} "-Dskywalking.agent.service_name=Apache-ShenYu" ${home}/../libs/shenyu-gateway.jar &
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=shenyu-gateway" ${home}/../libs/shenyu-gateway.jar &
 sleep 1
 
-java -jar ${agent_opts} "-Dskywalking.agent.service_name=shenyu-http" ${home}/../libs/shenyu-http.jar &
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=http-provider" ${home}/../libs/shenyu-http.jar &
+sleep 1
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=entry-service" ${home}/../libs/shenyu-entry.jar &
+sleep 1
+

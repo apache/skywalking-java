@@ -36,18 +36,6 @@ import test.apache.skywalking.apm.testcase.shenyu.http.model.dto.OrderDTO;
 public class OrderController {
 
     /**
-     * Save order dto.
-     *
-     * @param orderDTO the order dto
-     * @return the order dto
-     */
-    @PostMapping("/save")
-    public OrderDTO save(@RequestBody final OrderDTO orderDTO) {
-        orderDTO.setName("hello world save order");
-        return orderDTO;
-    }
-
-    /**
      * Find by id order dto.
      *
      * @param id the id
@@ -56,29 +44,6 @@ public class OrderController {
     @GetMapping("/findById")
     public OrderDTO findById(@RequestParam(value = "id", required = false, defaultValue = "1") final String id) {
         return build(id, "hello world findById");
-    }
-
-    /**
-     * Gets path variable.
-     *
-     * @param id the id
-     * @param name the name
-     * @return the path variable
-     */
-    @GetMapping("/path/{id}/{name}")
-    public OrderDTO getPathVariable(@PathVariable("id") final String id, @PathVariable("name") final String name) {
-        return build(id, "hello world restful: " + name);
-    }
-
-    /**
-     * Test rest ful order dto.
-     *
-     * @param id the id
-     * @return the order dto
-     */
-    @GetMapping("/path/{id}/name")
-    public OrderDTO testRestFul(@PathVariable("id") final String id) {
-        return build(id, "hello world restful inline " + id);
     }
 
     private OrderDTO build(final String id, final String name) {

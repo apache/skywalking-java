@@ -55,6 +55,7 @@
         <module>guava-cache-plugin</module>
         <module>fastjson-1.2.x-plugin</module>
         <module>jackson-2.x-plugin</module>
+        <module>shenyu-2.4.x-plugin</module>
     </modules>
 
     <dependencies>

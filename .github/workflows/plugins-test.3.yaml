@@ -97,6 +97,7 @@ jobs:
           - undertow-worker-thread-pool-scenario
           - tomcat-thread-pool-scenario
           - guava-eventbus-scenario
+          - shenyu-2.4.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

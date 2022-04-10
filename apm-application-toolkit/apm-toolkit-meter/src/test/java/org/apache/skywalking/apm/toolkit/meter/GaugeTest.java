@@ -18,13 +18,14 @@
 
 package org.apache.skywalking.apm.toolkit.meter;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class GaugeTest {
 
     @Test
     public void testBuild() {
-        MeterFactory.gauge("test_gauge1", () -> 1d).tag("k1", "v1").build();
+        Assert.assertNotNull(MeterFactory.gauge("test_gauge1", () -> 1d).tag("k1", "v1").build());
     }
 
 }

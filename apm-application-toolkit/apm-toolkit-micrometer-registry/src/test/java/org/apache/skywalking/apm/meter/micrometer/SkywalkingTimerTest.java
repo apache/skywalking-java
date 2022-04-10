@@ -32,7 +32,7 @@ public class SkywalkingTimerTest {
 
     @Test
     public void testSimpleTimer() {
-        // Creating a simplify timer
+        // Creating a simplified timer
         final SkywalkingMeterRegistry registry = new SkywalkingMeterRegistry();
         final Timer timer = registry.timer("test_simple_timer", "skywalking", "test");
 

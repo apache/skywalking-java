@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.plugin.shenyu.v24x;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
@@ -35,7 +36,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
@@ -43,16 +43,17 @@ import org.springframework.web.server.adapter.DefaultServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * apache global plugin interceptor.
+ * Apache shenyu global-plugin interceptor.
  */
 public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String SHENYU_AGENT_TRACE_ID = "shenyu-agent-trace-id";
+    public static final String SKYWALKING_CONTEXT_SNAPSHOT = "SKYWALKING_CONTEXT_SNAPSHOT";
+    public static final String SKYWALKING_SPAN = "SKYWALKING_SPAN";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
-        EnhancedInstance instance = getInstance(allArguments[0]);
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
 
         ContextCarrier carrier = new ContextCarrier();
@@ -67,22 +68,19 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         }
 
         AbstractSpan span = ContextManager.createEntrySpan(exchange.getRequest().getURI().getPath(), carrier);
-        if (instance != null && instance.getSkyWalkingDynamicField() != null) {
-            ContextManager.continued((ContextSnapshot) objInst.getSkyWalkingDynamicField());
-        }
-
         span.setComponent(ComponentsDefine.APACHE_SHENYU);
         SpanLayer.asHttp(span);
         Tags.URL.set(span, exchange.getRequest().getURI().toString());
         HTTP.METHOD.set(span, exchange.getRequest().getMethodValue());
 
         ContextSnapshot snapshot = ContextManager.capture();
-        exchange.getAttributes().put("SHENYU_AGENT_TRACE_ID", snapshot.getTraceId().getId());
+        exchange.getAttributes().put(SHENYU_AGENT_TRACE_ID, snapshot.getTraceId().getId());
+        EnhancedInstance instance = getInstance(allArguments[0]);
         instance.setSkyWalkingDynamicField(snapshot);
         span.prepareForAsync();
         ContextManager.stopSpan(span);
 
-        exchange.getAttributes().put("SKYWALKING_SPAN", span);
+        exchange.getAttributes().put(SKYWALKING_SPAN, span);
     }
 
     @Override
@@ -91,7 +89,7 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
 
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
 
-        AbstractSpan span = (AbstractSpan) exchange.getAttributes().get("SKYWALKING_SPAN");
+        AbstractSpan span = (AbstractSpan) exchange.getAttributes().get(SKYWALKING_SPAN);
         if (Objects.isNull(span)) {
             return ret;
         }
@@ -101,20 +99,19 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         EnhancedInstance instance = getInstance(allArguments[0]);
         if (instance != null && instance.getSkyWalkingDynamicField() != null) {
             monoReturn = monoReturn.subscriberContext(
-                    c -> c.put("SKYWALKING_CONTEXT_SNAPSHOT", instance.getSkyWalkingDynamicField()));
+                    c -> c.put(SKYWALKING_CONTEXT_SNAPSHOT, instance.getSkyWalkingDynamicField()));
         }
 
         return monoReturn
                 .doOnError(throwable -> span.errorOccurred().log(throwable))
                 .doFinally(s -> {
                         try {
-                            HttpStatus httpStatus = exchange.getResponse().getStatusCode();
-                            if (httpStatus != null) {
+                            Optional.ofNullable(exchange.getResponse().getStatusCode()).ifPresent(httpStatus -> {
                                 Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
                                 if (httpStatus.isError()) {
                                     span.errorOccurred();
                                 }
-                            }
+                            });
                         } finally {
                             span.asyncFinish();
                         }

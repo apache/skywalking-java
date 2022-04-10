@@ -120,7 +120,6 @@
         <module>undertow-worker-thread-pool-plugin</module>
         <module>tomcat-thread-pool-plugin</module>
         <module>guava-eventbus-plugin</module>
-        <module>shenyu-2.4.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

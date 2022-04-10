@@ -31,7 +31,7 @@
     <name>quartz-scheduler-2.x-plugin</name>
 
     <properties>
-        <quartz-scheduler.version>2.0.0</quartz-scheduler.version>
+        <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
     </properties>
 
     <dependencies>

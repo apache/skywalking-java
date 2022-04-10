@@ -1,0 +1,81 @@
+/**
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+*/
+{
+  "1": [
+    {
+      "id": "1512230008290160640",
+      "name": "/http",
+      "pluginName": "contextPath",
+      "selectorId": "1",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"contextPath\":\"/http\"}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "match",
+          "paramName": "/",
+          "paramValue": "/http/**"
+        }
+      ]
+    }
+  ],
+  "2": [
+    {
+      "id": "1",
+      "name": "/http/order/findById",
+      "pluginName": "divide",
+      "selectorId": "2",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/order/findById"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "/http/health/check",
+      "pluginName": "divide",
+      "selectorId": "2",
+      "matchMode": 0,
+      "sort": 1,
+      "enabled": true,
+      "loged": true,
+      "handle": "{\"loadBalance\":\"random\",\"retryStrategy\":\"current\",\"retry\":3,\"timeout\":3000,\"headerMaxSize\":10240,\"requestMaxSize\":102400}",
+      "conditionDataList": [
+        {
+          "paramType": "uri",
+          "operator": "=",
+          "paramName": "/",
+          "paramValue": "/http/health/check"
+        }
+      ]
+    }
+  ]
+}

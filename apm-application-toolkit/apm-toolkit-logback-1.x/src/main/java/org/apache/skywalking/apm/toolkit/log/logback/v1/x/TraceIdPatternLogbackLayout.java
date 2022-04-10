@@ -21,7 +21,7 @@ package org.apache.skywalking.apm.toolkit.log.logback.v1.x;
 import ch.qos.logback.classic.PatternLayout;
 
 /**
- * Based on the logback-compoenent convert register mechanism, register {@link LogbackPatternConverter} as a new
+ * Based on the logback-component convert register mechanism, register {@link LogbackPatternConverter} as a new
  * convert, match to "tid" and "sw_ctx". You can use "%tid" or "sw_ctx" in logback config file, "Pattern" section.
  * <p>
  */

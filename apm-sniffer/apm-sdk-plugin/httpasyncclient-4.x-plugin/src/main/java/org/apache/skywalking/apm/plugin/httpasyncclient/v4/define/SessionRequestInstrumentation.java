@@ -30,7 +30,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 
 /**
  * this is a bridge for main thread and real request thread which mean hold the {@link
- * org.apache.skywalking.apm.agent.core.context.ContextSnapshot} object to be continued in "completed" method.that is
+ * org.apache.skywalking.apm.agent.core.context.ContextSnapshot} object to be continued in "completed" method. That is
  * mean the request is ready to submit
  */
 public class SessionRequestInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {

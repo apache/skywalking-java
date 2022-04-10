@@ -28,7 +28,7 @@ public class SkywalkingLongTaskTimerTest {
 
     @Test
     public void testSimple() throws InterruptedException {
-        // Creating a simplify long task timer
+        // Creating a simplified long task timer
         final SkywalkingMeterRegistry registry = new SkywalkingMeterRegistry();
         final LongTaskTimer longTaskTimer = registry.more().longTaskTimer("test_simple_long_task_timer", "skywalking", "test");
 

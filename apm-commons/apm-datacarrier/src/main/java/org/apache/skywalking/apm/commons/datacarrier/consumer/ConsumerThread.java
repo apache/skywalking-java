@@ -89,7 +89,7 @@ public class ConsumerThread<T> extends Thread {
     }
 
     /**
-     * DataSource is a refer to {@link Buffer}.
+     * DataSource is a reference to {@link Buffer}.
      */
     class DataSource {
         private QueueBuffer<T> sourceBuffer;

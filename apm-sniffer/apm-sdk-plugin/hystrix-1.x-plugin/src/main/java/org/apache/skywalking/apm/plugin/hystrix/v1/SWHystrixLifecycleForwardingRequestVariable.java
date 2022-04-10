@@ -31,7 +31,7 @@ import com.netflix.hystrix.strategy.concurrency.HystrixConcurrencyStrategy;
  * <p>
  * This implementation also returns null when {@link #get()} is called while the {@link HystrixRequestContext} has not
  * been initialized rather than throwing an exception, allowing for use in a {@link HystrixConcurrencyStrategy} which
- * does not depend on an a HystrixRequestContext
+ * does not depend on an HystrixRequestContext
  */
 public class SWHystrixLifecycleForwardingRequestVariable<T> extends HystrixRequestVariableDefault<T> {
     private final HystrixRequestVariableLifecycle<T> lifecycle;

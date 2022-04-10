@@ -41,7 +41,7 @@ public class MethodUtil {
     }
 
     /**
-     * This is a low-performance method, recommand to use this when have to, make sure it is only executed once and the
+     * This is a low-performance method, recommend to use this when have to, make sure it is only executed once and the
      * result is being cached.
      */
     public static boolean isMethodExist(ClassLoader classLoader, String className, String methodName,

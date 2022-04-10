@@ -73,6 +73,9 @@ public class TracingServerCallListener<REQUEST> extends ForwardingServerCallList
 
     @Override
     public void onCancel() {
+        if (contextSnapshot == null) {
+            return;
+        }
         final AbstractSpan span = ContextManager.createLocalSpan(operationPrefix + REQUEST_ON_CANCEL_OPERATION_NAME);
         span.setComponent(ComponentsDefine.GRPC);
         span.setLayer(SpanLayer.RPC_FRAMEWORK);

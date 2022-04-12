@@ -27,7 +27,7 @@ public class ThreadPoolExecuteMethodInterceptor extends AbstractThreadingPoolInt
     @Override
     public Object wrap(Object param) {
         if (param instanceof SwRunnableWrapper) {
-            return param;
+            return null;
         }
 
         if (param instanceof RunnableFuture) {

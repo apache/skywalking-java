@@ -29,7 +29,7 @@ public class ThreadPoolSubmitMethodInterceptor extends AbstractThreadingPoolInte
     @Override
     public Object wrap(Object param) {
         if (param instanceof SwRunnableWrapper || param instanceof SwCallableWrapper) {
-            return param;
+            return null;
         }
 
         if (param instanceof Callable) {

@@ -43,6 +43,11 @@ public abstract class AbstractThreadingPoolInterceptor implements InstanceMethod
         }
     }
 
+    /**
+     * wrap the Callable or Runnable object if needed
+     * @param param  Callable or Runnable object
+     * @return Wrapped object or null if not needed to wrap
+     */
     public abstract Object wrap(Object param);
 
     @Override

@@ -37,6 +37,7 @@ Release Notes.
 * Fix the bug that maybe causing memory leak and repeated traceId when use gateway-2.1.x-plugin or gateway-3.x-plugin.
 * Fix Grpc 1.x plugin could leak context due to gRPC cancelled.
 * Add JDK ThreadPoolExecutor Plugin.
+* Support default database(not set through JDBC URL) in mysql-5.x plugin.
 
 #### Documentation
 

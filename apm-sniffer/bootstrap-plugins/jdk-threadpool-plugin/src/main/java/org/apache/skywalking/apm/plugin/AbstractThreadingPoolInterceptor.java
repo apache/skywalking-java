@@ -37,9 +37,9 @@ public abstract class AbstractThreadingPoolInterceptor implements InstanceMethod
 
         Object argument = allArguments[0];
 
-        Object updateResult = wrap(argument);
-        if (updateResult != null) {
-            allArguments[0] = updateResult;
+        Object wrappedObject = wrap(argument);
+        if (wrappedObject != null) {
+            allArguments[0] = wrappedObject;
         }
     }
 

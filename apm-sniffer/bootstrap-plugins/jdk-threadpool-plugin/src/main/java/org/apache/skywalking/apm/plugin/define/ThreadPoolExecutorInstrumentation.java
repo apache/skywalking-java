@@ -30,7 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOperation;
 
-public class ThreadPoolExecutorInstrumentation extends ClassEnhancePluginDefine {
+public class ThreadPoolExecutorInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "java.util.concurrent.ThreadPoolExecutor";
 

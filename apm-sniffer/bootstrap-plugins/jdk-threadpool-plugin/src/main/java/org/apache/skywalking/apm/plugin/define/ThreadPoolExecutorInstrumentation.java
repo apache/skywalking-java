@@ -32,7 +32,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOpe
 
 public class ThreadPoolExecutorInstrumentation extends ClassEnhancePluginDefine {
 
-    protected static final String ENHANCE_CLASS = "java.util.concurrent.ThreadPoolExecutor";
+    private static final String ENHANCE_CLASS = "java.util.concurrent.ThreadPoolExecutor";
 
     private static final String INTERCEPT_EXECUTE_METHOD = "execute";
 

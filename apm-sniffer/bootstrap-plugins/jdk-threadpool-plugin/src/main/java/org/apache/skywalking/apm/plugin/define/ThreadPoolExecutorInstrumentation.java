@@ -30,9 +30,9 @@ import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOperation;
 
-public class ThreadPoolExecutorInstrumentation extends ClassEnhancePluginDefine {
+public class ThreadPoolExecutorInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    protected static final String ENHANCE_CLASS = "java.util.concurrent.ThreadPoolExecutor";
+    private static final String ENHANCE_CLASS = "java.util.concurrent.ThreadPoolExecutor";
 
     private static final String INTERCEPT_EXECUTE_METHOD = "execute";
 
@@ -95,9 +95,5 @@ public class ThreadPoolExecutorInstrumentation extends ClassEnhancePluginDefine 
         };
     }
 
-    @Override
-    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[0];
-    }
 
 }

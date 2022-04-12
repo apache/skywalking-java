@@ -44,6 +44,7 @@
     <modules>
         <module>jdk-http-plugin</module>
         <module>jdk-threading-plugin</module>
+        <module>jdk-threadpool-plugin</module>
     </modules>
 
     <dependencies>

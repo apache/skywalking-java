@@ -95,9 +95,5 @@ public class ThreadPoolExecutorInstrumentation extends ClassEnhancePluginDefine 
         };
     }
 
-    @Override
-    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[0];
-    }
 
 }

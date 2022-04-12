@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.agent.core.logging.core;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackagePath;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.conf.SnifferConfigInitializer;
+import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -33,6 +34,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {
     SnifferConfigInitializer.class,
+    PluginFinder.class,
     AgentPackagePath.class
 })
 public class WriterFactoryTest {
@@ -41,12 +43,14 @@ public class WriterFactoryTest {
     public void alwaysReturnSystemLogWriteWithSetLoggingDir() {
         Config.Logging.OUTPUT = LogOutput.CONSOLE;
         PowerMockito.mockStatic(SnifferConfigInitializer.class);
+        PowerMockito.mockStatic(PluginFinder.class);
         PowerMockito.mockStatic(AgentPackagePath.class);
         BDDMockito.given(SnifferConfigInitializer.isInitCompleted()).willReturn(true);
-        BDDMockito.given(SnifferConfigInitializer.isPluginInitCompleted()).willReturn(true);
+        BDDMockito.given(PluginFinder.isPluginInitCompleted()).willReturn(true);
         BDDMockito.given(AgentPackagePath.isPathFound()).willReturn(true);
 
         assertTrue(SnifferConfigInitializer.isInitCompleted());
+        assertTrue(PluginFinder.isPluginInitCompleted());
         assertTrue(AgentPackagePath.isPathFound());
 
         IWriter logWriter = WriterFactory.getLogWriter();
@@ -57,12 +61,14 @@ public class WriterFactoryTest {
     public void returnFileWriterWriteWithBlankLoggingDir() {
         Config.Logging.OUTPUT = LogOutput.FILE;
         PowerMockito.mockStatic(SnifferConfigInitializer.class);
+        PowerMockito.mockStatic(PluginFinder.class);
         PowerMockito.mockStatic(AgentPackagePath.class);
         BDDMockito.given(SnifferConfigInitializer.isInitCompleted()).willReturn(true);
-        BDDMockito.given(SnifferConfigInitializer.isPluginInitCompleted()).willReturn(true);
+        BDDMockito.given(PluginFinder.isPluginInitCompleted()).willReturn(true);
         BDDMockito.given(AgentPackagePath.isPathFound()).willReturn(true);
 
         assertTrue(SnifferConfigInitializer.isInitCompleted());
+        assertTrue(PluginFinder.isPluginInitCompleted());
         assertTrue(AgentPackagePath.isPathFound());
 
         IWriter logWriter = WriterFactory.getLogWriter();

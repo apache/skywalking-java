@@ -22,6 +22,7 @@ import org.apache.skywalking.apm.agent.core.boot.AgentPackageNotFoundException;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackagePath;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.conf.SnifferConfigInitializer;
+import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
 import org.apache.skywalking.apm.util.StringUtil;
 
 public class WriterFactory {
@@ -36,7 +37,7 @@ public class WriterFactory {
                     return WRITER;
                 }
                 if (SnifferConfigInitializer.isInitCompleted()
-                        && SnifferConfigInitializer.isPluginInitCompleted()
+                        && PluginFinder.isPluginInitCompleted()
                         && AgentPackagePath.isPathFound()) {
                     if (StringUtil.isEmpty(Config.Logging.DIR)) {
                         try {

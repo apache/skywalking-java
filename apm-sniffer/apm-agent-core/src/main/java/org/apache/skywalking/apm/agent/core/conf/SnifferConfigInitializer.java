@@ -50,6 +50,7 @@ public class SnifferConfigInitializer {
     private static final String ENV_KEY_PREFIX = "skywalking.";
     private static Properties AGENT_SETTINGS;
     private static boolean IS_INIT_COMPLETED = false;
+    private static boolean IS_PLUGIN_INIT_COMPLETED = false;
 
     /**
      * If the specified agent config path is set, the agent will try to locate the specified agent config. If the
@@ -233,5 +234,13 @@ public class SnifferConfigInitializer {
             default:
                 LogManager.setLogResolver(new PatternLogResolver());
         }
+    }
+
+    public static void pluginInitCompleted() {
+        IS_PLUGIN_INIT_COMPLETED = true;
+    }
+
+    public static boolean isPluginInitCompleted() {
+        return IS_PLUGIN_INIT_COMPLETED;
     }
 }

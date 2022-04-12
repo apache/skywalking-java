@@ -43,6 +43,7 @@ public class WriterFactoryTest {
         PowerMockito.mockStatic(SnifferConfigInitializer.class);
         PowerMockito.mockStatic(AgentPackagePath.class);
         BDDMockito.given(SnifferConfigInitializer.isInitCompleted()).willReturn(true);
+        BDDMockito.given(SnifferConfigInitializer.isPluginInitCompleted()).willReturn(true);
         BDDMockito.given(AgentPackagePath.isPathFound()).willReturn(true);
 
         assertTrue(SnifferConfigInitializer.isInitCompleted());
@@ -58,6 +59,7 @@ public class WriterFactoryTest {
         PowerMockito.mockStatic(SnifferConfigInitializer.class);
         PowerMockito.mockStatic(AgentPackagePath.class);
         BDDMockito.given(SnifferConfigInitializer.isInitCompleted()).willReturn(true);
+        BDDMockito.given(SnifferConfigInitializer.isPluginInitCompleted()).willReturn(true);
         BDDMockito.given(AgentPackagePath.isPathFound()).willReturn(true);
 
         assertTrue(SnifferConfigInitializer.isInitCompleted());

@@ -130,6 +130,8 @@ public class SkyWalkingAgent {
                     .with(new Listener())
                     .installOn(instrumentation);
 
+        SnifferConfigInitializer.pluginInitCompleted();
+
         try {
             ServiceManager.INSTANCE.boot();
         } catch (Exception e) {

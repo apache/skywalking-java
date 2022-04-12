@@ -36,6 +36,7 @@ Release Notes.
 * Make sure the parent endpoint in tracing context from existing first ENTRY span, rather than first span only.
 * Fix the bug that maybe causing memory leak and repeated traceId when use gateway-2.1.x-plugin or gateway-3.x-plugin.
 * Fix Grpc 1.x plugin could leak context due to gRPC cancelled.
+* Add JDK ThreadPoolExecutor Plugin.
 
 #### Documentation
 

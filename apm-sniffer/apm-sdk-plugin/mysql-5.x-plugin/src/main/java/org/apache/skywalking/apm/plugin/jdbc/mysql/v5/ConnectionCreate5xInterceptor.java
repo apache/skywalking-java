@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.jdbc.mysql.v5;
 
+import java.util.Objects;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
@@ -42,7 +43,8 @@ public class ConnectionCreate5xInterceptor implements StaticMethodsAroundInterce
     public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
         Object ret) {
         if (ret instanceof EnhancedInstance) {
-            ConnectionInfo connectionInfo = ConnectionCache.get(allArguments[0].toString(), allArguments[1].toString(), allArguments[3].toString());
+            String database = Objects.isNull(allArguments[3]) ? "" : allArguments[3].toString();
+            ConnectionInfo connectionInfo = ConnectionCache.get(allArguments[0].toString(), allArguments[1].toString(), database);
             if (connectionInfo == null) {
                 connectionInfo = URLParser.parser(allArguments[4].toString());
             }

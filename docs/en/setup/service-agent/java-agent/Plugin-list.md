@@ -136,3 +136,5 @@
 - undertow-worker-thread-pool
 - tomcat-thread-pool
 - guava-eventbus
+- shenyu-2.4.x
+- jdk-threadpool-plugin

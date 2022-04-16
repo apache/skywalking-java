@@ -75,7 +75,7 @@ public abstract class AbstractClassEnhancePluginDefine {
         if (witnessClasses != null) {
             for (String witnessClass : witnessClasses) {
                 if (!finder.exist(witnessClass, classLoader)) {
-                    LOGGER.warn("enhance class {} by plugin {} is not working. Because witness class {} is not existed.", transformClassName, interceptorDefineClassName, witnessClass);
+                    LOGGER.warn("enhance class {} by plugin {} is not activated. Witness class {} does not exist.", transformClassName, interceptorDefineClassName, witnessClass);
                     return null;
                 }
             }
@@ -84,7 +84,7 @@ public abstract class AbstractClassEnhancePluginDefine {
         if (!CollectionUtil.isEmpty(witnessMethods)) {
             for (WitnessMethod witnessMethod : witnessMethods) {
                 if (!finder.exist(witnessMethod, classLoader)) {
-                    LOGGER.warn("enhance class {} by plugin {} is not working. Because witness method {} is not existed.", transformClassName, interceptorDefineClassName, witnessMethod);
+                    LOGGER.warn("enhance class {} by plugin {} is not activated. Witness method {} does not exist.", transformClassName, interceptorDefineClassName, witnessMethod);
                     return null;
                 }
             }

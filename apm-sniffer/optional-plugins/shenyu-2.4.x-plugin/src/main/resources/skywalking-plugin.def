@@ -16,3 +16,4 @@
 
 shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.GlobalPluginInstrumentation
 shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ServerWebExchangeInstrumentation
+shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ApacheDubboPluginInstrumentation

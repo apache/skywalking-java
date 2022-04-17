@@ -5,7 +5,7 @@ Release Notes.
 8.11.0
 ------------------
 
-
+* Fix `cluster` and `namespace` value duplicated(`namespace` value) in properties report.
 
 #### Documentation
 

@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Fix `cluster` and `namespace` value duplicated(`namespace` value) in properties report.
+* Add layer field to event when reporting.
 
 #### Documentation
 

@@ -115,7 +115,7 @@ public class EventReportServiceClient implements BootService, GRPCChannelListene
                                                            .setServiceInstance(Config.Agent.INSTANCE_NAME)
                                                            .build()
                                                  )
-                                                .setLayer(EVENT_LAYER_NAME);;
+                                                .setLayer(EVENT_LAYER_NAME);
 
         final StreamObserver<Event> collector = eventServiceStub.collect(new StreamObserver<Commands>() {
             @Override

@@ -7,6 +7,7 @@ Release Notes.
 
 * Fix `cluster` and `namespace` value duplicated(`namespace` value) in properties report.
 * Add layer field to event when reporting.
+* Remove redundant `shade.package` property.
 
 #### Documentation
 

@@ -1,9 +1,0 @@
-codefirsttest_server:
-  - id: "001"
-    version: "1.0"
-    appid: codefirst
-    schemaIds:
-      - codeFirstSpringmvcHelloClient
-    instances:
-      - endpoints:
-          - rest://127.0.0.1:8080

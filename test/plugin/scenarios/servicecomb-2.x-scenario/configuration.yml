@@ -15,7 +15,7 @@
 # limitations under the License.
 
 type: jvm
-entryService: http://localhost:8080/servicecomb/case
+entryService: http://localhost:8080/servicecomb/say
 healthCheck: http://localhost:8080/servicecomb/healthCheck
 startScript: ./bin/startup.sh
 environment:

@@ -14,54 +14,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: servicecomb-2.x-scenario
-  segmentSize: gt 2
-  segments:
-  - segmentId: not null
-    spans:
-    - operationName: codefirst.codeFirstHello.sayHi
-      parentSpanId: -1
-      spanId: 0
-      spanLayer: RPCFramework
-      startTime: nq 0
-      endTime: nq 0
-      componentId: 28
-      isError: false
-      spanType: Entry
-      peer: ''
-      tags:
-      - {key: url, value: /sayHi}
-      refs:
-      - {parentEndpoint: codefirst.codeFirstSpringmvcHelloClient.say, networkAddress: not
-          null, refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not
-          null, parentServiceInstance: not null, parentService: not null, traceId: not
-          null}
-      skipAnalysis: 'false'
-  - segmentId: not null
-    spans:
-    - operationName: codefirst.codeFirstHello.sayHi
-      parentSpanId: 0
-      spanId: 1
-      spanLayer: RPCFramework
-      startTime: nq 0
-      endTime: nq 0
-      componentId: 28
-      isError: false
-      spanType: Exit
-      peer: not null
-      tags:
-      - {key: url, value: /sayHi}
-      skipAnalysis: 'false'
-    - operationName: codefirst.codeFirstSpringmvcHelloClient.say
-      parentSpanId: -1
-      spanId: 0
-      spanLayer: RPCFramework
-      startTime: nq 0
-      endTime: nq 0
-      componentId: 28
-      isError: false
-      spanType: Entry
-      peer: ''
-      tags:
-      - {key: url, value: /case}
-      skipAnalysis: 'false'
+  - serviceName: servicecomb-2.x-scenario
+    segmentSize: gt 2
+    segments:
+    - segmentId: not null
+      spans:
+      - operationName: codefirsttest.codeFirstHello.sayHi
+        parentSpanId: -1
+        spanId: 0
+        spanLayer: RPCFramework
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 28
+        isError: false
+        spanType: Entry
+        peer: ''
+        tags:
+        - {key: url, value: /sayHi}
+        refs:
+        - {parentEndpoint: codefirsttest.codeFirstSpringmvcHelloClient.say, networkAddress: not
+            null, refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not
+            null, parentServiceInstance: not null, parentService: not null, traceId: not
+            null}
+        skipAnalysis: 'false'
+    - segmentId: not null
+      spans:
+      - operationName: codefirsttest.codeFirstHello.sayHi
+        parentSpanId: 0
+        spanId: 1
+        spanLayer: RPCFramework
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 28
+        isError: false
+        spanType: Exit
+        peer: not null
+        tags:
+        - {key: url, value: /sayHi}
+        skipAnalysis: 'false'
+      - operationName: codefirsttest.codeFirstSpringmvcHelloClient.say
+        parentSpanId: -1
+        spanId: 0
+        spanLayer: RPCFramework
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 28
+        isError: false
+        spanType: Entry
+        peer: ''
+        tags:
+        - {key: url, value: /say}
+        skipAnalysis: 'false'

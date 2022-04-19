@@ -44,7 +44,7 @@ public class InstanceJsonPropertiesUtil {
         }
 
         properties.add(KeyStringValuePair.newBuilder().setKey("namespace").setValue(Config.Agent.NAMESPACE).build());
-        properties.add(KeyStringValuePair.newBuilder().setKey("cluster").setValue(Config.Agent.NAMESPACE).build());
+        properties.add(KeyStringValuePair.newBuilder().setKey("cluster").setValue(Config.Agent.CLUSTER).build());
 
         return properties;
     }

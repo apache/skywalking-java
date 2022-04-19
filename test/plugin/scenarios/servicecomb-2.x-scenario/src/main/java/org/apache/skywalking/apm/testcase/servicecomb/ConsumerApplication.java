@@ -18,10 +18,8 @@
 
 package org.apache.skywalking.apm.testcase.servicecomb;
 
-import org.apache.servicecomb.registry.RegistrationManager;
+
 import org.apache.servicecomb.springboot2.starter.EnableServiceComb;
-import org.apache.skywalking.apm.testcase.servicecomb.consumer.CodeFirstPojoConsumerHelloImpl;
-import org.apache.skywalking.apm.testcase.servicecomb.provider.CodeFirstPojoHelloProviderImpl;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

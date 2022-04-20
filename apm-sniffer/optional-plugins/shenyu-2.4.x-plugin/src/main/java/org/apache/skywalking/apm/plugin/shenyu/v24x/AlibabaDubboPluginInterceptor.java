@@ -18,8 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x;
 
-import com.alibaba.dubbo.rpc.RpcContext;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -27,22 +25,21 @@ import org.apache.skywalking.apm.plugin.shenyu.v24x.util.CommonUtil;
 
 import java.lang.reflect.Method;
 
-import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.SKYWALKING_CONTEXT_SNAPSHOT;
-
+/**
+ * shenyu AlibabaDubboPlugin Interceptor.
+ */
 public class AlibabaDubboPluginInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
                              Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        // alibaba dubbo rpcContext
-        CommonUtil.beforeMonoForPlugin(allArguments, "AlibabaDubboPlugin",
-                () -> RpcContext.getContext().set(SKYWALKING_CONTEXT_SNAPSHOT, ContextManager.capture()));
+        CommonUtil.createLocalSpan(allArguments, "AlibabaDubboPlugin");
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
                               Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        return CommonUtil.afterMonoForPlugin(allArguments, ret);
+        return CommonUtil.stopLocalSpan(allArguments, ret);
     }
 
     @Override

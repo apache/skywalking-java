@@ -18,6 +18,10 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x.util;
 
+import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.PROXY_RPC_SPAN;
+
+import java.util.Objects;
+
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -27,11 +31,6 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
-import reactor.core.publisher.Mono;
-
-import java.util.Objects;
-
-import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.PROXY_RPC_SPAN;
 
 public class CommonUtil {
 
@@ -46,7 +45,7 @@ public class CommonUtil {
         return instance;
     }
 
-    public static void beforeMonoForPlugin(Object[] allArguments, String localOp, Runnable snapshotOp) {
+    public static void createLocalSpan(Object[] allArguments, String localOp) {
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
         EnhancedInstance enhancedInstance = CommonUtil.getEnhancedServerWebExchange(allArguments[0]);
         AbstractSpan span = ContextManager.createLocalSpan(localOp);
@@ -55,21 +54,16 @@ public class CommonUtil {
         if (enhancedInstance != null && enhancedInstance.getSkyWalkingDynamicField() != null) {
             ContextManager.continued((ContextSnapshot) enhancedInstance.getSkyWalkingDynamicField());
         }
-        snapshotOp.run();
-        span.prepareForAsync();
-        ContextManager.stopSpan(span);
         exchange.getAttributes().put(PROXY_RPC_SPAN, span);
     }
 
-    public static Object afterMonoForPlugin(Object[] allArguments, Object ret) {
+    public static Object stopLocalSpan(Object[] allArguments, Object ret) {
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
         AbstractSpan span = (AbstractSpan) exchange.getAttributes().get(PROXY_RPC_SPAN);
         if (Objects.isNull(span)) {
             return ret;
         }
-        Mono<Void> monoReturn = (Mono<Void>) ret;
-        return monoReturn
-                .doOnError(throwable -> span.errorOccurred().log(throwable))
-                .doFinally(s -> span.asyncFinish());
+        ContextManager.stopSpan(span);
+        return ret;
     }
 }

@@ -25,10 +25,7 @@ import com.alibaba.dubbo.rpc.Invoker;
 import com.alibaba.dubbo.rpc.Result;
 import com.alibaba.dubbo.rpc.RpcContext;
 import java.lang.reflect.Method;
-import java.util.Optional;
-
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
-import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -46,9 +43,6 @@ import org.apache.skywalking.apm.util.StringUtil;
  * of dubbo framework below 2.8.3 don't support {@link RpcContext#attachments}, we support another way to support it.
  */
 public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
-
-    private static final String SKYWALKING_CONTEXT_SNAPSHOT = "SKYWALKING_CONTEXT_SNAPSHOT";
-
     /**
      * <h2>Consumer:</h2> The serialized trace context data will
      * inject to the {@link RpcContext#attachments} for transport to provider side.
@@ -70,13 +64,8 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
         final String host = requestURL.getHost();
         final int port = requestURL.getPort();
         if (isConsumer) {
-            span = ContextManager.createExitSpan(generateOperationName(requestURL, invocation), host + ":" + port);
-            Optional.ofNullable(rpcContext.get(SKYWALKING_CONTEXT_SNAPSHOT)).ifPresent(snapshot -> {
-                ContextManager.continued((ContextSnapshot) rpcContext.get(SKYWALKING_CONTEXT_SNAPSHOT));
-                rpcContext.remove(SKYWALKING_CONTEXT_SNAPSHOT);
-            });
             final ContextCarrier contextCarrier = new ContextCarrier();
-            ContextManager.inject(contextCarrier);
+            span = ContextManager.createExitSpan(generateOperationName(requestURL, invocation), contextCarrier, host + ":" + port);
             //invocation.getAttachments().put("contextData", contextDataStr);
             //@see https://github.com/alibaba/dubbo/blob/dubbo-2.5.3/dubbo-rpc/dubbo-rpc-api/src/main/java/com/alibaba/dubbo/rpc/RpcInvocation.java#L154-L161
             CarrierItem next = contextCarrier.items();

@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x;
 
-import org.apache.dubbo.rpc.RpcContext;
+import com.alibaba.dubbo.rpc.RpcContext;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -29,15 +29,14 @@ import java.lang.reflect.Method;
 
 import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.SKYWALKING_CONTEXT_SNAPSHOT;
 
-public class ApacheDubboPluginInterceptor implements InstanceMethodsAroundInterceptor {
+public class AlibabaDubboPluginInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                             MethodInterceptResult result) throws Throwable {
-        // apache dubbo rpcContext
-        CommonUtil.beforeMonoForPlugin(allArguments, "ApacheDubboPlugin",
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
+                             Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+        // alibaba dubbo rpcContext
+        CommonUtil.beforeMonoForPlugin(allArguments, "AlibabaDubboPlugin",
                 () -> RpcContext.getContext().set(SKYWALKING_CONTEXT_SNAPSHOT, ContextManager.capture()));
-
     }
 
     @Override

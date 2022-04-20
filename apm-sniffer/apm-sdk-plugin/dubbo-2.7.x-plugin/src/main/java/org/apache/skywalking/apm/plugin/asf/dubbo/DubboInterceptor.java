@@ -49,6 +49,7 @@ import java.util.Optional;
 public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String ARGUMENTS = "arguments";
+    private static final String SKYWALKING_CONTEXT_SNAPSHOT = "SKYWALKING_CONTEXT_SNAPSHOT";
 
     /**
      * <h2>Consumer:</h2> The serialized trace context data will
@@ -77,9 +78,9 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
 
             span = ContextManager.createExitSpan(generateOperationName(requestURL, invocation),  host + ":" + port);
 
-            Optional.ofNullable(rpcContext.get("my")).ifPresent(snapshot -> {
-                ContextManager.continued((ContextSnapshot) rpcContext.get("my"));
-                rpcContext.remove("my");
+            Optional.ofNullable(rpcContext.get(SKYWALKING_CONTEXT_SNAPSHOT)).ifPresent(snapshot -> {
+                ContextManager.continued((ContextSnapshot) rpcContext.get(SKYWALKING_CONTEXT_SNAPSHOT));
+                rpcContext.remove(SKYWALKING_CONTEXT_SNAPSHOT);
             });
             final ContextCarrier contextCarrier = new ContextCarrier();
             ContextManager.inject(contextCarrier);

@@ -18,11 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -39,8 +34,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
-
 import reactor.core.publisher.Mono;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.SKYWALKING_CONTEXT_SNAPSHOT;
 
 /**
  * Apache shenyu global-plugin interceptor.
@@ -48,12 +49,12 @@ import reactor.core.publisher.Mono;
 public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String SHENYU_AGENT_TRACE_ID = "shenyu-agent-trace-id";
-    public static final String SKYWALKING_CONTEXT_SNAPSHOT = "SKYWALKING_CONTEXT_SNAPSHOT";
+
     public static final String SKYWALKING_SPAN = "SKYWALKING_SPAN";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-            MethodInterceptResult result) throws Throwable {
+                             MethodInterceptResult result) throws Throwable {
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
 
         ContextCarrier carrier = new ContextCarrier();
@@ -85,7 +86,7 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-            Object ret) throws Throwable {
+                              Object ret) throws Throwable {
 
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
 
@@ -105,22 +106,22 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         return monoReturn
                 .doOnError(throwable -> span.errorOccurred().log(throwable))
                 .doFinally(s -> {
-                        try {
-                            Optional.ofNullable(exchange.getResponse().getStatusCode()).ifPresent(httpStatus -> {
-                                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
-                                if (httpStatus.isError()) {
-                                    span.errorOccurred();
-                                }
-                            });
-                        } finally {
-                            span.asyncFinish();
-                        }
+                    try {
+                        Optional.ofNullable(exchange.getResponse().getStatusCode()).ifPresent(httpStatus -> {
+                            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
+                            if (httpStatus.isError()) {
+                                span.errorOccurred();
+                            }
+                        });
+                    } finally {
+                        span.asyncFinish();
+                    }
                 });
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-            Class<?>[] argumentsTypes, Throwable t) {
+                                      Class<?>[] argumentsTypes, Throwable t) {
     }
 
     public static EnhancedInstance getInstance(Object o) {

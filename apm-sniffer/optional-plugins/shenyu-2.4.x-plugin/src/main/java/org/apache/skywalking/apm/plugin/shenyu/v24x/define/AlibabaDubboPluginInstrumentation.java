@@ -28,10 +28,10 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class ApacheDubboPluginInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class AlibabaDubboPluginInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     @Override
     protected ClassMatch enhanceClass() {
-        return byName("org.apache.shenyu.plugin.apache.dubbo.ApacheDubboPlugin");
+        return byName("org.apache.shenyu.plugin.alibaba.dubbo.AlibabaDubboPlugin");
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ApacheDubboPluginInstrumentation extends ClassInstanceMethodsEnhanc
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return "org.apache.skywalking.apm.plugin.shenyu.v24x.ApacheDubboPluginInterceptor";
+                        return "org.apache.skywalking.apm.plugin.shenyu.v24x.AlibabaDubboPluginInterceptor";
                     }
 
                     @Override

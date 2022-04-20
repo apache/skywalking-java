@@ -120,7 +120,6 @@ public class DubboInterceptor implements InstanceMethodsAroundInterceptor {
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
         Result result = (Result) ret;
-        Object resultFromFuture = RpcContext.getContext().getFuture();
         try {
             if (result != null && result.getException() != null) {
                 dealException(result.getException());

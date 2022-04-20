@@ -50,9 +50,9 @@ This step is only for testing purpose. If your env is correctly set, you don't n
 
 - Set version number as x.y.z, and tag as **v**x.y.z (The version tag must start with **v**. You will find out why this is necessary in the next step.)
 
-_You could do a GPG signature before preparing for the release. If you need to input the password to sign, and the maven doesn't provide you with the opportunity to do so, this may lead to failure of the release. To resolve this, you may run `gpg --sign xxx` in any file. This will allow it to remember the password for long enough to prepare for the release._ 
+_You could do a GPG signature before preparing for the release. If you need to input the password to sign, and the maven doesn't provide you with the opportunity to do so, this may lead to failure of the release. To resolve this, you may run `gpg --sign xxx` in any file. This will allow it to remember the password for long enough to prepare for the release._
 
-## Stage the release 
+## Stage the release
 ```
 ./mvnw release:perform -DskipTests -Pall
 ```
@@ -70,7 +70,7 @@ This script takes care of the following things:
 1. Use `v` + `RELEASE_VERSION` as tag to clone the codes.
 2. Complete `git submodule init/update`.
 3. Exclude all unnecessary files in the target source tar, such as `.git`, `.github`, and `.gitmodules`. See the script for more details.
-4. Execute `gpg` and `shasum 512` for source code tar. 
+4. Execute `gpg` and `shasum 512` for source code tar.
 5. Use maven package to build the agent tar.
 6. Execute `gpg` and `shasum 512` for binary tar.
 
@@ -251,7 +251,7 @@ Downloads:
 http://skywalking.apache.org/downloads/
 
 Twitter:
-https://twitter.com/ASFSkyWalking
+https://twitter.com/AsfSkyWalking
 
 SkyWalking Resources:
 - GitHub: https://github.com/apache/skywalking-java

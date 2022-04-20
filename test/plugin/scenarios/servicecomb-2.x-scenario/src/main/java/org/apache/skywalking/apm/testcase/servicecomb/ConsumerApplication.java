@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.testcase.servicecomb;
 
-
 import org.apache.servicecomb.springboot2.starter.EnableServiceComb;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

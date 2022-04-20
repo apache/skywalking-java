@@ -20,12 +20,14 @@ package org.apache.skywalking.apm.testcase.servicecomb.provider;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.log4j.Logger;
 import org.apache.servicecomb.provider.pojo.RpcSchema;
 import org.apache.skywalking.apm.testcase.servicecomb.schema.Hello;
 import org.apache.skywalking.apm.testcase.servicecomb.schema.models.Person;
 
 @RpcSchema(schemaId = "codeFirstHello")
 public class CodeFirstPojoHelloProviderImpl implements Hello {
+    private static Logger LOGGER = Logger.getLogger(CodeFirstPojoHelloProviderImpl.class);
 
     @Override
     public String sayHi(String name) {

@@ -29,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.swagger.annotations.ApiOperation;
-
 @RpcSchema(schemaId = "codeFirstSpringmvcHelloClient")
 @RequestMapping(path = "/servicecomb")
 public class CodeFirstPojoConsumerHelloImpl {
@@ -50,8 +48,7 @@ public class CodeFirstPojoConsumerHelloImpl {
         return repo;
     }
 
-    @RequestMapping(path = "/case1", method = RequestMethod.GET)
-    @ApiOperation(value = "a simple test interface", nickname = "case1")
+    @RequestMapping(path = "/say1", method = RequestMethod.GET)
     public String say1(@RequestParam String name) {
         Person person = new Person();
         person.setName(name);

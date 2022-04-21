@@ -99,6 +99,7 @@ jobs:
           - guava-eventbus-scenario
           - shenyu-2.4.x-scenario
           - jdk-threadpool-scenario
+          - shenyu-2.4.x-dubbo-scenario
     steps:
       - uses: actions/checkout@v2
         with:

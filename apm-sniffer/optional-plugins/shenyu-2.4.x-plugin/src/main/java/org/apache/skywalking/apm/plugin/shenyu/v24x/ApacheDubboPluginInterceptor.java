@@ -26,7 +26,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.plugin.shenyu.v24x.util.CommonUtil;
 
 /**
- * shenyu AlibabaDubboPlugin Interceptor.
+ * shenyu ApacheDubboPlugin Interceptor.
  */
 public class ApacheDubboPluginInterceptor implements InstanceMethodsAroundInterceptor {
 

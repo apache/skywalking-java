@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,7 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.GlobalPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ServerWebExchangeInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ApacheDubboPluginInstrumentation
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=shenyu-gateway" ${home}/../libs/shenyu-dubbo-gateway.jar &
+sleep 2
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=dubbo-provider" ${home}/../libs/shenyu-dubbo.jar &
+sleep 1
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=entry-service" ${home}/../libs/shenyu-dubbo-entry.jar &
+sleep 1
 

@@ -33,7 +33,7 @@ public class ApacheDubboPluginInterceptor implements InstanceMethodsAroundInterc
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        CommonUtil.createLocalSpan(allArguments, "ApacheDubboPlugin");
+        CommonUtil.createLocalSpan(allArguments, "DubboPlugin");
     }
 
     @Override
@@ -45,6 +45,6 @@ public class ApacheDubboPluginInterceptor implements InstanceMethodsAroundInterc
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-
+        CommonUtil.logErrorLocalSpan(allArguments, t);
     }
 }

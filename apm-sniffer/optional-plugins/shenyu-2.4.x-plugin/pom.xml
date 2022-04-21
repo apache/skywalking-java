@@ -32,7 +32,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-webflux.version>5.0.0.RELEASE</spring-webflux.version>
         <apache-dubbo.version>2.7.0</apache-dubbo.version>
-        <alibaba-dubbo.version>2.5.10</alibaba-dubbo.version>
     </properties>
 
 
@@ -47,13 +46,6 @@
             <groupId>org.apache.skywalking</groupId>
             <artifactId>apm-spring-webflux-5.x-plugin</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>dubbo</artifactId>
-            <version>${alibaba-dubbo.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>

@@ -66,4 +66,13 @@ public class CommonUtil {
         ContextManager.stopSpan(span);
         return ret;
     }
+
+    public static void logErrorLocalSpan(Object[] allArguments, Throwable t) {
+        ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
+        AbstractSpan span = (AbstractSpan) exchange.getAttributes().get(PROXY_RPC_SPAN);
+        if (Objects.isNull(span)) {
+            return ;
+        }
+        span.errorOccurred().log(t);
+    }
 }

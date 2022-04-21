@@ -18,20 +18,29 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x.define;
 
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.matcher.ElementMatcher;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.matcher.ElementMatcher;
 
 public class ApacheDubboPluginInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+
+    private static final String ENHANCE_CLASS = "org.apache.shenyu.plugin.apache.dubbo.ApacheDubboPlugin";
+
+    private static final String INTERCEPT_CLASS =
+            "org.apache.skywalking.apm.plugin.shenyu.v24x.ApacheDubboPluginInterceptor";
+
+    private static final String INTERCEPT_METHOD = "doDubboInvoker";
+    
     @Override
     protected ClassMatch enhanceClass() {
-        return byName("org.apache.shenyu.plugin.apache.dubbo.ApacheDubboPlugin");
+        return byName(ENHANCE_CLASS);
     }
 
     @Override
@@ -45,12 +54,12 @@ public class ApacheDubboPluginInstrumentation extends ClassInstanceMethodsEnhanc
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("doDubboInvoker");
+                        return named(INTERCEPT_METHOD);
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return "org.apache.skywalking.apm.plugin.shenyu.v24x.ApacheDubboPluginInterceptor";
+                        return INTERCEPT_CLASS;
                     }
 
                     @Override

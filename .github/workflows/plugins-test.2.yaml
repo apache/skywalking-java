@@ -63,6 +63,7 @@ jobs:
           - redisson-scenario
           - resttemplate-4.x-scenario
           - servicecomb-1.x-scenario
+          - servicecomb-2.x-scenario
           - shardingsphere-3.x-scenario
           - shardingsphere-4.0.x-scenario
           - shardingsphere-4.x-scenario

@@ -79,9 +79,6 @@ public class TransportClientHandlerInterceptor implements InstanceMethodsAroundI
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
         Invocation invocation = (Invocation) allArguments[0];
-        if (!checkRegisterStatus(invocation)) {
-            return;
-        }
         AbstractSpan span = ContextManager.activeSpan();
         span.log(t);
     }

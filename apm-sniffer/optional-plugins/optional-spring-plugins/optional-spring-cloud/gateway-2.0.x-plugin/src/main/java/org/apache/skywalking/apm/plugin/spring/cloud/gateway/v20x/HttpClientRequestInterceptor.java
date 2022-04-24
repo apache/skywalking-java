@@ -45,6 +45,16 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
                              final Object[] allArguments,
                              final Class<?>[] argumentsTypes,
                              final MethodInterceptResult result) throws Throwable {
+        
+        /*
+          In this plug-in, the HttpClientFinalizerSendInterceptor depends on the NettyRoutingFilterInterceptor
+          When the NettyRoutingFilterInterceptor is not executed, the HttpClientFinalizerSendInterceptor has no meaning to be executed independently
+          and using ContextManager.activeSpan() method would cause NPE as active span does not exist.
+         */
+        if (!ContextManager.isActive()) {
+            return;
+        }
+        
         AbstractSpan span = ContextManager.activeSpan();
 
         URL url = new URL((String) allArguments[1]);
@@ -78,7 +88,7 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
                               final Method method,
                               final Object[] allArguments,
                               final Class<?>[] argumentsTypes,
-                              final Object ret) throws Throwable {
+                              final Object ret) {
         EnhanceCacheObject enhanceCacheObject = (EnhanceCacheObject) objInst.getSkyWalkingDynamicField();
         Mono<HttpClientResponse> responseMono = (Mono<HttpClientResponse>) ret;
         return responseMono.doAfterSuccessOrError(new BiConsumer<HttpClientResponse, Throwable>() {

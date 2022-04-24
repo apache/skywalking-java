@@ -51,7 +51,7 @@ public class SkywalkingSpan implements Span {
     /**
      * Stop the active span
      */
-    @NeedSnifferActivation("1.ContextManager#stopSpan(AbstractSpan span)" + "2. The parameter of stop methed is from the dynamic field of enhanced SkywalkingSpan")
+    @NeedSnifferActivation("1.ContextManager#stopSpan(AbstractSpan span)" + "2. The parameter of stop method is from the dynamic field of enhanced SkywalkingSpan")
     @Override
     public void finish(long finishMicros) {
 

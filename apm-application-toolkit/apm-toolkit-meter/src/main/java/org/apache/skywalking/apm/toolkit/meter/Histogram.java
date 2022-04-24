@@ -54,7 +54,7 @@ public class Histogram extends BaseMeter {
         }
 
         /**
-         * Set bucket steps, the minimal values of every buckets besides the {@link #minValue}.
+         * Set bucket steps, the minimal values of every bucket besides the {@link #minValue}.
          */
         public Builder steps(List<Double> steps) {
             this.steps = new ArrayList<>(steps);

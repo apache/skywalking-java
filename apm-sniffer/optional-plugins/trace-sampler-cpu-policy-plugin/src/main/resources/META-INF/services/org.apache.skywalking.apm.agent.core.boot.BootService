@@ -16,4 +16,4 @@
 #
 #
 
-org.apache.skywalking.apm.plugin.trace.cpu.limit.TraceCpuLimitExtendService
+org.apache.skywalking.apm.plugin.cpu.policy.TraceSamplerCpuPolicyExtendService

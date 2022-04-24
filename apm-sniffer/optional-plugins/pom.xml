@@ -44,7 +44,6 @@
     <modules>
         <module>optional-spring-plugins</module>
         <module>trace-ignore-plugin</module>
-        <module>trace-cpu-limit-plugin</module>
         <module>gson-2.8.x-plugin</module>
         <module>zookeeper-3.4.x-plugin</module>
         <module>customize-enhance-plugin</module>
@@ -56,6 +55,7 @@
         <module>guava-cache-plugin</module>
         <module>fastjson-1.2.x-plugin</module>
         <module>jackson-2.x-plugin</module>
+        <module>trace-sampler-cpu-policy-plugin</module>
     </modules>
 
     <dependencies>

@@ -16,11 +16,15 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.trace.cpu.limit.conf;
+package org.apache.skywalking.apm.plugin.cpu.policy.conf;
 
-public class CpuLimitConfig {
+import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
 
-    public static class Trace {
-        public static double SAMPLE_CPU_USAGE_PERCENT_LIMIT = -1;
+public class TraceSamplerCpuPolicyPluginConfig {
+    public static class Plugin {
+        @PluginConfig(root = TraceSamplerCpuPolicyPluginConfig.class)
+        public static class CpuPolicy {
+            public static double SAMPLE_CPU_USAGE_PERCENT_LIMIT = -1;
+        }
     }
 }

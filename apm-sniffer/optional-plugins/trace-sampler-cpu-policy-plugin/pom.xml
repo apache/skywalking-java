@@ -24,7 +24,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-trace-cpu-limit-plugin</artifactId>
+    <artifactId>trace-sampler-cpu-policy-plugin</artifactId>
     <packaging>jar</packaging>
 
     <name>apm-trace-cpu-limit-plugin</name>

@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.trace.cpu.limit;
+package org.apache.skywalking.apm.plugin.cpu.policy;
 
 import org.apache.skywalking.apm.agent.core.boot.OverrideImplementor;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
@@ -24,12 +24,11 @@ import org.apache.skywalking.apm.agent.core.jvm.JVMService;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
-import org.apache.skywalking.apm.plugin.trace.cpu.limit.conf.CpuLimitConfig;
-import org.apache.skywalking.apm.plugin.trace.cpu.limit.conf.CpuLimitConfigInitializer;
+import org.apache.skywalking.apm.plugin.cpu.policy.conf.TraceSamplerCpuPolicyPluginConfig;
 
 @OverrideImplementor(SamplingService.class)
-public class TraceCpuLimitExtendService extends SamplingService {
-    private static final ILog LOGGER = LogManager.getLogger(TraceCpuLimitExtendService.class);
+public class TraceSamplerCpuPolicyExtendService extends SamplingService {
+    private static final ILog LOGGER = LogManager.getLogger(TraceSamplerCpuPolicyExtendService.class);
 
     private volatile boolean cpuUsagePercentLimitOn = false;
     private volatile JVMService jvmService;
@@ -42,9 +41,8 @@ public class TraceCpuLimitExtendService extends SamplingService {
     @Override
     public void boot() {
         super.boot();
-        CpuLimitConfigInitializer.initialize();
-        if (CpuLimitConfig.Trace.SAMPLE_CPU_USAGE_PERCENT_LIMIT > 0) {
-            LOGGER.info("TraceCpuLimitExtendService cpu usage percent limit open");
+        if (TraceSamplerCpuPolicyPluginConfig.Plugin.CpuPolicy.SAMPLE_CPU_USAGE_PERCENT_LIMIT > 0) {
+            LOGGER.info("TraceSamplerCpuPolicyExtendService cpu usage percent limit open");
             jvmService = ServiceManager.INSTANCE.findService(JVMService.class);
             cpuUsagePercentLimitOn = true;
         }
@@ -63,7 +61,7 @@ public class TraceCpuLimitExtendService extends SamplingService {
     public boolean trySampling(final String operationName) {
         if (cpuUsagePercentLimitOn) {
             double cpuUsagePercent = jvmService.getCpuUsagePercent();
-            if (cpuUsagePercent > CpuLimitConfig.Trace.SAMPLE_CPU_USAGE_PERCENT_LIMIT) {
+            if (cpuUsagePercent > TraceSamplerCpuPolicyPluginConfig.Plugin.CpuPolicy.SAMPLE_CPU_USAGE_PERCENT_LIMIT) {
                 return false;
             }
         }

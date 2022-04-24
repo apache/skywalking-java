@@ -105,10 +105,11 @@ public class JVMService implements BootService, Runnable {
             jvmBuilder.setThread(ThreadProvider.INSTANCE.getThreadMetrics());
             jvmBuilder.setClazz(ClassProvider.INSTANCE.getClassMetrics());
 
-            sender.offer(jvmBuilder.build());
+            JVMMetric jvmMetric = jvmBuilder.build();
+            sender.offer(jvmMetric);
 
             // refresh cpu usage percent
-            cpuUsagePercent = jvmBuilder.getCpu().getUsagePercent();
+            cpuUsagePercent = jvmMetric.getCpu().getUsagePercent();
         } catch (Exception e) {
             LOGGER.error(e, "Collect JVM info fail.");
         }

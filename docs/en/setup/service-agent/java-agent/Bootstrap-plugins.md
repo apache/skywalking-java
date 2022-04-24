@@ -5,3 +5,4 @@ For using these plugins, you need to put the target plugin jar file into `/plugi
 Now, we have the following known bootstrap plugins.
 * Plugin of JDK HttpURLConnection. Agent is compatible with JDK 1.8+
 * Plugin of JDK Callable and Runnable. Agent is compatible with JDK 1.8+
+* Plugin of JDK ThreadPoolExecutor. Agent is compatible with JDK 1.8+

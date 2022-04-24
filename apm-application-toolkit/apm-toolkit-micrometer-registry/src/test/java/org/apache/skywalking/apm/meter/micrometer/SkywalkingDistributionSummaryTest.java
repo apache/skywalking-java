@@ -30,7 +30,7 @@ public class SkywalkingDistributionSummaryTest {
 
     @Test
     public void testSimple() {
-        // Creating a simplify distribution summary
+        // Creating a simplified distribution summary
         final SkywalkingMeterRegistry registry = new SkywalkingMeterRegistry();
         final DistributionSummary summary = registry.summary("test_simple_distribution_summary", "skywalking", "test");
 

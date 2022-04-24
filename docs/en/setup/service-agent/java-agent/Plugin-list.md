@@ -78,6 +78,7 @@
 - rocketMQ-4.x
 - sentinel-1.x
 - servicecomb-1.x
+- servicecomb-2.x
 - sharding-sphere-3.x
 - sharding-sphere-4.0.0
 - sharding-sphere-4.1.0
@@ -136,3 +137,5 @@
 - undertow-worker-thread-pool
 - tomcat-thread-pool
 - guava-eventbus
+- shenyu-2.4.x
+- jdk-threadpool-plugin

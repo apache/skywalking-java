@@ -31,6 +31,7 @@ metrics based on the tracing data.
   * JRE HttpURLConnection (Optional²)
 * HTTP Gateway
   * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 3.x (Optional²)
+  * [Apache ShenYu](https://shenyu.apache.org) 2.4.x (Optional²)
 * JDBC
   * Mysql Driver 5.x, 6.x, 8.x
   * Oracle Driver (Optional¹)
@@ -49,7 +50,7 @@ metrics based on the tracing data.
   * [Apache Dubbo](https://github.com/apache/dubbo) 2.7.x -> 3.x
   * [Motan](https://github.com/weibocom/motan) 0.2.x -> 1.1.0
   * [gRPC](https://github.com/grpc/grpc-java) 1.x
-  * [Apache ServiceComb Java Chassis](https://github.com/apache/servicecomb-java-chassis) 1.x
+  * [Apache ServiceComb Java Chassis](https://github.com/apache/servicecomb-java-chassis) 1.x, 2.x
   * [SOFARPC](https://github.com/alipay/sofa-rpc) 5.4.0
   * [Armeria](https://github.com/line/armeria) 0.63.0 -> 0.98.0
   * [Apache Avro](http://avro.apache.org) 1.7.0 - 1.8.x

@@ -31,7 +31,7 @@ public class DateConverter implements Converter {
 
     @Override
     public String convert(LogEvent logEvent) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
     }
 
     @Override

@@ -42,6 +42,16 @@ public class HttpClientFinalizerSendInterceptor implements InstanceMethodsAround
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
         EnhanceObjectCache enhanceObjectCache = (EnhanceObjectCache) objInst.getSkyWalkingDynamicField();
+
+        /*
+          In this plug-in, the HttpClientFinalizerSendInterceptor depends on the NettyRoutingFilterInterceptor
+          When the NettyRoutingFilterInterceptor is not executed, the HttpClientFinalizerSendInterceptor has no meaning to be executed independently
+          and using ContextManager.activeSpan() method would cause NPE as active span does not exist.
+         */
+        if (!ContextManager.isActive()) {
+            return;
+        }
+        
         AbstractSpan span = ContextManager.activeSpan();
         span.prepareForAsync();
 
@@ -85,7 +95,7 @@ public class HttpClientFinalizerSendInterceptor implements InstanceMethodsAround
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                              Object ret) throws Throwable {
+                              Object ret) {
         ((EnhancedInstance) ret).setSkyWalkingDynamicField(objInst.getSkyWalkingDynamicField());
         return ret;
     }

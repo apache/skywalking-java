@@ -21,4 +21,4 @@ Now, we have the following known optional plugins.
 * Plugin of fastjson serialization lib in optional plugin folder.
 * Plugin of jackson serialization lib in optional plugin folder.
 * Plugin of Apache ShenYu(incubating) Gateway 2.4.x in optional plugin folder. Please only activate this plugin when you install agent in Apache ShenYu Gateway.
-* Plugin of trace sampler cpu policy in the optional plugin folder. Please only activate this plugin when you need limit agent sample when the agent process cpu usage is too high.
+* Plugin of trace sampler CPU policy in the optional plugin folder. Please only activate this plugin when you need to disable trace collecting when the agent process CPU usage is too high(over threshold).

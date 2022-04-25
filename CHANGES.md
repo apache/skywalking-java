@@ -10,6 +10,7 @@ Release Notes.
 * Remove redundant `shade.package` property.
 * Add servicecomb-2.x plugin and Testcase.
 * Fix NPE in gateway plugin when the timer triggers webflux webclient call.
+* Add an optional plugin, trace-sampler-cpu-policy-plugin, which could disable trace collecting in high CPU load.
 
 #### Documentation
 

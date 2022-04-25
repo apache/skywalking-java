@@ -47,7 +47,6 @@ public class JVMService implements BootService, Runnable {
     private volatile ScheduledFuture<?> collectMetricFuture;
     private volatile ScheduledFuture<?> sendMetricFuture;
     private JVMMetricsSender sender;
-
     private volatile double cpuUsagePercent;
 
     @Override

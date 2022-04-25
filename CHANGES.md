@@ -9,6 +9,7 @@ Release Notes.
 * Add layer field to event when reporting.
 * Remove redundant `shade.package` property.
 * Add servicecomb-2.x plugin and Testcase.
+* Fix NPE in gateway plugin when the timer triggers webflux webclient call.
 
 #### Documentation
 

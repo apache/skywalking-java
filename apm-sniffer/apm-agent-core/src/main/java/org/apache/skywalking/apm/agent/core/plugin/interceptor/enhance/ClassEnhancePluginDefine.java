@@ -63,6 +63,7 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
      * @param newClassBuilder byte-buddy's builder to manipulate class bytecode.
      * @return new byte-buddy's builder for further manipulation.
      */
+    @Override
     protected DynamicType.Builder<?> enhanceInstance(TypeDescription typeDescription,
         DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader,
         EnhanceContext context) throws PluginException {
@@ -174,6 +175,7 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
      * @param newClassBuilder byte-buddy's builder to manipulate class bytecode.
      * @return new byte-buddy's builder for further manipulation.
      */
+    @Override
     protected DynamicType.Builder<?> enhanceClass(TypeDescription typeDescription, DynamicType.Builder<?> newClassBuilder,
         ClassLoader classLoader) throws PluginException {
         StaticMethodsInterceptPoint[] staticMethodsInterceptPoints = getStaticMethodsInterceptPoints();

@@ -16,26 +16,15 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.core.logging.core.converters;
+package org.apache.skywalking.apm.plugin.cpu.policy.conf;
 
-import org.apache.skywalking.apm.agent.core.logging.core.Converter;
-import org.apache.skywalking.apm.agent.core.logging.core.LogEvent;
+import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-/**
- * The Converter is used to return a now date with format.
- */
-public class DateConverter implements Converter {
-
-    @Override
-    public String convert(LogEvent logEvent) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
-    }
-
-    @Override
-    public String getKey() {
-        return "@timestamp";
+public class TraceSamplerCpuPolicyPluginConfig {
+    public static class Plugin {
+        @PluginConfig(root = TraceSamplerCpuPolicyPluginConfig.class)
+        public static class CpuPolicy {
+            public static double SAMPLE_CPU_USAGE_PERCENT_LIMIT = -1;
+        }
     }
 }

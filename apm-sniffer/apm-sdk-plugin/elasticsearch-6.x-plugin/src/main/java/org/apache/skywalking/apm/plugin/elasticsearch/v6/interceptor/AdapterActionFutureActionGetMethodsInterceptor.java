@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.elasticsearch.v6.RestClientEnhanceInfo;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -66,7 +67,10 @@ public class AdapterActionFutureActionGetMethodsInterceptor implements InstanceM
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
+        RestClientEnhanceInfo restClientEnhanceInfo = (RestClientEnhanceInfo) objInst.getSkyWalkingDynamicField();
+        if (restClientEnhanceInfo != null) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 
     private boolean isTrace(EnhancedInstance objInst) {

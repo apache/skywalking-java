@@ -21,7 +21,7 @@ package org.apache.skywalking.apm.agent.core.remote;
 import io.grpc.ManagedChannelBuilder;
 
 public class StandardChannelBuilder implements ChannelBuilder {
-    private final static int MAX_INBOUND_MESSAGE_SIZE = 1024 * 1024 * 50;
+    private static final int MAX_INBOUND_MESSAGE_SIZE = 1024 * 1024 * 50;
 
     @Override
     public ManagedChannelBuilder build(ManagedChannelBuilder managedChannelBuilder) {

@@ -12,6 +12,7 @@ Release Notes.
 * Fix NPE in gateway plugin when the timer triggers webflux webclient call.
 * Add an optional plugin, trace-sampler-cpu-policy-plugin, which could disable trace collecting in high CPU load.
 * Change the dateformat of logs to `yyyy-MM-dd HH:mm:ss.SSS`(was `yyyy-MM-dd HH:mm:ss:SSS`).
+* Fix NPE in elasticsearch plugin.
 
 #### Documentation
 

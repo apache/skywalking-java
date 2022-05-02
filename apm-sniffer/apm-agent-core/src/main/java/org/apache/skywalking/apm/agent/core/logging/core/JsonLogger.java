@@ -71,7 +71,7 @@ public class JsonLogger extends AbstractLogger {
     @Override
     protected String format(LogLevel level, String message, Throwable e) {
         LogEvent logEvent = new LogEvent(level, message, e, this.targetClass);
-        Map<String, String> log = new HashMap<>(this.converters.size(), 1);
+        Map<String, String> log = new HashMap<>(this.converters.size());
         for (Converter converter : this.converters) {
             log.put(converter.getKey(), converter.convert(logEvent));
         }

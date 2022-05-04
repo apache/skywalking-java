@@ -71,6 +71,7 @@ public class ClientCallImplGenericCallInterceptor
         if (StringUtil.isBlank(asyncCallMethod)) {
             return;
         }
+        ContextManager.getRuntimeContext().remove(GENERIC_CALL_METHOD);
 
         Listener<?> observer = (Listener<?>) allArguments[0];
         Metadata headers = (Metadata) allArguments[1];
@@ -113,6 +114,7 @@ public class ClientCallImplGenericCallInterceptor
         AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
         // Scenario of specifying IP + port
         String remotePeer = (String) ContextManager.getRuntimeContext().get(CLIENT_STREAM_PEER);
+        ContextManager.getRuntimeContext().remove(CLIENT_STREAM_PEER);
         span.setPeer(remotePeer);
         Arrays.stream(objInst.getClass().getDeclaredMethods()).filter(m -> m.getName().equals("getAttributes"))
                 .findFirst()
@@ -208,9 +210,11 @@ public class ClientCallImplGenericCallInterceptor
                         && ContextManager.getRuntimeContext().get(CLIENT_STREAM_PEER) != null) {
                     // why need this?  because first grpc call will create PendingStream(Unable to get IP)
                     // Delayed create NettyClientStream.
+                    // In this case, the constructor of NettyClientStream and the onClose are executed in the same thread
                     ExitSpan exitSpan = (ExitSpan) asyncSpan;
                     if (Strings.isNullOrEmpty(exitSpan.getPeer())) {
                         asyncSpan.setPeer((String) ContextManager.getRuntimeContext().get(CLIENT_STREAM_PEER));
+                        ContextManager.getRuntimeContext().remove(CLIENT_STREAM_PEER);
                     }
                 }
                 asyncSpan.asyncFinish();

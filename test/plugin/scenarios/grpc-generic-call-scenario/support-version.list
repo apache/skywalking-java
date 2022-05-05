@@ -14,10 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.AbstractStubInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.AbstractServerImplBuilderInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallsInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallsGenericCallInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallImplInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.NettyClientStreamInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ShadedNettyClientStreamInstrumentation
+# lists your version here (Contains only the last version number of each minor version.)
+1.6.0

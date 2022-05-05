@@ -14,10 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.AbstractStubInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.AbstractServerImplBuilderInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallsInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallsGenericCallInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallImplInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.NettyClientStreamInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ShadedNettyClientStreamInstrumentation
+type: jvm
+entryService: http://localhost:8888/case/generic-call
+healthCheck: http://localhost:8888/case/healthCheck
+startScript: ./bin/startup.sh
+environment:
+dependencies:

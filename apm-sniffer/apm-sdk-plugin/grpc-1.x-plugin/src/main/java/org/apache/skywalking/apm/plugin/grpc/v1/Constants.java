@@ -67,4 +67,8 @@ public class Constants {
     public static final String RESPONSE_ON_CLOSE_OPERATION_NAME = "/Response/onClose";
 
     public static final String BLOCKING_CALL_EXIT_SPAN = "SW_GRPC_BLOCKING_CALL_EXIT_SPAN";
+
+    public static final String GENERIC_CALL_METHOD = "GENERIC_CALL_METHOD";
+
+    public static final String CLIENT_STREAM_PEER = "CLIENT_STREAM_PEER";
 }

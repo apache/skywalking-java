@@ -37,7 +37,7 @@ public class CustomizeExpression {
     private static final ILog LOGGER = LogManager.getLogger(CustomizeExpression.class);
 
     public static Map<String, Object> evaluationContext(Object[] allArguments) {
-        Map<String, Object> context = new HashMap<>(allArguments.length);
+        Map<String, Object> context = new HashMap<>();
         if (allArguments == null) {
             return context;
         }

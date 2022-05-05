@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,10 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.AbstractStubInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.AbstractServerImplBuilderInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallsInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallsGenericCallInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ClientCallImplInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.NettyClientStreamInstrumentation
-grpc-1.x=org.apache.skywalking.apm.plugin.grpc.v1.define.ShadedNettyClientStreamInstrumentation
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=grpc-provider" ${home}/../libs/grpc-provider.jar &
+sleep 2
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=grpc-consumer" ${home}/../libs/grpc-consumer.jar &
+sleep 2
+
+

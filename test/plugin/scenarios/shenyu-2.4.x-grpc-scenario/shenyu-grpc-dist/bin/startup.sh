@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,11 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.GlobalPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ServerWebExchangeInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ApacheDubboPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.GrpcPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.SofaRpcPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.MotanRpcPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.TarsRpcPluginInstrumentation
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=shenyu-gateway" ${home}/../libs/shenyu-grpc-gateway.jar &
+sleep 2
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=grpc-service" ${home}/../libs/shenyu-grpc-service.jar &
+sleep 2
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=entry-service" ${home}/../libs/shenyu-grpc-entry.jar &
+sleep 1
 

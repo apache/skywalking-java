@@ -14,7 +14,7 @@ Release Notes.
 * Change the dateformat of logs to `yyyy-MM-dd HH:mm:ss.SSS`(was `yyyy-MM-dd HH:mm:ss:SSS`).
 * Fix NPE in elasticsearch plugin.
 * Grpc plugin support trace client async generic call(without grpc stubs), support Method type: `UNARY`、`SERVER_STREAMING`.
-* Enhance Apache ShenYu (incubating) plugin: support trace `grpc`,`sofarpc`,`motan`,`tars` rpc proxy.
+* Enhance Apache ShenYu (incubating) plugin: support trace `grpc`,`sofarpc`,`motan` rpc proxy.
 
 #### Documentation
 

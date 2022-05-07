@@ -29,6 +29,7 @@
 
     <modules>
         <module>servicecomb-java-chassis-1.x-plugin</module>
+        <module>servicecomb-java-chassis-2.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

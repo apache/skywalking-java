@@ -14,11 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.GlobalPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ServerWebExchangeInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.ApacheDubboPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.GrpcPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.SofaRpcPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.MotanRpcPluginInstrumentation
-shenyu-2.4.x=org.apache.skywalking.apm.plugin.shenyu.v24x.define.TarsRpcPluginInstrumentation
-
+# lists your version here (Contains only the last version number of each minor version.)
+2.4.3

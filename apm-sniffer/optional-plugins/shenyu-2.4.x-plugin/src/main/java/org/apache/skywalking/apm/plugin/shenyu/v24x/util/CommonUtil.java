@@ -21,9 +21,11 @@ package org.apache.skywalking.apm.plugin.shenyu.v24x.util;
 import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.PROXY_RPC_SPAN;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -63,6 +65,12 @@ public class CommonUtil {
         if (Objects.isNull(span)) {
             return ret;
         }
+        Optional.ofNullable(exchange.getResponse().getStatusCode()).ifPresent(httpStatus -> {
+            if (httpStatus.isError()) {
+                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
+                span.errorOccurred();
+            }
+        });
         ContextManager.stopSpan(span);
         return ret;
     }

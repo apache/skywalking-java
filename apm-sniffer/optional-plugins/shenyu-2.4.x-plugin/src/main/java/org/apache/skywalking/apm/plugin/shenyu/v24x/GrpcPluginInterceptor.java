@@ -33,7 +33,7 @@ public class GrpcPluginInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        CommonUtil.createLocalSpan(allArguments, "GrpcPlugin");
+        CommonUtil.createLocalSpan(allArguments, "gRPCPlugin");
     }
 
     @Override

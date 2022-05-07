@@ -68,7 +68,7 @@ segmentItems:
             tags:
               - {key: GENERIC_CALL_METHOD, value: asyncUnaryCall}
               - {key: rpc.status_code, value: OK}
-          - operationName: GrpcPlugin
+          - operationName: gRPCPlugin
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -156,7 +156,7 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             refs:
-              - { parentEndpoint: GrpcPlugin, networkAddress: not null, refType: CrossProcess,
+              - { parentEndpoint: gRPCPlugin, networkAddress: not null, refType: CrossProcess,
                   parentSpanId: 1, parentTraceSegmentId: not null,
                   parentServiceInstance: not null , parentService: shenyu-gateway,
                   traceId: not null }

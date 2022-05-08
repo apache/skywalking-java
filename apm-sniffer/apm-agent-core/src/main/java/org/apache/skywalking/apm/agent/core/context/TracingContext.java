@@ -410,6 +410,11 @@ public class TracingContext implements AbstractTracerContext {
         return this.correlationContext;
     }
 
+    @Override
+    public String getPrimaryEndpointName() {
+        return (primaryEndpoint != null) ? primaryEndpoint.getName() : null;
+    }
+
     /**
      * Re-check current trace need profiling, encase third part plugin change the operation name.
      *

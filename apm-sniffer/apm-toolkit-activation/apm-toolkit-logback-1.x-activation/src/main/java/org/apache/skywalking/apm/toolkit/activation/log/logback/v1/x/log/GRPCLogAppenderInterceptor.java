@@ -112,6 +112,9 @@ public class GRPCLogAppenderInterceptor implements InstanceMethodsAroundIntercep
                 .setTags(logTags.build())
                 .setBody(LogDataBody.newBuilder().setType(LogDataBody.ContentCase.TEXT.name())
                                     .setText(TextLog.newBuilder().setText(transformLogText(appender, event)).build()).build());
+        if (ContextManager.getPrimaryEndpointName() != null) {
+            builder.setEndpoint(ContextManager.getPrimaryEndpointName());
+        }
         return -1 == ContextManager.getSpanId() ? builder.build()
                 : builder.setTraceContext(TraceContext.newBuilder()
                         .setTraceId(ContextManager.getGlobalTraceId())

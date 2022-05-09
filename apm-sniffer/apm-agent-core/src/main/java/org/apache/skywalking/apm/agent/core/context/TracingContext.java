@@ -412,7 +412,7 @@ public class TracingContext implements AbstractTracerContext {
 
     @Override
     public String getPrimaryEndpointName() {
-        return (primaryEndpoint != null) ? primaryEndpoint.getName() : null;
+        return primaryEndpoint.getName();
     }
 
     /**

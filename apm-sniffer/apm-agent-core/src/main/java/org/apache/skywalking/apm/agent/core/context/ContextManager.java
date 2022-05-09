@@ -93,6 +93,14 @@ public class ContextManager implements BootService {
         return Objects.nonNull(context) ? context.getSpanId() : -1;
     }
 
+    /**
+     * @return the current primary endpoint name. Otherwise, the value is null.
+     */
+    public static String getPrimaryEndpointName() {
+        AbstractTracerContext context = CONTEXT.get();
+        return Objects.nonNull(context) ? context.getPrimaryEndpointName() : null;
+    }
+
     public static AbstractSpan createEntrySpan(String operationName, ContextCarrier carrier) {
         AbstractSpan span;
         AbstractTracerContext context;

@@ -18,10 +18,6 @@
 
 package test.apache.skywalking.apm.testcase;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import test.apache.skywalking.apm.testcase.entity.User;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
@@ -29,14 +25,14 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import test.apache.skywalking.apm.testcase.entity.User;
 
 @Path("/")
 public class RestTemplateController {
 
     private static final String SUCCESS = "Success";
-
-    private static final Logger LOGGER = LogManager.getLogger(RestTemplateController.class);
 
     private static final String URL = "http://localhost:8080/resteasy-4.x-scenario";
 

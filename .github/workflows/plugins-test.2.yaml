@@ -62,6 +62,7 @@ jobs:
           - rabbitmq-scenario
           - redisson-scenario
           - resttemplate-4.x-scenario
+          - resteasy-4.x-scenario
           - servicecomb-1.x-scenario
           - servicecomb-2.x-scenario
           - shardingsphere-3.x-scenario

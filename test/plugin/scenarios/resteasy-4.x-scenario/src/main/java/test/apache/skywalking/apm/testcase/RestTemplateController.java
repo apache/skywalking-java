@@ -42,7 +42,7 @@ public class RestTemplateController {
 
     @GET()
     @Path("/case/resttemplate")
-    public Response restTemplate() throws IOException {
+    public Response restTemplate() {
         Client client = ClientBuilder.newBuilder().build();
 
         // Create user
@@ -69,7 +69,6 @@ public class RestTemplateController {
 
         return Response.ok(SUCCESS).build();
     }
-
 
     @GET
     @Path("/healthCheck")

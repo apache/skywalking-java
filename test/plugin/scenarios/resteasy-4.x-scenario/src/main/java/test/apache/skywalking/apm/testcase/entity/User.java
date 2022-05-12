@@ -18,7 +18,6 @@
 
 package test.apache.skywalking.apm.testcase.entity;
 
-
 import java.io.Serializable;
 
 public class User implements Serializable {

@@ -34,13 +34,12 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 public class OnExceptionInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String CALLBACK_OPERATION_NAME_PREFIX = "RocketMQ/";
-    private static final String DEFAULT_TOPIC = "no_topic";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
         SendCallBackEnhanceInfo enhanceInfo = (SendCallBackEnhanceInfo) objInst.getSkyWalkingDynamicField();
-        String topicId = DEFAULT_TOPIC;
+        String topicId = MessageSendInterceptor.DEFAULT_TOPIC;
         // The SendCallBackEnhanceInfo could be null when there is an internal exception in the client API,
         // such as MQClientException("no route info of this topic")
         if (enhanceInfo != null) {

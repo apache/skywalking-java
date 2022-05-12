@@ -49,6 +49,8 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
 
     public static final String ASYNC_SEND_OPERATION_NAME_PREFIX = "RocketMQ/";
 
+    public static final String DEFAULT_TOPIC = "no_topic";
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {

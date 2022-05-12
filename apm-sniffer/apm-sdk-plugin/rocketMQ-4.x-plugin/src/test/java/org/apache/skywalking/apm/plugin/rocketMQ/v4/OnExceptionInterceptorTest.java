@@ -40,6 +40,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -57,7 +58,6 @@ public class OnExceptionInterceptorTest {
 
     @Mock
     private ContextSnapshot contextSnapshot;
-    private SendCallBackEnhanceInfo enhanceInfo;
 
     @Mock
     private EnhancedInstance enhancedInstance;
@@ -69,7 +69,7 @@ public class OnExceptionInterceptorTest {
 
     @Test
     public void testOnException() throws Throwable {
-        enhanceInfo = new SendCallBackEnhanceInfo("test", contextSnapshot);
+        SendCallBackEnhanceInfo enhanceInfo = new SendCallBackEnhanceInfo("test", contextSnapshot);
         when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn(enhanceInfo);
 
         exceptionInterceptor.beforeMethod(enhancedInstance, null, new Object[] {new RuntimeException()}, null, null);
@@ -78,6 +78,7 @@ public class OnExceptionInterceptorTest {
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
+        assertThat(spans, notNullValue());
         assertThat(spans.size(), is(1));
 
         AbstractTracingSpan exceptionSpan = spans.get(0);
@@ -93,6 +94,7 @@ public class OnExceptionInterceptorTest {
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
+        assertThat(spans, notNullValue());
         assertThat(spans.size(), is(1));
 
         AbstractTracingSpan exceptionSpan = spans.get(0);

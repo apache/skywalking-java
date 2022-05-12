@@ -42,14 +42,22 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
         SendCallBackEnhanceInfo enhanceInfo = (SendCallBackEnhanceInfo) objInst.getSkyWalkingDynamicField();
-        AbstractSpan activeSpan = ContextManager.createLocalSpan(CALLBACK_OPERATION_NAME_PREFIX + enhanceInfo.getTopicId() + "/Producer/Callback");
+        String topicId = MessageSendInterceptor.DEFAULT_TOPIC;
+        // The SendCallBackEnhanceInfo could be null when there is an internal exception in the client API,
+        // such as MQClientException("no route info of this topic")
+        if (enhanceInfo != null) {
+            topicId = enhanceInfo.getTopicId();
+        }
+        AbstractSpan activeSpan = ContextManager.createLocalSpan(CALLBACK_OPERATION_NAME_PREFIX + topicId + "/Producer/Callback");
         activeSpan.setComponent(ComponentsDefine.ROCKET_MQ_PRODUCER);
         SendStatus sendStatus = ((SendResult) allArguments[0]).getSendStatus();
         if (sendStatus != SendStatus.SEND_OK) {
             activeSpan.errorOccurred();
             Tags.MQ_STATUS.set(activeSpan, sendStatus.name());
         }
-        ContextManager.continued(enhanceInfo.getContextSnapshot());
+        if (enhanceInfo != null && enhanceInfo.getContextSnapshot() != null) {
+            ContextManager.continued(enhanceInfo.getContextSnapshot());
+        }
     }
 
     @Override

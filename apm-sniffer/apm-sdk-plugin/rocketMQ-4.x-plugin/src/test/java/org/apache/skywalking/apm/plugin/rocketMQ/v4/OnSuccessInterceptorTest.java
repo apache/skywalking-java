@@ -42,6 +42,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -62,8 +63,6 @@ public class OnSuccessInterceptorTest {
     @Mock
     private SendResult sendResult;
 
-    private SendCallBackEnhanceInfo enhanceInfo;
-
     @Mock
     private EnhancedInstance enhancedInstance;
 
@@ -71,25 +70,42 @@ public class OnSuccessInterceptorTest {
     public void setUp() {
         successInterceptor = new OnSuccessInterceptor();
 
-        enhanceInfo = new SendCallBackEnhanceInfo("test", contextSnapshot);
-        when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn(enhanceInfo);
         when(sendResult.getSendStatus()).thenReturn(SendStatus.SEND_OK);
     }
 
     @Test
     public void testOnSuccess() throws Throwable {
+        SendCallBackEnhanceInfo enhanceInfo = new SendCallBackEnhanceInfo("test", contextSnapshot);
+        when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn(enhanceInfo);
         successInterceptor.beforeMethod(enhancedInstance, null, new Object[] {sendResult}, null, null);
         successInterceptor.afterMethod(enhancedInstance, null, new Object[] {sendResult}, null, null);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
+        assertThat(spans, notNullValue());
         assertThat(spans.size(), is(1));
 
         AbstractTracingSpan successSpan = spans.get(0);
 
         SpanAssert.assertComponent(successSpan, ComponentsDefine.ROCKET_MQ_PRODUCER);
+    }
 
+    @Test
+    public void testOnSuccessWithoutSkyWalkingDynamicField() throws Throwable {
+        successInterceptor.beforeMethod(enhancedInstance, null, new Object[] {sendResult}, null, null);
+        successInterceptor.afterMethod(enhancedInstance, null, new Object[] {sendResult}, null, null);
+
+        assertThat(segmentStorage.getTraceSegments().size(), is(1));
+        TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
+        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
+        assertThat(spans, notNullValue());
+        assertThat(spans.size(), is(1));
+
+        AbstractTracingSpan successSpan = spans.get(0);
+        assertThat(successSpan.getOperationName(), is("RocketMQ/no_topic/Producer/Callback"));
+
+        SpanAssert.assertComponent(successSpan, ComponentsDefine.ROCKET_MQ_PRODUCER);
     }
 
     @Test
@@ -101,13 +117,13 @@ public class OnSuccessInterceptorTest {
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
+        assertThat(spans, notNullValue());
         assertThat(spans.size(), is(1));
 
         AbstractTracingSpan successSpan = spans.get(0);
 
         SpanAssert.assertComponent(successSpan, ComponentsDefine.ROCKET_MQ_PRODUCER);
         SpanAssert.assertOccurException(successSpan, true);
-
     }
 
 }

@@ -38,6 +38,7 @@ import org.apache.skywalking.apm.agent.core.boot.DefaultNamedThreadFactory;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.commands.CommandService;
 import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.conf.dynamic.watcher.TraceSqlParametersWatcher;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelListener;
@@ -99,6 +100,15 @@ public class ConfigurationDiscoveryService implements BootService, GRPCChannelLi
             Config.Collector.GET_AGENT_DYNAMIC_CONFIG_INTERVAL,
             TimeUnit.SECONDS
         );
+
+        TraceSqlParametersWatcher traceSqlParametersWatcher = new TraceSqlParametersWatcher("plugin.jdbc.trace_sql_parameters");
+        registerAgentConfigChangeWatcher(traceSqlParametersWatcher);
+    }
+
+    public boolean traceSqlParameters(boolean defaultValue) {
+        WatcherHolder watcherHolder = register.get("plugin.jdbc.trace_sql_parameters");
+        TraceSqlParametersWatcher traceSqlParametersWatcher = (TraceSqlParametersWatcher) watcherHolder.getWatcher();
+        return traceSqlParametersWatcher.traceSqlParameters(defaultValue);
     }
 
     @Override

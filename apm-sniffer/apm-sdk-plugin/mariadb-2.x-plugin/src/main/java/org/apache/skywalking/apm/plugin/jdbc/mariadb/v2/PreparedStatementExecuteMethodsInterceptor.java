@@ -19,6 +19,8 @@
 package org.apache.skywalking.apm.plugin.jdbc.mariadb.v2;
 
 import java.lang.reflect.Method;
+import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.conf.dynamic.ConfigurationDiscoveryService;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -51,7 +53,8 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
         Tags.DB_STATEMENT.set(span, SqlBodyUtil.limitSqlBodySize(cacheObject.getSql()));
         span.setComponent(connectInfo.getComponent());
 
-        if (JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS) {
+        ConfigurationDiscoveryService configurationDiscoveryService = ServiceManager.INSTANCE.findService(ConfigurationDiscoveryService.class);
+        if (configurationDiscoveryService.traceSqlParameters(JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS)) {
             final Object[] parameters = cacheObject.getParameters();
             if (parameters != null && parameters.length > 0) {
                 int maxIndex = cacheObject.getMaxIndex();

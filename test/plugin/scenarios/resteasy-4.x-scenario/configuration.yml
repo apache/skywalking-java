@@ -17,7 +17,5 @@
 type: tomcat
 entryService: http://localhost:8080/resteasy-4.x-scenario/case/resttemplate
 healthCheck: http://localhost:8080/resteasy-4.x-scenario/healthCheck
-runningMode: with_optional
-withPlugins: resteasy-4.x-scenario-*.jar
 environment:
   - CATALINA_OPTS="-Dskywalking.plugin.http.include_http_headers=mock_header"

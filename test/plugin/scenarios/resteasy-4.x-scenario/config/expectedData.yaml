@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
 - serviceName: resteasy-4.x-scenario
-  segmentSize: ge 10
+  segmentSize: ge 6
   segments:
   - segmentId: not null
     spans:

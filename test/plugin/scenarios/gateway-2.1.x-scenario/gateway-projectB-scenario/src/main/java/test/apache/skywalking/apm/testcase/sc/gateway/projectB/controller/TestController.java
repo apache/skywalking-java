@@ -19,12 +19,17 @@ package test.apache.skywalking.apm.testcase.sc.gateway.projectB.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class TestController {
 
     @RequestMapping("/provider/b/testcase")
     public String testcase() {
+        try {
+            new RestTemplate().getForEntity("http://localhost:8080/provider/timeout/error", String.class);
+        } catch (Exception e) {
+        }
         return "1";
     }
 

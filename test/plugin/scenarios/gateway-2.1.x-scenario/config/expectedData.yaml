@@ -19,6 +19,26 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
+    - operationName: /provider/timeout/error
+      parentSpanId: 0
+      spanId: 1
+      isError: true
+      spanType: Exit
+      tags:
+      - { key: url, value: not null }
+      - { key: http.method, value: GET }
+      - { key: http.status_code, value: '500' }
+      logs:
+      - logEvent:
+        - { key: event, value: error }
+        - { key: error.kind, value: not null }
+        - { key: message, value: not null }
+        - { key: stack, value: not null }
+      - logEvent:
+        - { key: event, value: error }
+        - { key: error.kind, value: not null }
+        - { key: message, value: not null }
+        - { key: stack, value: not null }
     - operationName: GET:/provider/b/testcase
       parentSpanId: -1
       spanId: 0
@@ -42,21 +62,49 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /provider/b/testcase
+    - operationName: /provider/timeout/error
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
+      isError: true
+      spanType: Entry
+      tags:
+      - {key: url, value: 'http://localhost:8080/provider/timeout/error' }
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '500'}
+  - segmentId: not null
+    spans:
+    - operationName: SpringCloudGateway/sendRequest
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Http
       startTime: nq 0
       endTime: nq 0
-      componentId: 67
-      isError: false
-      spanType: Entry
-      peer: not null
+      componentId: 61
+      isError: true
+      spanType: Exit
+      peer: 1.2.3.4:18070
+      skipAnalysis: false
       tags:
-      - {key: url, value: 'http://localhost:8080/provider/b/testcase'}
-      - {key: http.method, value: GET}
-      - {key: http.status_code, value: '200'}
-      skipAnalysis: 'false'
+      - { key: url, value: not null }
+      logs:
+      - logEvent:
+        - { key: event, value: error }
+        - { key: error.kind, value: not null }
+        - { key: message, value: not null }
+        - { key: stack, value: not null }
+    - operationName: SpringCloudGateway/RoutingFilter
+      parentSpanId: -1
+      spanId: 0
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 61
+      spanType: Local
+      refs:
+      - { parentEndpoint: '/provider/timeout/error', networkAddress: '', refType: CrossThread,
+        parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+        null, parentService: not null, traceId: not null }
+      skipAnalysis: 'false'  
   - segmentId: not null
     spans:
     - operationName: SpringCloudGateway/sendRequest
@@ -86,4 +134,21 @@ segmentItems:
       - {parentEndpoint: '/provider/b/testcase', networkAddress: '', refType: CrossThread,
         parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: /provider/b/testcase
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 67
+      isError: false
+      spanType: Entry
+      peer: not null
+      tags:
+      - { key: url, value: 'http://localhost:8080/provider/b/testcase' }
+      - { key: http.method, value: GET }
+      - { key: http.status_code, value: '200' }
       skipAnalysis: 'false'

@@ -56,7 +56,7 @@ public class RestTemplateController {
         response.close();
 
         //Delete user
-        response = client.target(URL + "/update/1").request().delete();
+        response = client.target(URL + "/delete/1").request().delete();
         response.close();
 
         client.close();

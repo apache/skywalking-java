@@ -21,36 +21,25 @@ package org.apache.skywalking.apm.agent.core.conf.dynamic.watcher;
 import org.apache.skywalking.apm.agent.core.conf.dynamic.AgentConfigChangeWatcher;
 
 public class TraceSqlParametersWatcher extends AgentConfigChangeWatcher {
-    private volatile boolean traceSqlParameters = false;
     
-    private volatile boolean dynamicConfigValidate = false;
-
+    private volatile boolean traceSqlParameters;
+    
     public TraceSqlParametersWatcher(String propertyKey) {
         super(propertyKey);
     }
 
     @Override
     public void notify(ConfigChangeEvent value) {
+        super.notify(value);
         if (EventType.DELETE.equals(value.getEventType())) {
-            traceSqlParameters = false;
-            dynamicConfigValidate = false;
         } else {
             traceSqlParameters = Boolean.parseBoolean(value.getNewValue());
-            dynamicConfigValidate = true;
         }
     }
 
     @Override
     public String value() {
         return Boolean.toString(traceSqlParameters);
-    }
-    
-    public boolean traceSqlParameters(boolean defaultValue) {
-        if (dynamicConfigValidate) {
-            return traceSqlParameters;
-        } else {
-            return defaultValue;
-        }
     }
     
 }

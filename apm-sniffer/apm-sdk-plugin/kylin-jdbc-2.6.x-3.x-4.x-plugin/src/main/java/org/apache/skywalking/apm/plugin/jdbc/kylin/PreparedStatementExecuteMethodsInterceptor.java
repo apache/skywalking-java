@@ -54,7 +54,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
         span.setComponent(connectInfo.getComponent());
 
         ConfigurationDiscoveryService configurationDiscoveryService = ServiceManager.INSTANCE.findService(ConfigurationDiscoveryService.class);
-        if (configurationDiscoveryService.traceSqlParameters(JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS)) {
+        if (Boolean.parseBoolean(configurationDiscoveryService.getDynamicValue("plugin.jdbc.trace_sql_parameters", Boolean.toString(JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS)))) {
             final Object[] parameters = cacheObject.getParameters();
             if (parameters != null && parameters.length > 0) {
                 int maxIndex = cacheObject.getMaxIndex();

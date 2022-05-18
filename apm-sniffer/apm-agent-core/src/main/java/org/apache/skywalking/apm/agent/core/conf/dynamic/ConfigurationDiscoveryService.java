@@ -104,11 +104,14 @@ public class ConfigurationDiscoveryService implements BootService, GRPCChannelLi
         TraceSqlParametersWatcher traceSqlParametersWatcher = new TraceSqlParametersWatcher("plugin.jdbc.trace_sql_parameters");
         registerAgentConfigChangeWatcher(traceSqlParametersWatcher);
     }
-
-    public boolean traceSqlParameters(boolean defaultValue) {
-        WatcherHolder watcherHolder = register.get("plugin.jdbc.trace_sql_parameters");
-        TraceSqlParametersWatcher traceSqlParametersWatcher = (TraceSqlParametersWatcher) watcherHolder.getWatcher();
-        return traceSqlParametersWatcher.traceSqlParameters(defaultValue);
+    
+    public String getDynamicValue(String key, String defaultValue) {
+        WatcherHolder watcherHolder = register.get(key);
+        AgentConfigChangeWatcher watcher = watcherHolder.getWatcher();
+        if (watcher.isDeleted()) {
+            return defaultValue;
+        }
+        return watcher.value();
     }
 
     @Override

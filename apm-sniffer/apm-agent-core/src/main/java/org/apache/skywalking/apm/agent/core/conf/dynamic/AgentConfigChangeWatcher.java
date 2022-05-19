@@ -25,8 +25,6 @@ import lombok.RequiredArgsConstructor;
 public abstract class AgentConfigChangeWatcher {
     // Config key, should match KEY in the Table of Agent Configuration Properties.
     private final String propertyKey;
-    
-    private volatile boolean deleted;
 
     public AgentConfigChangeWatcher(String propertyKey) {
         this.propertyKey = propertyKey;
@@ -37,13 +35,7 @@ public abstract class AgentConfigChangeWatcher {
      *
      * @param value of new.
      */
-    public void notify(ConfigChangeEvent value) {
-        if (EventType.DELETE.equals(value.getEventType())) {
-            deleted = true;
-        } else {
-            deleted = false;
-        }
-    }
+    public abstract void notify(ConfigChangeEvent value);
 
     /**
      * @return current value of current config.

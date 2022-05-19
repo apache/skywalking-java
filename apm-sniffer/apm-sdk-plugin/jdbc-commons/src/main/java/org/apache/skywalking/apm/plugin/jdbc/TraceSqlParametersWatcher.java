@@ -16,30 +16,31 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.core.conf.dynamic.watcher;
+package org.apache.skywalking.apm.plugin.jdbc;
 
 import org.apache.skywalking.apm.agent.core.conf.dynamic.AgentConfigChangeWatcher;
 
 public class TraceSqlParametersWatcher extends AgentConfigChangeWatcher {
     
-    private volatile boolean traceSqlParameters;
+    private final boolean defaultValue;
     
     public TraceSqlParametersWatcher(String propertyKey) {
         super(propertyKey);
+        defaultValue = JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS;
     }
 
     @Override
     public void notify(ConfigChangeEvent value) {
-        super.notify(value);
         if (EventType.DELETE.equals(value.getEventType())) {
+            JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS = defaultValue;
         } else {
-            traceSqlParameters = Boolean.parseBoolean(value.getNewValue());
+            JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS = Boolean.parseBoolean(value.getNewValue());
         }
     }
 
     @Override
     public String value() {
-        return Boolean.toString(traceSqlParameters);
+        return Boolean.toString(JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS);
     }
     
 }

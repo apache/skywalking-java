@@ -19,8 +19,6 @@
 package org.apache.skywalking.apm.plugin.jdbc.mysql;
 
 import java.lang.reflect.Method;
-import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import org.apache.skywalking.apm.agent.core.conf.dynamic.ConfigurationDiscoveryService;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -59,8 +57,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
             Tags.DB_STATEMENT.set(span, SqlBodyUtil.limitSqlBodySize(cacheObject.getSql()));
             span.setComponent(connectInfo.getComponent());
 
-            ConfigurationDiscoveryService configurationDiscoveryService = ServiceManager.INSTANCE.findService(ConfigurationDiscoveryService.class);
-            if (Boolean.parseBoolean(configurationDiscoveryService.getDynamicValue("plugin.jdbc.trace_sql_parameters", Boolean.toString(JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS)))) {
+            if (JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS) {
                 final Object[] parameters = cacheObject.getParameters();
                 if (parameters != null && parameters.length > 0) {
                     int maxIndex = cacheObject.getMaxIndex();

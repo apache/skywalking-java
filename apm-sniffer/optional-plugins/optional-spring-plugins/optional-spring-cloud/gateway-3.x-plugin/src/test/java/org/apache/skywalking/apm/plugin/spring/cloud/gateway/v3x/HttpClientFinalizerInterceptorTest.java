@@ -40,6 +40,7 @@ import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 import reactor.netty.Connection;
 import reactor.netty.NettyOutbound;
 import reactor.netty.http.client.HttpClientRequest;
@@ -151,9 +152,13 @@ public class HttpClientFinalizerInterceptorTest {
         Object[] responseConnectionArguments = new Object[]{originalResponseConnectionBiFunction};
         responseConnectionInterceptor
                 .beforeMethod(enhancedInstance, null, responseConnectionArguments, null, null);
-        responseConnectionInterceptor.afterMethod(enhancedInstance, null, new Object[0], null, enhancedInstance);
+        Flux flux = Flux.just(0);
+
+        flux = (Flux) responseConnectionInterceptor.afterMethod(enhancedInstance, null, new Object[0], null, flux);
+        
         ((BiFunction<? super HttpClientResponse, ? super Connection, ? extends Publisher<Void>>) responseConnectionArguments[0])
                 .apply(mockResponse, null);
+        flux.blockFirst();
     }
 
     private void assertUpstreamSpan(AbstractSpan span) {

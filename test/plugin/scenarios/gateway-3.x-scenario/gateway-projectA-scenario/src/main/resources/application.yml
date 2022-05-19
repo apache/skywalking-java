@@ -20,8 +20,14 @@ server:
 spring:
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 2000
       routes:
       - id: provider_route
         uri: http://localhost:18070
         predicates:
         - Path=/provider/b/*
+      - id: provider_timeout
+        uri: http://1.2.3.4:18070
+        predicates:
+        - Path=/provider/timeout/*

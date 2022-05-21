@@ -17,6 +17,7 @@ Release Notes.
 * Enhance Apache ShenYu (incubating) plugin: support trace `grpc`,`sofarpc`,`motan`,`tars` rpc proxy.
 * Add primary endpoint name to log events.
 * Fix Span not finished in gateway plugin when the gateway request timeout.
+* Fix discussions #9113, log4j2 grpc report missing traceId
 
 #### Documentation
 

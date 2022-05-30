@@ -18,6 +18,7 @@ Release Notes.
 * Add primary endpoint name to log events.
 * Fix Span not finished in gateway plugin when the gateway request timeout.
 * Support `-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` in gRPC log report.
+* Fix tcnative libraries relocation for aarch64.
 
 #### Documentation
 

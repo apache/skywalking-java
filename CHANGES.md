@@ -15,6 +15,9 @@ Release Notes.
 * Fix NPE in elasticsearch plugin.
 * Grpc plugin support trace client async generic call(without grpc stubs), support Method type: `UNARY`、`SERVER_STREAMING`.
 * Enhance Apache ShenYu (incubating) plugin: support trace `grpc`,`sofarpc`,`motan`,`tars` rpc proxy.
+* Add primary endpoint name to log events.
+* Fix Span not finished in gateway plugin when the gateway request timeout.
+* Support `-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` in gRPC log report.
 
 #### Documentation
 

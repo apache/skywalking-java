@@ -30,4 +30,6 @@ public class Constants {
     // The name of the layer that represents agent-installed services,
     // which is defined at https://github.com/apache/skywalking/blob/85ce1645be53e46286f36c0ea206c60db2d1a716/oap-server/server-core/src/main/java/org/apache/skywalking/oap/server/core/analysis/Layer.java#L30
     public static String EVENT_LAYER_NAME = "GENERAL";
+
+    public static int NULL_VALUE = 0;
 }

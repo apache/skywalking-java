@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.TracingContext;
 import org.apache.skywalking.apm.agent.core.context.status.StatusCheckService;
@@ -32,7 +33,6 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.util.KeyValuePair;
 import org.apache.skywalking.apm.agent.core.context.util.TagValuePair;
 import org.apache.skywalking.apm.agent.core.context.util.ThrowableTransformer;
-import org.apache.skywalking.apm.agent.core.dictionary.DictionaryUtil;
 import org.apache.skywalking.apm.network.language.agent.v3.SpanObject;
 import org.apache.skywalking.apm.network.language.agent.v3.SpanType;
 import org.apache.skywalking.apm.network.trace.component.Component;
@@ -274,7 +274,7 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
         if (this.layer != null) {
             spanBuilder.setSpanLayerValue(this.layer.getCode());
         }
-        if (componentId != DictionaryUtil.nullValue()) {
+        if (componentId != Constants.NULL_VALUE) {
             spanBuilder.setComponentId(componentId);
         }
         spanBuilder.setIsError(errorOccurred);

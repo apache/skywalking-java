@@ -19,6 +19,7 @@ Release Notes.
 * Fix Span not finished in gateway plugin when the gateway request timeout.
 * Support `-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` in gRPC log report.
 * Fix tcnative libraries relocation for aarch64.
+* Add `plugin.jdbc.trace_sql_parameters` into Configuration Discovery Service.
 
 #### Documentation
 

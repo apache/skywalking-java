@@ -127,7 +127,7 @@ public class Config {
          * The identifier of the instance
          */
         @Length(50)
-        public static volatile String INSTANCE_NAME = "";
+        public volatile static String INSTANCE_NAME = "";
 
         /**
          * service instance properties in json format. e.g. agent.instance_properties_json = {"org":

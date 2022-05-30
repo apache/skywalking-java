@@ -46,7 +46,7 @@ public class ProfileTaskExecutionService implements BootService, TracingThreadLi
     private static final ILog LOGGER = LogManager.getLogger(ProfileTaskExecutionService.class);
 
     // add a schedule while waiting for the task to start or finish
-    private static final ScheduledExecutorService PROFILE_TASK_SCHEDULE = Executors.newSingleThreadScheduledExecutor(
+    private final static ScheduledExecutorService PROFILE_TASK_SCHEDULE = Executors.newSingleThreadScheduledExecutor(
         new DefaultNamedThreadFactory("PROFILE-TASK-SCHEDULE"));
 
     // last command create time, use to next query task list
@@ -56,7 +56,7 @@ public class ProfileTaskExecutionService implements BootService, TracingThreadLi
     private final AtomicReference<ProfileTaskExecutionContext> taskExecutionContext = new AtomicReference<>();
 
     // profile executor thread pool, only running one thread
-    private static final ExecutorService PROFILE_EXECUTOR = Executors.newSingleThreadExecutor(
+    private final static ExecutorService PROFILE_EXECUTOR = Executors.newSingleThreadExecutor(
         new DefaultNamedThreadFactory("PROFILING-TASK"));
 
     // profile task list, include running and waiting running tasks

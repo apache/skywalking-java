@@ -119,7 +119,7 @@ public class ConfigurationDiscoveryService implements BootService, GRPCChannelLi
      *
      * @param watcher dynamic configuration watcher
      */
-    public void registerAgentConfigChangeWatcher(AgentConfigChangeWatcher watcher) {
+    public synchronized void registerAgentConfigChangeWatcher(AgentConfigChangeWatcher watcher) {
         WatcherHolder holder = new WatcherHolder(watcher);
         if (register.containsKey(holder.getKey())) {
             List<WatcherHolder> watcherHolderList = register.get(holder.getKey());

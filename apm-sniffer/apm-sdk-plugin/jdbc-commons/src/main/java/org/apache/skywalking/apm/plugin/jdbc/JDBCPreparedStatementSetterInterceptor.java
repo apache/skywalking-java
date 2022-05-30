@@ -18,8 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.jdbc;
 
-import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import org.apache.skywalking.apm.agent.core.conf.dynamic.ConfigurationDiscoveryService;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -31,11 +29,6 @@ public class JDBCPreparedStatementSetterInterceptor implements InstanceMethodsAr
     @Override
     public final void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        TraceSqlParametersWatcher traceSqlParametersWatcher = new TraceSqlParametersWatcher("plugin.jdbc.trace_sql_parameters");
-        ConfigurationDiscoveryService configurationDiscoveryService = ServiceManager.INSTANCE.findService(
-                ConfigurationDiscoveryService.class);
-        configurationDiscoveryService.registerAgentConfigChangeWatcher(traceSqlParametersWatcher);
-        
         final StatementEnhanceInfos statementEnhanceInfos = (StatementEnhanceInfos) objInst.getSkyWalkingDynamicField();
         if (statementEnhanceInfos != null) {
           final int index = (Integer) allArguments[0];

@@ -17,6 +17,9 @@ Release Notes.
 * Enhance Apache ShenYu (incubating) plugin: support trace `grpc`,`sofarpc`,`motan`,`tars` rpc proxy.
 * Add primary endpoint name to log events.
 * Fix Span not finished in gateway plugin when the gateway request timeout.
+* Support `-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` in gRPC log report.
+* Fix tcnative libraries relocation for aarch64.
+* Add `plugin.jdbc.trace_sql_parameters` into Configuration Discovery Service.
 * Adds plugin support for RESTeasy 4.x.
 
 #### Documentation

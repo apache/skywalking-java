@@ -35,11 +35,17 @@ public class TracePathMatcherTest {
         path = "/eureka/";
         match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
+        path = "/eureka";
+        match = pathMatcher.match(pattern, path);
+        Assert.assertTrue(match);
         path = "/eureka/apps/";
         match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);
 
         pattern = "/eureka/**";
+        path = "/eureka";
+        match = pathMatcher.match(pattern, path);
+        Assert.assertTrue(match);
         path = "/eureka/apps/";
         match = pathMatcher.match(pattern, path);
         Assert.assertTrue(match);

@@ -73,12 +73,12 @@ public class FastPathMatcher implements TracePathMatcher {
             // pattern: a/*   a/**
             //          ↓     ↓
             //string:   a     a
-            if(pc=='/' && sc == 0){
+            if (pc == '/' && sc == 0) {
                 p++;
                 if (safeCharAt(pat, p) == '*') {
                     p++;
                     return multiWildcardMatch(pat, p, str, s);
-                }else{
+                } else {
                     return false;
                 }
             }

@@ -31,7 +31,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <play2.version>2.7.3</play2.version>
+        <play2.version>2.8.16</play2.version>
     </properties>
 
     <dependencies>

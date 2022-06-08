@@ -40,4 +40,21 @@ public class Person {
         return age;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public boolean isOlderThan(Person anotherPerson) {
+        return this.age > anotherPerson.age;
+    }
+
+    public boolean isMemberOf(Person[] persons) {
+        for (Person person: persons) {
+            if (person == this) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

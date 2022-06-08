@@ -20,6 +20,7 @@ Release Notes.
 * Support `-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` in gRPC log report.
 * Fix tcnative libraries relocation for aarch64.
 * Add `plugin.jdbc.trace_sql_parameters` into Configuration Discovery Service.
+* Fix ArgumentTypeNameMatch doesn't work for array argument
 
 #### Documentation
 

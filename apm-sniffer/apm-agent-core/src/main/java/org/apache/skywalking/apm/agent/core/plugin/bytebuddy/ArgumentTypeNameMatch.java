@@ -60,7 +60,7 @@ public class ArgumentTypeNameMatch implements ElementMatcher<MethodDescription> 
     public boolean matches(MethodDescription target) {
         ParameterList<?> parameters = target.getParameters();
         if (parameters.size() > index) {
-            return parameters.get(index).getType().asErasure().getName().equals(argumentTypeName);
+            return parameters.get(index).getType().getActualName().equals(argumentTypeName);
         }
 
         return false;

@@ -7,6 +7,8 @@ Prepare JDK 8+.
 ```shell
 git clone https://github.com/apache/skywalking-java.git
 cd skywalking-java
+git submodule init
+git submodule update
 ./mvnw clean package -Pall
 ```
 

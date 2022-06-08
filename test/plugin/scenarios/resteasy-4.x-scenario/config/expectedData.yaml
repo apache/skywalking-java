@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: HEAD:/healthCheck
+    - operationName: /healthCheck
       parentSpanId: -1
       spanId: 0
       spanLayer: Http

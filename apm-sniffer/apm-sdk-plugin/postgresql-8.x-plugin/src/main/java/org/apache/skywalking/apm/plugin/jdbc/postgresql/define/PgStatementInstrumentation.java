@@ -43,12 +43,8 @@ public class PgStatementInstrumentation extends ClassInstanceMethodsEnhancePlugi
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("execute").and(takesArgumentWithType(0, "java.lang.String"))
-                                           .or(named("execute").and(takesArgumentWithType(0, "java.lang.String[]")))
-                                           .or(named("executeQuery"))
-                                           .or(named("executeUpdate").and(takesArgumentWithType(0, "java.lang.String[]")))
-                                           .or(named("executeUpdate").and(takesArgumentWithType(0, "java.lang.String")))
-                                           .or(named("executeLargeUpdate"));
+                    return (named("execute").or(named("executeQuery")).or(named("executeUpdate")).or(named("executeLargeUpdate")))
+                            .and(takesArgumentWithType(0, "java.lang.String"));
                 }
 
                 @Override

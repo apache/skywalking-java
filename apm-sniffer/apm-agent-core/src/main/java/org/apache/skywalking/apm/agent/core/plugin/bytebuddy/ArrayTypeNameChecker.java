@@ -18,48 +18,11 @@
 
 package org.apache.skywalking.apm.agent.core.plugin.bytebuddy;
 
-public class Person {
-    private int age;
-    private String name;
+public class ArrayTypeNameChecker {
 
-    @Inject
-    public Person(String name) {
-        this.name = name;
-    }
-
-    public Person(String name, int age) {
-        this.age = age;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public boolean isOlderThan(Person anotherPerson) {
-        return this.age > anotherPerson.age;
-    }
-
-    public boolean isMemberOf(Person[] persons) {
-        for (Person person: persons) {
-            if (person == this) {
-                return true;
-            }
+    public static void check(String typeName) {
+        if (typeName.endsWith("[]")) {
+            throw new IllegalArgumentException("Please use [Lxxx; to define an Array type, and ref to JVM Specification for details");
         }
-
-        return false;
     }
-
-    public Person[] getFriends() {
-        return null;
-    }
-
-    public Person getBestFriend() {
-        return null;
-    }
-
 }

@@ -42,7 +42,7 @@
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
         <shenyu.gateway.version>2.4.2</shenyu.gateway.version>
         <lombok.version>1.18.20</lombok.version>
-        <dubbo.version>2.7.0</dubbo.version>
+        <dubbo.version>2.7.15</dubbo.version>
         <!--just for test-->
         <fastjson.version>1.2.79</fastjson.version>
     </properties>

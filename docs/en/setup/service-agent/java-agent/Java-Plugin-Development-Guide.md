@@ -301,9 +301,9 @@ ref in interceptor.
 Please refer to [bytebuddy](https://bytebuddy.net/#/) for details of defining `ElementMatcher`.
 
 In Skywalking, we provide 3 classes to facilitate `ElementMatcher` definition:
-* `AnnotationTypeNameMatch`: Depends on whether there are certain annotations in the target methods.
-* `ReturnTypeNameMatch`: Based on return type name (package name + `.` + class name) of the target methods.
-* `ArgumentTypeNameMatch`: Based on argument index and type name (package name + `.` + class name) of the target methods.
+* `AnnotationTypeNameMatch`: Check on whether there is a certain annotation in the target method.
+* `ReturnTypeNameMatch`: Check the return type name (package name + `.` + class name) of the target method.
+* `ArgumentTypeNameMatch`: Check on the argument index and the type name (package name + `.` + class name) of the target method.
 
 **Attention**:
 * For `ReturnTypeNameMatch` and `ArgumentTypeNameMatch`, please use [Lxxx; (Java file format defined in [JVM Specification](https://docs.oracle.com/javase/specs/jvms/se8/html/)) to define an Array type. For example, you should write [Ljava.lang.String; for `java.lang.String[]`.

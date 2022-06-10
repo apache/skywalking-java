@@ -32,7 +32,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dubbo.version>2.5.10</dubbo.version>
+        <dubbo.version>2.6.12</dubbo.version>
     </properties>
 
     <dependencies>

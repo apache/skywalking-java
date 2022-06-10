@@ -306,7 +306,7 @@ In Skywalking, we provide 3 classes to facilitate `ElementMatcher` definition:
 * `ArgumentTypeNameMatch`: Check on the argument index and the type name (package name + `.` + class name) of the target method.
 
 **Attention**:
-* For `ReturnTypeNameMatch` and `ArgumentTypeNameMatch`, please use [Lxxx; (Java file format defined in [JVM Specification](https://docs.oracle.com/javase/specs/jvms/se8/html/)) to define an Array type. For example, you should write [Ljava.lang.String; for `java.lang.String[]`.
+* In case of using `ReturnTypeNameMatch` and `ArgumentTypeNameMatch`, use [Lxxx; (Java file format defined in [JVM Specification](https://docs.oracle.com/javase/specs/jvms/se8/html/)) to define an Array type. For example, you should write `[Ljava.lang.String;` for `java.lang.String[]`.
 
 The following sections will tell you how to implement the interceptor.
 

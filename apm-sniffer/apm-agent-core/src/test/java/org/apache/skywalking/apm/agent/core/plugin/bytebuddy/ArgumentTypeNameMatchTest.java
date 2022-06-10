@@ -23,21 +23,22 @@ import net.bytebuddy.matcher.ElementMatcher;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ReturnTypeNameMatchTest {
+public class ArgumentTypeNameMatchTest {
 
     @Test
     public void testMatch() throws Exception {
-        final ElementMatcher<MethodDescription> matcherString = ReturnTypeNameMatch.returnsWithType("java.lang.String");
-        Assert.assertTrue(matcherString.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("getName"))));
-        Assert.assertFalse(matcherString.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("getAge"))));
+        final ElementMatcher<MethodDescription> matcherPerson = ArgumentTypeNameMatch.takesArgumentWithType(0, "org.apache.skywalking.apm.agent.core.plugin.bytebuddy.Person");
+        Assert.assertTrue(matcherPerson.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("isOlderThan", Person.class))));
+        Assert.assertFalse(matcherPerson.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("isMemberOf", Person[].class))));
 
-        final ElementMatcher<MethodDescription> matcherPersonArray = ReturnTypeNameMatch.returnsWithType("[Lorg.apache.skywalking.apm.agent.core.plugin.bytebuddy.Person;");
-        Assert.assertTrue(matcherPersonArray.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("getFriends"))));
-        Assert.assertFalse(matcherPersonArray.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("getBestFriend"))));
+        final ElementMatcher<MethodDescription> matcherPersonArray = ArgumentTypeNameMatch.takesArgumentWithType(0, "[Lorg.apache.skywalking.apm.agent.core.plugin.bytebuddy.Person;");
+        Assert.assertTrue(matcherPersonArray.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("isMemberOf", Person[].class))));
+        Assert.assertFalse(matcherPersonArray.matches(new MethodDescription.ForLoadedMethod(Person.class.getMethod("isOlderThan", Person.class))));
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void testMatchWithException() {
-        ReturnTypeNameMatch.returnsWithType("org.apache.skywalking.apm.agent.core.plugin.bytebuddy.Person[]");
+        ArgumentTypeNameMatch.takesArgumentWithType(0, "org.apache.skywalking.apm.agent.core.plugin.bytebuddy.Person[]");
     }
+
 }

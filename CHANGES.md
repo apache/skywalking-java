@@ -20,6 +20,9 @@ Release Notes.
 * Support `-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` in gRPC log report.
 * Fix tcnative libraries relocation for aarch64.
 * Add `plugin.jdbc.trace_sql_parameters` into Configuration Discovery Service.
+* Fix argument type name of Array in postgresql-8.x-plugin from java.lang.String[] to [Ljava.lang.String; 
+* Add type name checking in ArgumentTypeNameMatch and ReturnTypeNameMatch
+* Highlight ArgumentTypeNameMatch and ReturnTypeNameMatch type naming rule in docs/en/setup/service-agent/java-agent/Java-Plugin-Development-Guide.md
 
 #### Documentation
 

@@ -46,6 +46,8 @@ public class ArgumentTypeNameMatch implements ElementMatcher<MethodDescription> 
      * @param argumentTypeName target argument type
      */
     private ArgumentTypeNameMatch(int index, String argumentTypeName) {
+        ArrayTypeNameChecker.check(argumentTypeName);
+
         this.index = index;
         this.argumentTypeName = argumentTypeName;
     }

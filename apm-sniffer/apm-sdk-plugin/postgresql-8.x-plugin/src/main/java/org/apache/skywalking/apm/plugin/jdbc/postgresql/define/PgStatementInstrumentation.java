@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 import static org.apache.skywalking.apm.plugin.jdbc.postgresql.Variables.PG_STATEMENT_EXECUTE_METHOD_INTERCEPTOR;
@@ -43,8 +44,11 @@ public class PgStatementInstrumentation extends ClassInstanceMethodsEnhancePlugi
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return (named("execute").or(named("executeQuery")).or(named("executeUpdate")).or(named("executeLargeUpdate")))
-                            .and(takesArgumentWithType(0, "java.lang.String"));
+                    return named("execute").and(takesArgumentWithType(0, "java.lang.String")).and(takesArguments(1))
+                            .or(named("execute").and(takesArgumentWithType(1, "[Ljava.lang.String;")))
+                            .or(named("executeQuery"))
+                            .or(named("executeUpdate").and(takesArgumentWithType(0, "java.lang.String")).and(takesArguments(1)))
+                            .or(named("executeUpdate").and(takesArgumentWithType(1, "[Ljava.lang.String;")));
                 }
 
                 @Override

@@ -48,8 +48,8 @@ public class PgStatementInstrumentationTest {
         final MethodDescription methodExecuteStringStringArray = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("execute", String.class, Array.newInstance(String.class, 0).getClass()));
 
         Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteString));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteStringInt));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteStringIntArray));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteStringInt));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteStringIntArray));
         Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteStringStringArray));
 
         final MethodDescription methodExecuteUpdateString = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeUpdate", String.class));
@@ -57,8 +57,8 @@ public class PgStatementInstrumentationTest {
         final MethodDescription methodExecuteUpdateStringIntArray = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeUpdate", String.class, Array.newInstance(int.class, 0).getClass()));
         final MethodDescription methodExecuteUpdateStringStringArray = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeUpdate", String.class, Array.newInstance(String.class, 0).getClass()));
         Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteUpdateString));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteUpdateStringInt));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteUpdateStringIntArray));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteUpdateStringInt));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteUpdateStringIntArray));
         Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteUpdateStringStringArray));
 
         final MethodDescription methodExecuteLargeUpdateString = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeLargeUpdate", String.class));
@@ -66,10 +66,10 @@ public class PgStatementInstrumentationTest {
         final MethodDescription methodExecuteLargeUpdateStringIntArray = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeLargeUpdate", String.class, Array.newInstance(int.class, 0).getClass()));
         final MethodDescription methodExecuteLargeUpdateStringStringArray = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeLargeUpdate", String.class, Array.newInstance(String.class, 0).getClass()));
         final MethodDescription methodExecuteLargeUpdateInvalid = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeLargeUpdate"));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteLargeUpdateString));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteLargeUpdateStringInt));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteLargeUpdateStringIntArray));
-        Assert.assertTrue(arrayArgumentMatcher.matches(methodExecuteLargeUpdateStringStringArray));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteLargeUpdateString));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteLargeUpdateStringInt));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteLargeUpdateStringIntArray));
+        Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteLargeUpdateStringStringArray));
         Assert.assertFalse(arrayArgumentMatcher.matches(methodExecuteLargeUpdateInvalid));
 
         final MethodDescription methodExecuteQuery = new MethodDescription.ForLoadedMethod(PgStatement.class.getMethod("executeQuery", String.class));

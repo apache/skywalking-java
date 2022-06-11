@@ -23,6 +23,7 @@ Release Notes.
 * Fix argument type name of Array in postgresql-8.x-plugin from java.lang.String[] to [Ljava.lang.String; 
 * Add type name checking in ArgumentTypeNameMatch and ReturnTypeNameMatch
 * Highlight ArgumentTypeNameMatch and ReturnTypeNameMatch type naming rule in docs/en/setup/service-agent/java-agent/Java-Plugin-Development-Guide.md
+* Fix FileWriter scheduled task NPE
 
 #### Documentation
 

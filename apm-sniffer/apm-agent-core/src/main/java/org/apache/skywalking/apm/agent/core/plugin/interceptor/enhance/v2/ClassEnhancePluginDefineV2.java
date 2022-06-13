@@ -56,6 +56,7 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  */
 public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePluginDefine {
 
+    @Override
     protected DynamicType.Builder<?> enhanceClass(TypeDescription typeDescription,
                                                   DynamicType.Builder<?> newClassBuilder,
                                                   ClassLoader classLoader) throws PluginException {
@@ -105,6 +106,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
         return newClassBuilder;
     }
 
+    @Override
     protected DynamicType.Builder<?> enhanceInstance(TypeDescription typeDescription,
                                                      DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader,
                                                      EnhanceContext context) throws PluginException {

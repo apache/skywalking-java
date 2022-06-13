@@ -191,7 +191,7 @@ public class SnifferConfigInitializer {
      * <p>
      * such as: Property key of `agent.service_name` should be `skywalking.agent.service_name`
      */
-    private static void overrideConfigBySystemProp() throws IllegalAccessException {
+    private static void overrideConfigBySystemProp() {
         Properties systemProperties = System.getProperties();
         for (final Map.Entry<Object, Object> prop : systemProperties.entrySet()) {
             String key = prop.getKey().toString();

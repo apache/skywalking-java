@@ -41,6 +41,7 @@ public class ReturnTypeNameMatch implements ElementMatcher<MethodDescription> {
      * @param returnTypeName target return type
      */
     private ReturnTypeNameMatch(String returnTypeName) {
+        ArrayTypeNameChecker.check(returnTypeName);
         this.returnTypeName = returnTypeName;
     }
 

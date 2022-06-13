@@ -297,7 +297,16 @@ public interface InstanceMethodsInterceptPoint {
 }
 ```
 You may also use `Matcher` to set the target methods. Return **true** in `isOverrideArgs`, if you want to change the argument
-ref in interceptor.
+ref in interceptor. 
+Please refer to [bytebuddy](https://bytebuddy.net/#/) for details of defining `ElementMatcher`.
+
+In Skywalking, we provide 3 classes to facilitate `ElementMatcher` definition:
+* `AnnotationTypeNameMatch`: Check on whether there is a certain annotation in the target method.
+* `ReturnTypeNameMatch`: Check the return type name (package name + `.` + class name) of the target method.
+* `ArgumentTypeNameMatch`: Check on the argument index and the type name (package name + `.` + class name) of the target method.
+
+**Attention**:
+* In case of using `ReturnTypeNameMatch` and `ArgumentTypeNameMatch`, use [Lxxx; (Java file format defined in [JVM Specification](https://docs.oracle.com/javase/specs/jvms/se8/html/)) to define an Array type. For example, you should write `[Ljava.lang.String;` for `java.lang.String[]`.
 
 The following sections will tell you how to implement the interceptor.
 

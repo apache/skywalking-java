@@ -124,6 +124,7 @@ public class LogReportServiceClient implements BootService, GRPCChannelListener,
                     // https://github.com/apache/skywalking-data-collect-protocol/blob/master/logging/Logging.proto
                     // Log collecting protocol defines LogData#service is required in the first element only.
                     logData.setService(Config.Agent.SERVICE_NAME);
+                    isFirst = false;
                 }
                 logDataStreamObserver.onNext(logData.build());
             }

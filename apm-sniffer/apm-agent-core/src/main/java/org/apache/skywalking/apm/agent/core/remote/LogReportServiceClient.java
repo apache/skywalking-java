@@ -21,7 +21,6 @@ package org.apache.skywalking.apm.agent.core.remote;
 import io.grpc.Channel;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
-
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -42,10 +41,10 @@ import org.apache.skywalking.apm.network.logging.v3.LogData;
 import org.apache.skywalking.apm.network.logging.v3.LogReportServiceGrpc;
 
 @DefaultImplementor
-public class LogReportServiceClient implements BootService, GRPCChannelListener, IConsumer<LogData> {
+public class LogReportServiceClient implements BootService, GRPCChannelListener, IConsumer<LogData.Builder> {
     private static final ILog LOGGER = LogManager.getLogger(LogReportServiceClient.class);
 
-    private volatile DataCarrier<LogData> carrier;
+    private volatile DataCarrier<LogData.Builder> carrier;
     private volatile GRPCChannelStatus status;
 
     private volatile LogReportServiceGrpc.LogReportServiceStub logReportServiceStub;
@@ -70,7 +69,7 @@ public class LogReportServiceClient implements BootService, GRPCChannelListener,
 
     }
 
-    public void produce(LogData logData) {
+    public void produce(LogData.Builder logData) {
         if (Objects.nonNull(logData) && !carrier.produce(logData)) {
             if (LOGGER.isDebugEnable()) {
                 LOGGER.debug("One log has been abandoned, cause by buffer is full.");
@@ -84,7 +83,7 @@ public class LogReportServiceClient implements BootService, GRPCChannelListener,
     }
 
     @Override
-    public void consume(final List<LogData> dataList) {
+    public void consume(final List<LogData.Builder> dataList) {
         if (CollectionUtil.isEmpty(dataList)) {
             return;
         }
@@ -95,31 +94,39 @@ public class LogReportServiceClient implements BootService, GRPCChannelListener,
             StreamObserver<LogData> logDataStreamObserver = logReportServiceStub
                 .withDeadlineAfter(Collector.GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS)
                 .collect(
-                new StreamObserver<Commands>() {
-                    @Override
-                    public void onNext(final Commands commands) {
+                    new StreamObserver<Commands>() {
+                        @Override
+                        public void onNext(final Commands commands) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(final Throwable throwable) {
-                        status.finished();
-                        LOGGER.error(throwable, "Try to send {} log data to collector, with unexpected exception.",
-                                     dataList.size()
-                        );
-                        ServiceManager.INSTANCE
-                            .findService(GRPCChannelManager.class)
-                            .reportError(throwable);
-                    }
+                        @Override
+                        public void onError(final Throwable throwable) {
+                            status.finished();
+                            LOGGER.error(throwable, "Try to send {} log data to collector, with unexpected exception.",
+                                         dataList.size()
+                            );
+                            ServiceManager.INSTANCE
+                                .findService(GRPCChannelManager.class)
+                                .reportError(throwable);
+                        }
 
-                    @Override
-                    public void onCompleted() {
-                        status.finished();
-                    }
-                });
+                        @Override
+                        public void onCompleted() {
+                            status.finished();
+                        }
+                    });
 
-            for (final LogData logData : dataList) {
-                logDataStreamObserver.onNext(logData);
+            boolean isFirst = true;
+            for (final LogData.Builder logData : dataList) {
+                if (isFirst) {
+                    // Only set service name of the first element in one stream
+                    // https://github.com/apache/skywalking-data-collect-protocol/blob/master/logging/Logging.proto
+                    // Log collecting protocol defines LogData#service is required in the first element only.
+                    logData.setService(Config.Agent.SERVICE_NAME);
+                    isFirst = false;
+                }
+                logDataStreamObserver.onNext(logData.build());
             }
             logDataStreamObserver.onCompleted();
             status.wait4Finish();
@@ -127,7 +134,7 @@ public class LogReportServiceClient implements BootService, GRPCChannelListener,
     }
 
     @Override
-    public void onError(final List<LogData> data, final Throwable t) {
+    public void onError(final List<LogData.Builder> data, final Throwable t) {
         LOGGER.error(t, "Try to consume {} log data to sender, with unexpected exception.", data.size());
     }
 

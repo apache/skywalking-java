@@ -24,6 +24,7 @@ Release Notes.
 * Add type name checking in ArgumentTypeNameMatch and ReturnTypeNameMatch
 * Highlight ArgumentTypeNameMatch and ReturnTypeNameMatch type naming rule in docs/en/setup/service-agent/java-agent/Java-Plugin-Development-Guide.md
 * Fix FileWriter scheduled task NPE
+* Optimize gRPC Log reporter to set service name for the first element in the streaming.(No change for Kafka reporter)
 
 #### Documentation
 

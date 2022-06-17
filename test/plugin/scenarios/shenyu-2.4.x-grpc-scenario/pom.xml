@@ -48,7 +48,7 @@
         <os-maven-plugin.version>1.6.2</os-maven-plugin.version>
 
         <!--just for test-->
-        <fastjson.version>1.2.79</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
     </properties>
 
     <name>skywalking-shenyu-2.4.x-grpc-scenario</name>

@@ -44,7 +44,7 @@
         <lombok.version>1.18.20</lombok.version>
         <dubbo.version>2.7.0</dubbo.version>
         <!--just for test-->
-        <fastjson.version>1.2.79</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
     </properties>
 
     <name>skywalking-shenyu-2.4.x-dubbo-scenario</name>

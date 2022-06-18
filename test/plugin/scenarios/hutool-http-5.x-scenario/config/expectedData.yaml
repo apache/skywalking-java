@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
   - serviceName: hutool-http-5.x-scenario
-    segmentSize: gt 2
+    segmentSize: ge 2
     segments:
       - segmentId: not null
         spans:
@@ -30,7 +30,7 @@ segmentItems:
           spanType: Entry
           peer: ''
           tags:
-          - {key: url, value: 'http://localhost:8080/hutool-http-5.x-scenario/case/hutool-http-5.x-scenario'}
+          - {key: url, value: 'http://localhost:8080/hutool-http-5.x-scenario/case/hutool'}
           - {key: http.method, value: GET}
           refs:
           - {parentEndpoint: GET:/hutool-http-5.x-scenario/case/hutool-http-5.x-scenario, networkAddress: 'localhost:8080',

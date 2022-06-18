@@ -18,5 +18,3 @@ type: jvm
 entryService: http://localhost:8080/hutool-http-5.x-scenario/case/hutool-http-5.x-scenario
 healthCheck: http://localhost:8080/hutool-http-5.x-scenario/case/healthCheck
 startScript: ./bin/startup.sh
-environment:
-dependencies:

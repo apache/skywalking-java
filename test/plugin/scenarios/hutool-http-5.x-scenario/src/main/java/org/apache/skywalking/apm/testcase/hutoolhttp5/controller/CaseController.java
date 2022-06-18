@@ -35,11 +35,12 @@ public class CaseController {
     @ResponseBody
     public String testcase() {
         // your codes
-        String result = HttpUtil.get("http://localhost:8080/hutool-http-5.x-scenario/hutool");
+        String result = HttpUtil.get("http://localhost:8080/hutool-http-5.x-scenario/case/hutool");
         return SUCCESS + ":" + result;
     }
 
     @RequestMapping("/hutool")
+    @ResponseBody
     public String hutool() {
         return "hutool";
     }

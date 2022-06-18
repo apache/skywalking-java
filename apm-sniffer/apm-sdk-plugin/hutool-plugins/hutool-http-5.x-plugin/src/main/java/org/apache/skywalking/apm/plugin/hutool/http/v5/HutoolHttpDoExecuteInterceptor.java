@@ -23,6 +23,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import java.lang.reflect.Method;
 import java.net.URL;
+import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
@@ -54,6 +55,12 @@ public class HutoolHttpDoExecuteInterceptor implements InstanceMethodsAroundInte
         Tags.HTTP.METHOD.set(span, request.getMethod().name());
         Tags.URL.set(span, url.toString());
         SpanLayer.asHttp(span);
+
+        CarrierItem next = contextCarrier.items();
+        while (next.hasNext()) {
+            next = next.next();
+            request.header(next.getHeadKey(), next.getHeadValue());
+        }
     }
 
     @Override

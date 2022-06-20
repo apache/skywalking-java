@@ -4,7 +4,7 @@ Release Notes.
 
 8.12.0
 ------------------
-* Fix `Shenyu plugin` IgnoredTracerContext traceId NPE(Use with the apm-trace-ignore-plugin plugin will trigger)
+* Fix `Shenyu plugin`'s NPE in reading read trace ID when IgnoredTracerContext is used in the context.
 
 #### Documentation
 

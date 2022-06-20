@@ -18,13 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x;
 
-import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.SKYWALKING_CONTEXT_SNAPSHOT;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -42,8 +35,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
-
 import reactor.core.publisher.Mono;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.SKYWALKING_CONTEXT_SNAPSHOT;
 
 /**
  * Apache shenyu global-plugin interceptor.

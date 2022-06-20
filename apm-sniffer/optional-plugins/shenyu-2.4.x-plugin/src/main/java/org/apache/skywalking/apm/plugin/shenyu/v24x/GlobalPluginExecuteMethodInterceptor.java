@@ -18,10 +18,18 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x;
 
+import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.SKYWALKING_CONTEXT_SNAPSHOT;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.ids.DistributedTraceId;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags.HTTP;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -34,14 +42,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.ServerWebExchangeDecorator;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
+
 import reactor.core.publisher.Mono;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import static org.apache.skywalking.apm.plugin.shenyu.v24x.Constant.SKYWALKING_CONTEXT_SNAPSHOT;
 
 /**
  * Apache shenyu global-plugin interceptor.
@@ -75,7 +77,8 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         HTTP.METHOD.set(span, exchange.getRequest().getMethodValue());
 
         ContextSnapshot snapshot = ContextManager.capture();
-        exchange.getAttributes().put(SHENYU_AGENT_TRACE_ID, snapshot.getTraceId().getId());
+        exchange.getAttributes().put(SHENYU_AGENT_TRACE_ID,
+                Optional.ofNullable(snapshot.getTraceId()).map(DistributedTraceId::getId).orElse(""));
         EnhancedInstance instance = getInstance(allArguments[0]);
         instance.setSkyWalkingDynamicField(snapshot);
         span.prepareForAsync();

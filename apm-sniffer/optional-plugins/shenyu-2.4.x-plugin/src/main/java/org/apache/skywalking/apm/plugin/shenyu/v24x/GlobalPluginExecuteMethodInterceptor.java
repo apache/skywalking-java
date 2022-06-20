@@ -22,6 +22,7 @@ import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.ids.DistributedTraceId;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags.HTTP;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -75,7 +76,8 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         HTTP.METHOD.set(span, exchange.getRequest().getMethodValue());
 
         ContextSnapshot snapshot = ContextManager.capture();
-        exchange.getAttributes().put(SHENYU_AGENT_TRACE_ID, snapshot.getTraceId().getId());
+        exchange.getAttributes().put(SHENYU_AGENT_TRACE_ID,
+                Optional.ofNullable(snapshot.getTraceId()).map(DistributedTraceId::getId).orElse(""));
         EnhancedInstance instance = getInstance(allArguments[0]);
         instance.setSkyWalkingDynamicField(snapshot);
         span.prepareForAsync();

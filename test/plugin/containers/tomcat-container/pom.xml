@@ -40,9 +40,9 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>skywalking/agent-test-tomcat:${java.version}-${project.version}</name>
+                            <name>skywalking/agent-test-tomcat:${container_image_version}</name>
                             <build>
-                                <from>${base.image.tomcat}</from>
+                                <from>${base_image_tomcat}</from>
                                 <workdir>/usr/local/skywalking/scenario</workdir>
                                 <env>
                                     <CATALINA_OPTS>""</CATALINA_OPTS>
@@ -74,31 +74,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>jdk8</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <base.image.tomcat>tomcat:8.5-jdk8-openjdk</base.image.tomcat>
-                <java.version>jdk8</java.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>jdk14</id>
-            <properties>
-                <base.image.tomcat>tomcat:8.5-jdk14-openjdk</base.image.tomcat>
-                <java.version>jdk14</java.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>jdk17</id>
-            <properties>
-                <base.image.tomcat>tomcat:8.5-jdk17-openjdk</base.image.tomcat>
-                <java.version>jdk17</java.version>
-            </properties>
-       </profile>
-    </profiles>
 </project>

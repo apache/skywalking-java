@@ -95,3 +95,37 @@ segmentItems:
       - {key: url, value: 'http://localhost:8080/h2-scenario/case/h2-scenario'}
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
+meterItems:
+  - serviceName: h2-scenario
+    meterSize: 5
+    meters:
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: core_pool_size}
+            - {name: pool_name, value: tomcat_execute_pool}
+        singleValue: ge 1
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: max_pool_size}
+            - {name: pool_name, value: tomcat_execute_pool}
+        singleValue: ge 1
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: pool_size}
+            - {name: pool_name, value: tomcat_execute_pool}
+        singleValue: ge 0
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: active_size}
+            - {name: pool_name, value: tomcat_execute_pool}
+        singleValue: ge 0
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: queue_size}
+            - {name: pool_name, value: tomcat_execute_pool}
+        singleValue: ge 0

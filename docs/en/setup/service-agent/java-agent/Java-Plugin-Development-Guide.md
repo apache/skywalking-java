@@ -1,5 +1,5 @@
 # Plugin Development Guide
-This document describes how to understand, develop and contribute a plugin. 
+This document describes how to understand, develop and contribute a plugin.
 
 There are 2 kinds of plugin:
 1. [Tracing plugin](#tracing-plugin). Follow the distributed tracing concept to collect spans with tags and logs.
@@ -19,7 +19,7 @@ SkyWalking has supported OpenTracing and OpenTracing-Java API since 2017. Our co
 There are three types of span:
 
 1.1 EntrySpan
-The EntrySpan represents a service provider. It is also an endpoint on the server end. As an APM system, our target is the 
+The EntrySpan represents a service provider. It is also an endpoint on the server end. As an APM system, our target is the
 application servers. Therefore, almost all the services and MQ-consumers are EntrySpan.
 
 1.2 LocalSpan
@@ -28,10 +28,10 @@ nor a service (e.g. HTTP service) provider/consumer.
 
 1.3 ExitSpan
 The ExitSpan represents a client of service or MQ-producer. It is named the `LeafSpan` in the early versions of SkyWalking.
-For example, accessing DB through JDBC and reading Redis/Memcached are classified as an ExitSpan. 
+For example, accessing DB through JDBC and reading Redis/Memcached are classified as an ExitSpan.
 
 ### ContextCarrier
-In order to implement distributed tracing, cross-process tracing has to be bound, and the context must propagate 
+In order to implement distributed tracing, cross-process tracing has to be bound, and the context must propagate
 across the process. This is where the ContextCarrier comes in.
 
 Here are the steps on how to use the **ContextCarrier** in an `A->B` distributed call.
@@ -67,7 +67,7 @@ See the following examples, where we use the Apache HTTPComponent client plugin 
 ```
 
 ### ContextSnapshot
-Besides cross-process tracing, cross-thread tracing has to be supported as well. For instance, both async process (in-memory MQ) 
+Besides cross-process tracing, cross-thread tracing has to be supported as well. For instance, both async process (in-memory MQ)
 and batch process are common in Java. Cross-process and cross-thread tracing are very similar in that they both require propagating
 context, except that cross-thread tracing does not require serialization.
 
@@ -96,7 +96,7 @@ Create LocalSpan according to the operation name (e.g. full method signature).
 ```java
 public static AbstractSpan createExitSpan(String endpointName, ContextCarrier carrier, String remotePeer)
 ```
-Create ExitSpan according to the operation name (e.g. service name, uri) and the new **ContextCarrier** and peer address 
+Create ExitSpan according to the operation name (e.g. service name, uri) and the new **ContextCarrier** and peer address
 (e.g. ip+port, hostname+port).
 
 ### AbstractSpan
@@ -165,7 +165,7 @@ The value should be an integer. The response code of OAL entities corresponds to
 #### Tag keys `db.statement` and `db.type`.
 The value of `db.statement` should be a string that represents the database statement, such as SQL, or `[No statement]/`+span#operationName if the value is empty.
 When the exit span contains this tag, OAP samples the slow statements based on `agent-analyzer/default/maxSlowSQLLength`.
-The threshold of slow statement is defined in accordance with `agent-analyzer/default/slowDBAccessThreshold`. 
+The threshold of slow statement is defined in accordance with `agent-analyzer/default/slowDBAccessThreshold`.
 Check **Slow Database Statement** document of OAP server for details.
 
 #### Extension logic endpoint: Tag key `x-le`
@@ -184,7 +184,7 @@ The value of `x-le` should be in JSON format. There are two options:
 {
   "logic-span": true
 }
-``` 
+```
 
 ### Advanced APIs
 #### Async Span APIs
@@ -271,8 +271,8 @@ Example：
 ```java
 @Override
 protected ClassMatch enhanceClassName() {
-    return byName("org.apache.catalina.core.StandardEngineValve");		
-}		      
+    return byName("org.apache.catalina.core.StandardEngineValve");
+}
 
 ```
 
@@ -297,7 +297,16 @@ public interface InstanceMethodsInterceptPoint {
 }
 ```
 You may also use `Matcher` to set the target methods. Return **true** in `isOverrideArgs`, if you want to change the argument
-ref in interceptor.
+ref in interceptor. 
+Please refer to [bytebuddy](https://bytebuddy.net/#/) for details of defining `ElementMatcher`.
+
+In Skywalking, we provide 3 classes to facilitate `ElementMatcher` definition:
+* `AnnotationTypeNameMatch`: Check on whether there is a certain annotation in the target method.
+* `ReturnTypeNameMatch`: Check the return type name (package name + `.` + class name) of the target method.
+* `ArgumentTypeNameMatch`: Check on the argument index and the type name (package name + `.` + class name) of the target method.
+
+**Attention**:
+* In case of using `ReturnTypeNameMatch` and `ArgumentTypeNameMatch`, use [Lxxx; (Java file format defined in [JVM Specification](https://docs.oracle.com/javase/specs/jvms/se8/html/)) to define an Array type. For example, you should write `[Ljava.lang.String;` for `java.lang.String[]`.
 
 The following sections will tell you how to implement the interceptor.
 
@@ -318,7 +327,7 @@ tomcat-7.x/8.x=TomcatInstrumentation
        "foo.Bar"
      };
    }
-   
+
    // The plugin is activated only when the foo.Bar#hello method exists.
    @Override
    protected List<WitnessMethod> witnessMethods() {
@@ -330,10 +339,10 @@ tomcat-7.x/8.x=TomcatInstrumentation
    ```
    For more examples, see [WitnessTest.java](../../../../../apm-sniffer/apm-agent-core/src/test/java/org/apache/skywalking/apm/agent/core/plugin/witness/WitnessTest.java)
 
-   
+
 
 ### Implement an interceptor
-As an interceptor for an instance method, it has to implement 
+As an interceptor for an instance method, it has to implement
 `org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor`
 ```java
 /**
@@ -464,18 +473,18 @@ Every plugin could declare one or more classes to represent the config by using 
 could initialize this class' static field through System environments, System properties, and `agent.config` static file.
 
 The `#root()` method in the `@PluginConfig` annotation requires declaring the root class for the initialization process.
-Typically, SkyWalking prefers to use nested inner static classes for the hierarchy of the configuration. 
+Typically, SkyWalking prefers to use nested inner static classes for the hierarchy of the configuration.
 We recommend using `Plugin`/`plugin-name`/`config-key` as the nested classes structure of the config class.
 
-**NOTE**: because of the Java ClassLoader mechanism, the `@PluginConfig` annotation should be added on the real class used in the interceptor codes. 
+**NOTE**: because of the Java ClassLoader mechanism, the `@PluginConfig` annotation should be added on the real class used in the interceptor codes.
 
-In the following example, `@PluginConfig(root = SpringMVCPluginConfig.class)` indicates that initialization should 
+In the following example, `@PluginConfig(root = SpringMVCPluginConfig.class)` indicates that initialization should
 start with using `SpringMVCPluginConfig` as the root. Then, the config key of the attribute `USE_QUALIFIED_NAME_AS_ENDPOINT_NAME`
 should be `plugin.springmvc.use_qualified_name_as_endpoint_name`.
 ```java
 public class SpringMVCPluginConfig {
     public static class Plugin {
-        // NOTE, if move this annotation on the `Plugin` or `SpringMVCPluginConfig` class, it no longer has any effect. 
+        // NOTE, if move this annotation on the `Plugin` or `SpringMVCPluginConfig` class, it no longer has any effect.
         @PluginConfig(root = SpringMVCPluginConfig.class)
         public static class SpringMVC {
             /**
@@ -509,12 +518,12 @@ public class SpringMVCPluginConfig {
 Java agent plugin could use meter APIs to collect metrics for backend analysis.
 
 * `Counter` API represents a single monotonically increasing counter which automatically collects data and reports to the backend.
-```java
-import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
+  ```java
+  import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 
-Counter counter = MeterFactory.counter(meterName).tag("tagKey", "tagValue").mode(Counter.Mode.INCREMENT).build();
-counter.increment(1d);
-```
+  Counter counter = MeterFactory.counter(meterName).tag("tagKey", "tagValue").mode(Counter.Mode.INCREMENT).build();
+  counter.increment(1d);
+  ```
 1. `MeterFactory.counter` creates a new counter builder with the meter name.
 1. `Counter.Builder.tag(String key, String value)` marks a tag key/value pair.
 1. `Counter.Builder.mode(Counter.Mode mode)` changes the counter mode. `RATE` mode means the reporting rate to the backend.
@@ -547,6 +556,7 @@ histogram.addValue(3);
 1. `Histogram.addValue(double value)` adds value into the histogram, and automatically analyzes what bucket count needs to be incremented. Rule: count into [step1, step2).
 
 # Plugin Test Tool
+
 The [Apache SkyWalking Agent Test Tool Suite](https://github.com/apache/skywalking-agent-test-tool) is an incredibly useful test tool suite that is available in a wide variety of agent languages. It includes the mock collector and validator. The mock collector is a SkyWalking receiver, like the OAP server.
 
 You could learn how to use this tool to test the plugin in [this doc](Plugin-test.md). This is a must if you want to contribute plugins to the SkyWalking official repo.
@@ -560,6 +570,6 @@ Please follow these steps:
 1. Follow this guide to develop. Make sure comments and test cases are provided.
 1. Develop and test.
 1. Provide the automatic test cases. Learn `how to write the plugin test case` from this [doc](Plugin-test.md)
-1. Send a pull request and ask for review. 
+1. Send a pull request and ask for review.
 1. The plugin committers will approve your plugins, plugin CI-with-IT, e2e, and the plugin tests will be passed.
-1. The plugin is accepted by SkyWalking. 
+1. The plugin is accepted by SkyWalking.

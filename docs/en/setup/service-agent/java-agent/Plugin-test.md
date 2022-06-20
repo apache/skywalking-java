@@ -16,22 +16,23 @@ Every plugin maintained in the main repo requires corresponding test cases as we
 
 ## Case Base Image Introduction
 
-The test framework provides `JVM-container` and `Tomcat-container` base images including JDK8 and JDK14. You can choose the best one for your test case. If both are suitable for your case, **`JVM-container` is preferred**.
+The test framework provides `JVM-container` and `Tomcat-container` base images including JDK8 and JDK17. You can choose the best one for your test case. If both are suitable for your case, **`JVM-container` is preferred**.
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK14 and JDK17 as well, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`. 
+It is supported to custom the base Java docker image by specify `base_image_java`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
 Take the following test projects as examples:
 * [sofarpc-scenario](../../../../../test/plugin/scenarios/sofarpc-scenario) is a single project case.
 * [webflux-scenario](../../../../../test/plugin/scenarios/webflux-scenario) is a case including multiple projects.
-* [jdk14-with-gson-scenario](../../../../../test/plugin/scenarios/jdk14-with-gson-scenario) is a single project case with JDK14.
 * [jdk17-with-gson-scenario](../../../../../test/plugin/scenarios/jdk17-with-gson-scenario) is a single project case with JDK17.
 
 ### Tomcat-container Image Introduction
 
-[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk14-openjdk` or `tomcat:8.5-jdk17-openjdk` as the base image.
+[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk17-openjdk` as the base image.
+It is supported to custom the base Tomcat docker image by specify `base_image_tomcat`.
 The test case project must be packaged as `project-name.war` by using `mvn package`.
 
 Take the following test project as an example
@@ -621,7 +622,7 @@ Every test case is a GitHub Actions Job. Please use the scenario directory name 
 mostly you'll just need to decide which file (`plugins-test.<n>.yaml`) to add your test case, and simply put one line (as follows) in it, take the existed cases as examples.
 You can run `python3 tools/select-group.py` to see which file contains the least cases and add your cases into it, in order to balance the running time of each group.
 
-If a test case required to run in JDK 14 environment, please add you test case into file `plugins-jdk14-test.<n>.yaml`.
+If a test case required to run in JDK 17 environment, please add you test case into file `plugins-jdk17-test.<n>.yaml`.
 
 ```yaml
 jobs:

@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.spring.webflux.v5.webclient;
 
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -34,40 +35,13 @@ import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.Optional;
 
 public class WebFluxWebClientInterceptor implements InstanceMethodsAroundInterceptorV2 {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInvocationContext context) throws Throwable {
-        if (allArguments[0] == null) {
-            //illegal args,can't trace ignore
-            return;
-        }
 
-        ClientRequest request = (ClientRequest) allArguments[0];
-        final ContextCarrier contextCarrier = new ContextCarrier();
-
-        URI uri = request.url();
-        final String requestURIString = getRequestURIString(uri);
-        final String operationName = requestURIString;
-        final String remotePeer = getIPAndPort(uri);
-        AbstractSpan span = ContextManager.createExitSpan(operationName, contextCarrier, remotePeer);
-
-        //set components name
-        span.setComponent(ComponentsDefine.SPRING_WEBCLIENT);
-        Tags.URL.set(span, uri.toString());
-        Tags.HTTP.METHOD.set(span, request.method().toString());
-        SpanLayer.asHttp(span);
-
-        if (request instanceof EnhancedInstance) {
-            ((EnhancedInstance) request).setSkyWalkingDynamicField(contextCarrier);
-        }
-
-        //user async interface
-        span.prepareForAsync();
-        ContextManager.stopSpan();
-
-        context.setContext(span);
     }
 
     @Override
@@ -77,19 +51,45 @@ public class WebFluxWebClientInterceptor implements InstanceMethodsAroundInterce
             return ret;
         }
         Mono<ClientResponse> ret1 = (Mono<ClientResponse>) ret;
-        AbstractSpan span = (AbstractSpan) context.getContext();
-        return ret1.doOnSuccess(clientResponse -> {
-            HttpStatus httpStatus = clientResponse.statusCode();
-            if (httpStatus != null) {
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
-                if (httpStatus.isError()) {
-                    span.errorOccurred();
-                }
+        return Mono.subscriberContext().flatMap(ctx -> {
+
+            ClientRequest request = (ClientRequest) allArguments[0];
+            URI uri = request.url();
+            final String operationName = getRequestURIString(uri);
+            final String remotePeer = getIPAndPort(uri);
+            AbstractSpan span = ContextManager.createExitSpan(operationName, remotePeer);
+
+            // get ContextSnapshot from reactor context,  the snapshot is set to reactor context by any other plugin
+            // such as DispatcherHandlerHandleMethodInterceptor in spring-webflux-5.x-plugin
+            final Optional<Object> optional = ctx.getOrEmpty("SKYWALKING_CONTEXT_SNAPSHOT");
+            optional.ifPresent(snapshot -> ContextManager.continued((ContextSnapshot) snapshot));
+
+            //set components name
+            span.setComponent(ComponentsDefine.SPRING_WEBCLIENT);
+            Tags.URL.set(span, uri.toString());
+            Tags.HTTP.METHOD.set(span, request.method().toString());
+            SpanLayer.asHttp(span);
+
+            final ContextCarrier contextCarrier = new ContextCarrier();
+            ContextManager.inject(contextCarrier);
+            if (request instanceof EnhancedInstance) {
+                ((EnhancedInstance) request).setSkyWalkingDynamicField(contextCarrier);
             }
-        }).doOnError(error -> {
-            span.log(error);
-        }).doFinally(s -> {
-            span.asyncFinish();
+
+            //user async interface
+            span.prepareForAsync();
+            ContextManager.stopSpan();
+            return ret1.doOnSuccess(clientResponse -> {
+                HttpStatus httpStatus = clientResponse.statusCode();
+                if (httpStatus != null) {
+                    Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
+                    if (httpStatus.isError()) {
+                        span.errorOccurred();
+                    }
+                }
+            }).doOnError(span::log).doFinally(s -> {
+                span.asyncFinish();
+            });
         });
     }
 

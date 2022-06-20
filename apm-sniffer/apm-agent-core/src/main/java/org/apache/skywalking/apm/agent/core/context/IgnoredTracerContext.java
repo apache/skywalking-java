@@ -126,6 +126,11 @@ public class IgnoredTracerContext implements AbstractTracerContext {
         return this.correlationContext;
     }
 
+    @Override
+    public String getPrimaryEndpointName() {
+        return null;
+    }
+
     public static class ListenerManager {
         private static List<IgnoreTracerContextListener> LISTENERS = new LinkedList<>();
 

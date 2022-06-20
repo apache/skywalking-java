@@ -51,4 +51,16 @@ public class ConnectionImplCreateInterceptorTest {
         }, null, objectInstance);
         verify(objectInstance).setSkyWalkingDynamicField(Matchers.any());
     }
+
+    @Test
+    public void testResultIsEnhanceInstanceWithNoDatabase() throws Throwable {
+        interceptor.afterMethod(null, null, new Object[] {
+                "localhost",
+                3360,
+                null,
+                null,
+                "jdbc:mysql:replication://localhost:3360,localhost:3360,localhost:3360/test?useUnicode=true&characterEncoding=utf8&useSSL=false&roundRobinLoadBalance=true"
+        }, null, objectInstance);
+        verify(objectInstance).setSkyWalkingDynamicField(Matchers.any());
+    }
 }

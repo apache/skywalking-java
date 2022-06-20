@@ -22,10 +22,6 @@ inputs:
   test_case:
     description: "The plugin test name"
     required: true
-  java_version:
-    description: "The Java version under which this test case will run"
-    required: false
-    default: "jdk8"
 runs:
   using: "composite"
   steps:
@@ -39,11 +35,11 @@ runs:
     - name: Load Test Containers
       shell: bash
       run: |
-        if ls test-containers/skywalking-agent-test-jvm-${{ inputs.java_version }}-1.0.0.tgz; then
-          docker load -i test-containers/skywalking-agent-test-jvm-${{ inputs.java_version }}-1.0.0.tgz
+        if ls test-containers/skywalking-agent-test-jvm-1.0.0.tgz; then
+          docker load -i test-containers/skywalking-agent-test-jvm-1.0.0.tgz
         fi
-        if ls test-containers/skywalking-agent-test-tomcat-${{ inputs.java_version }}-1.0.0.tgz; then
-          docker load -i test-containers/skywalking-agent-test-tomcat-${{ inputs.java_version }}-1.0.0.tgz
+        if ls test-containers/skywalking-agent-test-tomcat-1.0.0.tgz; then
+          docker load -i test-containers/skywalking-agent-test-tomcat-1.0.0.tgz
         fi
     - name: Cache local Maven repository
       uses: actions/cache@v2

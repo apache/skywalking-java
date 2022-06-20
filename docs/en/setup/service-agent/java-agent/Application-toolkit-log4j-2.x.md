@@ -128,6 +128,7 @@ The gRPC report could forward the collected logs to SkyWalking OAP server, or [S
 log.max_message_size=${SW_GRPC_LOG_MAX_MESSAGE_SIZE:10485760}
 ```
 
+* Support `-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector` in gRPC log report.
 
 ## Transmitting un-formatted messages
 

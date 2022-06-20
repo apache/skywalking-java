@@ -18,8 +18,8 @@
 
 package org.apache.skywalking.apm.agent.core.context.trace;
 
+import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.agent.core.context.TracingContext;
-import org.apache.skywalking.apm.agent.core.dictionary.DictionaryUtil;
 import org.apache.skywalking.apm.network.trace.component.Component;
 
 /**
@@ -105,7 +105,7 @@ public class EntrySpan extends StackBasedTracingSpan {
     }
 
     private void clearWhenRestart() {
-        this.componentId = DictionaryUtil.nullValue();
+        this.componentId = Constants.NULL_VALUE;
         this.layer = null;
         this.logs = null;
         this.tags = null;

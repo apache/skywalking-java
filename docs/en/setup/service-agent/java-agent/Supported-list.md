@@ -31,11 +31,12 @@ metrics based on the tracing data.
   * JRE HttpURLConnection (Optional²)
 * HTTP Gateway
   * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 3.x (Optional²)
+  * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)
 * JDBC
   * Mysql Driver 5.x, 6.x, 8.x
   * Oracle Driver (Optional¹)
   * H2 Driver 1.3.x -> 1.4.x
-  * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0-beta
+  * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0
   * PostgreSQL Driver 8.x, 9.x, 42.x
   * Mariadb Driver 2.x, 1.8
   * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17
@@ -49,7 +50,7 @@ metrics based on the tracing data.
   * [Apache Dubbo](https://github.com/apache/dubbo) 2.7.x -> 3.x
   * [Motan](https://github.com/weibocom/motan) 0.2.x -> 1.1.0
   * [gRPC](https://github.com/grpc/grpc-java) 1.x
-  * [Apache ServiceComb Java Chassis](https://github.com/apache/servicecomb-java-chassis) 0.1 -> 0.5,1.x
+  * [Apache ServiceComb Java Chassis](https://github.com/apache/servicecomb-java-chassis) 1.x, 2.x
   * [SOFARPC](https://github.com/alipay/sofa-rpc) 5.4.0
   * [Armeria](https://github.com/line/armeria) 0.63.0 -> 0.98.0
   * [Apache Avro](http://avro.apache.org) 1.7.0 - 1.8.x
@@ -112,8 +113,8 @@ metrics based on the tracing data.
   * [Fastjson](https://github.com/alibaba/fastjson) 1.2.x (Optional²)
   * [Jackson](https://github.com/FasterXML/jackson) 2.x (Optional²)
 * Vert.x Ecosystem
-  * Vert.x Eventbus 3.2+
-  * Vert.x Web 3.x
+  * Vert.x Eventbus 3.2 -> 4.x
+  * Vert.x Web 3.x -> 4.x
 * Thread Schedule Framework
   * [Spring @Async](https://github.com/spring-projects/spring-framework) 4.x and 5.x
   * [Quasar](https://github.com/puniverse/quasar) 0.7.x
@@ -124,7 +125,7 @@ metrics based on the tracing data.
 * Kotlin
   * [Coroutine](https://kotlinlang.org/docs/reference/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
 * GraphQL
-  * [Graphql](https://github.com/graphql-java) 8.0 -> 15.x
+  * [Graphql](https://github.com/graphql-java) 8.0 -> 17.x
 * Pool
   * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
   * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
@@ -135,10 +136,15 @@ metrics based on the tracing data.
   * [logback](https://github.com/qos-ch/logback) 1.2.x
 * ORM
   * [MyBatis](https://github.com/mybatis/mybatis-3) 3.4.x -> 3.5.x
+* Event
+  * [GuavaEventBus](https://github.com/google/guava) 19.x -> 31.x-jre
 
 # Meter Plugins
 The meter plugin provides the advanced metrics collections, which are not a part of tracing.
 
+* Thread Pool
+  * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
+  * [Tomcat](https://github.com/apache/tomcat) 7.0.x -> 10.0.x
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository, 
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

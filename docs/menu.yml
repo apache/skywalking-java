@@ -32,8 +32,6 @@ catalog:
         path: "/en/setup/service-agent/java-agent/setting-override"
       - name: "Transport Layer Security (TLS)"
         path: "/en/setup/service-agent/java-agent/tls"
-      - name: "Namespace Isolation"
-        path: "/en/setup/service-agent/java-agent/namespace"
       - name: "Token Authentication"
         path: "/en/setup/service-agent/java-agent/token-auth"
       - name: "Manual APIs"

@@ -18,6 +18,11 @@
 
 package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x;
 
+import java.security.Principal;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -41,13 +46,22 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
 import java.util.List;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebSession;
+import reactor.core.publisher.Mono;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
 public class NettyRoutingFilterInterceptorTest {
-
-    private final EnhancedInstance enhancedInstance = new EnhancedInstance() {
+    private static class ServerWebExchangeEnhancedInstance implements ServerWebExchange, EnhancedInstance {
         private ContextSnapshot snapshot;
+        Map<String, Object> attributes = new HashMap<>();
 
         @Override
         public Object getSkyWalkingDynamicField() {
@@ -58,7 +72,89 @@ public class NettyRoutingFilterInterceptorTest {
         public void setSkyWalkingDynamicField(Object value) {
             this.snapshot = (ContextSnapshot) value;
         }
-    };
+
+        @Override
+        public ServerHttpRequest getRequest() {
+            return null;
+        }
+
+        @Override
+        public ServerHttpResponse getResponse() {
+            return null;
+        }
+
+        @Override
+        public Map<String, Object> getAttributes() {
+            return attributes;
+        }
+
+        @Override
+        public Mono<WebSession> getSession() {
+            return null;
+        }
+
+        @Override
+        public <T extends Principal> Mono<T> getPrincipal() {
+            return null;
+        }
+
+        @Override
+        public Mono<MultiValueMap<String, String>> getFormData() {
+            return null;
+        }
+
+        @Override
+        public Mono<MultiValueMap<String, Part>> getMultipartData() {
+            return null;
+        }
+
+        @Override
+        public LocaleContext getLocaleContext() {
+            return null;
+        }
+
+        @Override
+        public ApplicationContext getApplicationContext() {
+            return null;
+        }
+
+        @Override
+        public boolean isNotModified() {
+            return false;
+        }
+
+        @Override
+        public boolean checkNotModified(Instant instant) {
+            return false;
+        }
+
+        @Override
+        public boolean checkNotModified(String s) {
+            return false;
+        }
+
+        @Override
+        public boolean checkNotModified(String s, Instant instant) {
+            return false;
+        }
+
+        @Override
+        public String transformUrl(String s) {
+            return null;
+        }
+
+        @Override
+        public void addUrlTransformer(Function<String, String> function) {
+
+        }
+
+        @Override
+        public String getLogPrefix() {
+            return null;
+        }
+    }
+
+    private final ServerWebExchangeEnhancedInstance enhancedInstance = new ServerWebExchangeEnhancedInstance();
     private final NettyRoutingFilterInterceptor interceptor = new NettyRoutingFilterInterceptor();
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
@@ -100,5 +196,22 @@ public class NettyRoutingFilterInterceptorTest {
         SpanAssert.assertComponent(spans.get(0), ComponentsDefine.SPRING_CLOUD_GATEWAY);
         SpanAssert.assertComponent(spans.get(1), ComponentsDefine.SPRING_WEBFLUX);
         SpanAssert.assertLayer(spans.get(1), SpanLayer.HTTP);
+    }
+
+    private static final String NETTY_ROUTING_FILTER_TRACED_ATTR =
+            NettyRoutingFilterInterceptor.class.getName() + ".isTraced";
+
+    @Test
+    public void testIsTraced() throws Throwable {
+        interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
+        interceptor.afterMethod(null, null, null, null, null);
+        Assert.assertEquals(enhancedInstance.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
+        Assert.assertNotNull(ContextManager.activeSpan());
+
+        ContextManager.stopSpan();
+
+        interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
+        interceptor.afterMethod(null, null, null, null, null);
+        Assert.assertEquals(enhancedInstance.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
     }
 }

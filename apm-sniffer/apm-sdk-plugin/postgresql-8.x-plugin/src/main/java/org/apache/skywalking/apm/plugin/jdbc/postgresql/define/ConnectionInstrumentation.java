@@ -46,7 +46,7 @@ public class ConnectionInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
     private static final String PREPARE_STATEMENT_METHOD_WITH_STRING_ARRAY_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.postgresql.JDBCPrepareStatementWithStringArrayInterceptor";
     public static final String PG_CONNECTION_ENHANCE_CLASS = "org.postgresql.jdbc.PgConnection";
-    public static final String STRING_ARRAY_ARGUMENT_TYPE = "java.lang.String[]";
+    public static final String STRING_ARRAY_ARGUMENT_TYPE = "[Ljava.lang.String;";
     public static final String PG_JDBC42_CONNECTION_ENHANCE_CLASS = "org.postgresql.jdbc42.Jdbc42Connection";
     public static final String PG_JDBC3_CONNECTION_ENHANCE_CLASS = "org.postgresql.jdbc3g.Jdbc3gConnection";
     public static final String PG_JDBC4_CONNECTION_ENHANCE_CLASS = "org.postgresql.jdbc4.Jdbc4Connection";

@@ -18,3 +18,5 @@ type: jvm
 entryService: http://localhost:8080/h2-scenario/case/h2-scenario
 healthCheck: http://localhost:8080/h2-scenario/case/healthCheck
 startScript: ./bin/startup.sh
+environment:
+  - SW_METER_REPORT_INTERVAL=1

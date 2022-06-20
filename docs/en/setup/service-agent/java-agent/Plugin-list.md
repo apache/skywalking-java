@@ -24,7 +24,10 @@
 - feign-default-http-9.x
 - feign-pathvar-9.x
 - finagle
-- graphql
+- graphql-8.x
+- graphql-9.x
+- graphql-12.x-15.x
+- graphql-16plus
 - grpc-1.x
 - gson-2.8.x
 - guava-cache
@@ -74,12 +77,11 @@
 - rocketMQ-3.x
 - rocketMQ-4.x
 - sentinel-1.x
-- servicecomb-0.x
-- servicecomb-1.x
+- servicecomb-2.x
 - sharding-sphere-3.x
 - sharding-sphere-4.0.0
 - sharding-sphere-4.1.0
-- shardingsphere-5.0.0-beta
+- sharding-sphere-5.0.0
 - sofarpc
 - solrj-7.x
 - spring-annotation
@@ -118,6 +120,7 @@
 - toolkit-exception
 - undertow-2.x-plugin
 - vertx-core-3.x
+- vertx-core-4.x
 - xxl-job-2.x
 - zookeeper-3.4.x
 - mssql-jtds-1.x
@@ -130,3 +133,8 @@
 - kylin-jdbc-2.6.x-3.x-4.x
 - okhttp-2.x
 - pulsar-2.8.x
+- undertow-worker-thread-pool
+- tomcat-thread-pool
+- guava-eventbus
+- shenyu-2.4.x
+- jdk-threadpool-plugin

@@ -44,7 +44,7 @@ public class Constants {
     //witnessClasses
     public static final String TASK_TRANSPORT_CHANNEL_WITNESS_CLASSES = "org.elasticsearch.transport.TaskTransportChannel";
     public static final String SEARCH_HITS_WITNESS_CLASSES = "org.elasticsearch.search.SearchHits";
-    public static final String CREATE_INDEX_RESPONSE_WITNESS_CLASSES= "org.elasticsearch.client.indices.CreateIndexResponse";
+    public static final String CREATE_INDEX_RESPONSE_WITNESS_CLASSES = "org.elasticsearch.client.indices.CreateIndexResponse";
 
     //es operator name
     public static final String CREATE_OPERATOR_NAME = "Elasticsearch/CreateRequest";

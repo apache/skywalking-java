@@ -41,6 +41,13 @@ public class Constants {
     public static final String REQUEST_ON_MESSAGE_OPERATION_NAME = "/Request/onMessage";
 
     /**
+     * Operation name for request completed all message sending.
+     * <p>
+     * However, the call may still be cancelled.
+     */
+    public static final String REQUEST_ON_HALF_CLOSE_OPERATION_NAME = "/Request/onHalfClose";
+
+    /**
      * Operation name for client has completed request sending, there are no more incoming request.
      * <p>
      * It should happen with half close state usually.

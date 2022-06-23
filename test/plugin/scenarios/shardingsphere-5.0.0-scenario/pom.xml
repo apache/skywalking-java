@@ -32,7 +32,7 @@
         <test.framework.version>5.0.0</test.framework.version>
 
         <spring.version>4.3.8.RELEASE</spring.version>
-        <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+        <spring.boot.version>2.5.12</spring.boot.version>
     </properties>
 
     <dependencies>

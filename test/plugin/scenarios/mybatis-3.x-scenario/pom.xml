@@ -30,7 +30,7 @@
         <compiler.version>1.8</compiler.version>
         <test.framework.version>3.4.6</test.framework.version>
         <docker.image.version>${test.framework.version}</docker.image.version>
-        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+        <spring.boot.version>2.5.12</spring.boot.version>
     </properties>
 
     <name>skywalking-mybatis-3.x-scenario</name>

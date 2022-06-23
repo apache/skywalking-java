@@ -21,7 +21,6 @@ package org.apache.skywalking.apm.testcase.elasticsearch.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.skywalking.apm.testcase.elasticsearch.RestHighLevelClientCase;
-import org.apache.skywalking.apm.testcase.elasticsearch.TransportClientCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,9 +35,6 @@ public class CaseController {
     @Autowired
     private RestHighLevelClientCase restHighLevelClientCase;
 
-    @Autowired
-    private TransportClientCase transportClientCase;
-
     @GetMapping("/healthcheck")
     public String healthcheck() throws Exception {
         restHighLevelClientCase.healthcheck();
@@ -48,8 +44,6 @@ public class CaseController {
     @GetMapping("/elasticsearch")
     public String elasticsearch() throws Exception {
         restHighLevelClientCase.elasticsearch();
-        transportClientCase.elasticsearch();
-
         return "Success";
     }
 

@@ -70,7 +70,8 @@ jobs:
           - dubbo-3.x-scenario
           - ehcache-2.x-scenario
           - elasticsearch-5.x-scenario
-          - elasticsearch-6.x-scenario
+          - elasticsearch-rest-high-level-6.x-scenario
+          - elasticsearch-transport-6.x-scenario
           - elasticsearch-7.x-scenario
           - exception-checker-spring-scenario
           - exception-checker-tomcat-scenario

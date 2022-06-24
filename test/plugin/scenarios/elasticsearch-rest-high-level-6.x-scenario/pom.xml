@@ -22,10 +22,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.apache.skywalking</groupId>
-    <artifactId>elasticsearch-6.x-scenario</artifactId>
+    <artifactId>elasticsearch-rest-high-level-6.x-scenario</artifactId>
     <version>5.0.0</version>
 
-    <name>skywalking-elasticsearch-6.x-scenario</name>
+    <name>skywalking-elasticsearch-rest-high-level-6.x-scenario</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -56,12 +56,6 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot.version}</version>
         </dependency>
-        <!-- elasticsearch transport-client -->
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>transport</artifactId>
-            <version>${test.framework.version}</version>
-        </dependency>
         <!-- elasticsearch rest-high-level-client -->
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
@@ -86,7 +80,7 @@
     </dependencies>
 
     <build>
-        <finalName>elasticsearch-6.x-scenario</finalName>
+        <finalName>elasticsearch-rest-high-level-6.x-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

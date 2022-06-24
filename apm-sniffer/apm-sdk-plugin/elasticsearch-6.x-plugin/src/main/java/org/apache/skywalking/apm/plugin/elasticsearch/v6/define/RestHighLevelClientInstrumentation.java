@@ -260,6 +260,6 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
     @Override
     protected String[] witnessClasses() {
-        return new String[] {Constants.TASK_TRANSPORT_CHANNEL_WITNESS_CLASSES};
+        return new String[] {Constants.CREATE_INDEX_RESPONSE_WITNESS_CLASSES};
     }
 }

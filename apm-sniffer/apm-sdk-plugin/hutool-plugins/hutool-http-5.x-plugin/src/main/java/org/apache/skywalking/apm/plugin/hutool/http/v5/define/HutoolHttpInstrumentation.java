@@ -33,7 +33,7 @@ public class HutoolHttpInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
     private static final String ENHANCE_CLASS = "cn.hutool.http.HttpRequest";
 
-    private static final String DOEXECUTE_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.hutool.http.v5.HutoolHttpDoExecuteInterceptor";
+    private static final String EXECUTE_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.hutool.http.v5.HutoolHttpExecuteInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -56,7 +56,7 @@ public class HutoolHttpInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return DOEXECUTE_INTERCEPT_CLASS;
+                    return EXECUTE_INTERCEPT_CLASS;
                 }
 
                 @Override

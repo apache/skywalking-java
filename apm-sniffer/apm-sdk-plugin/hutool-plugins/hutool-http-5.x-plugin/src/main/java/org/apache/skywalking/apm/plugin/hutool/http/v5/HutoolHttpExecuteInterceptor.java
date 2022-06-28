@@ -34,7 +34,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
-public class HutoolHttpDoExecuteInterceptor implements InstanceMethodsAroundInterceptor {
+public class HutoolHttpExecuteInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(final EnhancedInstance objInst,

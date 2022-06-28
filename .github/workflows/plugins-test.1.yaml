@@ -60,6 +60,7 @@ jobs:
           - httpclient-3.x-scenario
           - httpclient-4.3.x-scenario
           - httpclient-5.x-scenario
+          - hutool-http-5.x-scenario
           - hystrix-scenario
           - sentinel-scenario
           - influxdb-scenario

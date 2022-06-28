@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class HutoolHttpInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
@@ -50,7 +51,7 @@ public class HutoolHttpInstrumentation extends ClassInstanceMethodsEnhancePlugin
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("doExecute");
+                    return named("execute").and(takesArguments(1));
                 }
 
                 @Override

@@ -74,12 +74,11 @@ public class GRPCLogAppenderInterceptor implements InstanceMethodsAroundIntercep
      *
      * @param appender the real {@link AppenderSkeleton appender}
      * @param event {@link LoggingEvent}
-     * @return {@link LogData} with filtered trace context in order to reduce the cost on the network
+     * @return {@link LogData.Builder} with filtered trace context in order to reduce the cost on the network
      */
-    private LogData transform(final AppenderSkeleton appender, LoggingEvent event) {
+    private LogData.Builder transform(final AppenderSkeleton appender, LoggingEvent event) {
         LogData.Builder builder = LogData.newBuilder()
                 .setTimestamp(event.getTimeStamp())
-                .setService(Config.Agent.SERVICE_NAME)
                 .setServiceInstance(Config.Agent.INSTANCE_NAME)
                 .setTraceContext(TraceContext.newBuilder()
                         .setTraceId(ContextManager.getGlobalTraceId())
@@ -102,12 +101,12 @@ public class GRPCLogAppenderInterceptor implements InstanceMethodsAroundIntercep
             builder.setEndpoint(primaryEndpointName);
         }
 
-        return -1 == ContextManager.getSpanId() ? builder.build()
+        return -1 == ContextManager.getSpanId() ? builder
                 : builder.setTraceContext(TraceContext.newBuilder()
                         .setTraceId(ContextManager.getGlobalTraceId())
                         .setSpanId(ContextManager.getSpanId())
                         .setTraceSegmentId(ContextManager.getSegmentId())
-                        .build()).build();
+                        .build());
     }
 
     private String transformLogText(final AppenderSkeleton appender, final LoggingEvent event) {

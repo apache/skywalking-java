@@ -162,7 +162,7 @@ segmentItems:
             tags:
               - {key: rpc.status_code, value: OK}
             skipAnalysis: 'false'
-          - operationName: GreeterBlocking.sayHello/server/Request/onComplete
+          - operationName: GreeterBlocking.sayHello/server/Request/onHalfClose
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -220,7 +220,7 @@ segmentItems:
             tags:
               - {key: rpc.status_code, value: OK}
             skipAnalysis: 'false'
-          - operationName: Greeter.sayHello/server/Request/onComplete
+          - operationName: Greeter.sayHello/server/Request/onHalfClose
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework
@@ -307,7 +307,7 @@ segmentItems:
                   - {key: message, value: ''}
                   - {key: stack, value: not null}
             skipAnalysis: 'false'
-          - operationName: GreeterBlockingError.sayHello/server/Request/onComplete
+          - operationName: GreeterBlockingError.sayHello/server/Request/onHalfClose
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework

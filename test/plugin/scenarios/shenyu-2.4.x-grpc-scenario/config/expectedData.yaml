@@ -126,7 +126,7 @@ segmentItems:
             skipAnalysis: false
             tags:
               - { key: rpc.status_code, value: OK }
-          - operationName: echo.EchoServiceJSON.echo/server/Request/onComplete
+          - operationName: echo.EchoServiceJSON.echo/server/Request/onHalfClose
             parentSpanId: -1
             spanId: 0
             spanLayer: RPCFramework

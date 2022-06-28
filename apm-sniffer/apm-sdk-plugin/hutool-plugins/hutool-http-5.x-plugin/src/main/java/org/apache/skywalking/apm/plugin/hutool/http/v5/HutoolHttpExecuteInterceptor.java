@@ -72,10 +72,11 @@ public class HutoolHttpExecuteInterceptor implements InstanceMethodsAroundInterc
         if (ret != null) {
             HttpResponse response = (HttpResponse) ret;
             int statusCode = response.getStatus();
+
+            AbstractSpan span = ContextManager.activeSpan();
+            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
             if (statusCode >= 400) {
-                AbstractSpan span = ContextManager.activeSpan();
                 span.errorOccurred();
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
             }
         }
         ContextManager.stopSpan();

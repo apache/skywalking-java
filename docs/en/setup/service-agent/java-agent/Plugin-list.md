@@ -138,3 +138,4 @@
 - guava-eventbus
 - shenyu-2.4.x
 - jdk-threadpool-plugin
+- hutool-http-5.x

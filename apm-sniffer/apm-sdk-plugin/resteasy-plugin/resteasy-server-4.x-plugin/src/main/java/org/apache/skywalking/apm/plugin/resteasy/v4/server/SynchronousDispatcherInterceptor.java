@@ -32,11 +32,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
 public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundInterceptor {
     private static final ILog LOG = LogManager.getLogger(SynchronousDispatcherInterceptor.class);
+    private static final Logger log = LoggerFactory.getLogger(SynchronousDispatcherInterceptor.class);
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -51,6 +54,8 @@ public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundIn
         }
 
         AbstractSpan span = ContextManager.createEntrySpan(request.getHttpMethod() + ":" + request.getUri().getPath(), contextCarrier);
+        LOG.info("====test:{}", allArguments[0].getClass().getName());
+        log.info("====test:{}", allArguments[0].getClass().getName());
         System.out.println(allArguments[0].getClass().getName());
         if (allArguments.length > 1) {
             System.out.println(allArguments[1].getClass().getName());

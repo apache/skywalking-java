@@ -97,6 +97,7 @@ public class SynchronousDispatcherInterceptorTest {
         exceptionInterceptor = new SynchronousDispatcherExceptionInterceptor();
         when(request.getUri()).thenReturn(new ResteasyUriInfo(new URI("http://localhost:8080/test/testRequestURL")));
         when(request.getHttpHeaders()).thenReturn(new ResteasyHttpHeaders(new MultivaluedMapImpl<String, String>()));
+        when(request.getHttpMethod()).thenReturn("GET");
         when(response.getStatus()).thenReturn(200);
         when(request.getAsyncContext()).thenReturn(resteasyAsynchronousContext);
         when(request.getAsyncContext().isSuspended()).thenReturn(false);

@@ -38,7 +38,7 @@ class AssertTools {
     }
 
     static void assertHttpSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is("/test/testRequestURL"));
+        assertThat(span.getOperationName(), is("GET:/test/testRequestURL"));
         assertComponent(span, ComponentsDefine.RESTEASY);
         SpanAssert.assertTag(span, 0, "http://localhost:8080/test/testRequestURL");
         assertThat(span.isEntry(), is(true));

@@ -117,7 +117,7 @@ segmentItems:
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: POST:/resteasy-4.x-scenario/create/
+          - operationName: /resteasy-4.x-scenario/create/
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
@@ -131,7 +131,7 @@ segmentItems:
               - { key: url, value: 'http://localhost:8080/resteasy-4.x-scenario/create/' }
               - { key: http.method, value: POST }
             skipAnalysis: 'false'
-          - operationName: 'GET:/get/1'
+          - operationName: /get/1
             parentSpanId: 0
             spanId: 2
             spanLayer: Http
@@ -145,7 +145,7 @@ segmentItems:
               - { key: url, value: 'http://localhost:8080/resteasy-4.x-scenario/get/1' }
               - { key: http.method, value: GET }
             skipAnalysis: 'false'
-          - operationName: 'PUT:/resteasy-4.x-scenario/update/1'
+          - operationName: /resteasy-4.x-scenario/update/1
             parentSpanId: 0
             spanId: 3
             spanLayer: Http
@@ -159,7 +159,7 @@ segmentItems:
               - { key: url, value: 'http://localhost:8080/resteasy-4.x-scenario/update/1' }
               - { key: http.method, value: PUT }
             skipAnalysis: 'false'
-          - operationName: DELETE:/resteasy-4.x-scenario/delete/1
+          - operationName: /resteasy-4.x-scenario/delete/1
             parentSpanId: 0
             spanId: 4
             spanLayer: Http

@@ -52,6 +52,7 @@ segmentItems:
           tags:
           - {key: http.method, value: GET}
           - {key: url, value: 'http://localhost:8080/hutool-http-5.x-scenario/case/hutool'}
+          - {key: http.status_code, value: '200'}
           skipAnalysis: 'false'
         - operationName: GET:/hutool-http-5.x-scenario/case/hutool-http-5.x-scenario
           parentSpanId: -1

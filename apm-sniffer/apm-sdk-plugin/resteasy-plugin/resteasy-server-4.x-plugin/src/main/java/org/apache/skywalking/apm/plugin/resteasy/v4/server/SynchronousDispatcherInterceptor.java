@@ -24,8 +24,6 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -38,8 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 
 public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundInterceptor {
-    private static final ILog LOG = LogManager.getLogger(SynchronousDispatcherInterceptor.class);
-    private static final Logger log = LoggerFactory.getLogger(SynchronousDispatcherInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SynchronousDispatcherInterceptor.class);
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -55,15 +52,14 @@ public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundIn
 
         AbstractSpan span = ContextManager.createEntrySpan(request.getHttpMethod() + ":" + request.getUri().getPath(), contextCarrier);
         LOG.info("====test:{}", allArguments[0].getClass().getName());
-        log.info("====test:{}", allArguments[0].getClass().getName());
-        System.out.println(allArguments[0].getClass().getName());
+        LOG.info(allArguments[0].getClass().getName());
         if (allArguments.length > 1) {
-            System.out.println(allArguments[1].getClass().getName());
+            LOG.info(allArguments[1].getClass().getName());
         }
-        System.out.println(request.getUri().getBaseUri().getPath());
-        System.out.println(request.getUri().getPath());
-        System.out.println(request.getUri().getRequestUri().getPath());
-        System.out.println(request.getUri().getAbsolutePath().getPath());
+        LOG.info(request.getUri().getBaseUri().getPath());
+        LOG.info(request.getUri().getPath());
+        LOG.info(request.getUri().getRequestUri().getPath());
+        LOG.info(request.getUri().getAbsolutePath().getPath());
         span.tag(Tags.URL, toPath(request.getUri().getRequestUri().toString()));
         span.tag(Tags.HTTP.METHOD, request.getHttpMethod());
         span.setComponent(ComponentsDefine.RESTEASY);

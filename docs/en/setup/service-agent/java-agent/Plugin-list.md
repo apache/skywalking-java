@@ -74,6 +74,7 @@
 - rabbitmq-5.x
 - redisson-3.x
 - resteasy-server-3.x
+- resteasy-server-4.x
 - rocketMQ-3.x
 - rocketMQ-4.x
 - sentinel-1.x

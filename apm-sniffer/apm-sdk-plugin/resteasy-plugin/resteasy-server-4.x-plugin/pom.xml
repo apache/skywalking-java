@@ -32,7 +32,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <test.framework.version>4.7.6.Final</test.framework.version>
+        <resteasy.version>4.7.6.Final</resteasy.version>
         <resteasy-jaxrs.version>3.15.3.Final</resteasy-jaxrs.version>
     </properties>
 
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-core</artifactId>
-            <version>${test.framework.version}</version>
+            <version>${resteasy.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -50,20 +50,12 @@ public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundIn
             next.setHeadValue(request.getHttpHeaders().getHeaderString(next.getHeadKey()));
         }
 
-        String operationName = toOperationName(request);
+        String operationName = request.getHttpMethod() + ":" + request.getUri().getPath();
         AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
         span.tag(Tags.URL, toPath(request.getUri().getRequestUri().toString()));
         span.tag(Tags.HTTP.METHOD, request.getHttpMethod());
         span.setComponent(ComponentsDefine.RESTEASY);
         SpanLayer.asHttp(span);
-    }
-
-    private String toOperationName(HttpRequest request) {
-        if (request.getHttpMethod() == null) {
-            return request.getUri().getPath();
-        } else {
-            return request.getHttpMethod() + ":" + request.getUri().getPath();
-        }
     }
 
     @Override

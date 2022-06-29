@@ -8,6 +8,7 @@ Release Notes.
 * Update witness class in elasticsearch-6.x-plugin, avoid throw NPE.
 * Fix `onHalfClose` using span operation name `/Request/onComplete` instead of the worng name `/Request/onHalfClose`.
 * Add plugin to support for RESTeasy 4.x.
+* Add plugin to support for hutool-http 5.x.
 
 #### Documentation
 

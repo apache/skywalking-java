@@ -30,7 +30,6 @@ on:
   push:
     branches:
       - test/ci/*
-      - feat/resteasy4.x
 
 concurrency:
   group: plugins-1-${{ github.event.pull_request.number || github.ref }}

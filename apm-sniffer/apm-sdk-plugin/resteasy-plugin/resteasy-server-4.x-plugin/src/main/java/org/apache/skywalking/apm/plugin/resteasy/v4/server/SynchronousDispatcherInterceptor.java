@@ -51,15 +51,6 @@ public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundIn
         }
 
         AbstractSpan span = ContextManager.createEntrySpan(request.getHttpMethod() + ":" + request.getUri().getPath(), contextCarrier);
-        LOG.info("====test:{}", allArguments[0].getClass().getName());
-        LOG.info(allArguments[0].getClass().getName());
-        if (allArguments.length > 1) {
-            LOG.info(allArguments[1].getClass().getName());
-        }
-        LOG.info(request.getUri().getBaseUri().getPath());
-        LOG.info(request.getUri().getPath());
-        LOG.info(request.getUri().getRequestUri().getPath());
-        LOG.info(request.getUri().getAbsolutePath().getPath());
         span.tag(Tags.URL, toPath(request.getUri().getRequestUri().toString()));
         span.tag(Tags.HTTP.METHOD, request.getHttpMethod());
         span.setComponent(ComponentsDefine.RESTEASY);

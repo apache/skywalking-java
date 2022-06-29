@@ -131,7 +131,7 @@ segmentItems:
               - { key: url, value: 'http://localhost:8080/resteasy-4.x-scenario/create/' }
               - { key: http.method, value: POST }
             skipAnalysis: 'false'
-          - operationName: /get/1
+          - operationName: /resteasy-4.x-scenario/get/1
             parentSpanId: 0
             spanId: 2
             spanLayer: Http

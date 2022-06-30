@@ -222,4 +222,6 @@ public class ComponentsDefine {
     public static final OfficialComponent GUAVA_EVENT_BUS = new OfficialComponent(123, "GuavaEventBus");
 
     public static final OfficialComponent APACHE_SHENYU = new OfficialComponent(127, "Apache-ShenYu");
+
+    public static final OfficialComponent HUTOOL = new OfficialComponent(128, "Hutool");
 }

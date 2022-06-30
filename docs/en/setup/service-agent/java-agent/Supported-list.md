@@ -29,7 +29,7 @@ metrics based on the tracing data.
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
   * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
   * JRE HttpURLConnection (Optional²)
-  * [Hutool-http](https://www.hutool.cn/) 5.x
+  * [Hutool-http](https://www.hutool.cn/) client 5.x
 * HTTP Gateway
   * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 3.x (Optional²)
   * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)

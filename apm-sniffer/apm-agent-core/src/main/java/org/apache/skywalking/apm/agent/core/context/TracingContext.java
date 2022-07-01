@@ -43,6 +43,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.profile.ProfileStatusReference;
 import org.apache.skywalking.apm.agent.core.profile.ProfileTaskExecutionService;
+import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import static org.apache.skywalking.apm.agent.core.conf.Config.Agent.CLUSTER;
@@ -306,6 +307,11 @@ public class TracingContext implements AbstractTracerContext {
             NoopSpan span = new NoopSpan();
             return push(span);
         }
+        SamplingService samplingService = ServiceManager.INSTANCE.findService(SamplingService.class);
+        if (!samplingService.trySampling(operationName)) {
+            NoopSpan span = new NoopSpan();
+            return push(span);
+        }
         AbstractSpan parentSpan = peek();
         final int parentSpanId = parentSpan == null ? -1 : parentSpan.getSpanId();
         AbstractTracingSpan span = new LocalSpan(spanIdGenerator++, parentSpanId, operationName, this);
@@ -328,7 +334,11 @@ public class TracingContext implements AbstractTracerContext {
             NoopExitSpan span = new NoopExitSpan(remotePeer);
             return push(span);
         }
-
+        SamplingService samplingService = ServiceManager.INSTANCE.findService(SamplingService.class);
+        if (!samplingService.trySampling(operationName)) {
+            NoopSpan span = new NoopSpan();
+            return push(span);
+        }
         AbstractSpan exitSpan;
         AbstractSpan parentSpan = peek();
         TracingContext owner = this;

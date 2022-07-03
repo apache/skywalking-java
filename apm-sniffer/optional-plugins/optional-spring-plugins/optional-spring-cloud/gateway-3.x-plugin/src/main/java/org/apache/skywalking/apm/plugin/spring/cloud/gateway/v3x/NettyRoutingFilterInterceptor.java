@@ -81,6 +81,7 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             Object ret) throws Throwable {
+        ContextManager.stopSpan();
         return ret;
     }
 

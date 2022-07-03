@@ -168,8 +168,7 @@ public class NettyRoutingFilterInterceptorTest {
     @Test
     public void testWithNullDynamicField() throws Throwable {
         interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
-        interceptor.afterMethod(null, null, null, null, null);
-        ContextManager.stopSpan();
+        interceptor.afterMethod(null, null, new Object[]{enhancedInstance}, null, null);
         final List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertEquals(traceSegments.size(), 1);
         final List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegments.get(0));
@@ -185,8 +184,7 @@ public class NettyRoutingFilterInterceptorTest {
         entrySpan.setComponent(ComponentsDefine.SPRING_WEBFLUX);
         enhancedInstance.setSkyWalkingDynamicField(ContextManager.capture());
         interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
-        interceptor.afterMethod(null, null, null, null, null);
-        ContextManager.stopSpan();
+        interceptor.afterMethod(null, null, new Object[]{enhancedInstance}, null, null);
         ContextManager.stopSpan(entrySpan);
         final List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertEquals(traceSegments.size(), 1);
@@ -204,14 +202,13 @@ public class NettyRoutingFilterInterceptorTest {
     @Test
     public void testIsTraced() throws Throwable {
         interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
-        interceptor.afterMethod(null, null, null, null, null);
-        Assert.assertEquals(enhancedInstance.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
+        List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertEquals(traceSegments.size(), 0);
         Assert.assertNotNull(ContextManager.activeSpan());
-
-        ContextManager.stopSpan();
-
-        interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
-        interceptor.afterMethod(null, null, null, null, null);
         Assert.assertEquals(enhancedInstance.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
+        interceptor.afterMethod(null, null, new Object[]{enhancedInstance}, null, null);
+        traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertEquals(traceSegments.size(), 1);
+        Assert.assertNull(enhancedInstance.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR));
     }
 }

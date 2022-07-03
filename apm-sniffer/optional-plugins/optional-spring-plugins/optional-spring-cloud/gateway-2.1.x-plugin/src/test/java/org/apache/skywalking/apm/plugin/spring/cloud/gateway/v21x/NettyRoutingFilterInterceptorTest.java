@@ -21,9 +21,11 @@ package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v21x;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
@@ -147,14 +149,13 @@ public class NettyRoutingFilterInterceptorTest {
     @Test
     public void testIsTraced() throws Throwable {
         interceptor.beforeMethod(null, null, new Object[]{exchange}, null, null);
-        interceptor.afterMethod(null, null, null, null, null);
-        Assert.assertEquals(exchange.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
+        List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertEquals(traceSegments.size(), 0);
         Assert.assertNotNull(ContextManager.activeSpan());
-
-        ContextManager.stopSpan();
-
-        interceptor.beforeMethod(null, null, new Object[]{exchange}, null, null);
-        interceptor.afterMethod(null, null, null, null, null);
         Assert.assertEquals(exchange.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
+        interceptor.afterMethod(null, null, new Object[]{exchange}, null, null);
+        traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertEquals(traceSegments.size(), 1);
+        Assert.assertNull(exchange.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR));
     }
 }

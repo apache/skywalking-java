@@ -44,6 +44,12 @@ public class AgentServiceRule extends ExternalResource {
     @Override
     protected void before() throws Throwable {
         super.before();
+
+        Whitebox.setInternalState(ServiceManager.INSTANCE, "bootedServices", new HashMap<Class, BootService>());
+        Whitebox.setInternalState(TracingContext.ListenerManager.class, "LISTENERS", new LinkedList<TracingContextListener>());
+        Whitebox.setInternalState(IgnoredTracerContext.ListenerManager.class, "LISTENERS", new LinkedList<TracingContextListener>());
+        Whitebox.setInternalState(TracingContext.TracingThreadListenerManager.class, "LISTENERS", new LinkedList<TracingThreadListener>());
+
         ServiceManager.INSTANCE.boot();
     }
 }

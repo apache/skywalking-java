@@ -56,6 +56,10 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
         exchange.getAttributes().put(NETTY_ROUTING_FILTER_TRACED_ATTR, true);
     }
 
+    private static void removeTracedStatus(ServerWebExchange exchange) {
+        exchange.getAttributes().remove(NETTY_ROUTING_FILTER_TRACED_ATTR);
+    }
+
     private static boolean isTraced(ServerWebExchange exchange) {
         return exchange.getAttributeOrDefault(NETTY_ROUTING_FILTER_TRACED_ATTR, false);
     }
@@ -74,7 +78,11 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
-        ContextManager.stopSpan();
+        ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
+        if (isTraced(exchange)) {
+            ContextManager.stopSpan();
+            removeTracedStatus(exchange);
+        }
         return ret;
     }
 

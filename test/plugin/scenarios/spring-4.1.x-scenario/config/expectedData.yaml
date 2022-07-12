@@ -33,6 +33,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/healthCheck'}
               - {key: http.method, value: HEAD}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: test.apache.skywalking.apm.testcase.spring3.component.TestComponentBean.componentMethod
@@ -82,6 +83,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/case/spring3/'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 1, parentTraceSegmentId: not null,
@@ -103,6 +105,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/create/'}
               - {key: http.method, value: POST}
+              - {key: http.status_code, value: '201'}
             refs:
               - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 2, parentTraceSegmentId: not null,
@@ -124,6 +127,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/get/1'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 3, parentTraceSegmentId: not null,
@@ -145,6 +149,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/update/1'}
               - {key: http.method, value: PUT}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 4, parentTraceSegmentId: not null,
@@ -166,6 +171,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/delete/1'}
               - {key: http.method, value: DELETE}
+              - {key: http.status_code, value: '204'}
             refs:
               - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 5, parentTraceSegmentId: not null,
@@ -187,6 +193,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/impl/requestmapping'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 6, parentTraceSegmentId: not null,
@@ -208,6 +215,7 @@ segmentItems:
             tags:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/case/spring3/'}
+              - {key: http.status_code, value: '200'}
           - operationName: /spring-4.1.x-scenario/create/
             parentSpanId: 0
             spanId: 2
@@ -222,6 +230,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/create/'}
               - {key: http.method, value: POST}
+              - {key: http.status_code, value: '201'}
           - operationName: /spring-4.1.x-scenario/get/1
             parentSpanId: 0
             spanId: 3
@@ -236,6 +245,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/get/1'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: /spring-4.1.x-scenario/update/1
             parentSpanId: 0
             spanId: 4
@@ -250,6 +260,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/update/1'}
               - {key: http.method, value: PUT}
+              - {key: http.status_code, value: '200'}
           - operationName: /spring-4.1.x-scenario/delete/1
             parentSpanId: 0
             spanId: 5
@@ -264,6 +275,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/delete/1'}
               - {key: http.method, value: DELETE}
+              - {key: http.status_code, value: '204'}
           - operationName: /spring-4.1.x-scenario/impl/requestmapping
             parentSpanId: 0
             spanId: 6
@@ -278,6 +290,7 @@ segmentItems:
             tags:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/impl/requestmapping'}
+              - {key: http.status_code, value: '200'}
           - operationName: /spring-4.1.x-scenario/impl/restmapping
             parentSpanId: 0
             spanId: 7
@@ -292,6 +305,7 @@ segmentItems:
             tags:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/impl/restmapping'}
+              - {key: http.status_code, value: '200'}
           - operationName: GET:/case/resttemplate
             parentSpanId: -1
             spanId: 0
@@ -306,6 +320,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/case/resttemplate'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: 'GET:/impl/restmapping'
@@ -322,9 +337,9 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-4.1.x-scenario/impl/restmapping'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 7, parentTraceSegmentId: not null,
                  parentServiceInstance:  not null, parentService: spring-4.1.x-scenario,
                  traceId: not null}
-

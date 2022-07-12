@@ -31,6 +31,7 @@ segmentItems:
       peer: solr-server:8983
       tags:
       - {key: db.type, value: Solr}
+      - {key: http.status_code, value: '200'}
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/COMMIT
@@ -45,6 +46,7 @@ segmentItems:
       peer: solr-server:8983
       tags:
       - {key: db.type, value: Solr}
+      - {key: http.status_code, value: '200'}
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/OPTIMIZE
@@ -59,6 +61,7 @@ segmentItems:
       peer: solr-server:8983
       tags:
       - {key: db.type, value: Solr}
+      - {key: http.status_code, value: '200'}
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/select
@@ -75,6 +78,7 @@ segmentItems:
       - {key: db.type, value: Solr}
       - {key: start, value: '0'}
       - {key: qt, value: /select}
+      - {key: http.status_code, value: '200'}
       - {key: numFound, value: '100'}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/get
@@ -91,6 +95,7 @@ segmentItems:
       - {key: db.type, value: Solr}
       - {key: start, value: '0'}
       - {key: qt, value: /get}
+      - {key: http.status_code, value: '200'}
       - {key: numFound, value: '1'}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/DELETE_BY_IDS
@@ -105,6 +110,7 @@ segmentItems:
       peer: solr-server:8983
       tags:
       - {key: db.type, value: Solr}
+      - {key: http.status_code, value: '200'}
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/DELETE_BY_QUERY
@@ -119,6 +125,7 @@ segmentItems:
       peer: solr-server:8983
       tags:
       - {key: db.type, value: Solr}
+      - {key: http.status_code, value: '200'}
       - {key: QTime, value: gt 0}
       skipAnalysis: 'false'
     - operationName: GET:/solrj-scenario/case/solrj
@@ -134,4 +141,5 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/solrj-scenario/case/solrj'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

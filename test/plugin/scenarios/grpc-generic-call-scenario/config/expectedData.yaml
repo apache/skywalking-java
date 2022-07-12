@@ -101,5 +101,6 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8888/case/generic-call'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
 
 meterItems: []

@@ -32,6 +32,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/struts2.5-scenario/struts-scenario/case1.action'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       logs:
       - logEvent:
         - {key: forward-url, value: /struts2.5-scenario/jsp/success.jsp}
@@ -55,6 +56,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/struts2.5-scenario/struts-scenario/case1.action'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /struts2.5-scenario/struts-scenario/case.action
       parentSpanId: -1
@@ -69,6 +71,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/struts2.5-scenario/struts-scenario/case.action'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       logs:
       - logEvent:
         - {key: forward-url, value: /struts2.5-scenario/jsp/success.jsp}

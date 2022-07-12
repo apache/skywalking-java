@@ -34,6 +34,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/sentinel-scenario/case/healthCheck'}
       - {key: http.method, value: HEAD}
+      - {key: http.status_code, value: '200'}
   - segmentId: not null
     spans:
     - operationName: Sentinel/test_SphO_entry
@@ -91,4 +92,5 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/sentinel-scenario/case/sentinel-scenario'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
 meterItems: []

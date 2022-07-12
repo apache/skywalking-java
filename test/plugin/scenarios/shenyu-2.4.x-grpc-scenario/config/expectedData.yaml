@@ -33,6 +33,7 @@ segmentItems:
             tags:
               - { key: url, value: 'http://localhost:9196/grpc/echo' }
               - { key: http.method, value: POST }
+              - { key: http.status_code, value: '200' }
           - operationName: GET:/entry/rpc-service
             parentSpanId: -1
             spanId: 0
@@ -47,6 +48,7 @@ segmentItems:
             tags:
               - { key: url, value: 'http://localhost:8888/entry/rpc-service' }
               - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
 
 
   - serviceName: shenyu-gateway
@@ -79,6 +81,8 @@ segmentItems:
             spanType: Local
             peer: ''
             skipAnalysis: false
+            tags:
+              - {key: http.status_code, value: '200'}
             refs:
               - { parentEndpoint: /grpc/echo, networkAddress: '', refType: CrossThread,
                   parentSpanId: 0, parentTraceSegmentId: not null,

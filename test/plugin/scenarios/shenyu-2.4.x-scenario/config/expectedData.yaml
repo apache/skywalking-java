@@ -32,6 +32,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8189/order/findById'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: /order/findById, networkAddress: 'localhost:8189',
                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -102,6 +103,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:9195/http/order/findById'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             skipAnalysis: 'false'
           - operationName: GET:/entry/http-service
             parentSpanId: -1
@@ -116,5 +118,5 @@ segmentItems:
             tags:
               - { key: url, value: 'http://localhost:8888/entry/http-service' }
               - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
             skipAnalysis: 'false'
-

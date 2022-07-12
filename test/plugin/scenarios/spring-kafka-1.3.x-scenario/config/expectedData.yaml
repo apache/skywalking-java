@@ -47,6 +47,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-kafka-1.3.x-scenario/case/spring-kafka-case'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: GET:/case/spring-kafka-consumer-ping
@@ -63,6 +64,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-kafka-1.3.x-scenario/case/spring-kafka-consumer-ping'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: 'Kafka/spring_test/Consumer/grop:spring_test', networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
@@ -84,6 +86,7 @@ segmentItems:
             tags:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8080/spring-kafka-1.3.x-scenario/case/spring-kafka-consumer-ping'}
+              - {key: http.status_code, value: '200'}
           - operationName: Kafka/spring_test/Consumer/grop:spring_test
             parentSpanId: -1
             spanId: 0

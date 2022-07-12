@@ -128,3 +128,4 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/fastjson-scenario/case/fastjson-scenario'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}

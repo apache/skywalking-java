@@ -42,9 +42,9 @@ public class RestResponseInterceptor implements InstanceMethodsAroundInterceptor
         ClientHttpResponse response = (ClientHttpResponse) allArguments[2];
         int statusCode = response.getStatusCode().value();
         AbstractSpan span = ContextManager.activeSpan();
+        Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
         if (statusCode >= 400) {
             span.errorOccurred();
-            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
         }
         return ret;
     }

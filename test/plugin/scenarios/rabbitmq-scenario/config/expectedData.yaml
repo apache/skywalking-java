@@ -69,4 +69,5 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/rabbitmq-scenario/case/rabbitmq'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

@@ -224,6 +224,7 @@ segmentItems:
       tags:
       - {key: url, value: not null}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /testcase/annotation/error
       parentSpanId: 0
@@ -253,6 +254,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:18080/testcase/annotation/foo'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /testcase/annotation/loo
       parentSpanId: 0
@@ -267,6 +269,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:18080/testcase/annotation/loo'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /testcase/route/success
       parentSpanId: 0
@@ -281,6 +284,7 @@ segmentItems:
       tags:
       - {key: url, value: not null}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /testcase/route/error
       parentSpanId: 0
@@ -325,6 +329,7 @@ segmentItems:
       tags:
       - {key: url, value: not null}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /testcase/webclient/server
       parentSpanId: 0
@@ -354,4 +359,5 @@ segmentItems:
       tags:
       - {key: url, value: not null}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

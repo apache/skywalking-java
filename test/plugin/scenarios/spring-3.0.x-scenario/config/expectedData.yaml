@@ -33,6 +33,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-3.0.x-scenario/healthCheck'}
               - {key: http.method, value: HEAD}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: GET:/impl/requestmapping
@@ -49,6 +50,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-3.0.x-scenario/impl/requestmapping'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: GET:/case/spring3, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 5, parentTraceSegmentId: not null,
@@ -70,6 +72,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-3.0.x-scenario/impl/restmapping'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: GET:/case/spring3, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 6, parentTraceSegmentId: not null,
@@ -163,3 +166,4 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/spring-3.0.x-scenario/case/spring3'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}

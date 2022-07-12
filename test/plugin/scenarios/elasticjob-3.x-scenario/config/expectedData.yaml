@@ -33,6 +33,7 @@ segmentItems:
       tags:
         - {key: http.method, value: GET}
         - {key: url, value: 'http://localhost:8080/elasticjob-3.x-scenario/case/ping'}
+        - {key: http.status_code, value: '200'}
     - operationName: ElasticJob/simpleJob
       parentSpanId: -1
       spanId: 0

@@ -31,6 +31,7 @@ segmentItems:
       peer: http://influxdb:8086
       tags:
       - {key: db.type, value: InfluxDB}
+      - {key: http.status_code, value: '204'}
       skipAnalysis: 'false'
     - operationName: HEAD:/influxdb-scenario/case/healthCheck
       parentSpanId: -1
@@ -46,6 +47,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/influxdb-scenario/case/healthCheck'}
       - {key: http.method, value: HEAD}
+      - {key: http.status_code, value: '200'}
   - segmentId: not null
     spans:
     - operationName: InfluxDB/query
@@ -62,6 +64,7 @@ segmentItems:
       - {key: db.type, value: InfluxDB}
       - {key: db.instance, value: skywalking}
       - {key: db.statement, value: 'CREATE DATABASE skywalking'}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: InfluxDB/query
       parentSpanId: 0
@@ -77,6 +80,7 @@ segmentItems:
       - {key: db.type, value: InfluxDB}
       - {key: db.instance, value: skywalking}
       - {key: db.statement, value: 'CREATE RETENTION POLICY one_day ON skywalking DURATION 1d REPLICATION 1 DEFAULT'}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: InfluxDB/write
       parentSpanId: 0
@@ -92,6 +96,7 @@ segmentItems:
       - {key: db.type, value: InfluxDB}
       - {key: db.instance, value: skywalking}
       - {key: db.statement, value: not null}
+      - {key: http.status_code, value: '204'}
       skipAnalysis: 'false'
     - operationName: InfluxDB/query
       parentSpanId: 0
@@ -107,6 +112,7 @@ segmentItems:
       - {key: db.type, value: InfluxDB}
       - {key: db.instance, value: skywalking}
       - {key: db.statement, value: 'SELECT * FROM heartbeat'}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: GET:/influxdb-scenario/case/influxdb-scenario
       parentSpanId: -1
@@ -121,4 +127,5 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/influxdb-scenario/case/influxdb-scenario'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

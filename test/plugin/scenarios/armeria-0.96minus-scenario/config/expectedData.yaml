@@ -69,4 +69,5 @@ segmentItems:
         value: |-
           q1=[v1]
           chinese=[中文]
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

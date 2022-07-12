@@ -123,4 +123,4 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/exception-checker-tomcat-scenario/case/exceptionchecker'}
               - {key: http.method, value: GET}
-
+              - {key: http.status_code, value: '200'}

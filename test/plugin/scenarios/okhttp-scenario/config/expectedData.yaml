@@ -40,6 +40,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/okhttp-case/case/okhttp-case'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
@@ -55,6 +56,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-0'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: Async/execute, networkAddress: '127.0.0.1:8080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -74,6 +76,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-1'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: Async/execute, networkAddress: '127.0.0.1:8080',
         refType: CrossProcess, parentSpanId: 3, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -94,6 +97,7 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-0'}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: /okhttp-case/case/receiveContext-1
       parentSpanId: 2
@@ -109,6 +113,7 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://127.0.0.1:8080/okhttp-case/case/receiveContext-1'}
+      - {key: http.status_code, value: '200'}
     - {operationName: Callback/onResponse, parentSpanId: 0, spanId: 2,
       spanLayer: Unknown, startTime: nq 0, endTime: nq 0, componentId: 0,
       isError: false, spanType: Local, peer: '', skipAnalysis: false}

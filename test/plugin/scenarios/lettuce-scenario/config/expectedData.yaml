@@ -33,6 +33,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/lettuce-scenario/case/healthCheck'}
               - {key: http.method, value: HEAD}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: Lettuce/GET
@@ -91,3 +92,4 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/lettuce-scenario/case/lettuce-case'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}

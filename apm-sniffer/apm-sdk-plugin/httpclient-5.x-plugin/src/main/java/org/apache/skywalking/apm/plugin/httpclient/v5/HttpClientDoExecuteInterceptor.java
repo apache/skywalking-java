@@ -84,9 +84,9 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
 
             int statusCode = response.getCode();
             AbstractSpan span = ContextManager.activeSpan();
+            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
             if (statusCode >= 400) {
                 span.errorOccurred();
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
             }
         }
 

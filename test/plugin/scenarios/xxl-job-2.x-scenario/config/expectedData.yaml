@@ -33,6 +33,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/simpleJob'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: xxl-job/SimpleJob/test.apache.skywalking.apm.testcase.xxljob.job.BeanJob, networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: not null, traceId: not null}
   - segmentId: not null
@@ -51,6 +52,7 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/simpleJob'}
+      - {key: http.status_code, value: '200'}
     - operationName: xxl-job/SimpleJob/test.apache.skywalking.apm.testcase.xxljob.job.BeanJob
       parentSpanId: -1
       spanId: 0
@@ -81,6 +83,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/methodJob'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: xxl-job/MethodJob/org.apache.skywalking.apm.testcase.xxljob.job.MethodJob.work, networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: not null, traceId: not null}
   - segmentId: not null
@@ -99,6 +102,7 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/methodJob'}
+      - {key: http.status_code, value: '200'}
     - operationName: xxl-job/MethodJob/org.apache.skywalking.apm.testcase.xxljob.job.MethodJob.work
       parentSpanId: -1
       spanId: 0
@@ -129,6 +133,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/glueJob'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: xxl-job/SimpleJob/com.xxl.job.service.handler.GlueJob, networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: not null, traceId: not null}
   - segmentId: not null
@@ -147,6 +152,7 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/xxl-job-2.x-scenario/case/glueJob'}
+      - {key: http.status_code, value: '200'}
     - operationName: xxl-job/SimpleJob/com.xxl.job.service.handler.GlueJob
       parentSpanId: -1
       spanId: 0

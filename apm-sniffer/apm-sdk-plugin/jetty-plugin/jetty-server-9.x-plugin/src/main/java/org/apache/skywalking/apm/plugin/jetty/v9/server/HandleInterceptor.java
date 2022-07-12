@@ -71,9 +71,11 @@ public class HandleInterceptor implements InstanceMethodsAroundInterceptor {
         HttpChannel httpChannel = (HttpChannel) objInst;
         HttpServletResponse servletResponse = httpChannel.getResponse();
         AbstractSpan span = ContextManager.activeSpan();
-        if (IS_SERVLET_GET_STATUS_METHOD_EXIST && servletResponse.getStatus() >= 400) {
-            span.errorOccurred();
+        if (IS_SERVLET_GET_STATUS_METHOD_EXIST) {
             Tags.HTTP_RESPONSE_STATUS_CODE.set(span, servletResponse.getStatus());
+            if (servletResponse.getStatus() >= 400) {
+                span.errorOccurred();
+            }
         }
         ContextManager.stopSpan();
         ContextManager.getRuntimeContext().remove(Constants.FORWARD_REQUEST_FLAG);

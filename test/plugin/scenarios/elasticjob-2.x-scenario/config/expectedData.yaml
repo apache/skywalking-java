@@ -33,6 +33,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/elasticjob-2.x-scenario/case/call'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: ElasticJob/org.apache.skywalking.apm.testcase.elasticjob.job.DemoSimpleJob, networkAddress: 'localhost:8080', refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not null, parentService: not null, traceId: not null}
   - segmentId: not null
@@ -51,6 +52,7 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/elasticjob-2.x-scenario/case/call'}
+      - {key: http.status_code, value: '200'}
     - operationName: ElasticJob/org.apache.skywalking.apm.testcase.elasticjob.job.DemoSimpleJob
       parentSpanId: -1
       spanId: 0

@@ -33,6 +33,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/exception-checker-spring/case/healthCheck'}
               - {key: http.method, value: HEAD}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: test.apache.skywalking.apm.testcase.exceptionchecker.service.TestService.testAnnotatedException
@@ -139,3 +140,4 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/exception-checker-spring/case/exceptionchecker'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}

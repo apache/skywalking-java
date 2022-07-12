@@ -203,6 +203,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/druid-1.x-scenario/case/druid-1.x-scenario'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: druid-1.x-scenario
   meterSize: 14

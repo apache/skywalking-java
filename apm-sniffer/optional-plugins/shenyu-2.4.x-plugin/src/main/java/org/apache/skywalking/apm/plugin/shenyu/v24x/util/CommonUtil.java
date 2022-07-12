@@ -66,8 +66,8 @@ public class CommonUtil {
             return ret;
         }
         Optional.ofNullable(exchange.getResponse().getStatusCode()).ifPresent(httpStatus -> {
+            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
             if (httpStatus.isError()) {
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, httpStatus.value());
                 span.errorOccurred();
             }
         });

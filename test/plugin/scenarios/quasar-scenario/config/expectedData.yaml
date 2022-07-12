@@ -33,6 +33,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/quasar-scenario/case/quasar-scenario'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
   - segmentId: not null
     spans:
     - operationName: /quasar-scenario/case/ping
@@ -49,6 +50,7 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:8080/quasar-scenario/case/ping'}
+      - {key: http.status_code, value: '200'}
     - operationName: QUASAR/Fiber
       parentSpanId: -1
       spanId: 0

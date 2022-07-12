@@ -145,6 +145,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/kafka-scenario/case/kafka-case'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
@@ -183,6 +184,7 @@ segmentItems:
         tags:
         - {key: http.method, value: GET}
         - {key: url, value: 'http://localhost:8080/kafka-scenario/case/kafka-thread2-ping'}
+        - {key: http.status_code, value: '200'}
       - operationName: Kafka/test./Consumer/testGroup2
         parentSpanId: -1
         spanId: 0
@@ -222,6 +224,7 @@ segmentItems:
         tags:
           - {key: url, value: 'http://localhost:8080/kafka-scenario/case/kafka-thread2-ping'}
           - {key: http.method, value: GET}
+          - {key: http.status_code, value: '200'}
         refs:
           - {parentEndpoint: not null, networkAddress: 'localhost:8080',
              refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,

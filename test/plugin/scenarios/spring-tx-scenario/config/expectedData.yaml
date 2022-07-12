@@ -138,4 +138,5 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/spring-tx-scenario/case/spring-tx-case'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

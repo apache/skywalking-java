@@ -32,6 +32,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/httpclient-4.3.x-scenario/case/context-propagate'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: GET:/httpclient-4.3.x-scenario/case/httpclient, networkAddress: 'localhost:8080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -52,6 +53,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/httpclient-4.3.x-scenario/case/context-propagate'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: GET:/httpclient-4.3.x-scenario/case/httpclient
       parentSpanId: -1
@@ -66,4 +68,5 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/httpclient-4.3.x-scenario/case/httpclient'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

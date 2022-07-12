@@ -78,9 +78,9 @@ public class TracingFilter extends Filter {
             SpanLayer.asHttp(span);
             span.prepareForAsync();
             CompletionStage<Result> stage = next.apply(request).thenApply(result -> {
+                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, result.status());
                 if (result.status() >= 400) {
                     span.errorOccurred();
-                    Tags.HTTP_RESPONSE_STATUS_CODE.set(span, result.status());
                 }
                 try {
                     span.asyncFinish();

@@ -20,7 +20,7 @@ The test framework provides `JVM-container` and `Tomcat-container` base images i
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`. 
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`.
 It is supported to custom the base Java docker image by specify `base_image_java`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
@@ -117,7 +117,7 @@ File Name | Descriptions
 
 | Option | description
 | --- | ---
-| default | Activate all plugins in `plugin` folder like the official distribution agent. 
+| default | Activate all plugins in `plugin` folder like the official distribution agent.
 | with_optional | Activate `default` and plugins in `optional-plugin` by the give selector.
 | with_bootstrap | Activate `default` and plugins in `bootstrap-plugin` by the give selector.
 
@@ -139,7 +139,7 @@ depends_on:
 dependencies:
   service1:
     image:
-    hostname: 
+    hostname:
     expose:
       ...
     environment:
@@ -222,7 +222,7 @@ segmentItems:
 
 
 | Field |  Description
-| --- | ---  
+| --- | ---
 | serviceName | Service Name.
 | segmentSize | The number of segments is expected.
 | segmentId | Trace ID.
@@ -263,26 +263,26 @@ segmentItems:
    ...
 ```
 
-| Field | Description 
-|--- |--- 
+| Field | Description
+|--- |---
 | operationName | Span Operation Name.
-| parentSpanId | Parent span ID. **Note**: The parent span ID of the first span should be -1. 
-| spanId | Span ID. **Note**: Start from 0. 
+| parentSpanId | Parent span ID. **Note**: The parent span ID of the first span should be -1.
+| spanId | Span ID. **Note**: Start from 0.
 | startTime | Span start time. It is impossible to get the accurate time, not 0 should be enough.
 | endTime | Span finish time. It is impossible to get the accurate time, not 0 should be enough.
-| isError | Span status, true or false. 
-| componentId | Component id for your plugin. 
+| isError | Span status, true or false.
+| componentId | Component id for your plugin.
 | tags | Span tag list. **Notice**, Keep in the same order as the plugin coded.
 | logs | Span log list. **Notice**, Keep in the same order as the plugin coded.
 | SpanLayer | Options, DB, RPC_FRAMEWORK, HTTP, MQ, CACHE.
 | SpanType | Span type, options, Exit, Entry or Local.
-| peer | Remote network address, IP + port mostly. For exit span, this should be required. 
+| peer | Remote network address, IP + port mostly. For exit span, this should be required.
 
 The verify description for SegmentRef
 
-| Field | Description 
-|---- |---- 
-| traceId | 
+| Field | Description
+|---- |----
+| traceId |
 | parentTraceSegmentId | Parent SegmentId, pointing to the segment id in the parent segment.
 | parentSpanId | Parent SpanID, pointing to the span id in the parent segment.
 | parentService | The service of parent/downstream service name.
@@ -302,7 +302,7 @@ meterItems:
 ```
 
 | Field |  Description
-| --- | ---  
+| --- | ---
 | serviceName | Service Name.
 | meterSize | The number of meters is expected.
 | meters | meter list. Follow the next section to see how to describe every meter.
@@ -310,7 +310,7 @@ meterItems:
 **Expected Data Format Of The Meter**
 
 ```yml
-    meterId: 
+    meterId:
         name: NAME(string)
         tags:
         - {name: TAG_NAME(string), value: TAG_VALUE(string)}
@@ -322,8 +322,8 @@ meterItems:
 
 The verify description for MeterId
 
-| Field | Description 
-|--- |--- 
+| Field | Description
+|--- |---
 | name | meter name.
 | tags | meter tags.
 | tags.name | tag name.
@@ -348,7 +348,7 @@ The following system environment variables are available in the shell.
 > `${agent_opts}` is required to add into your `java -jar` command, which including the parameter injected by test framework, and
 > make agent installed. All other parameters should be added after `${agent_opts}`.
 
-The test framework will set the service name as the test case folder name by default, but in some cases, there are more 
+The test framework will set the service name as the test case folder name by default, but in some cases, there are more
 than one test projects are required to run in different service codes, could set it explicitly like the following example.
 
 Example
@@ -409,7 +409,7 @@ Then, runs and generates a project, named by `scenario_name`, in `./scenarios`.
 
 Heartbeat service is designed for checking the service available status. This service is a simple HTTP service, returning 200 means the
 target service is ready. Then the traffic generator will access the entry service and verify the expected data.
-User should consider to use this service to detect such as whether the dependent services are ready, especially when 
+User should consider to use this service to detect such as whether the dependent services are ready, especially when
 dependent services are database or cluster.
 
 Notice, because heartbeat service could be traced fully or partially, so, segmentSize in `expectedData.yaml` should use `ge` as the operator,
@@ -479,6 +479,7 @@ SegmentA span list should like following
           tags:
             - {key: url, value: 'http://127.0.0.1:8080/httpclient-case/case/context-propagate'}
             - {key: http.method, value: GET}
+            - {key: http.status_code, value: '200'}
           logs: []
           peer: 127.0.0.1:8080
         - operationName: /httpclient-case/case/httpclient
@@ -493,6 +494,7 @@ SegmentA span list should like following
           tags:
             - {key: url, value: 'http://localhost:{SERVER_OUTPUT_PORT}/httpclient-case/case/httpclient'}
             - {key: http.method, value: GET}
+            - {key: http.status_code, value: '200'}
           logs: []
           peer: null
 ```
@@ -510,6 +512,7 @@ SegmentB span list should like following
    tags:
    - {key: url, value: 'http://127.0.0.1:8080/httpclient-case/case/context-propagate'}
    - {key: http.method, value: GET}
+   - {key: http.status_code, value: '200'}
    logs: []
    startTime: nq 0
    endTime: nq 0
@@ -542,22 +545,22 @@ MeterFactory.histogram("test_histogram").tag("hk1", "hv1").steps(1d, 5d, 10d).bu
 |   Plugin    |         |    Agent core    |
 |             |         |                  |
 +-----|-------+         +---------|--------+
-      |                           |         
-      |                           |         
-      |    Build or operate      +-+        
-      +------------------------> |-|        
+      |                           |
+      |                           |
+      |    Build or operate      +-+
+      +------------------------> |-|
       |                          |-]
-      |                          |-|        
-      |                          |-|        
       |                          |-|
-      |                          |-|        
-      | <--------------------------|        
-      |                          +-+        
-      |                           |         
-      |                           |         
-      |                           |         
-      |                           |         
-      +                           +         
+      |                          |-|
+      |                          |-|
+      |                          |-|
+      | <--------------------------|
+      |                          +-+
+      |                           |
+      |                           |
+      |                           |
+      |                           |
+      +                           +
 ```
 
 #### meterItems

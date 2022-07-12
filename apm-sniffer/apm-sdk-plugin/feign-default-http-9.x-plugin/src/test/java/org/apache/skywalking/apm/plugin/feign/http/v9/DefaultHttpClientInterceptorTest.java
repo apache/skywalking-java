@@ -114,7 +114,7 @@ public class DefaultHttpClientInterceptorTest {
         assertSpan(finishedSpan);
 
         List<TagValuePair> tags = SpanHelper.getTags(finishedSpan);
-        assertThat(tags.size(), is(2));
+        assertThat(tags.size(), is(3));
         assertThat(tags.get(0).getValue(), is("GET"));
         assertThat(tags.get(1).getValue(), is("http://skywalking.org/test/var"));
         assertThat(finishedSpan.getOperationName(), is("/test/{pathVar}"));
@@ -170,7 +170,7 @@ public class DefaultHttpClientInterceptorTest {
         assertSpan(finishedSpan);
 
         List<TagValuePair> tags = SpanHelper.getTags(finishedSpan);
-        assertThat(tags.size(), is(2));
+        assertThat(tags.size(), is(3));
         assertThat(tags.get(0).getValue(), is("GET"));
         assertThat(tags.get(1).getValue(), is("http://skywalking.org/test/var"));
 

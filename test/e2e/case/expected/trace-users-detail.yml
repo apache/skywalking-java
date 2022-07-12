@@ -36,6 +36,8 @@ spans:
         value: POST
       - key: url
         value: {{ notEmpty .value }}
+      - key: http.status_code
+        value: '200'
       {{- end }}
     logs: []
   {{- end }}

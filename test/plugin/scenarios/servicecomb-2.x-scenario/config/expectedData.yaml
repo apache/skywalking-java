@@ -31,6 +31,7 @@ segmentItems:
         peer: ''
         tags:
         - {key: url, value: /sayHi}
+        - {key: http.status_code, value: '200'}
         refs:
         - {parentEndpoint: codefirsttest.codeFirstSpringmvcHelloClient.say, networkAddress: not
             null, refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not
@@ -51,6 +52,7 @@ segmentItems:
         peer: not null
         tags:
         - {key: url, value: /sayHi}
+        - {key: http.status_code, value: '200'}
         skipAnalysis: 'false'
       - operationName: codefirsttest.codeFirstSpringmvcHelloClient.say
         parentSpanId: -1
@@ -64,4 +66,5 @@ segmentItems:
         peer: ''
         tags:
         - {key: url, value: /say}
+        - {key: http.status_code, value: '200'}
         skipAnalysis: 'false'

@@ -9,6 +9,7 @@ Release Notes.
 * Fix `onHalfClose` using span operation name `/Request/onComplete` instead of the worng name `/Request/onHalfClose`.
 * Add plugin to support RESTeasy 4.x.
 * Add plugin to support hutool-http 5.x.
+* Save http status code regardless of it's status.
 
 #### Documentation
 

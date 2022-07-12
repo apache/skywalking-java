@@ -203,6 +203,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/hikaricp-scenario/case/hikaricp-scenario'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: hikaricp-scenario
   meterSize: 15

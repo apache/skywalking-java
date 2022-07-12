@@ -34,6 +34,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: SwRunnableWrapper/http-get-thread, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId:  not null,
@@ -56,6 +57,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: SwRunnableWrapper/http-get-thread
             operationId: 0
             parentSpanId: -1
@@ -90,6 +92,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: SwCallableWrapper/http-get-thread, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId:  not null,
@@ -112,6 +115,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: SwCallableWrapper/http-get-thread
             operationId: 0
             parentSpanId: -1
@@ -146,6 +150,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: SwRunnableWrapper/http-get-thread, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId:  not null,
@@ -168,6 +173,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: SwRunnableWrapper/http-get-thread
             operationId: 0
             parentSpanId: -1
@@ -202,6 +208,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: SwRunnableWrapper/http-get-thread
             operationId: 0
             parentSpanId: -1
@@ -236,6 +243,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: SwCallableWrapper/http-get-thread, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId:  not null,
@@ -258,6 +266,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: SwRunnableWrapper/http-get-thread, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId:  not null,
@@ -280,6 +289,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: SwCallableWrapper/http-get-thread
             operationId: 0
             parentSpanId: -1
@@ -314,6 +324,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: SwRunnableWrapper/http-get-thread
             operationId: 0
             parentSpanId: -1
@@ -348,6 +359,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/greet/skywalking'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
       - segmentId:  not null
         spans:
           - operationName: GET:/threadpool
@@ -365,6 +377,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/threadpool'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: SwRunnableWrapper/http-get-thread, networkAddress: 'localhost:8080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId:  not null,

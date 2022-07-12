@@ -32,4 +32,5 @@ segmentItems:
       tags:
       - {key: url, value: 'localhost:9000/play-scenario/case/play-scenario/projects/1'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

@@ -54,6 +54,7 @@ segmentItems:
                 value: 'http://localhost:8080/jsonrpc4j-1.x-scenario/case/json-rpc',
               }
               - { key: http.method, value: GET }
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: /jsonrpc4j-1.x-scenario/path/to/demo-service

@@ -89,9 +89,9 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
             if (responseStatusLine != null) {
                 int statusCode = responseStatusLine.getStatusCode();
                 AbstractSpan span = ContextManager.activeSpan();
+                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
                 if (statusCode >= 400) {
                     span.errorOccurred();
-                    Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
                 }
                 HttpRequest httpRequest = (HttpRequest) allArguments[1];
                 // Active HTTP parameter collection automatically in the profiling context.

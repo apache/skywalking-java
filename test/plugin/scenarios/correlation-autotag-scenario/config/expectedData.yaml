@@ -33,6 +33,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/correlation-autotag-scenario/case/healthCheck'}
               - {key: http.method, value: HEAD}
+              - {key: http.status_code, value: '200'}
       - segmentId: 78a0cdef42a74b4ba80b48bf72b8558d.37.16042096947740000
         spans:
           - operationName: Greeter.sayHello
@@ -62,6 +63,7 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: autotag1, value: '1'}
               - {key: autotag2, value: '1'}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: Greeter.sayHello
@@ -282,4 +284,3 @@ segmentItems:
                  parentServiceInstance: not null, parentService: correlation-autotag-scenario,
                  traceId: not null}
 meterItems: []
-

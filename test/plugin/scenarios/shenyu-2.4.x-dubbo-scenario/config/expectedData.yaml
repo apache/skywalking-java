@@ -43,6 +43,8 @@ segmentItems:
             spanType: Local
             peer: ''
             skipAnalysis: false
+            tags:
+              - {key: http.status_code, value: '200'}
             refs:
               - { parentEndpoint: /dubbo/findById, networkAddress: '', refType: CrossThread,
                   parentSpanId: 0, parentTraceSegmentId: not null,
@@ -116,6 +118,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:9196/dubbo/findById'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
           - operationName: GET:/entry/dubbo-service
             parentSpanId: -1
             spanId: 0
@@ -130,5 +133,6 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8888/entry/dubbo-service'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
 
 meterItems: []

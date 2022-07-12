@@ -84,7 +84,7 @@ segmentItems:
       spanType: Exit
       componentId: 33
       peer: mysql-server:3306
-      skipAnalysis: 'false'  
+      skipAnalysis: 'false'
     - operationName: Mysql/JDBI/Statement/executeQuery
       parentSpanId: 0
       spanId: 5
@@ -131,7 +131,7 @@ segmentItems:
       spanType: Exit
       componentId: 33
       peer: mysql-server:3306
-      skipAnalysis: 'false'  
+      skipAnalysis: 'false'
     - operationName: Mysql/JDBI/Connection/close
       parentSpanId: 0
       spanId: 8
@@ -160,5 +160,6 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/mysql-scenario/case/mysql-scenario'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       logs: []
       skipAnalysis: 'false'

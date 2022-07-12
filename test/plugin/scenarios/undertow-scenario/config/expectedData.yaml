@@ -32,6 +32,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/undertow-scenario/case/undertow'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
@@ -48,6 +49,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8081/undertow-routing-scenario/case/undertow'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: UndertowDispatch, networkAddress: 'localhost:8081', refType: CrossProcess,
         parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -68,6 +70,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/undertow-scenario/case/undertow1'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: UndertowDispatch, networkAddress: 'localhost:8080', refType: CrossProcess,
         parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -88,6 +91,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8081/undertow-routing-scenario/case/undertow?send=httpHandler'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: UndertowDispatch
       parentSpanId: -1
@@ -119,6 +123,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/undertow-scenario/case/undertow1?send=runnable'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: UndertowDispatch
       parentSpanId: -1

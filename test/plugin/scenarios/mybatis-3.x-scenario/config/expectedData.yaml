@@ -119,3 +119,4 @@ segmentItems:
         tags:
         - {key: url, value: 'http://localhost:8080/mybatis-3.x-scenario/case/mybatis-case'}
         - {key: http.method, value: GET}
+        - {key: http.status_code, value: '200'}

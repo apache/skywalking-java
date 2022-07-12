@@ -46,6 +46,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/guava-eventbus-scenario/case/guava-scenario'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: Guava/EventBus/org.apache.skywalking.apm.testcase.guava.eventbus.service.SubscriberService/consumer

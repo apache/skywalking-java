@@ -89,3 +89,4 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/hbase-scenario/case/hbase-case'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}

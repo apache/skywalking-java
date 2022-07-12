@@ -34,6 +34,7 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/clickhouse-scenario/case/healthCheck'}
               - {key: http.method, value: HEAD}
+              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: ClickHouse/JDBI/Statement/executeQuery
@@ -52,6 +53,7 @@ segmentItems:
               - {key: db.type, value: sql}
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'select timezone(), version()'}
+              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBI/Statement/executeQuery
             operationId: 0
             parentSpanId: 0
@@ -68,6 +70,7 @@ segmentItems:
               - {key: db.type, value: sql}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT * FROM clusters}
+              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBI/Statement/execute
             operationId: 0
             parentSpanId: 0
@@ -84,6 +87,7 @@ segmentItems:
               - {key: db.type, value: sql}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT 1}
+              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBI/Connection/close
             operationId: 0
             parentSpanId: 0
@@ -116,6 +120,7 @@ segmentItems:
               - {key: db.type, value: sql}
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'select timezone(), version()'}
+              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBI/PreparedStatement/executeQuery
             operationId: 0
             parentSpanId: 0
@@ -132,6 +137,7 @@ segmentItems:
               - {key: db.type, value: sql}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT * FROM clusters}
+              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBI/Statement/execute
             operationId: 0
             parentSpanId: 0
@@ -148,6 +154,7 @@ segmentItems:
               - {key: db.type, value: sql}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT 1}
+              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBI/Connection/close
             operationId: 0
             parentSpanId: 0
@@ -179,4 +186,5 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/clickhouse-scenario/case/clickhouse-scenario'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
 meterItems: []

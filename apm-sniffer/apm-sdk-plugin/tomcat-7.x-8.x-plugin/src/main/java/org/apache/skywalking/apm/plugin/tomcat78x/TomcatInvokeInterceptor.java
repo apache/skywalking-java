@@ -93,9 +93,11 @@ public class TomcatInvokeInterceptor implements InstanceMethodsAroundInterceptor
         HttpServletResponse response = (HttpServletResponse) allArguments[1];
 
         AbstractSpan span = ContextManager.activeSpan();
-        if (IS_SERVLET_GET_STATUS_METHOD_EXIST && response.getStatus() >= 400) {
-            span.errorOccurred();
+        if (IS_SERVLET_GET_STATUS_METHOD_EXIST) {
             Tags.HTTP_RESPONSE_STATUS_CODE.set(span, response.getStatus());
+            if (response.getStatus() >= 400) {
+                span.errorOccurred();
+            }
         }
         // Active HTTP parameter collection automatically in the profiling context.
         if (!TomcatPluginConfig.Plugin.Tomcat.COLLECT_HTTP_PARAMS && span.isProfiling()) {

@@ -78,5 +78,6 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/kylin-jdbc-2.6.x-3.x-4.x-scenario/case/healthCheck'}
       - {key: http.method, value: HEAD}
+      - {key: http.status_code, value: '200'}
       logs: []
       skipAnalysis: 'false'

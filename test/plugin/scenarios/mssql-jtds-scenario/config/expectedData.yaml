@@ -97,5 +97,6 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8080/mssql-jtds-scenario/case/mssql-jtds-scenario'}
               - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
             logs: []
             skipAnalysis: 'false'

@@ -178,4 +178,5 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/shardingsphere-4.0.x-scenario/case/execute'}
       - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

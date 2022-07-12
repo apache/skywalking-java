@@ -136,4 +136,5 @@ segmentItems:
             tags:
               - { key: url, value: 'http://localhost:8080/neo4j-scenario/case/neo4j-scenario' }
               - { key: http.method, value: GET }
+              - {key: http.status_code, value: '200'}
 meterItems: [ ]

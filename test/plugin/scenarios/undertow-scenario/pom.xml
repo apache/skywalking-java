@@ -32,7 +32,7 @@
         <start-class>org.apache.skywalking.amp.testcase.undertow.Application</start-class>
 
         <test.framework>undertow</test.framework>
-        <test.framework.version>1.3.0.Final</test.framework.version>
+        <test.framework.version>2.2.15.Final</test.framework.version>
         <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
     </properties>
 

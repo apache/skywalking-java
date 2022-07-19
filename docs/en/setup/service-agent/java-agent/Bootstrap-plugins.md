@@ -6,3 +6,16 @@ Now, we have the following known bootstrap plugins.
 * Plugin of JDK HttpURLConnection. Agent is compatible with JDK 1.8+
 * Plugin of JDK Callable and Runnable. Agent is compatible with JDK 1.8+
 * Plugin of JDK ThreadPoolExecutor. Agent is compatible with JDK 1.8+
+
+### Tips
+Plugin of JDK HttpURLConnection depended on `sun.net.*` ,If you use java9+, You may add some jvm options like:
+
+| java version | jvm option                                                               |
+|--------------|--------------------------------------------------------------------------|
+| 9-15         |nothing todo(because `--illegal-access` default model is permit)           |
+| 16           |`--add-exports java.base/sun.net.www=ALL-UNNAMED` or `--illegal-access=permit` |
+| 17+          |`--add-exports java.base/sun.net.www=ALL-UNNAMED`                              |
+
+For more information 
+1. [JEP 403: Strongly Encapsulate JDK Internals](https://openjdk.org/jeps/403)
+2. [A peek into Java 17: Encapsulating the Java runtime internals](https://blogs.oracle.com/javamagazine/post/a-peek-into-java-17-continuing-the-drive-to-encapsulate-the-java-runtime-internals)

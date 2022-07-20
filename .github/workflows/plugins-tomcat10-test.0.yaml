@@ -48,7 +48,7 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          base_image_tomcat: tomcat:10.0.22-jdk8-corretto
+          base_image_tomcat: tomcat:10.0.22-jdk8
 
   test:
     needs: [ build ]

@@ -45,7 +45,7 @@ public class TomcatInstrumentation extends ClassInstanceMethodsEnhancePluginDefi
      */
     private static final String EXCEPTION_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.tomcat78x.TomcatExceptionInterceptor";
 
-	@Override
+    @Override
     protected String[] witnessClasses() {
         return new String[]{"javax.servlet.http.HttpServletResponse"};
     }

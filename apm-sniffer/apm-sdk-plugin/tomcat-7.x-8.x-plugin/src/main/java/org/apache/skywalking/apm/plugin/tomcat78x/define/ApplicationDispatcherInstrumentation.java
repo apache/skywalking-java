@@ -35,7 +35,7 @@ public class ApplicationDispatcherInstrumentation extends ClassInstanceMethodsEn
     private static final String ENHANCE_METHOD = "forward";
     public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.tomcat78x.ForwardInterceptor";
 	
-	@Override
+    @Override
     protected String[] witnessClasses() {
         return new String[]{"javax.servlet.http.HttpServletResponse"};
     }

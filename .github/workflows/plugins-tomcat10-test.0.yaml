@@ -16,20 +16,21 @@
 
 name: Test
 
-on:
-  pull_request:
-    paths:
-      - '.github/workflows/plugins-*.yaml'
-      - 'apm-application-toolkit/**'
-      - 'apm-commons/**'
-      - 'apm-protocol/**'
-      - 'apm-sniffer/**'
-      - 'test/plugin/**'
-      - '**/pom.xml'
-      - '!**.md'
-  push:
-    branches:
-      - test/ci/*
+# on:
+#   pull_request:
+#     paths:
+#       - '.github/workflows/plugins-*.yaml'
+#       - 'apm-application-toolkit/**'
+#       - 'apm-commons/**'
+#       - 'apm-protocol/**'
+#       - 'apm-sniffer/**'
+#       - 'test/plugin/**'
+#       - '**/pom.xml'
+#       - '!**.md'
+#   push:
+#     branches:
+#       - test/ci/*
+on: push
 
 concurrency:
   group: plugins-tomcat10-${{ github.event.pull_request.number || github.ref }}

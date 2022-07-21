@@ -14,4 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-10.0.22
+# Use `.github/workflows/plugins-tomcat10-test.0.yaml` to control Tomcat verion
+# Current tested Tomcat 10.0.22
+all

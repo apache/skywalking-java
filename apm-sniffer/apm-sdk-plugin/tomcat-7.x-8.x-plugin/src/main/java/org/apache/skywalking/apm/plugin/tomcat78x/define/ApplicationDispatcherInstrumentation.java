@@ -37,7 +37,12 @@ public class ApplicationDispatcherInstrumentation extends ClassInstanceMethodsEn
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"javax.servlet.http.HttpServletResponse"};
+        return new String[]{"org.apache.catalina.core.StandardHostValve"};
+    }
+
+    @Override
+    protected List<WitnessMethod> witnessMethods() {
+        return Collections.singletonList(new WitnessMethod("org.apache.catalina.realm.GenericPrincipal",named("getPassword")));
     }
 
     @Override

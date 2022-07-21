@@ -18,20 +18,39 @@ segmentItems:
     segmentSize: ge 2
     segments:
       - segmentId: not null
-          spans:
-              - operationName: 'GET:/tomcat-10x-scenario/case/tomcat-10x-scenario'
-                operationId: 0
-                parentSpanId: -1
-                spanId: 0
-                spanLayer: Http
-                tags:
-                  - { key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario' }
-                  - { key: http.method, value: GET }
-                startTime: nq 0
-                endTime: nq 0
-                componentId: 1
-                isError: false
-                spanType: Entry
-                peer: ''
-                skipAnalysis: false
-
+        spans:
+          - operationName: 'GET:/tomcat-10x-scenario/case/tomcat-10x-scenario'
+            operationId: 0
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            tags:
+             - {key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario'}
+             - {key: http.method, value: GET}
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 1
+            isError: false
+            spanType: Entry
+            peer: ''
+            skipAnalysis: false
+      - segmentId: not null
+        spans:
+        - operationName: GET:/case/err
+          parentSpanId: -1
+          spanId: 0
+          spanLayer: Http
+          startTime: 1657901353228
+          endTime: 1657901353253
+          componentId: 1
+          isError: true
+          spanType: Entry
+          peer: ''
+          skipAnalysis: false
+          tags:
+          - {key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/err'}
+          - {key: http.method, value: GET}
+          - {key: http.status_code, value: '404'}
+          logs:
+          - logEvent:
+            - {key: forward-url, value: /case/errorCatch}

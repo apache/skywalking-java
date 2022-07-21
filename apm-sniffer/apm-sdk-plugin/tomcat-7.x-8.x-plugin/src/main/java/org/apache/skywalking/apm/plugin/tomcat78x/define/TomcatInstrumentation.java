@@ -51,12 +51,7 @@ public class TomcatInstrumentation extends ClassInstanceMethodsEnhancePluginDefi
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"org.apache.catalina.core.StandardHostValve"};
-    }
-
-    @Override
-    protected List<WitnessMethod> witnessMethods() {
-        return Collections.singletonList(new WitnessMethod("org.apache.catalina.realm.GenericPrincipal", named("getPassword")));
+        return new String[]{"javax.servlet.http.HttpServletResponse"};
     }
 
     @Override

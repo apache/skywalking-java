@@ -14,6 +14,7 @@ Release Notes.
 
 #### Documentation
 
+* Add a section in `Bootstrap-plugins` doc, introducing HttpURLConnection Plugin compatibility.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/138?closed=1)
 

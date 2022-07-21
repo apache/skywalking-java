@@ -52,7 +52,7 @@ public class TomcatInstrumentation extends ClassInstanceMethodsEnhancePluginDefi
 
     @Override
     protected List<WitnessMethod> witnessMethods() {
-        return Collections.singletonList(new WitnessMethod("org.apache.catalina.realm.GenericPrincipal",named("getPassword")));
+        return Collections.singletonList(new WitnessMethod("org.apache.catalina.realm.GenericPrincipal", named("getPassword")));
     }
 
     @Override

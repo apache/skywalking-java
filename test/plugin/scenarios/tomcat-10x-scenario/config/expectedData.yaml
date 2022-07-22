@@ -19,14 +19,10 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: 'GET:/tomcat-10x-scenario/case/tomcat-10x-scenario'
-            operationId: 0
+          - operationName: POST:/tomcat-10x-scenario/case/tomcat-10x-scenario
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
-            tags:
-             - {key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario'}
-             - {key: http.method, value: GET}
             startTime: nq 0
             endTime: nq 0
             componentId: 1
@@ -34,3 +30,41 @@ segmentItems:
             spanType: Entry
             peer: ''
             skipAnalysis: false
+            tags:
+              - { key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario' }
+              - { key: http.method, value: POST }
+            refs:
+              - { parentEndpoint: 'GET:/tomcat-10x-scenario/case/tomcat-10x-scenario', networkAddress: 'localhost:8080',
+                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
+                  parentServiceInstance: not null, parentService: tomcat-10x-scenario,
+                  traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: /tomcat-10x-scenario/case/tomcat-10x-scenario
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 2
+            isError: false
+            spanType: Exit
+            peer: localhost:8080
+            skipAnalysis: false
+            tags:
+              - { key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario' }
+              - { key: http.method, value: POST }
+          - operationName: GET:/tomcat-10x-scenario/case/tomcat-10x-scenario
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 1
+            isError: false
+            spanType: Entry
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - { key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario' }
+              - { key: http.method, value: GET }

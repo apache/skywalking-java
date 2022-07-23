@@ -6,6 +6,7 @@ metrics based on the tracing data.
   * [Tomcat](https://github.com/apache/tomcat) 7
   * [Tomcat](https://github.com/apache/tomcat) 8
   * [Tomcat](https://github.com/apache/tomcat) 9
+  * [Tomcat](https://github.com/apache/tomcat) 10
   * [Spring Boot](https://github.com/spring-projects/spring-boot) Web 4.x
   * Spring MVC 3.x, 4.x 5.x with servlet 3.x
   * [Nutz Web Framework](https://github.com/nutzam/nutz)  1.x

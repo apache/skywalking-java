@@ -108,6 +108,7 @@
 - struts2-2.x
 - thrift
 - tomcat-7.x/8.x
+- tomcat-10.x
 - toolkit-counter
 - toolkit-gauge
 - toolkit-histogram

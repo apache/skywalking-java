@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.tomcat78x.define;
+package org.apache.skywalking.apm.plugin.tomcat10x.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -25,36 +25,39 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class ApplicationDispatcherInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class TomcatInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.apache.catalina.core.ApplicationDispatcher";
-    private static final String ENHANCE_METHOD = "forward";
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.tomcat78x.ForwardInterceptor";
+    /**
+     * Enhance class.
+     */
+    private static final String ENHANCE_CLASS = "org.apache.catalina.core.StandardHostValve";
+
+    /**
+     * The intercept class for "invoke" method in the class "org.apache.catalina.core.StandardHostValve"
+     */
+    private static final String INVOKE_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.tomcat10x.TomcatInvokeInterceptor";
+
+    /**
+     * The intercept class for "exception" method in the class "org.apache.catalina.core.StandardHostValve"
+     */
+    private static final String EXCEPTION_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.tomcat10x.TomcatExceptionInterceptor";
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"javax.servlet.http.HttpServletResponse"};
+        return new String[]{"jakarta.servlet.http.HttpServletResponse"};
+    }
+
+    @Override
+    protected ClassMatch enhanceClass() {
+        return byName(ENHANCE_CLASS);
     }
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
-            new ConstructorInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return any();
-                }
-
-                @Override
-                public String getConstructorInterceptor() {
-                    return INTERCEPTOR_CLASS;
-                }
-            }
-        };
+        return null;
     }
 
     @Override
@@ -63,12 +66,28 @@ public class ApplicationDispatcherInstrumentation extends ClassInstanceMethodsEn
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_METHOD);
+                    return named("invoke");
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return INTERCEPTOR_CLASS;
+                    return INVOKE_INTERCEPT_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named("throwable");
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return EXCEPTION_INTERCEPT_CLASS;
                 }
 
                 @Override
@@ -77,10 +96,5 @@ public class ApplicationDispatcherInstrumentation extends ClassInstanceMethodsEn
                 }
             }
         };
-    }
-
-    @Override
-    protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
     }
 }

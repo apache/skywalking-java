@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.tomcat78x.define;
+package org.apache.skywalking.apm.plugin.tomcat10x.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -33,11 +33,11 @@ public class ApplicationDispatcherInstrumentation extends ClassInstanceMethodsEn
 
     private static final String ENHANCE_CLASS = "org.apache.catalina.core.ApplicationDispatcher";
     private static final String ENHANCE_METHOD = "forward";
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.tomcat78x.ForwardInterceptor";
+    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.tomcat10x.ForwardInterceptor";
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"javax.servlet.http.HttpServletResponse"};
+        return new String[]{"jakarta.servlet.http.HttpServletResponse"};
     }
 
     @Override

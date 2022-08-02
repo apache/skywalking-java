@@ -11,6 +11,7 @@ Release Notes.
 * Add plugin to support hutool-http 5.x.
 * Add plugin to support Tomcat 10.x.
 * Save http status code regardless of it's status.
+* Upgrade byte-buddy to 1.12.13, and adopt byte-buddy APIs changes.
 
 #### Documentation
 

@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.agent;
 
 import java.lang.instrument.Instrumentation;
+import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +154,8 @@ public class SkyWalkingAgent {
         public DynamicType.Builder<?> transform(final DynamicType.Builder<?> builder,
                                                 final TypeDescription typeDescription,
                                                 final ClassLoader classLoader,
-                                                final JavaModule module) {
+                                                final JavaModule javaModule,
+                                                final ProtectionDomain protectionDomain) {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {

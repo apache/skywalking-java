@@ -14,7 +14,7 @@ Release Notes.
 * Upgrade byte-buddy to 1.12.13, and adopt byte-buddy APIs changes.
 * Upgrade gson to 2.8.9.
 * Upgrade netty-codec-http2 to 4.1.79.Final.
-* 
+
 #### Documentation
 
 * Add a section in `Bootstrap-plugins` doc, introducing HttpURLConnection Plugin compatibility.

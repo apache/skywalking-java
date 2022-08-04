@@ -109,6 +109,10 @@
                     <artifactId>mockito-core</artifactId>
                     <groupId>org.mockito</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>netty-codec-http2</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
             </exclusions>
             <scope>test</scope>
         </dependency>

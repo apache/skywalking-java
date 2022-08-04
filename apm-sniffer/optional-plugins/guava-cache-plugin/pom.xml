@@ -31,7 +31,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <guava-client.version>30.1.1-jre</guava-client.version>
+        <guava-client.version>23.0</guava-client.version>
     </properties>
 
     <dependencies>

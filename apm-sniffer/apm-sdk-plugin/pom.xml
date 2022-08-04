@@ -91,7 +91,7 @@
         <module>play-2.x-plugin</module>
         <module>lettuce-5.x-plugin</module>
         <module>avro-plugin</module>
-        <module>finagle-6.25.x-plugin</module>
+<!--        <module>finagle-6.25.x-plugin</module>-->
         <module>quasar-plugin</module>
         <module>mariadb-2.x-plugin</module>
         <module>influxdb-2.x-plugin</module>

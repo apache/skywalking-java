@@ -58,7 +58,7 @@ All test case codes should be in the `org.apache.skywalking.apm.testcase.*` pack
         |- [resource]
             |- log4j2.xml
     |- pom.xml
-    |- configuration.yaml
+    |- configuration.yml
     |- support-version.list
 
 [] = directory
@@ -79,7 +79,7 @@ All test case codes should be in the `org.apache.skywalking.apm.testcase.*` pack
             |- [WEB-INF]
                 |- web.xml
     |- pom.xml
-    |- configuration.yaml
+    |- configuration.yml
     |- support-version.list
 
 [] = directory

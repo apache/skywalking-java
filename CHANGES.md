@@ -15,11 +15,13 @@ Release Notes.
 * Upgrade gson to 2.8.9.
 * Upgrade netty-codec-http2 to 4.1.79.Final.
 * Fix race condition causing agent to not reconnect after network error
+* Fix enhance high priority classes which is put by hashmap causing NoClassDefFoundError
 
 #### Documentation
 
 * Add a section in `Bootstrap-plugins` doc, introducing HttpURLConnection Plugin compatibility.
-* Update `Plugin automatic test framework` ,fix inconsistent description about configuration.yml
+* Update `Plugin automatic test framework`, fix inconsistent description about configuration.yml.
+* Update `Plugin automatic test framework`, add expected data format of the log items.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/138?closed=1)
 

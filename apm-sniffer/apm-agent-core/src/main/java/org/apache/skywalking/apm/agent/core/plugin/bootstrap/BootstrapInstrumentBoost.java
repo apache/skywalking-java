@@ -22,7 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -86,7 +86,7 @@ public class BootstrapInstrumentBoost {
 
     public static AgentBuilder inject(PluginFinder pluginFinder, Instrumentation instrumentation,
         AgentBuilder agentBuilder, JDK9ModuleExporter.EdgeClasses edgeClasses) throws PluginException {
-        Map<String, byte[]> classesTypeMap = new HashMap<>();
+        Map<String, byte[]> classesTypeMap = new LinkedHashMap<>();
 
         if (!prepareJREInstrumentation(pluginFinder, classesTypeMap)) {
             return agentBuilder;

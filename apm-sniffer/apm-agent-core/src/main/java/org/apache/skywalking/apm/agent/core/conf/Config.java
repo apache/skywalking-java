@@ -126,7 +126,7 @@ public class Config {
         /**
          * The identifier of the instance
          */
-        @Length(50)
+        @Length(100)
         public volatile static String INSTANCE_NAME = "";
 
         /**

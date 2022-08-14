@@ -331,6 +331,61 @@ The verify description for MeterId
 | singleValue | counter or gauge value. Using condition operate of the number to validate, such as `gt`, `ge`. If current meter is histogram, don't need to write this field.
 | histogramBuckets | histogram bucket. The bucket list must be ordered. The tool assert at least one bucket of the histogram having nonzero count. If current meter is counter or gauge, don't need to write this field.
 
+
+**Expected Data Format Of The Log Items**
+```yml
+logItems:
+-
+  serviceName: SERVICE_NAME(string)
+  logSize: LOG_SIZE(int)
+  logs:
+  - ...
+```
+
+| Field       |  Description
+|-------------| ---
+| serviceName | Service Name.
+| logSize     | The number of logs is expected.
+| logs        | log list. Follow the next section to see how to describe every log.
+
+**Expected Data Format Of The Log**
+
+```yml
+    timestamp: TIMESTAMP_VALUE(int)
+    endpoint: ENDPOINT_VALUE(int)
+    traceContext:
+      traceId: TRACE_ID_VALUE(string)
+      traceSegmentId: TRACE_SEGMENT_ID_VALUE(string)
+      spanId: SPAN_ID_VALUE(int)
+    body:
+      type: TYPE_VALUE(string)
+      content: # Choose one of three (text, json or yaml)
+        text: TEXT_VALUE(string)
+        # json: JSON_VALUE(string)
+        # yaml: YAML_VALUE(string)
+    tags:
+      data:
+        - key: TAG_KEY(string)
+          value: TAG_VALUE(string)
+        ...
+    layer: LAYER_VALUE(string)
+    ...
+```
+
+The verify description for Log
+
+| Field                       | Description
+|-----------------------------|---
+| timestamp                   | log timestamp.
+| endpoint                    | log endpoint.
+| traceContext.traceId        | log associated trace id.
+| traceContext.traceSegmentId | log associated trace segment id.
+| traceContext.spanId         | log associated span id.
+| body.type                   | log body type.
+| body.content                | log content, the sub field choose one of three (text, json or yaml).
+| tags.data                   | log tags, key value pairs.
+| layer                       | log layer.
+
 ### startup.sh
 
 This script provide a start point to JVM based service, most of them starts by a `java -jar`, with some variables.

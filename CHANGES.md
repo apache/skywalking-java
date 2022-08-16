@@ -15,7 +15,7 @@ Release Notes.
 * Upgrade gson to 2.8.9.
 * Upgrade netty-codec-http2 to 4.1.79.Final.
 * Fix race condition causing agent to not reconnect after network error
-* Fix enhance high priority classes which is put by hashmap causing NoClassDefFoundError
+* Force the injected high-priority classes in order to avoid NoClassDefFoundError.
 
 #### Documentation
 

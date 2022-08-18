@@ -98,6 +98,7 @@
         <module>baidu-brpc-plugin</module>
         <module>hbase-1.x-2.x-plugin</module>
         <module>graphql-plugin</module>
+        <module>xxl-job-2.3.x-plugin</module>
         <module>xxl-job-2.x-plugin</module>
         <module>thrift-plugin</module>
         <module>httpclient-commons</module>

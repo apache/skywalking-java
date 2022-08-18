@@ -29,11 +29,9 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import java.lang.reflect.Method;
 
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.JOB_PARAM;
-import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_JOB_HELPER;
-import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_JOB_HELPER_GET_PARAM_METHOD;
 
 /**
- * Intercept method of {@link com.xxl.job.core.handler.impl.MethodJobHandler#execute(String)}.
+ * Intercept method of {@link com.xxl.job.core.handler.impl.MethodJobHandler#execute}.
  * record the xxl-job method job local span.
  */
 public class MethodJobHandlerMethodInterceptor implements InstanceMethodsAroundInterceptor {
@@ -47,12 +45,12 @@ public class MethodJobHandlerMethodInterceptor implements InstanceMethodsAroundI
         span.setComponent(ComponentsDefine.XXL_JOB);
         Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
         if (allArguments.length == 1) {
+            // support 2.0 ~ 2.2
             String jobParam = (String) allArguments[0];
             span.tag(JOB_PARAM, jobParam);
         } else if (allArguments.length == 0) {
-            Class<?> xxlJobHelper = Class.forName(XXL_JOB_HELPER);
-            Method getJobParamMethod = xxlJobHelper.getMethod(XXL_JOB_HELPER_GET_PARAM_METHOD);
-            String jobParam = (String) getJobParamMethod.invoke(null);
+            // support 2.3
+            String jobParam = com.xxl.job.core.context.XxlJobHelper.getJobParam();
             span.tag(JOB_PARAM, jobParam);
         }
     }

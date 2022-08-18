@@ -16,7 +16,7 @@ Release Notes.
 * Upgrade netty-codec-http2 to 4.1.79.Final.
 * Fix race condition causing agent to not reconnect after network error
 * Force the injected high-priority classes in order to avoid NoClassDefFoundError.
-
+* Plugin to support xxl-job 2.3.x.
 #### Documentation
 
 * Add a section in `Bootstrap-plugins` doc, introducing HttpURLConnection Plugin compatibility.

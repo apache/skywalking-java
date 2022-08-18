@@ -29,4 +29,8 @@ public class Constants {
     public static final String XXL_METHOD_JOB_HANDLER = "com.xxl.job.core.handler.impl.MethodJobHandler";
 
     public static final AbstractTag JOB_PARAM = Tags.ofKey("jobParam");
+
+    public static final String XXL_JOB_HELPER = "com.xxl.job.core.context.XxlJobHelper";
+
+    public static final String XXL_JOB_HELPER_GET_PARAM_METHOD = "getJobParam";
 }

@@ -29,6 +29,8 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import java.lang.reflect.Method;
 
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.JOB_PARAM;
+import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_JOB_HELPER;
+import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_JOB_HELPER_GET_PARAM_METHOD;
 
 /**
  * Intercept method of {@link com.xxl.job.core.handler.impl.MethodJobHandler#execute(String)}.
@@ -39,13 +41,20 @@ public class MethodJobHandlerMethodInterceptor implements InstanceMethodsAroundI
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         String methodName = (String) objInst.getSkyWalkingDynamicField();
-        String jobParam = (String) allArguments[0];
         String operationName = ComponentsDefine.XXL_JOB.getName() + "/MethodJob/" + methodName;
 
         AbstractSpan span = ContextManager.createLocalSpan(operationName);
         span.setComponent(ComponentsDefine.XXL_JOB);
         Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
-        span.tag(JOB_PARAM, jobParam);
+        if (allArguments.length == 1) {
+            String jobParam = (String) allArguments[0];
+            span.tag(JOB_PARAM, jobParam);
+        } else if (allArguments.length == 0) {
+            Class<?> xxlJobHelper = Class.forName(XXL_JOB_HELPER);
+            Method getJobParamMethod = xxlJobHelper.getMethod(XXL_JOB_HELPER_GET_PARAM_METHOD);
+            String jobParam = (String) getJobParamMethod.invoke(null);
+            span.tag(JOB_PARAM, jobParam);
+        }
     }
 
     @Override

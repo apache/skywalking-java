@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.xxljob.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
@@ -74,8 +75,8 @@ public class ScriptJobHandlerInstrumentation extends ClassInstanceMethodsEnhance
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named("execute")
                                 .and(isPublic())
-                                .and(takesArguments(1))
-                                .and(takesArgument(0, String.class));
+                                .and(ElementMatchers.takesNoArguments()
+                                        .or(takesArguments(1).and(takesArgument(0, String.class))));
                     }
 
                     @Override

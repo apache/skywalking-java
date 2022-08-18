@@ -18,8 +18,16 @@
 
 package org.apache.skywalking.apm.plugin.xxljob;
 
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
+
+import static net.bytebuddy.matcher.ElementMatchers.isPublic;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 public class Constants {
 
@@ -33,4 +41,17 @@ public class Constants {
     public static final String XXL_JOB_HELPER = "com.xxl.job.core.context.XxlJobHelper";
 
     public static final String XXL_JOB_HELPER_GET_PARAM_METHOD = "getJobParam";
+    /**
+     * 2.3.x after
+     */
+    public static final ElementMatcher.Junction<MethodDescription> ARGS_MATCHER_AFTER_23 = ElementMatchers.takesNoArguments();
+    /**
+     * 2.x ~ 2.2.0
+     */
+    public static final ElementMatcher.Junction<MethodDescription> ARGS_MATCHER_2_X = takesArguments(1).and(takesArgument(0, String.class));
+
+    public static final ElementMatcher.Junction<MethodDescription> EXECUTE_METHOD_MATCHER = named("execute")
+            .and(isPublic())
+            .and(ARGS_MATCHER_AFTER_23.or(ARGS_MATCHER_2_X));
+
 }

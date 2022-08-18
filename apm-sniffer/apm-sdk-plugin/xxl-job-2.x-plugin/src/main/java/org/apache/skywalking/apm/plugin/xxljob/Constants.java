@@ -42,7 +42,7 @@ public class Constants {
      */
     public static final ElementMatcher.Junction<MethodDescription> ARGS_MATCHER_23 = ElementMatchers.takesNoArguments();
     /**
-     * 2.x ~ 2.2.0
+     * 2.0 ~ 2.2.0
      */
     public static final ElementMatcher.Junction<MethodDescription> ARGS_MATCHER_20_TO_22 = takesArguments(1).and(takesArgument(0, String.class));
 

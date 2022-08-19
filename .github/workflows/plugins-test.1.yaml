@@ -79,6 +79,7 @@ jobs:
           - mssql-jdbc-scenario
           - mybatis-3.x-scenario
           - resteasy-4.x-scenario
+          - xxl-job-2.2.0-scenario
           - xxl-job-2.3.x-scenario
     steps:
       - uses: actions/checkout@v2

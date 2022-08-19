@@ -224,4 +224,7 @@ public class ComponentsDefine {
     public static final OfficialComponent APACHE_SHENYU = new OfficialComponent(127, "Apache-ShenYu");
 
     public static final OfficialComponent HUTOOL = new OfficialComponent(128, "Hutool");
+
+    public static final OfficialComponent MICRONAUT = new OfficialComponent(131, "Micronaut");
+
 }

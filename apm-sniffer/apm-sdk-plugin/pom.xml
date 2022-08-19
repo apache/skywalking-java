@@ -122,6 +122,7 @@
         <module>tomcat-thread-pool-plugin</module>
         <module>guava-eventbus-plugin</module>
         <module>hutool-plugins</module>
+        <module>micronaut-plugins</module>
     </modules>
     <packaging>pom</packaging>
 

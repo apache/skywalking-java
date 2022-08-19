@@ -141,3 +141,5 @@
 - shenyu-2.4.x
 - jdk-threadpool-plugin
 - hutool-http-5.x
+- micronaut-http-client-3.2.x-3.6.x
+- micronaut-http-server-3.2.x-3.6.x

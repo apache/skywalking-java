@@ -17,6 +17,7 @@ Release Notes.
 * Fix race condition causing agent to not reconnect after network error
 * Force the injected high-priority classes in order to avoid NoClassDefFoundError.
 * Plugin to support xxl-job 2.3.x.
+* Add plugin to support Micronaut(HTTP Client/Server) 3.2.x-3.6.x
 
 #### Documentation
 

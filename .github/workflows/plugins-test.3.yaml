@@ -68,6 +68,7 @@ jobs:
           - vertx-web-3.54minus-scenario
           - vertx-web-3.6plus-scenario
           - mariadb-scenario
+          - micronaut-http-scenario
           - quasar-scenario
           - baidu-brpc-scenario
           - retransform-class-scenario

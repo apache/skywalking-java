@@ -31,20 +31,27 @@ import java.lang.reflect.Method;
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.JOB_PARAM;
 
 /**
- * Intercept execute(String) method on implement class of {@link com.xxl.job.core.handler.IJobHandler}.
+ * Intercept execute(String) method or execute() on implement class of {@link com.xxl.job.core.handler.IJobHandler}.
  * record the xxl-job simple job local span.
  */
 public class SimpleJobHandlerMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        String jobParam = (String) allArguments[0];
         String operationName = ComponentsDefine.XXL_JOB.getName() + "/SimpleJob/" + method.getDeclaringClass().getName();
 
         AbstractSpan span = ContextManager.createLocalSpan(operationName);
         span.setComponent(ComponentsDefine.XXL_JOB);
         Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
-        span.tag(JOB_PARAM, jobParam);
+        if (allArguments.length == 1) {
+            // support 2.0 ~ 2.2
+            String jobParam = (String) allArguments[0];
+            span.tag(JOB_PARAM, jobParam);
+        } else if (allArguments.length == 0) {
+            // support 2.3
+            String jobParam = com.xxl.job.core.context.XxlJobHelper.getJobParam();
+            span.tag(JOB_PARAM, jobParam);
+        }
     }
 
     @Override

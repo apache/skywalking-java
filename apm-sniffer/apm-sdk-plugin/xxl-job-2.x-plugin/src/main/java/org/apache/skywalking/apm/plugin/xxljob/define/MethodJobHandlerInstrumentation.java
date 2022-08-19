@@ -27,15 +27,14 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import java.lang.reflect.Method;
 
-import static net.bytebuddy.matcher.ElementMatchers.isPublic;
-import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import static org.apache.skywalking.apm.plugin.xxljob.Constants.EXECUTE_METHOD_MATCHER;
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_METHOD_JOB_HANDLER;
 
 /**
- * Enhance {@link com.xxl.job.core.handler.impl.MethodJobHandler} instance and intercept {@link com.xxl.job.core.handler.impl.MethodJobHandler#execute(String)} method,
+ * Enhance {@link com.xxl.job.core.handler.impl.MethodJobHandler} instance and intercept execute() or execute(String) method,
  * this method is a entrance of execute method job.
  *
  * @see org.apache.skywalking.apm.plugin.xxljob.MethodJobHandlerConstructorInterceptor
@@ -78,10 +77,7 @@ public class MethodJobHandlerInstrumentation extends ClassInstanceMethodsEnhance
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("execute")
-                                .and(isPublic())
-                                .and(takesArguments(1))
-                                .and(takesArgument(0, String.class));
+                        return EXECUTE_METHOD_MATCHER;
                     }
 
                     @Override

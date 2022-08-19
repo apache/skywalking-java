@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.JOB_PARAM;
 
 /**
- * Intercept method of {@link com.xxl.job.core.handler.impl.ScriptJobHandler#execute(String)}.
+ * Intercept method of {@link com.xxl.job.core.handler.impl.ScriptJobHandler}  execute() or execute(String) .
  * record the xxl-job script job local span.
  */
 public class ScriptJobHandlerMethodInterceptor implements InstanceMethodsAroundInterceptor {
@@ -39,13 +39,20 @@ public class ScriptJobHandlerMethodInterceptor implements InstanceMethodsAroundI
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         String jobTypeAndId = (String) objInst.getSkyWalkingDynamicField();
-        String jobParam = (String) allArguments[0];
         String operationName = ComponentsDefine.XXL_JOB.getName() + "/ScriptJob/" + jobTypeAndId;
 
         AbstractSpan span = ContextManager.createLocalSpan(operationName);
         span.setComponent(ComponentsDefine.XXL_JOB);
         Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
-        span.tag(JOB_PARAM, jobParam);
+        if (allArguments.length == 1) {
+            // support 2.0 ~ 2.2
+            String jobParam = (String) allArguments[0];
+            span.tag(JOB_PARAM, jobParam);
+        } else if (allArguments.length == 0) {
+            // support 2.3
+            String jobParam = com.xxl.job.core.context.XxlJobHelper.getJobParam();
+            span.tag(JOB_PARAM, jobParam);
+        }
     }
 
     @Override

@@ -25,15 +25,13 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.isPublic;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import static org.apache.skywalking.apm.plugin.xxljob.Constants.EXECUTE_METHOD_MATCHER;
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_SCRIPT_JOB_HANDLER;
 
 /**
- * Enhance {@link com.xxl.job.core.handler.impl.ScriptJobHandler} instance and intercept {@link com.xxl.job.core.handler.impl.ScriptJobHandler#execute(String)} method,
+ * Enhance {@link com.xxl.job.core.handler.impl.ScriptJobHandler} instance and intercept execute() or execute(String) method,
  * this method is a entrance of execute script job.
  *
  * @see org.apache.skywalking.apm.plugin.xxljob.ScriptJobHandlerConstructorInterceptor
@@ -72,10 +70,7 @@ public class ScriptJobHandlerInstrumentation extends ClassInstanceMethodsEnhance
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("execute")
-                                .and(isPublic())
-                                .and(takesArguments(1))
-                                .and(takesArgument(0, String.class));
+                        return EXECUTE_METHOD_MATCHER;
                     }
 
                     @Override

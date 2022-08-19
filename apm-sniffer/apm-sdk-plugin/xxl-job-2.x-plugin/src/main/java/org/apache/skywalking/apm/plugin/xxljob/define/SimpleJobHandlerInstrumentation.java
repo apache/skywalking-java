@@ -36,7 +36,7 @@ import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_METHOD_JOB_H
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.XXL_SCRIPT_JOB_HANDLER;
 
 /**
- * Enhance the implement class of {@link com.xxl.job.core.handler.IJobHandler} and intercept execute(String) method,
+ * Enhance the implement class of {@link com.xxl.job.core.handler.IJobHandler} and intercept execute() or execute(String) method,
  * this method is a entrance of execute job.
  *
  * @see org.apache.skywalking.apm.plugin.xxljob.SimpleJobHandlerMethodInterceptor

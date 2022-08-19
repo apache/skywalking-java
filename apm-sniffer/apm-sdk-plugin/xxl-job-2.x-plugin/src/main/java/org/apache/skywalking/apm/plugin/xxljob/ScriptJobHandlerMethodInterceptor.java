@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 import static org.apache.skywalking.apm.plugin.xxljob.Constants.JOB_PARAM;
 
 /**
- * Intercept method of {@link com.xxl.job.core.handler.impl.ScriptJobHandler#execute(String)}.
+ * Intercept method of {@link com.xxl.job.core.handler.impl.ScriptJobHandler}  execute() or execute(String) .
  * record the xxl-job script job local span.
  */
 public class ScriptJobHandlerMethodInterceptor implements InstanceMethodsAroundInterceptor {

@@ -123,6 +123,7 @@
         <module>guava-eventbus-plugin</module>
         <module>hutool-plugins</module>
         <module>micronaut-plugins</module>
+        <module>nats-2.14.x-2.15.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

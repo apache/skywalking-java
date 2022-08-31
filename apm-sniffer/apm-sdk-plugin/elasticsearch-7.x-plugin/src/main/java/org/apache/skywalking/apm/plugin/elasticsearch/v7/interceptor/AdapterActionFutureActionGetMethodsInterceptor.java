@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor;
 
-import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -26,7 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Constants;
+import org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -36,8 +35,10 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 
-import static org.apache.skywalking.apm.plugin.elasticsearch.v6.ElasticsearchPluginConfig.Plugin.Elasticsearch.ELASTICSEARCH_DSL_LENGTH_THRESHOLD;
-import static org.apache.skywalking.apm.plugin.elasticsearch.v6.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
+import java.lang.reflect.Method;
+
+import static org.apache.skywalking.apm.plugin.elasticsearch.v7.ElasticsearchPluginConfig.Plugin.Elasticsearch.ELASTICSEARCH_DSL_LENGTH_THRESHOLD;
+import static org.apache.skywalking.apm.plugin.elasticsearch.v7.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
 
 public class AdapterActionFutureActionGetMethodsInterceptor implements InstanceMethodsAroundInterceptor {
 

@@ -18,8 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.elasticsearch.v7.define;
 
-import java.util.Collections;
-import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
@@ -28,7 +26,10 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Constants;
+import org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants;
+
+import java.util.Collections;
+import java.util.List;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.returns;

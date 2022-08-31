@@ -42,11 +42,5 @@
             <version>${elasticsearch.rest.high.level.client.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-elasticsearch-6.x-plugin</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 </project>

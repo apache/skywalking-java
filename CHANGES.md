@@ -19,6 +19,7 @@ Release Notes.
 * Plugin to support xxl-job 2.3.x.
 * Add plugin to support Micronaut(HTTP Client/Server) 3.2.x-3.6.x
 * Add plugin to support NATS Java client 2.14.x-2.15.x
+* Remove inappropriate dependency from elasticsearch-7.x-plugin
 
 #### Documentation
 

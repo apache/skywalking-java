@@ -31,7 +31,6 @@
         <module>dubbo-plugin</module>
         <module>jdbc-commons</module>
         <module>httpClient-4.x-plugin</module>
-        <module>jedis-2.x-plugin</module>
         <module>redisson-3.x-plugin</module>
         <module>tomcat-7.x-8.x-plugin</module>
         <module>tomcat-10x-plugin</module>
@@ -124,6 +123,7 @@
         <module>hutool-plugins</module>
         <module>micronaut-plugins</module>
         <module>nats-2.14.x-2.15.x-plugin</module>
+        <module>jedis-plugins</module>
     </modules>
     <packaging>pom</packaging>
 

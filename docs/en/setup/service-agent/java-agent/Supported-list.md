@@ -74,7 +74,7 @@ metrics based on the tracing data.
   * Aliyun ONS 1.x (Optional¹)
 * NoSQL
   * Redis
-    * [Jedis](https://github.com/xetorthio/jedis) 2.x
+    * [Jedis](https://github.com/xetorthio/jedis) 2.x-4.x
     * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.2+
     * [Lettuce](https://github.com/lettuce-io/lettuce-core) 5.x
   * [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) 2.13-2.14, 3.4.0-3.12.7, 4.0.0-4.1.0

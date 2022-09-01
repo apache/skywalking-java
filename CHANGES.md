@@ -20,6 +20,7 @@ Release Notes.
 * Add plugin to support Micronaut(HTTP Client/Server) 3.2.x-3.6.x
 * Add plugin to support NATS Java client 2.14.x-2.15.x
 * Remove inappropriate dependency from elasticsearch-7.x-plugin
+* Upgrade jedis plugin to support 3.x(stream),4.x
 
 #### Documentation
 

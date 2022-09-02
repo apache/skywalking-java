@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>java-agent-sniffer</artifactId>
-        <version>8.12.0-SNAPSHOT</version>
+        <version>8.13.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>apm-sdk-plugin</artifactId>
@@ -31,7 +31,6 @@
         <module>dubbo-plugin</module>
         <module>jdbc-commons</module>
         <module>httpClient-4.x-plugin</module>
-        <module>jedis-2.x-plugin</module>
         <module>redisson-3.x-plugin</module>
         <module>tomcat-7.x-8.x-plugin</module>
         <module>tomcat-10x-plugin</module>
@@ -123,6 +122,8 @@
         <module>guava-eventbus-plugin</module>
         <module>hutool-plugins</module>
         <module>micronaut-plugins</module>
+        <module>nats-2.14.x-2.15.x-plugin</module>
+        <module>jedis-plugins</module>
         <module>impala-jdbc-2.6.x-plugin</module>
     </modules>
     <packaging>pom</packaging>

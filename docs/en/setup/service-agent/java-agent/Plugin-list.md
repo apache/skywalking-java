@@ -43,7 +43,8 @@
 - jackson-2.x
 - jdk-http-plugin
 - jdk-threading-plugin
-- jedis-2.x
+- jedis-2.x-3.x
+- jedis-4.x
 - jetty-client-9.0
 - jetty-client-9.x
 - jetty-server-9.x
@@ -143,3 +144,4 @@
 - hutool-http-5.x
 - micronaut-http-client-3.2.x-3.6.x
 - micronaut-http-server-3.2.x-3.6.x
+- nats-client-2.14.x-2.15.x

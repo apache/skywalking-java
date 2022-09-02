@@ -227,6 +227,8 @@ public class ComponentsDefine {
 
     public static final OfficialComponent MICRONAUT = new OfficialComponent(131, "Micronaut");
 
-    public static final OfficialComponent IMPALA_JDBC_DRIVER = new OfficialComponent(132, "Impala-jdbc-driver");
+    public static final OfficialComponent NATS = new OfficialComponent(132, "Nats");
+
+    public static final OfficialComponent IMPALA_JDBC_DRIVER = new OfficialComponent(133, "Impala-jdbc-driver");
 
 }

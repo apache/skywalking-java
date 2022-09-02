@@ -70,10 +70,11 @@ metrics based on the tracing data.
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 5.x
   * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.9.x
+  * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.15.x
   * Aliyun ONS 1.x (Optional¹)
 * NoSQL
   * Redis
-    * [Jedis](https://github.com/xetorthio/jedis) 2.x
+    * [Jedis](https://github.com/xetorthio/jedis) 2.x-4.x
     * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.2+
     * [Lettuce](https://github.com/lettuce-io/lettuce-core) 5.x
   * [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) 2.13-2.14, 3.4.0-3.12.7, 4.0.0-4.1.0

@@ -114,5 +114,10 @@ This is the properties list supported in `agent/config/agent.config`.
 | `plugin.micronauthttpclient.collect_http_params`                | This config item controls that whether the Micronaut http client plugin should collect the parameters of the request. Also, activate implicitly in the profiled trace.                                                                                                                                                                                                                                                                                                                                                                                 | SW_PLUGIN_MICRONAUTHTTPCLIENT_COLLECT_HTTP_PARAMS                | `false`                                                                 |
 | `plugin.micronauthttpserver.collect_http_params`                | This config item controls that whether the Micronaut http server plugin should collect the parameters of the request. Also, activate implicitly in the profiled trace.                                                                                                                                                                                                                                                                                                                                                                                 | SW_PLUGIN_MICRONAUTHTTPSERVER_COLLECT_HTTP_PARAMS                | `false`                                                                 |
 
+# How to override default value to blank Collection/Map
+
+* Collection type config such as : `plugin.kafka.topics=a,b,c,d` , In order set the value to blank . just omit the value:` plugin.kafka.topics=` 
+* Map type config such as : `plugin.kafka.producer_config[key]=X` ，In order set the value to blank , just omit the key and value :` plugin.kafka.producer_config[]=`
+
 # Dynamic Configurations
 All configurations above are static, if you need to change some agent settings at runtime, please read [CDS - Configuration Discovery Service document](configuration-discovery.md) for more details.

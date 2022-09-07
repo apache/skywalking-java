@@ -22,12 +22,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Init a class's static fields by a {@link Properties}, including static fields and static inner classes.
@@ -64,6 +69,11 @@ public class ConfigInitializer {
                     Map map = (Map) field.get(null);
                     // Set the map from config key and properties
                     setForMapType(configKey, map, properties, keyType, valueType);
+                } else if (Collection.class.isAssignableFrom(type)) {
+                    ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+                    Type argumentType = genericType.getActualTypeArguments()[0];
+                    Collection collection = convertToCollection(argumentType, type, properties.getProperty(configKey));
+                    field.set(null, collection);
                 } else {
                     /*
                      * Others typical field type
@@ -90,6 +100,29 @@ public class ConfigInitializer {
         }
     }
 
+    private static Collection<Object> convertToCollection(Type argumentType, Class<?> type, String propertyValue) {
+        Collection<Object> collection;
+        if (type.equals(Set.class) || type.equals(HashSet.class)) {
+            collection = new HashSet<>();
+        } else if (type.equals(TreeSet.class)) {
+            collection = new TreeSet<>();
+        } else if (type.equals(List.class) || type.equals(LinkedList.class)) {
+            collection = new LinkedList<>();
+        } else if (type.equals(ArrayList.class)) {
+            collection = new ArrayList<>();
+        } else {
+            throw new UnsupportedOperationException("Config parameter type support Set,HashSet,TreeSet,List,LinkedList,ArrayList");
+        }
+        if (StringUtil.isBlank(propertyValue)) {
+            return collection;
+        }
+        Arrays.stream(propertyValue.split(","))
+                .map(v -> convertToTypicalType(argumentType, v))
+                .forEach(collection::add);
+        return collection;
+    }
+
+
     /**
      * Convert string value to typical type.
      *
@@ -115,8 +148,6 @@ public class ConfigInitializer {
             result = Float.valueOf(value);
         } else if (double.class.equals(type) || Double.class.equals(type)) {
             result = Double.valueOf(value);
-        } else if (List.class.equals(type)) {
-            result = convert2List(value);
         } else if (type instanceof Class) {
             Class<?> clazz = (Class<?>) type;
             if (clazz.isEnum()) {
@@ -137,7 +168,6 @@ public class ConfigInitializer {
      */
     private static void setForMapType(String configKey, Map<Object, Object> map, Properties properties,
                                       final Type keyType, final Type valueType) {
-
         Objects.requireNonNull(configKey);
         Objects.requireNonNull(map);
         Objects.requireNonNull(properties);
@@ -163,26 +193,9 @@ public class ConfigInitializer {
                 if (valueObj == null) {
                     valueObj = propertyValue;
                 }
-
                 map.put(keyObj, valueObj);
             }
         });
-    }
-
-    private static List<String> convert2List(String value) {
-        if (StringUtil.isEmpty(value)) {
-            return Collections.emptyList();
-        }
-        List<String> result = new LinkedList<>();
-
-        String[] segments = value.split(",");
-        for (String segment : segments) {
-            String trimmedSegment = segment.trim();
-            if (StringUtil.isNotEmpty(trimmedSegment)) {
-                result.add(trimmedSegment);
-            }
-        }
-        return result;
     }
 
 }

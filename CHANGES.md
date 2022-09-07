@@ -5,6 +5,7 @@ Release Notes.
 8.13.0
 ------------------
 
+* Support set-type in the agent or plugin configurations
 
 #### Documentation
 

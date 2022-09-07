@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 public class ConfigInitializerTest {
     @Test
@@ -33,17 +34,30 @@ public class ConfigInitializerTest {
         properties.put("Level1Object.Level2Object.INT_ATTR".toLowerCase(), "1000");
         properties.put("Level1Object.Level2Object.LONG_ATTR".toLowerCase(), "1000");
         properties.put("Level1Object.Level2Object.BOOLEAN_ATTR".toLowerCase(), "true");
-        properties.put("Level1Object.LIST_ATTR".toLowerCase(), "1,2,3");
-        properties.put("Level1Object.LIST_EMPTY_ATTR".toLowerCase(), "");
+        properties.put("Level1Object.LIST_STR_ATTR".toLowerCase(), "a,b,c");
+        properties.put("Level1Object.LIST_INT_ATTR".toLowerCase(), "1,2,3");
+        properties.put("Level1Object.LIST_STR_EMPTY_ATTR".toLowerCase(), "");
+        properties.put("Level1Object.LIST_BOOL_ATTR".toLowerCase(), "true,false");
         properties.put("Level1Object.Level2Object.ENUM_ATTR".toLowerCase(), "RED");
+        properties.put("Level1Object.SET_STR_ATTR".toLowerCase(), "a,b,c,d,b");
+        properties.put("Level1Object.SET_STR_EMPTY_ATTR".toLowerCase(), "");
+        properties.put("Level1Object.SET_INT_ATTR".toLowerCase(), "1,2,3,4,4");
+        properties.put("Level1Object.SET_BOOL_ATTR".toLowerCase(), "true,true");
 
         ConfigInitializer.initialize(properties, TestPropertiesObject.class);
 
         Assert.assertEquals("stringValue", TestPropertiesObject.Level1Object.STR_ATTR);
         Assert.assertEquals(1000, TestPropertiesObject.Level1Object.Level2Object.INT_ATTR);
         Assert.assertEquals(1000L, TestPropertiesObject.Level1Object.Level2Object.LONG_ATTR);
-        Assert.assertEquals(true, TestPropertiesObject.Level1Object.Level2Object.BOOLEAN_ATTR);
-        Assert.assertArrayEquals(new String[] {}, TestPropertiesObject.Level1Object.LIST_EMPTY_ATTR.toArray());
+        Assert.assertTrue(TestPropertiesObject.Level1Object.Level2Object.BOOLEAN_ATTR);
+        Assert.assertArrayEquals(new String[]{}, TestPropertiesObject.Level1Object.LIST_STR_EMPTY_ATTR.toArray());
+        Assert.assertArrayEquals(new String[]{"a", "b", "c"}, TestPropertiesObject.Level1Object.LIST_STR_ATTR.toArray());
+        Assert.assertArrayEquals(new Integer[]{1, 2, 3}, TestPropertiesObject.Level1Object.LIST_INT_ATTR.toArray());
+        Assert.assertArrayEquals(new String[]{}, TestPropertiesObject.Level1Object.SET_STR_EMPTY_ATTR.toArray());
+        Assert.assertArrayEquals(new Boolean[]{true, false}, TestPropertiesObject.Level1Object.LIST_BOOL_ATTR.toArray());
+        Assert.assertArrayEquals(new String[]{"a", "b", "c", "d"}, TestPropertiesObject.Level1Object.SET_STR_ATTR.toArray());
+        Assert.assertArrayEquals(new Integer[]{1, 2, 3, 4}, TestPropertiesObject.Level1Object.SET_INT_ATTR.toArray());
+        Assert.assertArrayEquals(new Boolean[]{true}, TestPropertiesObject.Level1Object.SET_BOOL_ATTR.toArray());
         Assert.assertEquals(TestColorEnum.RED, TestPropertiesObject.Level1Object.Level2Object.ENUM_ATTR);
         //make sure that when descs is empty,toString() work right;
         Assert.assertEquals(new ConfigDesc().toString(), "");
@@ -62,7 +76,14 @@ public class ConfigInitializerTest {
     @Before
     public void clear() {
         TestPropertiesObject.Level1Object.STR_ATTR = null;
-        TestPropertiesObject.Level1Object.LIST_ATTR = null;
+        TestPropertiesObject.Level1Object.LIST_STR_ATTR = null;
+        TestPropertiesObject.Level1Object.LIST_STR_EMPTY_ATTR = null;
+        TestPropertiesObject.Level1Object.LIST_INT_ATTR = null;
+        TestPropertiesObject.Level1Object.LIST_BOOL_ATTR = null;
+        TestPropertiesObject.Level1Object.SET_STR_ATTR = null;
+        TestPropertiesObject.Level1Object.SET_STR_EMPTY_ATTR = null;
+        TestPropertiesObject.Level1Object.SET_INT_ATTR = null;
+        TestPropertiesObject.Level1Object.SET_BOOL_ATTR = null;
         TestPropertiesObject.Level1Object.Level2Object.INT_ATTR = 0;
         TestPropertiesObject.Level1Object.Level2Object.LONG_ATTR = 0;
         TestPropertiesObject.Level1Object.Level2Object.BOOLEAN_ATTR = false;
@@ -72,8 +93,14 @@ public class ConfigInitializerTest {
     public static class TestPropertiesObject {
         public static class Level1Object {
             public static String STR_ATTR = null;
-            public static List LIST_ATTR = null;
-            public static List LIST_EMPTY_ATTR = null;
+            public static List<String> LIST_STR_ATTR = null;
+            public static List<String> LIST_STR_EMPTY_ATTR = null;
+            public static List<Integer> LIST_INT_ATTR = null;
+            public static List<Boolean> LIST_BOOL_ATTR = null;
+            public static Set<String> SET_STR_ATTR = null;
+            public static Set<String> SET_STR_EMPTY_ATTR = null;
+            public static Set<Integer> SET_INT_ATTR = null;
+            public static Set<Boolean> SET_BOOL_ATTR = null;
 
             public static class Level2Object {
                 public static int INT_ATTR = 0;

@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Support set-type in the agent or plugin configurations
+* Add plugin to support [Impala JDBC](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x.
 
 #### Documentation
 

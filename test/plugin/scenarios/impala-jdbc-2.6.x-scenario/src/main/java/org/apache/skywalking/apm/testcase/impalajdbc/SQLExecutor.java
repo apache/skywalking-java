@@ -30,6 +30,7 @@ public class SQLExecutor implements AutoCloseable {
 
     private static final Logger LOGGER = LogManager.getLogger(SQLExecutor.class);
     private Connection connection;
+    private static final String STATEMENT_CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS default.impala_test (test_id BIGINT, test_name STRING);";
 
     public SQLExecutor() throws SQLException {
         try {
@@ -38,6 +39,7 @@ public class SQLExecutor implements AutoCloseable {
             LOGGER.error(ex);
         }
         connection = DriverManager.getConnection(ImpalaJdbcConfig.getUrl());
+        connection.createStatement().execute(STATEMENT_CREATE_TABLE_SQL);
     }
 
     public void execute(String sql) throws SQLException {
@@ -45,7 +47,7 @@ public class SQLExecutor implements AutoCloseable {
         statement.execute(sql);
     }
 
-    public void queryData(String sql, Integer id) throws SQLException {
+    public void queryData(String sql) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.executeQuery();
     }
@@ -59,5 +61,9 @@ public class SQLExecutor implements AutoCloseable {
     @Override
     public void close() throws Exception {
         closeConnection();
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 }

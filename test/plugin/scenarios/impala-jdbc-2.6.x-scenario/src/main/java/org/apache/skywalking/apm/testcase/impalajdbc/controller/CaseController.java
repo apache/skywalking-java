@@ -39,8 +39,8 @@ public class CaseController {
 
     private static final String SUCCESS = "Success";
 
-    private static final String STATEMENT_QUERY_DATA_SQL = "select * from IMPALA_ACCOUNT LIMIT 1";
-    private static final String QUERY_DATA_SQL = "select * from IMPALA_ACCOUNT";
+    private static final String STATEMENT_INSERT_DATA_SQL = "INSERT INTO impala_test VALUES (123, 'test');";
+    private static final String STATEMENT_QUERY_DATA_SQL = "SELECT COUNT(*) FROM impala_test;";
 
     @RequestMapping("/impala-jdbc-2.6.x-scenario")
     @ResponseBody
@@ -52,12 +52,12 @@ public class CaseController {
     @RequestMapping("/healthCheck")
     @ResponseBody
     public String healthCheck() throws Exception {
-        if (!telnet("impala-server", 7070, 1000)) { //
+        if (!telnet("impala-server", 21050, 1000)) { //
             Thread.sleep(5000); // WAIT UTIL CLIENT TIMEOUT
         } else {
             try (SQLExecutor sqlExecute = new SQLExecutor()) {
-                sqlExecute.execute(STATEMENT_QUERY_DATA_SQL);
-                sqlExecute.queryData(QUERY_DATA_SQL, 10);
+                sqlExecute.execute(STATEMENT_INSERT_DATA_SQL);
+                sqlExecute.queryData(STATEMENT_QUERY_DATA_SQL);
             } catch (Exception ex) {
                 LOGGER.error("Failed to execute sql.", ex);
                 throw ex;

@@ -13,65 +13,74 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-registryItems:
-  services:
-    - {impala-jdbc-2.6.x-scenario: 2}
-  instances:
-    - {impala-jdbc-2.6.x-scenario: 1}
-  operationNames:
-    - impala-jdbc-2.6.x-scenario: []
-  heartbeat: []
 segmentItems:
   - serviceName: impala-jdbc-2.6.x-scenario
     segmentSize: ge 1
     segments:
     - segmentId: not null
       spans:
-      - operationName: impala/JDBI/Statement/execute
+      - operationName: Impala/JDBI/Statement/execute
         parentSpanId: 0
         spanId: 1
         spanLayer: Database
         startTime: nq 0
         endTime: nq 0
-        componentId: 121
+        componentId: 133
         isError: false
         spanType: Exit
-        peer: impala-server:7070
+        peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
           - { key: db.type, value: sql }
-          - { key: db.instance, value: learn_impala }
+          - { key: db.instance, value: '' }
           - key: db.statement
-            value: "select * from IMPALA_ACCOUNT LIMIT 1"
-      - operationName: impala/JDBI/PreparedStatement/executeQuery
+            value: "CREATE TABLE IF NOT EXISTS default.impala_test (test_id BIGINT, test_name STRING);"
+      - operationName: Impala/JDBI/Statement/execute
         parentSpanId: 0
         spanId: 2
         spanLayer: Database
         startTime: nq 0
         endTime: nq 0
-        componentId: 121
+        componentId: 133
         isError: false
         spanType: Exit
-        peer: impala-server:7070
+        peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
         - { key: db.type, value: sql }
-        - { key: db.instance, value: learn_impala }
-        - { key: db.statement, value: "select * from IMPALA_ACCOUNT" }
-      - operationName: impala/JDBI/Connection/close
+        - { key: db.instance, value: '' }
+        - key: db.statement
+          value: "INSERT INTO impala_test VALUES (123, 'test');"
+      - operationName: Impala/JDBI/PreparedStatement/executeQuery
         parentSpanId: 0
         spanId: 3
         spanLayer: Database
         startTime: nq 0
         endTime: nq 0
-        componentId: 121
+        componentId: 133
         isError: false
         spanType: Exit
-        peer: impala-server:7070
+        peer: impala-server:21050
+        skipAnalysis: 'false'
+        tags:
+          - { key: db.type, value: sql }
+          - { key: db.instance, value: '' }
+          - key: db.statement
+            value: "SELECT COUNT(*) FROM impala_test;"
+      - operationName: Impala/JDBI/Connection/close
+        parentSpanId: 0
+        spanId: 4
+        spanLayer: Database
+        startTime: nq 0
+        endTime: nq 0
+        componentId: 133
+        isError: false
+        spanType: Exit
+        peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
         - { key: db.type, value: sql }
-        - { key: db.instance, value: learn_impala }
+        - { key: db.instance, value: '' }
         - { key: db.statement, value: '' }
       - operationName: HEAD:/impala-jdbc-2.6.x-scenario/case/healthCheck
         parentSpanId: -1

@@ -6,8 +6,13 @@ Release Notes.
 ------------------
 
 * Support set-type in the agent or plugin configurations
+* Optimize ConfigInitializer to output warning messages when the config value is truncated.
+* Fix the default value of the Map field would merge rather than override by new values in the config.
+* Support to set the value of Map/List field to an empty map/list.
 
 #### Documentation
+
+* Update `configuration` doc about overriding default value as empty map/list accordingly.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/150?closed=1)
 

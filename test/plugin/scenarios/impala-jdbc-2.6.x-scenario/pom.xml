@@ -30,9 +30,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
-        <test.framework.version>2.6.17</test.framework.version>
+        <test.framework.version>2.6.26.1031</test.framework.version>
+        <docker.image.version>${test.framework.version}</docker.image.version>
         <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
         <lombok.version>1.18.20</lombok.version>
+        <impala.jdbc.verion>2.6.26.1031</impala.jdbc.verion>
     </properties>
 
     <name>skywalking-impala-jdbc-2.6.x-scenario</name>
@@ -53,9 +55,7 @@
         <dependency>
             <groupId>Impala</groupId>
             <artifactId>ImpalaJDBC42</artifactId>
-            <version>2.6.28.1034</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/ImpalaJDBC42-2.6.28.1034.jar</systemPath>
+            <version>${test.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -79,6 +79,15 @@
         </dependency>
     </dependencies>
 
+
+    <!-- NOT RECOMMENDED: (see https://maven.apache.org/repository/guide-central-repository-upload.html#faq-and-common-mistakes) -->
+    <repositories>
+        <repository>
+            <id>cloudera.repo</id>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+    </repositories>
+
     <build>
         <finalName>impala-jdbc-2.6.x-scenario</finalName>
         <plugins>
@@ -86,9 +95,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
-                <configuration>
-                    <includeSystemScope>true</includeSystemScope>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>

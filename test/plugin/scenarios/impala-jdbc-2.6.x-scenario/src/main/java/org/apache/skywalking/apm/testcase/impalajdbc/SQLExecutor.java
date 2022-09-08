@@ -29,12 +29,14 @@ import org.apache.logging.log4j.Logger;
 public class SQLExecutor implements AutoCloseable {
 
     private static final Logger LOGGER = LogManager.getLogger(SQLExecutor.class);
+
     private Connection connection;
     private static final String STATEMENT_CREATE_TABLE_SQL = "CREATE TABLE IF NOT EXISTS default.impala_test (test_id BIGINT, test_name STRING);";
+    private static final String IMPALA_DRIVER = "com.cloudera.impala.jdbc.Driver";
 
     public SQLExecutor() throws SQLException {
         try {
-            Class.forName("com.cloudera.impala.jdbc.Driver");
+            Class.forName(IMPALA_DRIVER);
         } catch (ClassNotFoundException ex) {
             LOGGER.error(ex);
         }

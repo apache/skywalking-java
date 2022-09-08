@@ -82,7 +82,7 @@ public class PreparedStatementExecuteMethodsInterceptorTest {
         when(objectInstance.getSkyWalkingDynamicField()).thenReturn(enhanceRequireCacheObject);
         when(method.getName()).thenReturn("executeQuery");
         when(connectionInfo.getComponent()).thenReturn(ComponentsDefine.IMPALA_JDBC_DRIVER);
-        when(connectionInfo.getDBType()).thenReturn("impala");
+        when(connectionInfo.getDBType()).thenReturn("Impala");
         when(connectionInfo.getDatabaseName()).thenReturn("test");
         when(connectionInfo.getDatabasePeer()).thenReturn("localhost:21050");
     }

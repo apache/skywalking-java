@@ -19,7 +19,6 @@
 package org.apache.skywalking.apm.plugin.jdbc.impala;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.plugin.jdbc.impala.CreateCallableStatementInterceptor;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 import org.junit.Before;
 import org.junit.Test;

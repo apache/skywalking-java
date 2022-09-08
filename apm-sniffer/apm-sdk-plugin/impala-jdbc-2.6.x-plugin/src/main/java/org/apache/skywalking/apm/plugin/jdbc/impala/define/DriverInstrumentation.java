@@ -24,7 +24,7 @@ import org.apache.skywalking.apm.plugin.jdbc.define.AbstractDriverInstrumentatio
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
- * {@link DriverInstrumentation} presents that skywalking intercepts {@link com.cloudera.impala.jdbc.Driver}.
+ * {@link DriverInstrumentation} presents that skywalking intercepts.
  */
 public class DriverInstrumentation extends AbstractDriverInstrumentation {
 

@@ -52,19 +52,21 @@ public class ConfigInitializer {
             if (Modifier.isPublic(field.getModifiers()) && Modifier.isStatic(field.getModifiers())) {
                 String configKey = (parentDesc + "." + field.getName()).toLowerCase();
                 Class<?> type = field.getType();
-
                 if (Map.class.isAssignableFrom(type)) {
                     /*
                      * Map config format is, config_key[map_key]=map_value, such as plugin.opgroup.resttemplate.rule[abc]=/url/path
-                     * "config_key[]=" will generate a bleak Map , user could use this mechanism to set a blank Map
+                     * "config_key[]=" will generate an empty Map , user could use this mechanism to set an empty Map
                      */
                     ParameterizedType genericType = (ParameterizedType) field.getGenericType();
                     Type[] argumentTypes = genericType.getActualTypeArguments();
                     Type keyType = argumentTypes[0];
                     Type valueType = argumentTypes[1];
-                    // A chance to set a blank map
+                    // A chance to set an empty map
                     if (properties.containsKey(configKey + "[]")) {
-                        field.set(null, initBlankMap(type));
+                        Map currentValue = (Map) field.get(null);
+                        if (currentValue != null && !currentValue.isEmpty()) {
+                            field.set(null, initEmptyMap(type));
+                        }
                     } else {
                         // Set the map from config key and properties
                         Map map = readMapType(type, configKey, properties, keyType, valueType);
@@ -72,30 +74,28 @@ public class ConfigInitializer {
                             field.set(null, map);
                         }
                     }
-                    continue;
-                }
-                if (!properties.containsKey(configKey)) {
-                    continue;
-                }
-                //In order to guarantee user could override the default value to blank , we parse the value even if it's blank
-                String propertyValue = properties.getProperty(configKey, "");
-                if (Collection.class.isAssignableFrom(type)) {
-                    ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-                    Type argumentType = genericType.getActualTypeArguments()[0];
-                    Collection collection = convertToCollection(argumentType, type, propertyValue);
-                    field.set(null, collection);
-                } else {
-                    // Convert the value into real type
-                    final Length lengthDefine = field.getAnnotation(Length.class);
-                    if (lengthDefine != null && propertyValue.length() > lengthDefine.value()) {
-                        StringUtil.cut(propertyValue, lengthDefine.value());
-                        System.err.printf("The config value will be truncated , because the length max than %d : %s -> %s%n", lengthDefine.value(), configKey, propertyValue);
-                    }
-                    Object convertedValue = convertToTypicalType(type, propertyValue);
-                    if (convertedValue != null) {
-                        field.set(null, convertedValue);
+                } else if (properties.containsKey(configKey)) {
+                    //In order to guarantee the default value could be reset as empty , we parse the value even if it's blank
+                    String propertyValue = properties.getProperty(configKey, "");
+                    if (Collection.class.isAssignableFrom(type)) {
+                        ParameterizedType genericType = (ParameterizedType) field.getGenericType();
+                        Type argumentType = genericType.getActualTypeArguments()[0];
+                        Collection collection = convertToCollection(argumentType, type, propertyValue);
+                        field.set(null, collection);
+                    } else {
+                        // Convert the value into real type
+                        final Length lengthDefine = field.getAnnotation(Length.class);
+                        if (lengthDefine != null && propertyValue.length() > lengthDefine.value()) {
+                            StringUtil.cut(propertyValue, lengthDefine.value());
+                            System.err.printf("The config value will be truncated , because the length max than %d : %s -> %s%n", lengthDefine.value(), configKey, propertyValue);
+                        }
+                        Object convertedValue = convertToTypicalType(type, propertyValue);
+                        if (convertedValue != null) {
+                            field.set(null, convertedValue);
+                        }
                     }
                 }
+
             }
         }
         for (Class<?> innerConfiguration : recentConfigType.getClasses()) {
@@ -178,7 +178,7 @@ public class ConfigInitializer {
 
         Objects.requireNonNull(configKey);
         Objects.requireNonNull(properties);
-        Map<Object, Object> map = initBlankMap(type);
+        Map<Object, Object> map = initEmptyMap(type);
         String prefix = configKey + "[";
         String suffix = "]";
         properties.forEach((propertyKey, propertyValue) -> {
@@ -205,7 +205,7 @@ public class ConfigInitializer {
         return map;
     }
 
-    private static Map<Object, Object> initBlankMap(Class<?> type) {
+    private static Map<Object, Object> initEmptyMap(Class<?> type) {
         if (type.equals(Map.class) || type.equals(HashMap.class)) {
             return new HashMap<>();
         } else if (type.equals(TreeMap.class)) {

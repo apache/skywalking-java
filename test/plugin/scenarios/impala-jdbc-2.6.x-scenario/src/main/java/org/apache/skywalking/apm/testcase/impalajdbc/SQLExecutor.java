@@ -54,6 +54,12 @@ public class SQLExecutor implements AutoCloseable {
         preparedStatement.executeQuery();
     }
 
+    public void queryData(String sql, int id) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, id);
+        preparedStatement.executeQuery();
+    }
+
     public void closeConnection() throws SQLException {
         if (this.connection != null) {
             this.connection.close();

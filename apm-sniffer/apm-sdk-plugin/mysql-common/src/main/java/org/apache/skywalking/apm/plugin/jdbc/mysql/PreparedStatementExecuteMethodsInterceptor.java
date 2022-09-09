@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.jdbc.mysql;
 
-import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -32,7 +31,7 @@ import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
-import static org.apache.skywalking.apm.plugin.jdbc.mysql.Constants.SQL_PARAMETERS;
+import java.lang.reflect.Method;
 
 public class PreparedStatementExecuteMethodsInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -62,7 +61,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
                 if (parameters != null && parameters.length > 0) {
                     int maxIndex = cacheObject.getMaxIndex();
                     String parameterString = getParameterString(parameters, maxIndex);
-                    SQL_PARAMETERS.set(span, parameterString);
+                    Tags.SQL_PARAMETERS.set(span, parameterString);
                 }
             }
 

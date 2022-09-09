@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -jar ${agent_opts} ${home}/../libs/impala-jdbc-2.6.x-scenario.jar &
+java -jar -Dskywalking.plugin.jdbc.trace_sql_parameters=true ${agent_opts} ${home}/../libs/impala-jdbc-2.6.x-scenario.jar &

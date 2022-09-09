@@ -41,6 +41,7 @@ public class CaseController {
 
     private static final String STATEMENT_INSERT_DATA_SQL = "INSERT INTO impala_test VALUES (123, 'test');";
     private static final String STATEMENT_QUERY_DATA_SQL = "SELECT COUNT(*) FROM impala_test;";
+    private static final String STATEMENT_QUERY_DATA_SQL_PARAM = "SELECT COUNT(*) FROM impala_test WHERE test_id = ?;";
 
     @RequestMapping("/impala-jdbc-2.6.x-scenario")
     @ResponseBody
@@ -58,6 +59,7 @@ public class CaseController {
             try (SQLExecutor sqlExecute = new SQLExecutor()) {
                 sqlExecute.execute(STATEMENT_INSERT_DATA_SQL);
                 sqlExecute.queryData(STATEMENT_QUERY_DATA_SQL);
+                sqlExecute.queryData(STATEMENT_QUERY_DATA_SQL_PARAM, 123);
             } catch (Exception ex) {
                 LOGGER.error("Failed to execute sql.", ex);
                 throw ex;

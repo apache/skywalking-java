@@ -33,8 +33,6 @@ import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
 import java.lang.reflect.Method;
 
-import static org.apache.skywalking.apm.plugin.jdbc.impala.Constants.SQL_PARAMETERS;
-
 public class PreparedStatementExecuteMethodsInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
@@ -56,7 +54,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
             final Object[] parameters = cacheObject.getParameters();
             if (parameters != null && parameters.length > 0) {
                 int maxIndex = cacheObject.getMaxIndex();
-                SQL_PARAMETERS.set(span, getParameterString(parameters, maxIndex));
+                Tags.SQL_PARAMETERS.set(span, getParameterString(parameters, maxIndex));
             }
         }
 

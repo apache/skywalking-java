@@ -18,9 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.jdbc.kylin;
 
-import static org.apache.skywalking.apm.plugin.jdbc.kylin.Constants.SQL_PARAMETERS;
-
-import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -33,6 +30,8 @@ import org.apache.skywalking.apm.plugin.jdbc.PreparedStatementParameterBuilder;
 import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
+
+import java.lang.reflect.Method;
 
 public class PreparedStatementExecuteMethodsInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -55,7 +54,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
             final Object[] parameters = cacheObject.getParameters();
             if (parameters != null && parameters.length > 0) {
                 int maxIndex = cacheObject.getMaxIndex();
-                SQL_PARAMETERS.set(span, getParameterString(parameters, maxIndex));
+                Tags.SQL_PARAMETERS.set(span, getParameterString(parameters, maxIndex));
             }
         }
 

@@ -43,7 +43,7 @@ public final class Tags {
     public static final IntegerTag HTTP_RESPONSE_STATUS_CODE = new IntegerTag(2, "http.status_code", true);
 
     /**
-     * DB_TYPE records database type, such as sql, redis, cassandra and so on.
+     * DB_TYPE records database type, such as sql, cassandra and so on.
      */
     public static final StringTag DB_TYPE = new StringTag(3, "db.type");
 
@@ -107,6 +107,28 @@ public final class Tags {
     }
 
     public static final StringTag LOGIC_ENDPOINT = new StringTag(12, "x-le");
+    /**
+     * CACHE_TYPE records cache type, such as jedis
+     */
+    public static final StringTag CACHE_TYPE = new StringTag(15, "cache.type");
+
+    /**
+     * CACHE_OP represent a command is used for "write" or "read"
+     * It's better that adding this tag to span , so OAP would analysis write/read metric accurately
+     * Reference org.apache.skywalking.apm.plugin.jedis.v4.AbstractConnectionInterceptor#parseOperation
+     * BTW "op" means Operation
+     */
+    public static final StringTag CACHE_OP = new StringTag(16, "cache.op");
+
+    /**
+     * CACHE_TYPE records the cache command
+     */
+    public static final StringTag CACHE_CMD = new StringTag(17, "cache.cmd");
+
+    /**
+     * CACHE_TYPE records the cache key
+     */
+    public static final StringTag CACHE_KEY = new StringTag(18, "cache.key");
 
     public static final String VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT = "{\"logic-span\":true}";
 

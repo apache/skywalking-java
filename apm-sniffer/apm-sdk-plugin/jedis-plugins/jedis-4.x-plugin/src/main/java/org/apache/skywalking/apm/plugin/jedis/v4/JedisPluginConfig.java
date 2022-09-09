@@ -19,7 +19,12 @@ package org.apache.skywalking.apm.plugin.jedis.v4;
 
 import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class JedisPluginConfig {
+
     public static class Plugin {
         @PluginConfig(root = JedisPluginConfig.class)
         public static class Jedis {
@@ -35,6 +40,120 @@ public class JedisPluginConfig {
              * Set a negative number to save specified length of parameter string to the tag.
              */
             public static int REDIS_PARAMETER_MAX_LENGTH = 128;
+
+
+            /**
+             * Operation represent a cache span is "write" or "read" action , and "op"(operation) is tagged with key "cache.op" usually
+             * This config term define which command should be converted to write Operation .
+             *
+             * @see org.apache.skywalking.apm.agent.core.context.tag.Tags#CACHE_OP
+             * @see AbstractConnectionInterceptor#parseOperation(String)
+             */
+            public static Set<String> OPERATION_MAPPING_WRITE = new HashSet<>(Arrays.asList(
+                    "GETSET",
+                    "SET",
+                    "SETBIT",
+                    "SETEX ",
+                    "SETNX ",
+                    "SETRANGE",
+                    "STRLEN ",
+                    "MSET",
+                    "MSETNX ",
+                    "PSETEX",
+                    "INCR ",
+                    "INCRBY ",
+                    "INCRBYFLOAT",
+                    "DECR ",
+                    "DECRBY ",
+                    "APPEND ",
+                    "HMSET",
+                    "HSET",
+                    "HSETNX ",
+                    "HINCRBY",
+                    "HINCRBYFLOAT",
+                    "HDEL",
+                    "RPOPLPUSH",
+                    "RPUSH",
+                    "RPUSHX",
+                    "LPUSH",
+                    "LPUSHX",
+                    "LREM",
+                    "LTRIM",
+                    "LSET",
+                    "BRPOPLPUSH",
+                    "LINSERT",
+                    "SADD",
+                    "SDIFF",
+                    "SDIFFstore",
+                    "SINTERSTORE",
+                    "SISMEMBER",
+                    "SREM",
+                    "SUNION",
+                    "SUNIONSTORE",
+                    "SINTER",
+                    "ZADD",
+                    "ZINCRBY",
+                    "ZINTERSTORE",
+                    "ZRANGE",
+                    "ZRANGEBYLEX",
+                    "ZRANGEBYSCORE",
+                    "ZRANK",
+                    "ZREM",
+                    "ZREMRANGEBYLEX",
+                    "ZREMRANGEBYRANK",
+                    "ZREMRANGEBYSCORE",
+                    "ZREVRANGE",
+                    "ZREVRANGEBYSCORE",
+                    "ZREVRANK",
+                    "ZUNIONSTORE",
+                    "XADD",
+                    "XDEL",
+                    "DEL",
+                    "XTRIM"
+            ));
+            /**
+             * Operation represent a cache span is "write" or "read" action , and "op"(operation) is tagged with key "cache.op" usually
+             * This config term define which command should be converted to write Operation .
+             *
+             * @see org.apache.skywalking.apm.agent.core.context.tag.Tags#CACHE_OP
+             * @see AbstractConnectionInterceptor#parseOperation(String)
+             */
+            public static Set<String> OPERATION_MAPPING_READ = new HashSet<>(Arrays.asList("GET",
+                    "GETRANGE",
+                    "GETBIT ",
+                    "MGET",
+                    "HVALS",
+                    "HKEYS",
+                    "HLEN",
+                    "HEXISTS",
+                    "HGET",
+                    "HGETALL",
+                    "HMGET",
+                    "BLPOP",
+                    "BRPOP",
+                    "LINDEX",
+                    "LLEN",
+                    "LPOP",
+                    "LRANGE",
+                    "RPOP",
+                    "SCARD",
+                    "SRANDMEMBER",
+                    "SPOP",
+                    "SSCAN",
+                    "SMOVE",
+                    "ZLEXCOUNT",
+                    "ZSCORE",
+                    "ZSCAN",
+                    "ZCARD",
+                    "ZCOUNT",
+                    "XGET",
+                    "GET",
+                    "XREAD",
+                    "XLEN",
+                    "XRANGE",
+                    "XREVRANGE"
+            ));
+
         }
     }
 }

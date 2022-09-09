@@ -28,7 +28,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
 import redis.clients.jedis.args.Rawable;
 import redis.clients.jedis.args.RawableFactory;
-import redis.clients.jedis.commands.ProtocolCommand;
+
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Optional;
@@ -37,24 +37,27 @@ public abstract class AbstractConnectionInterceptor implements InstanceMethodsAr
 
     private static final String UNKNOWN = "UNKNOWN";
 
+    private static final String CACHE_TYPE = "Redis";
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         Iterator<Rawable> iterator = getCommands(allArguments);
-        ProtocolCommand protocolCommand = null;
+        String protocolCommand = null;
         if (iterator.hasNext()) {
-            protocolCommand = (ProtocolCommand) iterator.next();
+            protocolCommand = iterator.next().toString();
         }
-        String cmd = protocolCommand == null ? UNKNOWN : protocolCommand.toString();
+        String cmd = protocolCommand == null ? UNKNOWN : protocolCommand;
         String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + cmd, peer);
-        String params = readParamIfNecessary(iterator).map(arg -> cmd + " " + arg).orElse(cmd);
-        Tags.DB_STATEMENT.set(span, params);
         span.setComponent(ComponentsDefine.JEDIS);
-        Tags.DB_TYPE.set(span, "Redis");
+        readKeyIfNecessary(iterator).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
+        Tags.CACHE_CMD.set(span, cmd);
+        Tags.CACHE_TYPE.set(span, CACHE_TYPE);
+        parseOperation(cmd).ifPresent(op -> Tags.CACHE_OP.set(span, op));
         SpanLayer.asCache(span);
     }
 
-    private Optional<String> readParamIfNecessary(Iterator<Rawable> iterator) {
+    private Optional<String> readKeyIfNecessary(Iterator<Rawable> iterator) {
         if (JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS && iterator.hasNext()) {
             Rawable rawable = iterator.next();
             if (rawable instanceof RawableFactory.RawString) {
@@ -75,6 +78,16 @@ public abstract class AbstractConnectionInterceptor implements InstanceMethodsAr
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         AbstractSpan span = ContextManager.activeSpan().log(t).errorOccurred();
         ContextManager.stopSpan(span);
+    }
+
+    private Optional<String> parseOperation(String cmd) {
+        if (JedisPluginConfig.Plugin.Jedis.OPERATION_MAPPING_READ.contains(cmd)) {
+            return Optional.of("read");
+        }
+        if (JedisPluginConfig.Plugin.Jedis.OPERATION_MAPPING_WRITE.contains(cmd)) {
+            return Optional.of("write");
+        }
+        return Optional.empty();
     }
 
     protected abstract Iterator<Rawable> getCommands(Object[] allArguments);

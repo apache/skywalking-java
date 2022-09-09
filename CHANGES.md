@@ -9,6 +9,7 @@ Release Notes.
 * Optimize ConfigInitializer to output warning messages when the config value is truncated.
 * Fix the default value of the Map field would merge rather than override by new values in the config.
 * Support to set the value of Map/List field to an empty map/list.
+* Update guava-cache,jedis,memcached,ehcache plugins to adapt uniform cache tag
 
 #### Documentation
 

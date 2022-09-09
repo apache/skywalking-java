@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.ehcache.v2;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -28,28 +29,37 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
 
+import static org.apache.skywalking.apm.plugin.ehcache.v2.EncacheOperationConvertor.parseOperation;
+
 public class EhcacheOperateAllInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
+                             MethodInterceptResult result) throws Throwable {
         EhcacheEnhanceInfo enhanceInfo = (EhcacheEnhanceInfo) objInst.getSkyWalkingDynamicField();
-
-        AbstractSpan span = ContextManager.createLocalSpan("Ehcache/" + method.getName() + "/" + enhanceInfo.getCacheName());
+        String methodName = method.getName();
+        AbstractSpan span = ContextManager.createLocalSpan("Ehcache/" + methodName + "/" + enhanceInfo.getCacheName());
         span.setComponent(ComponentsDefine.EHCACHE);
         SpanLayer.asCache(span);
+        String key = enhanceInfo.getCacheName();
+        if (allArguments != null && allArguments.length > 0 && allArguments[0] instanceof String) {
+            Tags.CACHE_KEY.set(span, key + "." + allArguments[0]);
+        }
+        Tags.CACHE_TYPE.set(span, "Ehcache");
+        Tags.CACHE_CMD.set(span, methodName);
+        parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
+                              Object ret) throws Throwable {
         ContextManager.stopSpan();
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+                                      Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
     }
 }

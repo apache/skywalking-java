@@ -30,7 +30,10 @@ segmentItems:
       spanType: Local
       peer: ''
       tags:
-      - {key: db.statement, value: testKey1}
+        - {key: cache.key, value: testKey1}
+        - {key: cache.type, value: GuavaCache}
+        - {key: cache.cmd, value: put}
+        - {key: cache.op, value: write}
       skipAnalysis: 'false'
     - operationName: GuavaCache/invalidate
       parentSpanId: 0
@@ -43,7 +46,10 @@ segmentItems:
       spanType: Local
       peer: ''
       tags:
-      - {key: db.statement, value: testKey1}
+        - {key: cache.key, value: testKey1}
+        - {key: cache.type, value: GuavaCache}
+        - {key: cache.cmd, value: invalidate}
+        - {key: cache.op, value: write}
       skipAnalysis: 'false'
     - operationName: GuavaCache/get
       parentSpanId: 0
@@ -56,7 +62,10 @@ segmentItems:
       spanType: Local
       peer: ''
       tags:
-      - {key: db.statement, value: testKey1}
+        - {key: cache.key, value: testKey1}
+        - {key: cache.type, value: GuavaCache}
+        - {key: cache.cmd, value: get}
+        - {key: cache.op, value: read}
       skipAnalysis: 'false'
     - operationName: GuavaCache/getIfPresent
       parentSpanId: 0
@@ -69,7 +78,10 @@ segmentItems:
       spanType: Local
       peer: ''
       tags:
-      - {key: db.statement, value: testKey1}
+        - {key: cache.key, value: testKey1}
+        - {key: cache.type, value: GuavaCache}
+        - {key: cache.cmd, value: getIfPresent}
+        - {key: cache.op, value: read}
       skipAnalysis: 'false'
     - operationName: GuavaCache/putAll
       parentSpanId: 0
@@ -82,6 +94,10 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
+      tags:
+        - {key: cache.type, value: GuavaCache}
+        - {key: cache.cmd, value: putAll}
+        - {key: cache.op, value: write}
     - operationName: GuavaCache/getAllPresent
       parentSpanId: 0
       spanId: 6
@@ -93,6 +109,10 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
+      tags:
+        - {key: cache.type, value: GuavaCache}
+        - {key: cache.cmd, value: getAllPresent}
+        - {key: cache.op, value: read}
     - operationName: GuavaCache/invalidateAll
       parentSpanId: 0
       spanId: 7
@@ -104,6 +124,10 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
+      tags:
+        - {key: cache.type, value: GuavaCache}
+        - {key: cache.cmd, value: invalidateAll}
+        - {key: cache.op, value: write}
     - operationName: GET:/guava-cache-scenario/case/guava
       parentSpanId: -1
       spanId: 0

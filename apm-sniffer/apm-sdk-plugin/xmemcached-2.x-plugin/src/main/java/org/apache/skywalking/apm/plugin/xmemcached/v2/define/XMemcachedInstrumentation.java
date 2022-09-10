@@ -117,8 +117,7 @@ public class XMemcachedInstrumentation extends ClassInstanceMethodsEnhancePlugin
                                        .or(named("cas"))
                                        .or(named("delete"))
                                        .or(named("touch"))
-                                       .
-                                           or(named("getAndTouch"))
+                                       .or(named("getAndTouch"))
                                        .or(named("incr"))
                                        .or(named("decr"));
                 }

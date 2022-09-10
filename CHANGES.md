@@ -10,10 +10,12 @@ Release Notes.
 * Fix the default value of the Map field would merge rather than override by new values in the config.
 * Support to set the value of Map/List field to an empty map/list.
 * Add plugin to support [Impala JDBC](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x.
+* Update guava-cache, jedis, memcached, ehcache plugins to adopt uniform tags.
 
 #### Documentation
 
 * Update `configuration` doc about overriding default value as empty map/list accordingly.
+* Update plugin dev tags for cache relative tags
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/150?closed=1)
 

@@ -27,18 +27,23 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
+import static org.apache.skywalking.apm.plugin.guava.cache.GuavaCacheOperationConvertor.parseOperation;
+
 import java.lang.reflect.Method;
 
 public class GuavaCacheInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+        String methodName = method.getName();
         AbstractSpan span = ContextManager.createLocalSpan("GuavaCache/" + method.getName());
         span.setComponent(ComponentsDefine.GUAVA_CACHE);
-        Object key = allArguments[0];
-        if (key != null) {
-            Tags.DB_STATEMENT.set(span, key.toString());
+        if (allArguments != null && allArguments.length > 0 && allArguments[0] instanceof String) {
+            Tags.CACHE_KEY.set(span, allArguments[0].toString());
         }
+        Tags.CACHE_TYPE.set(span, "GuavaCache");
+        Tags.CACHE_CMD.set(span, methodName);
+        parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
         SpanLayer.asCache(span);
     }
 

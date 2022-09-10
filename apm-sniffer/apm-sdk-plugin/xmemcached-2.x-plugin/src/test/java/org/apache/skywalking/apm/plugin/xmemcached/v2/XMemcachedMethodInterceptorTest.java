@@ -123,7 +123,9 @@ public class XMemcachedMethodInterceptorTest {
         assertThat(SpanHelper.getComponentId(span), is(36));
         List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.get(0).getValue(), is("Xmemcached"));
-        assertThat(tags.get(1).getValue(), is("set OperationKey"));
+        assertThat(tags.get(1).getValue(), is("set"));
+        assertThat(tags.get(2).getValue(), is("OperationKey"));
+        assertThat(tags.get(3).getValue(), is("write"));
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.CACHE));
     }
 

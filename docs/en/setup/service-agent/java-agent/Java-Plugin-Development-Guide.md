@@ -186,9 +186,8 @@ The value of `x-le` should be in JSON format. There are two options:
 }
 ```
 
-### Advanced APIs
-
-Skywalking put forward virtual cache concept for analyzing cache related metric ,in order to support this feature ,you should add following tag when developing cache client plugin (e.g. Jedis) 
+#### Vitural Cache Relative Tags
+Skywalking analysis cache performance related metrics through the following tags.
 
 ```java
     public static final StringTag CACHE_TYPE = new StringTag(15, "cache.type");
@@ -197,14 +196,15 @@ Skywalking put forward virtual cache concept for analyzing cache related metric 
     public static final StringTag CACHE_KEY = new StringTag(18, "cache.key");
 ```
 
-* `cache.type` indicate the cache type , usually it's cache client library name (e.g. Jedis)
-* `cache.cmd`  indicate the cache command that would be sent to cache server (e.g. setnx)
-* `cache.op`   indicate the command is used for `write` or `read` operation , usually the value is converting from `command` 
-* `cache.key`  indicate the cache key that would be sent to cache server , this tag maybe null , as string type key would be collected usually.  
+* `cache.type` indicates the cache type , usually it's cache client library name (e.g. Jedis)
+* `cache.cmd`  indicates the cache command that would be sent to cache server (e.g. setnx)
+* `cache.op`   indicates the command is used for `write` or `read` operation , usually the value is converting from `command` 
+* `cache.key`  indicates the cache key that would be sent to cache server , this tag maybe null , as string type key would be collected usually.  
 
 In order to decide which `op` should be converted to flexibly , It's better that providing config property .
 Reference  [Jedis-4.x-plugin](https://github.com/apache/skywalking-java/blob/main/apm-sniffer/apm-sdk-plugin/jedis-plugins/jedis-4.x-plugin/src/main/java/org/apache/skywalking/apm/plugin/jedis/v4/JedisPluginConfig.java)
 
+### Advanced APIs
 
 #### Async Span APIs
 There is a set of advanced APIs in Span which is specifically designed for async use cases. When tags, logs, and attributes (including end time) of the span need to be set in another thread, you should use these APIs.

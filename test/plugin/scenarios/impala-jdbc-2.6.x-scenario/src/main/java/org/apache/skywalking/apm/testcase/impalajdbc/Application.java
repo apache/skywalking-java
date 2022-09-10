@@ -16,10 +16,19 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.kylin;
+package org.apache.skywalking.apm.testcase.impalajdbc;
 
-import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class Constants {
-    public static final StringTag SQL_PARAMETERS = new StringTag("db.sql.parameters");
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        try {
+            SpringApplication.run(Application.class, args);
+        } catch (Exception e) {
+            // Never do this
+        }
+    }
 }

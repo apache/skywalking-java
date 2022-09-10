@@ -132,6 +132,8 @@ public final class Tags {
 
     public static final String VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT = "{\"logic-span\":true}";
 
+    public static final StringTag SQL_PARAMETERS = new StringTag(19, "db.sql.parameters");
+
     /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without
      * creating a new one.

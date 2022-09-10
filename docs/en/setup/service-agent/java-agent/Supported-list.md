@@ -48,6 +48,7 @@ metrics based on the tracing data.
   * [Mssql-jdbc](https://github.com/microsoft/mssql-jdbc) 6.x -> 8.x
   * [ClickHouse-jdbc](https://github.com/ClickHouse/clickhouse-jdbc) 0.3.x
   * [Apache-Kylin-Jdbc](https://github.com/apache/kylin.git) 2.6.x -> 3.x -> 4.x
+  * [Impala-jdbc](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x
 * RPC Frameworks
   * [Dubbo](https://github.com/alibaba/dubbo) 2.5.4 -> 2.6.0
   * [Dubbox](https://github.com/dangdangdotcom/dubbox) 2.8.4

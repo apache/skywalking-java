@@ -18,16 +18,17 @@
 
 package org.apache.skywalking.apm.plugin.xmemcached.v2;
 
-import java.lang.reflect.Method;
-
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
-import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * {@link XMemcachedMethodInterceptor} intercept the operation method, record the memcached host, operation name and the
@@ -39,26 +40,39 @@ public class XMemcachedMethodInterceptor implements InstanceMethodsAroundInterce
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
+                             MethodInterceptResult result) throws Throwable {
         String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
         AbstractSpan span = ContextManager.createExitSpan(XMEMCACHED + method.getName(), peer);
         span.setComponent(ComponentsDefine.XMEMCACHED);
-        Tags.DB_TYPE.set(span, ComponentsDefine.XMEMCACHED.getName());
+        Tags.CACHE_TYPE.set(span, ComponentsDefine.XMEMCACHED.getName());
+        Tags.CACHE_CMD.set(span, method.getName());
+        Tags.CACHE_KEY.set(span, allArguments[0].toString());
         SpanLayer.asCache(span);
-        Tags.DB_STATEMENT.set(span, method.getName() + " " + allArguments[0]);
+        String methodName = method.getName();
+        parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
+                              Object ret) throws Throwable {
         ContextManager.stopSpan();
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+                                      Class<?>[] argumentsTypes, Throwable t) {
         AbstractSpan span = ContextManager.activeSpan();
         span.log(t);
+    }
+
+    private Optional<String> parseOperation(String cmd) {
+        if (MemcachedPluginConfig.Plugin.Memcached.OPERATION_MAPPING_READ.contains(cmd)) {
+            return Optional.of("read");
+        }
+        if (MemcachedPluginConfig.Plugin.Memcached.OPERATION_MAPPING_WRITE.contains(cmd)) {
+            return Optional.of("write");
+        }
+        return Optional.empty();
     }
 }

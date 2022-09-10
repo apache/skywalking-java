@@ -28,51 +28,60 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
-    private static final String ABBR = "...";
-    private static final String DELIMITER_SPACE = " ";
-
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
+                             MethodInterceptResult result) throws Throwable {
         String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + method.getName(), peer);
         span.setComponent(ComponentsDefine.JEDIS);
-        Tags.DB_TYPE.set(span, "Redis");
         SpanLayer.asCache(span);
-
-        if (allArguments.length > 0 && allArguments[0] instanceof String) {
-            Tags.DB_STATEMENT.set(span, getDBStatement(method.getName(), (String) allArguments[0]));
-        } else if (allArguments.length > 0 && allArguments[0] instanceof byte[]) {
-            Tags.DB_STATEMENT.set(span, method.getName());
-        }
+        String methodName = method.getName();
+        Tags.CACHE_TYPE.set(span, "Redis");
+        Tags.CACHE_CMD.set(span, methodName);
+        getKey(allArguments).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
+        parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
     }
 
-    private String getDBStatement(String methodName, String argument) {
-        StringBuilder dbStatement = new StringBuilder(methodName);
-        if (JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS && !StringUtil.isEmpty(argument)) {
-            dbStatement.append(DELIMITER_SPACE);
-            if (argument.length() > JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) {
-                argument = argument.substring(0, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
-            }
-            dbStatement.append(argument);
+    private Optional<String> getKey(Object[] allArguments) {
+        if (!JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS) {
+            return Optional.empty();
         }
-        return dbStatement.toString();
+        if (allArguments.length == 0) {
+            return Optional.empty();
+        }
+        Object argument = allArguments[0];
+        // include null
+        if (!(argument instanceof String)) {
+            return Optional.empty();
+        }
+        return Optional.of(StringUtil.cut((String) argument, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH));
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
+                              Object ret) throws Throwable {
         ContextManager.stopSpan();
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+                                      Class<?>[] argumentsTypes, Throwable t) {
         AbstractSpan span = ContextManager.activeSpan();
         span.log(t);
+    }
+
+    private Optional<String> parseOperation(String cmd) {
+        if (JedisPluginConfig.Plugin.Jedis.OPERATION_MAPPING_READ.contains(cmd)) {
+            return Optional.of("read");
+        }
+        if (JedisPluginConfig.Plugin.Jedis.OPERATION_MAPPING_WRITE.contains(cmd)) {
+            return Optional.of("write");
+        }
+        return Optional.empty();
     }
 }

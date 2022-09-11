@@ -186,6 +186,19 @@ The value of `x-le` should be in JSON format. There are two options:
 }
 ```
 
+#### Vitural Database Relative Tags
+SkyWalking analysis Database(SQL-like) performance metrics through the following tags.
+
+```java
+    public static final StringTag DB_TYPE = new StringTag(3, "db.type");
+    public static final StringTag DB_STATEMENT = new StringTag(5, "db.statement");
+```
+
+* `db.type` records database type, such as sql, cassandra, Elasticsearch. 
+* `db.statement`records the sql statement of the database access.
+
+Read [backend's virtual database doc](https://skywalking.apache.org/docs/main/next/en/setup/service-agent/virtual-database/) for more details. 
+
 #### Vitural Cache Relative Tags
 Skywalking analysis cache performance related metrics through the following tags.
 

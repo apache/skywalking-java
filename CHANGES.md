@@ -15,7 +15,8 @@ Release Notes.
 #### Documentation
 
 * Update `configuration` doc about overriding default value as empty map/list accordingly.
-* Update plugin dev tags for cache relative tags
+* Update plugin dev tags for cache relative tags.
+* Add plugin dev docs for virtual database tags.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/150?closed=1)
 

@@ -98,7 +98,8 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         }
         Mono<Void> monoReturn = (Mono<Void>) ret;
 
-        // add skywalking context snapshot to reactor context. webclient plugin need to use SKYWALKING_CONTEXT_SNAPSHOT
+        // add skywalking context snapshot to reactor context.
+        // webclient plugin need to use SKYWALKING_CONTEXT_SNAPSHOT
         EnhancedInstance instance = getInstance(allArguments[0]);
         if (instance != null && instance.getSkyWalkingDynamicField() != null) {
             monoReturn = monoReturn.subscriberContext(

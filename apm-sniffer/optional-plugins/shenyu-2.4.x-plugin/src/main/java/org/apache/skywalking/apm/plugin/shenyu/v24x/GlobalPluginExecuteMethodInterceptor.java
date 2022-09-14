@@ -77,7 +77,7 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
 
         ContextSnapshot snapshot = ContextManager.capture();
         exchange.getAttributes().put(SHENYU_AGENT_TRACE_ID,
-                Optional.ofNullable(snapshot.getTraceId()).map(DistributedTraceId::getId).orElse(""));
+                Optional.ofNullable(snapshot.getTraceId()).map(DistributedTraceId::getId).orElse(ContextManager.getGlobalTraceId()));
         EnhancedInstance instance = getInstance(allArguments[0]);
         instance.setSkyWalkingDynamicField(snapshot);
         span.prepareForAsync();

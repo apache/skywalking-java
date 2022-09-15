@@ -119,6 +119,7 @@
         <module>pulsar-2.8.x-plugin</module>
         <module>undertow-worker-thread-pool-plugin</module>
         <module>tomcat-thread-pool-plugin</module>
+        <module>tomcat-poll-time-to-header-plugin</module>
         <module>guava-eventbus-plugin</module>
         <module>hutool-plugins</module>
         <module>micronaut-plugins</module>

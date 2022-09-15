@@ -11,6 +11,7 @@ Release Notes.
 * Support to set the value of Map/List field to an empty map/list.
 * Add plugin to support [Impala JDBC](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x.
 * Update guava-cache, jedis, memcached, ehcache plugins to adopt uniform tags.
+* Fix `Apache ShenYu` plugin traceId empty string value. 
 
 #### Documentation
 

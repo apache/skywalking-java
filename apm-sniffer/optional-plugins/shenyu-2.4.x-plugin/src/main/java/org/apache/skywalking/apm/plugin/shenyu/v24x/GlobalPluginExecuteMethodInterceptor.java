@@ -77,7 +77,7 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
 
         ContextSnapshot snapshot = ContextManager.capture();
         exchange.getAttributes().put(SHENYU_AGENT_TRACE_ID,
-                Optional.ofNullable(snapshot.getTraceId()).map(DistributedTraceId::getId).orElse(""));
+                Optional.ofNullable(snapshot.getTraceId()).map(DistributedTraceId::getId).orElse(ContextManager.getGlobalTraceId()));
         EnhancedInstance instance = getInstance(allArguments[0]);
         instance.setSkyWalkingDynamicField(snapshot);
         span.prepareForAsync();
@@ -98,7 +98,8 @@ public class GlobalPluginExecuteMethodInterceptor implements InstanceMethodsArou
         }
         Mono<Void> monoReturn = (Mono<Void>) ret;
 
-        // add skywalking context snapshot to reactor context. webclient plugin need to use SKYWALKING_CONTEXT_SNAPSHOT
+        // add skywalking context snapshot to reactor context.
+        // webclient plugin need to use SKYWALKING_CONTEXT_SNAPSHOT
         EnhancedInstance instance = getInstance(allArguments[0]);
         if (instance != null && instance.getSkyWalkingDynamicField() != null) {
             monoReturn = monoReturn.subscriberContext(

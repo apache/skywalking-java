@@ -12,6 +12,7 @@ Release Notes.
 * Add plugin to support [Impala JDBC](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x.
 * Update guava-cache, jedis, memcached, ehcache plugins to adopt uniform tags.
 * Fix `Apache ShenYu` plugin traceId empty string value. 
+* Add plugin to support [brpc-java-3.x](https://github.com/baidu/starlight/tree/brpc-java-v3)
 
 #### Documentation
 

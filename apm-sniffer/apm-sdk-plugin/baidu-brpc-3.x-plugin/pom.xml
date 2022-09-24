@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <artifactId>baidu-brpc-3.x-plugin</artifactId>
-    <name>baidu-brpc-plugin</name>
+    <name>baidu-brpc-3.x-plugin</name>
 
     <properties>
         <brpc-java.version>3.0.5</brpc-java.version>

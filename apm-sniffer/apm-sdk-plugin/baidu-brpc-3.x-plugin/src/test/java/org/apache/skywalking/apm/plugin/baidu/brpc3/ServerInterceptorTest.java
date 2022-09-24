@@ -49,7 +49,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
@@ -91,7 +90,7 @@ public class ServerInterceptorTest {
 
         when(request.getMethodName()).thenReturn("testMethod");
         when(request.getServiceName()).thenReturn("testService");
-        when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn("127.0.0.1：8123");
+        when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn("127.0.0.1:8123");
 
         allArguments = new Object[] {request, response, interceptorChain};
         argumentTypes = new Class[] {request.getClass(), response.getClass(), interceptorChain.getClass()};

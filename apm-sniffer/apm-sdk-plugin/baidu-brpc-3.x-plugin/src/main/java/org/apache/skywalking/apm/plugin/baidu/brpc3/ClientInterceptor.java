@@ -39,8 +39,6 @@ import com.baidu.brpc.protocol.Response;
 
 /**
  * brpc3 client interceptor
- *
- * @author wangsan
  */
 public class ClientInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
     @Override

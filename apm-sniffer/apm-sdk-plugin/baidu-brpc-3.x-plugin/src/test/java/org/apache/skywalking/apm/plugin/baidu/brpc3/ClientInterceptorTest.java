@@ -78,7 +78,7 @@ public class ClientInterceptorTest {
 
         when(request.getMethodName()).thenReturn("testMethod");
         when(request.getServiceName()).thenReturn("testService");
-        when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn("127.0.0.1：8123");
+        when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn("127.0.0.1:8123");
 
         allArguments = new Object[] {request, response};
         argumentTypes = new Class[] {request.getClass(), response.getClass()};
@@ -107,7 +107,7 @@ public class ClientInterceptorTest {
         assertThat(tags.size(), is(1));
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.RPC_FRAMEWORK));
         assertThat(SpanHelper.getComponentId(span), is(91));
-        assertThat(tags.get(0).getValue(), is("127.0.0.1：8123/testService.testMethod"));
+        assertThat(tags.get(0).getValue(), is("127.0.0.1:8123/testService.testMethod"));
         assertThat(span.getOperationName(), is("testService.testMethod"));
     }
 

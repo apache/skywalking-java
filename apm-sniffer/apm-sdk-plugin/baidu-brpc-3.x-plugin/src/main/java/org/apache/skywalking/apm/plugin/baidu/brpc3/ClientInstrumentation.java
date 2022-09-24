@@ -33,8 +33,6 @@ import net.bytebuddy.matcher.ElementMatchers;
 
 /**
  * brpc3 client instrumentation
- *
- * @author wangsan
  */
 public class ClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 

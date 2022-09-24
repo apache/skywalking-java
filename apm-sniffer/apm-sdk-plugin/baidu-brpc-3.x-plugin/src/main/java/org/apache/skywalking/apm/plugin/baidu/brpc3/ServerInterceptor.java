@@ -36,8 +36,6 @@ import com.baidu.brpc.protocol.Response;
 
 /**
  * brpc3 server interceptor
- *
- * @author wangsan
  */
 public class ServerInterceptor implements InstanceMethodsAroundInterceptor {
     private static String generateOperationName(Request request) {

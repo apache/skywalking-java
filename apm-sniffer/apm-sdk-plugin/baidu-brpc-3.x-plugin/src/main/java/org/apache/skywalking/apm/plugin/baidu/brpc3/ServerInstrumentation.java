@@ -31,8 +31,6 @@ import net.bytebuddy.matcher.ElementMatcher;
 
 /**
  * brpc3 server instrumentation
- *
- * @author wangsan
  */
 public class ServerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 

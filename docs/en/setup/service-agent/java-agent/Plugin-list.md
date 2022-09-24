@@ -7,6 +7,7 @@
 - async-http-client-2.x
 - avro-1.x
 - brpc-java
+- brpc-java-3.x
 - canal-1.x
 - cassandra-java-driver-3.x
 - dbcp-2.x

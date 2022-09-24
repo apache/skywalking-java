@@ -47,6 +47,8 @@ segmentItems:
       spanType: Exit
       peer: 127.0.0.1:1118
       skipAnalysis: 'false'
+      tags:
+        - {key: url, value: '127.0.0.1:1118/example.EchoService.Echo'}
     - operationName: GET:/baidu-brpc-3.x-scenario/case/brpc
       parentSpanId: -1
       spanId: 0

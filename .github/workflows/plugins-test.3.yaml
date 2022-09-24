@@ -72,6 +72,7 @@ jobs:
           - nats-2.14.x-2.15.x-scenario
           - quasar-scenario
           - baidu-brpc-scenario
+          - baidu-brpc-3.x-scenario
           - retransform-class-scenario
           - retransform-class-tomcat-scenario
           - graphql-8.x-scenario

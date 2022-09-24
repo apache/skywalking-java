@@ -59,10 +59,6 @@ import com.baidu.brpc.protocol.Response;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
-@PrepareForTest({
-        Request.class,
-        Response.class
-})
 public class ServerInterceptorTest {
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();

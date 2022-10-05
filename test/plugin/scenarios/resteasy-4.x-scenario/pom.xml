@@ -30,7 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
         <test.framework.version>4.7.6.Final</test.framework.version>
-        <log4j.version>2.8.1</log4j.version>
+        <log4j.version>2.17.1</log4j.version>
     </properties>
 
     <dependencies>

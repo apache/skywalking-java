@@ -28,7 +28,7 @@
     <artifactId>apm-pulsar-2.2-2.7-plugin</artifactId>
 
     <properties>
-        <pulsar.version>2.4.0</pulsar.version>
+        <pulsar.version>2.7.5</pulsar.version>
     </properties>
 
     <dependencies>

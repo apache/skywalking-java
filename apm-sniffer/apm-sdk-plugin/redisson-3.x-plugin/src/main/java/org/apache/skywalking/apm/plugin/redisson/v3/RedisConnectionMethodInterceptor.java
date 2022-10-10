@@ -88,7 +88,14 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
         if (RedissonPluginConfig.Plugin.Redisson.TRACE_REDIS_PARAMETERS && commandData.getParams() != null) {
             for (Object param : commandData.getParams()) {
                 dbStatement.append(DELIMITER_SPACE);
-                String paramStr = param instanceof ByteBuf ? QUESTION_MARK : String.valueOf(param.toString());
+                String paramStr;
+                if (param instanceof ByteBuf) {
+                    paramStr = QUESTION_MARK;
+                } else if (param instanceof byte[]) {
+                    paramStr = new String((byte[]) param);
+                } else {
+                    paramStr = param.toString();
+                }
                 if (paramStr.length() > RedissonPluginConfig.Plugin.Redisson.REDIS_PARAMETER_MAX_LENGTH) {
                     paramStr = paramStr.substring(0, RedissonPluginConfig.Plugin.Redisson.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
                 }

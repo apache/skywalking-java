@@ -56,7 +56,12 @@ public class TServiceClientInterceptor implements InstanceConstructorInterceptor
                     "oprot_",
                     new ClientOutProtocolWrapper(protocol)
             );
-            Object dynamicField = ((EnhancedInstance) protocol.getTransport()).getSkyWalkingDynamicField();
+            Object dynamicField = null;
+            try {
+                dynamicField = ((EnhancedInstance) protocol.getTransport()).getSkyWalkingDynamicField();
+            } catch (Throwable e) {
+                // ignored
+            }
             objInst.setSkyWalkingDynamicField(Objects.isNull(dynamicField) ? "UNKNOWN" : dynamicField);
         }
     }

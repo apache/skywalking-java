@@ -13,6 +13,7 @@ Release Notes.
 * Update guava-cache, jedis, memcached, ehcache plugins to adopt uniform tags.
 * Fix `Apache ShenYu` plugin traceId empty string value. 
 * Add plugin to support [brpc-java-3.x](https://github.com/baidu/starlight/tree/brpc-java-v3)
+* Fix the problem of abnormal type conversion when the thrift plug-in intercepts TServiceClient.
 
 #### Documentation
 

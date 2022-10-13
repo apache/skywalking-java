@@ -13,6 +13,7 @@ Every plugin maintained in the main repo requires corresponding test cases as we
 2. JDK 8+
 3. Docker
 4. Docker Compose
+5. socat (m1 arm64 required)
 
 ## Case Base Image Introduction
 
@@ -20,7 +21,7 @@ The test framework provides `JVM-container` and `Tomcat-container` base images i
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `eclipse-temurin:8-jdk` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `eclipse-temurin:8-jdk` and `eclipse-temurin:17-alpine`.
 It is supported to custom the base Java docker image by specify `base_image_java`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 

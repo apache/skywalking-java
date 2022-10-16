@@ -32,6 +32,7 @@ public class NatsJetStreamInstrumentation extends ClassInstanceMethodsEnhancePlu
 
     private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsJetStream";
     private static final String CREATE_SUB_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.CreateSubInterceptor";
+    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.NatsJetStreamConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -40,7 +41,19 @@ public class NatsJetStreamInstrumentation extends ClassInstanceMethodsEnhancePlu
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[] {
+            new ConstructorInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                    return takesArguments(2);
+                }
+
+                @Override
+                public String getConstructorInterceptor() {
+                    return CONSTRUCTOR_INTERCEPTOR;
+                }
+            }
+        };
     }
 
     @Override

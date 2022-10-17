@@ -14,7 +14,7 @@ Release Notes.
 * Fix `Apache ShenYu` plugin traceId empty string value. 
 * Add plugin to support [brpc-java-3.x](https://github.com/baidu/starlight/tree/brpc-java-v3)
 * Update `compose-start-script.template` to make compatible with new version docker compose
-* Bump up grpc-protobuf to 1.50.0 to fix CVE-2022-3171
+* Bump up grpc to 1.50.0 to fix CVE-2022-3171
 
 #### Documentation
 

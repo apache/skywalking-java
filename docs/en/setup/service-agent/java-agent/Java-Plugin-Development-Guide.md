@@ -230,7 +230,7 @@ SkyWalking analysis MQ performance related metrics through the following tags.
 * `mq.brokers` indicates MQ address ,SkyWalking organize the value as service . Both of consumer , producer must record the tag , and ensure the value is consistent .
 * `mq.queue`   indicates MQ queue name 
 * `mq.topic`   indicates MQ topic name , It's optional as some MQ don't hava concept of `topic`
-* `transmission.latency` The transmission latency from consumer to producer . Usually you needn't to record this tag manually ,instead to call  `contextCarrier.extensionInjector().injectSendingTimestamp();` to record tag `sendingTimestamp` on producer side , and SkyWalking would record this tag  on consumer side if `parentSpan`(from producer side ) contains `sendingTimestamp`
+* `transmission.latency` The transmission latency from consumer to producer. Usually you needn't to record this tag manually, instead to call  `contextCarrier.extensionInjector().injectSendingTimestamp();` to record tag `sendingTimestamp` on producer side , and SkyWalking would record this tag on consumer side if `sw8-x` context carrier(from producer side) contains `sendingTimestamp`
 
 
 ### Advanced APIs

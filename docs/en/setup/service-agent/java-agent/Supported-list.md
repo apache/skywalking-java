@@ -129,7 +129,7 @@ metrics based on the tracing data.
   * [Ehcache](https://www.ehcache.org/) 2.x
   * [GuavaCache](https://github.com/google/guava) 18.x -> 23.x (Optional²)
 * Kotlin
-  * [Coroutine](https://kotlinlang.org/docs/reference/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
+  * [Coroutine](https://kotlinlang.org/docs/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
 * GraphQL
   * [Graphql](https://github.com/graphql-java) 8.0 -> 17.x
 * Pool

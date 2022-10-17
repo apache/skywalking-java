@@ -11,6 +11,9 @@
     },
     {
       "pattern": "^https://dist.apache.org/repos/dist/release/skywalking/java-agent$"
+    },
+    {
+      "pattern": "https://kotlinlang.org.*"
     }
   ],
   "timeout": "10s",

@@ -33,6 +33,7 @@ public class NatsConnectionWriterInstrumentation extends ClassInstanceMethodsEnh
     private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsConnectionWriter";
     private static final String PUBLISH_INTERCEPTOR_CLASS_NAME = "org.apache.skywalking.apm.plugin.nats.client.WriterSendMessageBatchInterceptor";
     private static final String QUEUE_INTERCEPTOR_CLASS_NAME = "org.apache.skywalking.apm.plugin.nats.client.WriterQueueInterceptor";
+    private static final String CONSTRUCTOR_INTERCEPTOR_CLASS_NAME = "org.apache.skywalking.apm.plugin.nats.client.NatsConnectionWriterConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -41,7 +42,19 @@ public class NatsConnectionWriterInstrumentation extends ClassInstanceMethodsEnh
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[] {
+            new ConstructorInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                    return takesArguments(1);
+                }
+
+                @Override
+                public String getConstructorInterceptor() {
+                    return CONSTRUCTOR_INTERCEPTOR_CLASS_NAME;
+                }
+            }
+        };
     }
 
     @Override

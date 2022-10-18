@@ -17,6 +17,7 @@
 
 package org.apache.skywalking.apm.plugin.nats.client;
 
+import io.nats.client.Connection;
 import io.nats.client.MessageHandler;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -24,13 +25,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 
 import java.lang.reflect.Method;
 
+import static org.apache.skywalking.apm.plugin.nats.client.NatsCommons.buildServers;
 import static org.apache.skywalking.apm.plugin.nats.client.NatsCommons.buildTraceMsgHandler;
 
 public class CreateDispatcherInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        allArguments[0] = buildTraceMsgHandler((MessageHandler) allArguments[0]);
+        allArguments[0] = buildTraceMsgHandler(buildServers((Connection) objInst), (MessageHandler) allArguments[0]);
     }
 
     @Override

@@ -62,7 +62,6 @@ public class WriterQueueInterceptor implements InstanceMethodsAroundInterceptor 
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-        AbstractSpan span = ContextManager.activeSpan().errorOccurred().log(t);
-        ContextManager.stopSpan(span);
+        ContextManager.activeSpan().errorOccurred().log(t);
     }
 }

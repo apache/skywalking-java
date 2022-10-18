@@ -29,7 +29,9 @@ import static org.apache.skywalking.apm.plugin.nats.client.NatsCommons.buildTrac
 public class CreateSubInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        allArguments[3] = buildTraceMsgHandler((MessageHandler) allArguments[3]);
+        //set by  NatsJetStreamConstructorInterceptor
+        final String servers = (String) objInst.getSkyWalkingDynamicField();
+        allArguments[3] = buildTraceMsgHandler(servers , (MessageHandler) allArguments[3]);
     }
 
     @Override

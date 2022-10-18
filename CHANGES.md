@@ -15,12 +15,14 @@ Release Notes.
 * Add plugin to support [brpc-java-3.x](https://github.com/baidu/starlight/tree/brpc-java-v3)
 * Update `compose-start-script.template` to make compatible with new version docker compose
 * Bump up grpc to 1.50.0 to fix CVE-2022-3171
+* Polish up nats plugin to unify MQ related tags  
 
 #### Documentation
 
 * Update `configuration` doc about overriding default value as empty map/list accordingly.
 * Update plugin dev tags for cache relative tags.
 * Add plugin dev docs for virtual database tags.
+* Add plugin dev docs for virtual MQ tags.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/150?closed=1)
 

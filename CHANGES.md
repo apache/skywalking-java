@@ -16,6 +16,7 @@ Release Notes.
 * Update `compose-start-script.template` to make compatible with new version docker compose
 * Bump up grpc to 1.50.0 to fix CVE-2022-3171
 * Polish up nats plugin to unify MQ related tags  
+* Correct the duration of the transaction span for Neo4J 4.x.
 
 #### Documentation
 

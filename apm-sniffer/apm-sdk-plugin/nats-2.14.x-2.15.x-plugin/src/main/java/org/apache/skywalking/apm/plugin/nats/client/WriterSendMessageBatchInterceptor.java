@@ -21,6 +21,7 @@ import io.nats.client.Message;
 import io.nats.client.impl.NatsMessage;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -53,13 +54,15 @@ public class WriterSendMessageBatchInterceptor implements InstanceMethodsAroundI
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         Object next = allArguments[0];
-        String serverURI = (String) ((EnhancedInstance) allArguments[1]).getSkyWalkingDynamicField();
+        // set by NatsConnectionWriterConstructorInterceptor
+        final String  services = (String) objInst.getSkyWalkingDynamicField();
         while (next != null) {
             if (!skipTrace(next)) {
                 Message message = (Message) next;
                 EnhancedInstance enhanced = (EnhancedInstance) next;
-                AbstractSpan span = ContextManager.createExitSpan("Nats/Pub/" + message.getSubject(), serverURI);
+                AbstractSpan span = ContextManager.createExitSpan("Nats/Pub/" + message.getSubject(), services);
                 addCommonTag(span, message);
+                Tags.MQ_BROKER.set(span, services);
                 Optional.ofNullable(enhanced.getSkyWalkingDynamicField())
                         .ifPresent(snapshot -> ContextManager.continued((ContextSnapshot) snapshot));
                 injectCarrier(message);

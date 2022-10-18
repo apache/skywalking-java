@@ -17,8 +17,10 @@
 
 package org.apache.skywalking.apm.plugin.nats.client;
 
+import io.nats.client.Connection;
 import io.nats.client.Message;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -26,13 +28,15 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 
 import java.lang.reflect.Method;
 
+import static org.apache.skywalking.apm.plugin.nats.client.NatsCommons.buildServers;
 import static org.apache.skywalking.apm.plugin.nats.client.NatsCommons.createEntrySpan;
 
 public class DeliverReplyInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        createEntrySpan((Message) allArguments[0]);
+        final AbstractSpan entrySpan = createEntrySpan((Message) allArguments[0]);
+        Tags.MQ_BROKER.set(entrySpan, buildServers((Connection) objInst));
     }
 
     @Override
@@ -45,6 +49,5 @@ public class DeliverReplyInterceptor implements InstanceMethodsAroundInterceptor
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         AbstractSpan span = ContextManager.activeSpan();
         span.log(t).errorOccurred();
-        ContextManager.stopSpan(span);
     }
 }

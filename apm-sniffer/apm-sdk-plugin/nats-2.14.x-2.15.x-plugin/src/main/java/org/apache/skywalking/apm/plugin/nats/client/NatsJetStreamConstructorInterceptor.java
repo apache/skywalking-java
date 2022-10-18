@@ -15,18 +15,18 @@
  *   limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.jedis.v4;
+package org.apache.skywalking.apm.plugin.nats.client;
 
-import redis.clients.jedis.CommandArguments;
-import redis.clients.jedis.args.Rawable;
+import io.nats.client.Connection;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-import java.util.Iterator;
+import static org.apache.skywalking.apm.plugin.nats.client.NatsCommons.buildServers;
 
-public class ConnectionSendCmdInterceptor extends AbstractConnectionInterceptor {
-
+public class NatsJetStreamConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
-    protected Iterator<Rawable> getCommands(Object[] allArguments) {
-        CommandArguments commandArguments = (CommandArguments) allArguments[0];
-        return commandArguments.iterator();
+    public void onConstruct(final EnhancedInstance objInst, final Object[] allArguments) throws Throwable {
+        final Connection connection = (Connection) allArguments[0];
+        objInst.setSkyWalkingDynamicField(buildServers(connection));
     }
 }

@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.neo4j.v4x;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.CompletionStage;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -61,13 +62,15 @@ public class TransactionRunInterceptor implements InstanceMethodsAroundIntercept
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             Object ret) throws Throwable {
-        SessionRequiredInfo requiredInfo = (SessionRequiredInfo) objInst.getSkyWalkingDynamicField();
-        if (requiredInfo == null || requiredInfo.getSpan() == null) {
-            return ret;
-        }
+        return ((CompletionStage<?>) ret).thenApply(resultCursor -> {
+            SessionRequiredInfo requiredInfo = (SessionRequiredInfo) objInst.getSkyWalkingDynamicField();
+            if (requiredInfo == null || requiredInfo.getSpan() == null) {
+                return resultCursor;
+            }
 
-        requiredInfo.getSpan().asyncFinish();
-        return ret;
+            requiredInfo.getSpan().asyncFinish();
+            return resultCursor;
+        });
     }
 
     @Override

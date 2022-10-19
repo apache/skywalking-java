@@ -17,6 +17,7 @@ Release Notes.
 * Bump up grpc to 1.50.0 to fix CVE-2022-3171
 * Polish up nats plugin to unify MQ related tags  
 * Correct the duration of the transaction span for Neo4J 4.x.
+* Plugin-test configuration.yml dependencies support docker service command field
 
 #### Documentation
 

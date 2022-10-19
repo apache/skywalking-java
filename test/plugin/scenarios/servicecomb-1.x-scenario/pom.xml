@@ -33,7 +33,7 @@
 
         <test.framework.version>1.3.0</test.framework.version>
         <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
-        <jackson.version>2.9.4</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
     </properties>
 
     <name>skywalking-servicecomb-1.x-scenario</name>

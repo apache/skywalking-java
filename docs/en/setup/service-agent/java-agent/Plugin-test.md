@@ -109,7 +109,7 @@ File Name | Descriptions
 | withPlugins | Plugin selector rule, e.g.:`apm-spring-annotation-plugin-*.jar`. Required for `runningMode=with_optional` or `runningMode=with_bootstrap`.
 | environment | Same as `docker-compose#environment`.
 | depends_on | Same as `docker-compose#depends_on`.
-| dependencies | Same as `docker-compose#services`, `image`, `links`, `hostname`, `environment` and `depends_on` are supported.
+| dependencies | Same as `docker-compose#services`, `image`, `links`, `hostname`, `command`, `environment` and `depends_on` are supported.
 
 **Note:, `docker-compose` activates only when `dependencies` is blank.**
 

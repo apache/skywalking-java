@@ -29,7 +29,7 @@
     <name>apm-dubbo-3.x-conflict-path</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dubbo.version>3.0.0</dubbo.version>
+        <dubbo.version>3.0.5</dubbo.version>
     </properties>
 
     <dependencies>

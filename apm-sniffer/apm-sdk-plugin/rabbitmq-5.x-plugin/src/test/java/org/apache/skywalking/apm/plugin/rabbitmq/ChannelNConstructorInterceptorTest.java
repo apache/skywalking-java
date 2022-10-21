@@ -43,9 +43,9 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
-public class RabbitMQProducerAndConsumerConstructorInterceptorTest {
+public class ChannelNConstructorInterceptorTest {
 
-    private RabbitMQProducerAndConsumerConstructorInterceptor rabbitMQProducerAndConsumerConstructorInterceptor;
+    private ChannelNConstructorInterceptor channelNConstructorInterceptor;
 
     private EnhancedInstance enhancedInstance = new EnhancedInstance() {
         private String test;
@@ -230,8 +230,8 @@ public class RabbitMQProducerAndConsumerConstructorInterceptorTest {
 
     @Test
     public void TestRabbitMQConsumerAndProducerConstructorInterceptor() {
-        rabbitMQProducerAndConsumerConstructorInterceptor = new RabbitMQProducerAndConsumerConstructorInterceptor();
-        rabbitMQProducerAndConsumerConstructorInterceptor.onConstruct(enhancedInstance, new Object[] {testConnection});
+        channelNConstructorInterceptor = new ChannelNConstructorInterceptor();
+        channelNConstructorInterceptor.onConstruct(enhancedInstance, new Object[] {testConnection});
         assertThat((String) enhancedInstance.getSkyWalkingDynamicField(), is("127.0.0.1:5672"));
     }
 }

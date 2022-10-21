@@ -22,7 +22,7 @@ import com.rabbitmq.client.Connection;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-public class RabbitMQProducerAndConsumerConstructorInterceptor implements InstanceConstructorInterceptor {
+public class ChannelNConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         Connection connection = (Connection) allArguments[0];

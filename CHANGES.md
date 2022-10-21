@@ -18,6 +18,7 @@ Release Notes.
 * Polish up nats plugin to unify MQ related tags  
 * Correct the duration of the transaction span for Neo4J 4.x.
 * Plugin-test configuration.yml dependencies support docker service command field
+* Polish up rabbitmq-5.x plugin to fix missing broker tag on consumer side
 
 #### Documentation
 

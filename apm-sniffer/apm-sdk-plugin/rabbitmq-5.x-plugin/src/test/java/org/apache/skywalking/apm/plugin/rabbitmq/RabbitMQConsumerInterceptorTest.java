@@ -19,7 +19,13 @@
 package org.apache.skywalking.apm.plugin.rabbitmq;
 
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.ShutdownSignalException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -35,10 +41,6 @@ import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(PowerMockRunner.class)
@@ -48,21 +50,10 @@ public class RabbitMQConsumerInterceptorTest {
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
 
+    private RabbitMQConsumerInterceptor rabbitMQConsumerInterceptor;
+
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
-
-    private EnhancedInstance enhancedInstance = new EnhancedInstance() {
-        @Override
-        public Object getSkyWalkingDynamicField() {
-            return "127.0.0.1:5272";
-        }
-
-        @Override
-        public void setSkyWalkingDynamicField(Object value) {
-        }
-    };
-
-    private RabbitMQConsumerInterceptor rabbitMQConsumerInterceptor;
 
     @Before
     public void setUp() throws Exception {
@@ -70,53 +61,102 @@ public class RabbitMQConsumerInterceptorTest {
     }
 
     @Test
-    public void TestRabbitMQConsumerInterceptor() throws Throwable {
-        Envelope envelope = new Envelope(1111, false, "", "rabbitmq-test");
-        Map<String, Object> headers = new HashMap<String, Object>();
-        headers.put(SW8CarrierItem.HEADER_NAME, "1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA=");
-        AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
-        Object[] arguments = new Object[] {
-            0,
-            envelope,
-            propsBuilder.headers(headers).build()
-        };
-
-        rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, arguments, null, null);
-        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, arguments, null, null);
-        List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
-        Assert.assertThat(traceSegments.size(), is(1));
-    }
-
-    @Test
     public void testRabbitMQConsumerInterceptorWithNilHeaders() throws Throwable {
-        Envelope envelope = new Envelope(1111, false, "", "rabbitmq-test");
-        AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
-        Object[] arguments = new Object[] {
-            0,
-            envelope,
-            propsBuilder.headers(null).build()
+        final Object[] args = {
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            getConsumer()
         };
-
-        rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, arguments, null, null);
-        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, arguments, null, null);
+        rabbitMQConsumerInterceptor.beforeMethod(getEnhancedInstance(), null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(getEnhancedInstance(), null, args, new Class[0], null);
+        ((Consumer) args[6]).handleDelivery("tag", new Envelope(1L, false, "exchange", "routerKey"),
+                                            new AMQP.BasicProperties(), new byte[0]
+        );
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
 
     @Test
-    public void testRabbitMQConsumerInterceptorWithEmptyHeaders() throws Throwable {
-        Envelope envelope = new Envelope(1111, false, "", "rabbitmq-test");
-        Map<String, Object> headers = new HashMap<String, Object>();
-        AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
-        Object[] arguments = new Object[] {
-            0,
-            envelope,
-            propsBuilder.headers(headers).build()
+    public void testRabbitMQConsumerInterceptor() throws Throwable {
+        final Object[] args = {
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            getConsumer()
         };
 
-        rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, arguments, null, null);
-        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, arguments, null, null);
+        Map<String, Object> headers = new HashMap<>();
+        headers.put(
+            SW8CarrierItem.HEADER_NAME,
+            "1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA="
+        );
+        AMQP.BasicProperties.Builder propsBuilder = new AMQP.BasicProperties.Builder();
+        propsBuilder.headers(headers);
+
+        rabbitMQConsumerInterceptor.beforeMethod(getEnhancedInstance(), null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(getEnhancedInstance(), null, args, new Class[0], null);
+        ((Consumer) args[6]).handleDelivery("tag", new Envelope(1L, false, "exchange", "routerKey"),
+                                            propsBuilder.build(), new byte[0]
+        );
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
+    }
+
+    public EnhancedInstance getEnhancedInstance() {
+        return new EnhancedInstance() {
+            @Override
+            public Object getSkyWalkingDynamicField() {
+                return "serverAddr";
+            }
+
+            @Override
+            public void setSkyWalkingDynamicField(final Object value) {
+
+            }
+        };
+    }
+
+    public Consumer getConsumer() {
+        return new Consumer() {
+            @Override
+            public void handleConsumeOk(final String consumerTag) {
+
+            }
+
+            @Override
+            public void handleCancelOk(final String consumerTag) {
+
+            }
+
+            @Override
+            public void handleCancel(final String consumerTag) throws IOException {
+
+            }
+
+            @Override
+            public void handleShutdownSignal(final String consumerTag, final ShutdownSignalException sig) {
+
+            }
+
+            @Override
+            public void handleRecoverOk(final String consumerTag) {
+
+            }
+
+            @Override
+            public void handleDelivery(final String consumerTag,
+                                       final Envelope envelope,
+                                       final AMQP.BasicProperties properties,
+                                       final byte[] body) throws IOException {
+
+            }
+        };
     }
 }

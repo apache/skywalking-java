@@ -25,16 +25,19 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.DeclaredInstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
-public class RabbitMQConsumerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.rabbitmq.RabbitMQConsumerInterceptor";
-    public static final String ENHANCE_CLASS_PRODUCER = "com.rabbitmq.client.Consumer";
-    public static final String ENHANCE_METHOD_DISPATCH = "handleDelivery";
-    public static final String INTERCEPTOR_CONSTRUCTOR = "org.apache.skywalking.apm.plugin.rabbitmq.RabbitMQProducerAndConsumerConstructorInterceptor";
+public class ChannelNInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.rabbitmq.RabbitMQProducerInterceptor";
+    public static final String ENHANCE_CLASS_PRODUCER = "com.rabbitmq.client.impl.ChannelN";
+    public static final String PUBLISH_ENHANCE_METHOD = "basicPublish";
+    public static final String INTERCEPTOR_CONSTRUCTOR = "org.apache.skywalking.apm.plugin.rabbitmq.ChannelNConstructorInterceptor";
+    public static final String CONSUME_ENHANCE_METHOD = "basicConsume";
+    public static final String CONSUME_INTERCEPTOR_CONSTRUCTOR = "org.apache.skywalking.apm.plugin.rabbitmq.RabbitMQConsumerInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -42,7 +45,7 @@ public class RabbitMQConsumerInstrumentation extends ClassInstanceMethodsEnhance
             new ConstructorInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return takesArgumentWithType(0, "com.rabbitmq.client.impl.AMQConnection");
+                    return takesArgumentWithType(3, "com.rabbitmq.client.MetricsCollector");
                 }
 
                 @Override
@@ -56,10 +59,10 @@ public class RabbitMQConsumerInstrumentation extends ClassInstanceMethodsEnhance
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[] {
-            new DeclaredInstanceMethodsInterceptPoint() {
+            new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_METHOD_DISPATCH).and(takesArgumentWithType(2, "com.rabbitmq.client.AMQP$BasicProperties"));
+                    return named(PUBLISH_ENHANCE_METHOD).and(takesArgumentWithType(4, "com.rabbitmq.client.AMQP$BasicProperties"));
                 }
 
                 @Override
@@ -69,7 +72,23 @@ public class RabbitMQConsumerInstrumentation extends ClassInstanceMethodsEnhance
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
+                }
+            },
+            new DeclaredInstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(CONSUME_ENHANCE_METHOD).and(takesArguments(7));
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return CONSUME_INTERCEPTOR_CONSTRUCTOR;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return true;
                 }
             }
         };
@@ -77,6 +96,6 @@ public class RabbitMQConsumerInstrumentation extends ClassInstanceMethodsEnhance
 
     @Override
     protected ClassMatch enhanceClass() {
-        return HierarchyMatch.byHierarchyMatch(new String[] {ENHANCE_CLASS_PRODUCER});
+        return MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS_PRODUCER);
     }
 }

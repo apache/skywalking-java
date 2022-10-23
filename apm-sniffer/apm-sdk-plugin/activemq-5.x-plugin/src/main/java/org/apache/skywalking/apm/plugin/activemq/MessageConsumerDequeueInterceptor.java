@@ -31,7 +31,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
-public class ActiveMQConsumerInterceptor implements InstanceMethodsAroundInterceptor {
+public class MessageConsumerDequeueInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String OPERATE_NAME_PREFIX = "ActiveMQ/";
     public static final String CONSUMER_OPERATE_NAME_SUFFIX = "/Consumer";
@@ -41,27 +41,47 @@ public class ActiveMQConsumerInterceptor implements InstanceMethodsAroundInterce
     public static final byte TEMP_QUEUE_TYPE = 5;
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(final EnhancedInstance objInst,
+                             final Method method,
+                             final Object[] allArguments,
+                             final Class<?>[] argumentsTypes,
+                             final MethodInterceptResult result) throws Throwable {
+
+    }
+
+    @Override
+    public Object afterMethod(final EnhancedInstance objInst,
+                              final Method method,
+                              final Object[] allArguments,
+                              final Class<?>[] argumentsTypes,
+                              final Object ret) throws Throwable {
+        if (ret == null) {
+            return ret;
+        }
+        MessageDispatch messageDispatch = (MessageDispatch) ret;
         ContextCarrier contextCarrier = new ContextCarrier();
         String url = (String) objInst.getSkyWalkingDynamicField();
-        MessageDispatch messageDispatch = (MessageDispatch) allArguments[0];
         AbstractSpan activeSpan = null;
         if (messageDispatch.getDestination().getDestinationType() == QUEUE_TYPE || messageDispatch.getDestination()
                                                                                                   .getDestinationType() == TEMP_QUEUE_TYPE) {
-            activeSpan = ContextManager.createEntrySpan(OPERATE_NAME_PREFIX + "Queue/" + messageDispatch.getDestination()
-                                                                                                        .getPhysicalName() + CONSUMER_OPERATE_NAME_SUFFIX, null)
+            activeSpan = ContextManager.createEntrySpan(
+                                           OPERATE_NAME_PREFIX + "Queue/" + messageDispatch.getDestination()
+                                                                                           .getPhysicalName() + CONSUMER_OPERATE_NAME_SUFFIX, null)
                                        .start(System.currentTimeMillis());
             Tags.MQ_BROKER.set(activeSpan, url);
             Tags.MQ_QUEUE.set(activeSpan, messageDispatch.getDestination().getPhysicalName());
         } else if (messageDispatch.getDestination()
                                   .getDestinationType() == TOPIC_TYPE || messageDispatch.getDestination()
                                                                                         .getDestinationType() == TEMP_TOPIC_TYPE) {
-            activeSpan = ContextManager.createEntrySpan(OPERATE_NAME_PREFIX + "Topic/" + messageDispatch.getDestination()
-                                                                                                        .getPhysicalName() + CONSUMER_OPERATE_NAME_SUFFIX, null)
+            activeSpan = ContextManager.createEntrySpan(
+                                           OPERATE_NAME_PREFIX + "Topic/" + messageDispatch.getDestination()
+                                                                                           .getPhysicalName() + CONSUMER_OPERATE_NAME_SUFFIX, null)
                                        .start(System.currentTimeMillis());
             Tags.MQ_BROKER.set(activeSpan, url);
             Tags.MQ_TOPIC.set(activeSpan, messageDispatch.getDestination().getPhysicalName());
+        }
+        if (activeSpan == null) {
+            return ret;
         }
         activeSpan.setComponent(ComponentsDefine.ACTIVEMQ_CONSUMER);
         SpanLayer.asMQ(activeSpan);
@@ -74,20 +94,17 @@ public class ActiveMQConsumerInterceptor implements InstanceMethodsAroundInterce
             }
         }
         ContextManager.extract(contextCarrier);
-
-    }
-
-    @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
-        ContextManager.stopSpan();
+        // Close span immediately , as no chance to trace anything
+        ContextManager.stopSpan(activeSpan);
         return ret;
-
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
+    public void handleMethodException(final EnhancedInstance objInst,
+                                      final Method method,
+                                      final Object[] allArguments,
+                                      final Class<?>[] argumentsTypes,
+                                      final Throwable t) {
+
     }
 }

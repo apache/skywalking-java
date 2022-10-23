@@ -20,6 +20,7 @@ Release Notes.
 * Plugin-test configuration.yml dependencies support docker service command field
 * Polish up rabbitmq-5.x plugin to fix missing broker tag on consumer side
 * Polish up activemq plugin to fix missing broker tag on consumer side
+* Enhance MQ plugin relative tests to check key tags not blank.
 
 #### Documentation
 

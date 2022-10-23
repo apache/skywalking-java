@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.activemq;
 
-import java.io.IOException;
 import java.util.List;
 import javax.jms.JMSException;
 import org.apache.activemq.command.ActiveMQDestination;
@@ -33,7 +32,6 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,21 +42,13 @@ import static org.hamcrest.CoreMatchers.is;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(TracingSegmentRunner.class)
-public class ActiveMQConsumerInterceptorTest {
+public class MessageConsumerDequeueInterceptorTest {
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
-
-    private ActiveMQConsumerInterceptor activeMQConsumerInterceptor;
-
-    private Object[] arguments;
-
-    private Class[] argumentType;
-
-    private MessageDispatch messageDispatch;
 
     public class Des extends ActiveMQDestination {
 
@@ -122,25 +112,14 @@ public class ActiveMQConsumerInterceptorTest {
         }
     };
 
-    @Before
-    public void setUp() throws IOException {
-        activeMQConsumerInterceptor = new ActiveMQConsumerInterceptor();
-        messageDispatch = new MessageDispatch();
-
+    @Test
+    public void testConsumerWithoutMessage() throws Throwable {
+        MessageDispatch  messageDispatch = new MessageDispatch();
         Des des = new Des();
         des.setPhysicalName("test");
         messageDispatch.setDestination(des);
-        Message msg = new Msg();
-        messageDispatch.setMessage(msg);
-        arguments = new Object[] {messageDispatch};
-        argumentType = null;
-    }
-
-    @Test
-    public void testConsumerWithoutMessage() throws Throwable {
-        activeMQConsumerInterceptor.beforeMethod(enhancedInstance, null, arguments, null, null);
-        activeMQConsumerInterceptor.afterMethod(enhancedInstance, null, arguments, null, null);
-
+        messageDispatch.setMessage(new Msg());
+        new MessageConsumerDequeueInterceptor().afterMethod(enhancedInstance, null, new Object[0], null, messageDispatch);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }

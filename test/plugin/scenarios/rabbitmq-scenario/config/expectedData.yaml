@@ -30,10 +30,10 @@ segmentItems:
       spanType: Entry
       peer: ''
       tags:
-      - {key: mq.broker, value: not null}
+      - {key: mq.broker, value: not blank}
       - {key: mq.topic, value: ''}
       - {key: mq.queue, value: test}
-      - {key: transmission.latency, value: not null}
+      - {key: transmission.latency, value: ge 0}
       refs:
       - {parentEndpoint: GET:/rabbitmq-scenario/case/rabbitmq, networkAddress: not null,
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -52,7 +52,7 @@ segmentItems:
       spanType: Exit
       peer: not null
       tags:
-      - {key: mq.broker, value: not null}
+      - {key: mq.broker, value: not blank}
       - {key: mq.queue, value: test}
       - {key: mq.topic, value: ''}
       skipAnalysis: 'false'

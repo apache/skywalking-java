@@ -202,11 +202,12 @@ as the version number, which will be changed in the test for each version.
 
 **Operator for String**
 
-| Operator | Description |
-| :--- | :--- |
-| `not null` | Not null |
-| `null` | Null or empty String |
-| `eq` | Equal(default) |
+| Operator    | Description                                                                                                   |
+|:------------|:--------------------------------------------------------------------------------------------------------------|
+| `not null`  | Not null                                                                                                      |
+| `not blank` | Not blank ,it's recommended for String type field as the default value maybe blank string, such as span tags  |
+| `null`      | Null or empty String                                                                                          |
+| `eq`        | Equal(default)                                                                                                |
 
 **Expected Data Format Of The Segment**
 ```yml

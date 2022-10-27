@@ -32,4 +32,4 @@ Release Notes.
 
 * Add a FAQ, `Why is `-Djava.ext.dirs` not supported?`.
 
-All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/99?closed=1)
+All issues and pull requests are [here](https://github.com/apache/skywalking-java/milestone/2?closed=1)

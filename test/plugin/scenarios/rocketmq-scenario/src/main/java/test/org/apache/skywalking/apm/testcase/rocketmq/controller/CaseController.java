@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.rocketmq.controller;
+package test.org.apache.skywalking.apm.testcase.rocketmq.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -96,7 +96,20 @@ public class CaseController {
 
     @RequestMapping("/healthCheck")
     @ResponseBody
-    public String healthCheck() {
+    public String healthCheck() throws Exception {
+        // start producer
+        DefaultMQProducer producer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
+        producer.setNamesrvAddr(namerServer);
+        producer.start();
+        System.out.printf("HealthCheck Provider Started.%n");
+
+        // send msg
+        Message msg = new Message("HealthCheckTopicTest",
+                "TagA",
+                ("Hello RocketMQ sendMsg " + new Date()).getBytes(RemotingHelper.DEFAULT_CHARSET)
+        );
+        SendResult sendResult = producer.send(msg);
+        System.out.printf("healthCheck %s send msg: %s%n", new Date(), sendResult);
         return SUCCESS;
     }
 

@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.rocketmq;
+package test.org.apache.skywalking.apm.testcase.rocketmq;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

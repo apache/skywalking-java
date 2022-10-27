@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
   - serviceName: rocketmq-scenario
-    segmentSize: ge 1
+    segmentSize: ge 2
     segments:
       - segmentId: not null
         spans:
@@ -33,13 +33,13 @@ segmentItems:
               - {key: mq.broker, value: not null}
               - {key: mq.topic, value: TopicTest}
             skipAnalysis: 'false'
-          - operationName: GET:/rocketmq-scenario/case/rocketmq-scenario
+          - operationName: GET:/case/rocketmq-scenario
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
             startTime: nq 0
             endTime: nq 0
-            componentId: 1
+            componentId: 14
             isError: false
             spanType: Entry
             peer: ''
@@ -47,4 +47,23 @@ segmentItems:
               - {key: url, value: 'http://localhost:8080/rocketmq-scenario/case/rocketmq-scenario'}
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
+            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
+          - operationName: RocketMQ/TopicTest/Consumer
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: MQ
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 39
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: GET:/case/rocketmq-scenario, networkAddress: not null,
+                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: not null, traceId: not null}
             skipAnalysis: 'false'

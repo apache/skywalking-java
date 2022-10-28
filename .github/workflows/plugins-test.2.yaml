@@ -79,6 +79,7 @@ jobs:
           - struts2.5-scenario
           - cxf-scenario
           - okhttp2-scenario
+          - rocketmq-scenario
     steps:
       - uses: actions/checkout@v2
         with:

@@ -21,7 +21,7 @@ Release Notes.
 * Polish up rabbitmq-5.x plugin to fix missing broker tag on consumer side
 * Polish up activemq plugin to fix missing broker tag on consumer side
 * Enhance MQ plugin relative tests to check key tags not blank.
-* Add rocketmq-scenario test package.
+* Add RocketMQ test scenarios for version 4.3 - 4.9. No 4.0 - 4.2 release images for testing.
 
 #### Documentation
 

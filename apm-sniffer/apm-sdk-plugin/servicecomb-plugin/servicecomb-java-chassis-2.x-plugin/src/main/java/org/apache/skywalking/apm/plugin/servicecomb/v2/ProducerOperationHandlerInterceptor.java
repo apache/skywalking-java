@@ -40,9 +40,10 @@ public class ProducerOperationHandlerInterceptor implements InstanceMethodsAroun
         Invocation invocation = (Invocation) allArguments[0];
         ContextCarrier contextCarrier = new ContextCarrier();
         CarrierItem next = contextCarrier.items();
+        boolean inContext = invocation.getContext().containsKey("sw8");
         while (next.hasNext()) {
             next = next.next();
-            next.setHeadValue(invocation.getContext().get(next.getHeadKey()));
+            next.setHeadValue(getHeadValue(inContext, invocation, next.getHeadKey()));
         }
         String operationName = invocation.getMicroserviceQualifiedName();
         AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
@@ -50,6 +51,13 @@ public class ProducerOperationHandlerInterceptor implements InstanceMethodsAroun
         Tags.URL.set(span, url);
         span.setComponent(ComponentsDefine.SERVICECOMB);
         SpanLayer.asRPCFramework(span);
+    }
+
+    private String getHeadValue(boolean inContext, Invocation invocation, String key) {
+        if (inContext) {
+            return invocation.getContext().get(key);
+        }
+        return invocation.getRequestEx().getHeader(key);
     }
 
     @Override

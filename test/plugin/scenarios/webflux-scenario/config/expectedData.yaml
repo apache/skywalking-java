@@ -203,7 +203,7 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}    
       refs:
-      - {parentEndpoint: WebFluxOperators/withSpanInScope, networkAddress: 'localhost:18080', refType: CrossProcess,
+      - {parentEndpoint: WebFluxOperators/onNext, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
   - segmentId: not null
@@ -223,7 +223,7 @@ segmentItems:
       - {key: url, value: 'http://localhost:18080/testcase/success'}
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
-    - operationName: WebFluxOperators/withSpanInScope
+    - operationName: WebFluxOperators/onNext
       parentSpanId: -1
       spanId: 0
       spanLayer: Unknown

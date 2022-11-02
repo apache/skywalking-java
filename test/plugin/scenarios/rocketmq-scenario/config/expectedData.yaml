@@ -59,9 +59,11 @@ segmentItems:
             componentId: 39
             isError: false
             spanType: Entry
-            peer: ''
+            peer: not blank
             tags:
               - {key: transmission.latency, value: not null}
+              - {key: mq.topic, value: TopicTest }
+              - {key: mq.broker, value: not blank }
             refs:
               - {parentEndpoint: GET:/case/rocketmq-scenario, networkAddress: not null,
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,

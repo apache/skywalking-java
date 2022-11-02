@@ -32,6 +32,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.rocketMQ.v4.define.ConsumerEnhanceInfos;
 
 /**
  * {@link AbstractMessageConsumeInterceptor} create entry span when the <code>consumeMessage</code> in the {@link
@@ -62,6 +63,11 @@ public abstract class AbstractMessageConsumeInterceptor implements InstanceMetho
             ContextManager.extract(getContextCarrierFromMessage(msgs.get(i)));
         }
 
+        Object skyWalkingDynamicField = objInst.getSkyWalkingDynamicField();
+        if (skyWalkingDynamicField != null) {
+            ConsumerEnhanceInfos consumerEnhanceInfos = (ConsumerEnhanceInfos) skyWalkingDynamicField;
+            span.setPeer(consumerEnhanceInfos.getNamesrvAddr());
+        }
     }
 
     @Override

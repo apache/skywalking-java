@@ -32,6 +32,7 @@ Release Notes.
 * Update plugin dev tags for cache relative tags.
 * Add plugin dev docs for virtual database tags.
 * Add plugin dev docs for virtual MQ tags.
+* Add doc about kafka plugin Manual APIs.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/150?closed=1)
 

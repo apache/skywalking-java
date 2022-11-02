@@ -24,6 +24,7 @@ Release Notes.
 * Polish up activemq plugin to fix missing broker tag on consumer side
 * Enhance MQ plugin relative tests to check key tags not blank.
 * Add RocketMQ test scenarios for version 4.3 - 4.9. No 4.0 - 4.2 release images for testing.
+* Support mannual propagation of tracing context to next operators for webflux.
 
 #### Documentation
 

@@ -17,6 +17,8 @@
 
 package test.apache.skywalking.apm.testcase.sc.webflux.projectB.controller;
 
+import org.apache.skywalking.apm.toolkit.webflux.WebFluxSkyWalkingOperators;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,9 +26,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import static test.apache.skywalking.apm.testcase.sc.webflux.projectB.utils.HttpUtils.visit;
+
 @RestController
 public class TestAnnotationController {
 
+    @Value("${server.port:18080}")
+    private String serverPort;
+    
     @RequestMapping("/testcase/annotation/healthCheck")
     public String healthCheck() {
         return "healthCheck";
@@ -58,5 +65,19 @@ public class TestAnnotationController {
     @GetMapping("/testcase/annotation/mono/hello")
     public Mono<String> hello(@RequestBody(required = false) String body) {
         return Mono.just("Hello World");
+    }
+
+    @RequestMapping("/testcase/success")
+    public String downstreamMock() {
+        return "1";
+    }
+
+    @GetMapping("/testcase/annotation/mono/onnext")
+    public Mono<String> monoOnNext(@RequestBody(required = false) String body) {
+        return Mono.subscriberContext()
+                .flatMap(ctx -> WebFluxSkyWalkingOperators.withSpanInScope(ctx, () -> {
+                    visit("http://localhost:" + serverPort + "/testcase/success");
+                    return Mono.just("Hello World");
+                }));
     }
 }

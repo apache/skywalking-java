@@ -27,7 +27,7 @@
     <artifactId>apm-toolkit-webflux</artifactId>
 
     <properties>
-        <spring-webflux.version>5.1.0.RELEASE</spring-webflux.version>
+        <spring-webflux.version>5.2.21.RELEASE</spring-webflux.version>
     </properties>
 
     <dependencies>

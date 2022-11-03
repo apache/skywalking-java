@@ -122,6 +122,7 @@
 - toolkit-tag
 - toolkit-trace
 - toolkit-exception
+- toolkit-webflux
 - undertow-2.x-plugin
 - vertx-core-3.x
 - vertx-core-4.x

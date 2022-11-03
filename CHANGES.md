@@ -24,6 +24,7 @@ Release Notes.
 * Polish up activemq plugin to fix missing broker tag on consumer side
 * Enhance MQ plugin relative tests to check key tags not blank.
 * Add RocketMQ test scenarios for version 4.3 - 4.9. No 4.0 - 4.2 release images for testing.
+* Support mannual propagation of tracing context to next operators for webflux.
 * Add MQ_TOPIC and MQ_BROKER tags for RocketMQ consumer's span. 
 
 #### Documentation
@@ -32,6 +33,8 @@ Release Notes.
 * Update plugin dev tags for cache relative tags.
 * Add plugin dev docs for virtual database tags.
 * Add plugin dev docs for virtual MQ tags.
+* Add doc about kafka plugin Manual APIs.
+
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/150?closed=1)
 

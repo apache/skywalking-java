@@ -184,7 +184,81 @@ segmentItems:
       - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
         parentSpanId: 8, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
+      skipAnalysis: 'false'  
+  - segmentId: not null
+    spans:
+    - operationName: /testcase/success
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: not null
+      endTime: not null
+      componentId: 67
+      isError: false
+      spanType: Entry
+      peer: ''
       skipAnalysis: 'false'
+      tags:
+      - {key: url, value: 'http://localhost:18080/testcase/success'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}    
+      refs:
+      - {parentEndpoint: WebFluxOperators/onNext, networkAddress: 'localhost:18080', refType: CrossProcess,
+        parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: not null, traceId: not null}
+  - segmentId: not null
+    spans:
+    - operationName: /testcase/success
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Http
+      startTime: not null
+      endTime: not null
+      componentId: 2
+      isError: false
+      spanType: Exit
+      peer: not null
+      skipAnalysis: 'false'
+      tags:
+      - {key: url, value: 'http://localhost:18080/testcase/success'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+    - operationName: WebFluxOperators/onNext
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Unknown
+      startTime: not null
+      endTime: not null
+      componentId: 67
+      isError: false
+      spanType: Local
+      peer: ''
+      refs:
+      - {parentEndpoint: /testcase/annotation/mono/onnext, networkAddress: '', refType: CrossThread,
+        parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: not null, traceId: not null}
+      skipAnalysis: 'false'       
+  - segmentId: not null
+    spans:
+    - operationName: /testcase/annotation/mono/onnext
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: not null
+      endTime: not null
+      componentId: 67
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:18080/testcase/annotation/mono/onnext'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: 'GET:/projectA/testcase', networkAddress: 'localhost:18080', refType: CrossProcess,
+        parentSpanId: 9, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: not null, traceId: not null}
+      skipAnalysis: 'false'     
   - segmentId: not null
     spans:
     - operationName: /testcase/webclient/server
@@ -203,7 +277,7 @@ segmentItems:
       - {key: http.status_code, value: '200'}
       refs:
       - {parentEndpoint: GET:/projectA/testcase, networkAddress: 'localhost:18080', refType: CrossProcess,
-        parentSpanId: 9, parentTraceSegmentId: not null, parentServiceInstance: not
+        parentSpanId: 10, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
 - serviceName: webflux-projectA-scenario
@@ -331,9 +405,24 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
-    - operationName: /testcase/webclient/server
+    - operationName: /testcase/annotation/mono/onnext
       parentSpanId: 0
       spanId: 9
+      spanLayer: Http
+      startTime: not null
+      endTime: not null
+      componentId: 2
+      isError: false
+      spanType: Exit
+      peer: not null
+      tags:
+      - {key: url, value: not null}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'  
+    - operationName: /testcase/webclient/server
+      parentSpanId: 0
+      spanId: 10
       spanLayer: Http
       startTime: not null
       endTime: not null

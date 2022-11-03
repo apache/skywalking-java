@@ -5,7 +5,7 @@ Release Notes.
 8.13.0
 ------------------
 
-**This release begins to adopt SkyWalking 9.3.0+ [Virtual Cache Analysis](https://skywalking.apache.org/docs/main/next/en/setup/service-agent/virtual-cache/).**
+**This release begins to adopt SkyWalking 9.3.0+ [Virtual Cache Analysis](https://skywalking.apache.org/docs/main/next/en/setup/service-agent/virtual-cache/),[Virtual MQ Analysis](https://skywalking.apache.org/docs/main/next/en/setup/service-agent/virtual-mq/)**
 
 * Support set-type in the agent or plugin configurations
 * Optimize ConfigInitializer to output warning messages when the config value is truncated.

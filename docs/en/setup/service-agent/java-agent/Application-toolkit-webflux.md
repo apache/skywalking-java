@@ -13,7 +13,7 @@
     @GetMapping("/testcase/annotation/mono/onnext") 
     public Mono<String> monoOnNext(@RequestBody(required = false) String body) {
         return Mono.subscriberContext()
-            .flatMap(ctx -> WebFluxSkyWalkingOperators.withSpanInScope(ctx, () -> {
+            .flatMap(ctx -> WebFluxSkyWalkingOperators.continueTracing(ctx, () -> {
                 visit("http://localhost:" + serverPort + "/testcase/success");
                 return Mono.just("Hello World");
             }));
@@ -25,7 +25,7 @@
     public Mono<Response<FunctionInfoResult>> functionInfo(ServerWebExchange exchange, @RequestParam String userId) {
         return ReactiveSecurityContextHolder.getContext()
             .flatMap(context ->  {
-                return exchange.getSession().map(session -> WebFluxSkyWalkingOperators.withSpanInScope(exchange, () -> handle(session, userId)));
+                return exchange.getSession().map(session -> WebFluxSkyWalkingOperators.continueTracing(exchange, () -> handle(session, userId)));
             });
     }
 
@@ -37,8 +37,8 @@
 * usage 3.
 ```java
     Mono.just("key").subscribeOn(Schedulers.boundedElastic())
-        .doOnEach(WebFluxOperators.withSpanInScope(SignalType.ON_NEXT, () -> log.info("test log with tid")))
-        .flatMap(key -> Mono.deferContextual(ctx -> WebFluxOperators.withSpanInScope(Context.of(ctx), () -> {
+        .doOnEach(WebFluxSkyWalkingOperators.continueTracing(SignalType.ON_NEXT, () -> log.info("test log with tid")))
+        .flatMap(key -> Mono.deferContextual(ctx -> WebFluxSkyWalkingOperators.continueTracing(Context.of(ctx), () -> {
                 redis.hasKey(key);
                 return Mono.just("SUCCESS");
             })

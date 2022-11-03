@@ -36,69 +36,69 @@ public final class WebFluxSkyWalkingOperators {
     }
 
     /**
-     * Wraps a runnable with a span.
+     * Wraps a runnable with a local span and continue tracing context.
      *
      * @param signalType - Reactor's signal type
      * @param runnable   - lambda to execute within the tracing context
      * @return consumer of a signal
      */
-    public static Consumer<Signal<?>> withSpanInScope(SignalType signalType, Runnable runnable) {
+    public static Consumer<Signal<?>> continueTracing(SignalType signalType, Runnable runnable) {
         return signal -> {
             if (signalType != signal.getType()) {
                 return;
             }
-            withSpanInScope(runnable).accept(signal);
+            continueTracing(runnable).accept(signal);
         };
     }
 
     /**
-     * Wraps a runnable with a span.
+     * Wraps a consumer with a local span and continue tracing context.
      *
      * @param signalType - Reactor's signal type
      * @param consumer   - lambda to execute within the tracing context
      * @return consumer of a signal
      */
-    public static Consumer<Signal> withSpanInScope(SignalType signalType, Consumer<Signal> consumer) {
+    public static Consumer<Signal> continueTracing(SignalType signalType, Consumer<Signal> consumer) {
         return signal -> {
             if (signalType != signal.getType()) {
                 return;
             }
-            withSpanInScope(signal.getContext(), () -> consumer.accept(signal));
+            continueTracing(signal.getContext(), () -> consumer.accept(signal));
         };
     }
 
     /**
-     * Wraps a runnable with a span.
+     * Wraps a runnable with a local span and continue tracing context.
      *
      * @param runnable - lambda to execute within the tracing context
      * @return consumer of a signal
      */
-    public static Consumer<Signal> withSpanInScope(Runnable runnable) {
+    public static Consumer<Signal> continueTracing(Runnable runnable) {
         return signal -> {
             Context context = signal.getContext();
-            withSpanInScope(context, runnable);
+            continueTracing(context, runnable);
         };
     }
 
     /**
-     * Wraps a runnable with a span.
+     * Wraps a runnable with a local span and continue tracing context.
      *
      * @param context  - Reactor context that contains the tracing context
      * @param runnable - lambda to execute within the tracing context
      */
-    public static void withSpanInScope(Context context, Runnable runnable) {
+    public static void continueTracing(Context context, Runnable runnable) {
         runnable.run();
     }
 
     /**
-     * Wraps a callable with a span.
+     * Wraps a callable with a local span and continue tracing context.
      *
      * @param context  - Reactor context that contains the tracing context
      * @param callable - lambda to execute within the tracing context
      * @param <T>      callable's return type
      * @return value from the callable
      */
-    public static <T> T withSpanInScope(Context context, Callable<T> callable) {
+    public static <T> T continueTracing(Context context, Callable<T> callable) {
         try {
             return callable.call();
         } catch (Exception e) {
@@ -106,7 +106,15 @@ public final class WebFluxSkyWalkingOperators {
         } 
     }
 
-    public static <T> T withSpanInScope(ServerWebExchange serverWebExchange, Callable<T> callable) {
+    /**
+     * Wraps a callable with a local span and continue tracing context.
+     *
+     * @param serverWebExchange  - EnhancedInstance that contains the tracing context
+     * @param callable - lambda to execute within the tracing context
+     * @param <T>      callable's return type
+     * @return value from the callable
+     */
+    public static <T> T continueTracing(ServerWebExchange serverWebExchange, Callable<T> callable) {
         try {
             return callable.call();
         } catch (Exception e) {
@@ -114,11 +122,17 @@ public final class WebFluxSkyWalkingOperators {
         }
     }
 
-    public static void withSpanInScope(ServerWebExchange serverWebExchange, Runnable runnable) {
+    /**
+     * Wraps a runnable with a local span and continue tracing context.
+     *
+     * @param serverWebExchange  - EnhancedInstance that contains the tracing context
+     * @param runnable - lambda to execute within the tracing context
+     */
+    public static void continueTracing(ServerWebExchange serverWebExchange, Runnable runnable) {
         runnable.run();
     }
 
-    static <T extends Throwable, R> R sneakyThrow(Throwable t) throws T {
+    private static <T extends Throwable, R> R sneakyThrow(Throwable t) throws T {
         throw (T) t;
     }
 }

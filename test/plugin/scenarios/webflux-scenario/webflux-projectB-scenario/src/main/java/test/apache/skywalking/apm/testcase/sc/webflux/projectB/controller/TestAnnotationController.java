@@ -75,7 +75,7 @@ public class TestAnnotationController {
     @GetMapping("/testcase/annotation/mono/onnext")
     public Mono<String> monoOnNext(@RequestBody(required = false) String body) {
         return Mono.subscriberContext()
-                .flatMap(ctx -> WebFluxSkyWalkingOperators.withSpanInScope(ctx, () -> {
+                .flatMap(ctx -> WebFluxSkyWalkingOperators.continueTracing(ctx, () -> {
                     visit("http://localhost:" + serverPort + "/testcase/success");
                     return Mono.just("Hello World");
                 }));

@@ -38,7 +38,7 @@ public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnha
             "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingOperatorsInterceptor";
     public static final String ENHANCE_CLASS =
             "org.apache.skywalking.apm.toolkit.webflux.WebFluxSkyWalkingOperators";
-    public static final String ENHANCE_METHOD = "withSpanInScope";
+    public static final String ENHANCE_METHOD = "continueTracing";
 
     @Override
     protected ClassMatch enhanceClass() {

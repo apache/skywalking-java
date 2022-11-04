@@ -152,7 +152,7 @@ start_stamp=`date +%s`
 parse_commandline "$@"
 
 if [[ $(uname) == 'Darwin' ]] && [[ $(uname -m) == 'arm64' ]]; then
-  nohup socat TCP-LISTEN:2375,range=127.0.0.1/32,reuseaddr,fork UNIX-CLIENT:/var/run/docker.sock > /dev/null 2>&1 &
+  socat TCP-LISTEN:2375,range=127.0.0.1/32,reuseaddr,fork UNIX-CLIENT:/var/run/docker.sock > /dev/null 2>&1 &
   export DOCKER_HOST=tcp://127.0.0.1:2375
 fi
 

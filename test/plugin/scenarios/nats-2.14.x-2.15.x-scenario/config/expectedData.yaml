@@ -32,8 +32,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/$JS.API.STREAM.INFO.scenario-8080-test-stream-3
@@ -49,8 +49,10 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
+
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.STREAM.INFO.scenario-8080-test-stream-3,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -71,8 +73,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/$JS.API.STREAM.CREATE.scenario-8080-test-stream-3
@@ -88,8 +90,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.STREAM.CREATE.scenario-8080-test-stream-3,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -110,8 +113,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/$JS.API.CONSUMER.CREATE.scenario-8080-test-stream-3
@@ -127,8 +130,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.CONSUMER.CREATE.scenario-8080-test-stream-3,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -149,8 +153,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/$JS.API.STREAM.INFO.scenario-8080-test-stream-4
@@ -166,8 +170,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.STREAM.INFO.scenario-8080-test-stream-4,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -188,8 +193,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/$JS.API.STREAM.CREATE.scenario-8080-test-stream-4
@@ -205,8 +210,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.STREAM.CREATE.scenario-8080-test-stream-4,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -227,8 +233,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.STREAM.NAMES, networkAddress: '',
                  refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -249,8 +256,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/Enqueue/$JS.API.STREAM.NAMES
@@ -266,8 +273,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/$JS.API.CONSUMER.INFO.scenario-8080-test-stream-4.scenario-8080-test-stream-4-durable
@@ -283,8 +290,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.CONSUMER.INFO.scenario-8080-test-stream-4.scenario-8080-test-stream-4-durable,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -305,7 +313,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: Nats/Pub/$JS.API.CONSUMER.DURABLE.CREATE.scenario-8080-test-stream-4.scenario-8080-test-stream-4-durable
@@ -321,8 +330,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.CONSUMER.DURABLE.CREATE.scenario-8080-test-stream-4.scenario-8080-test-stream-4-durable,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -343,8 +353,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/Enqueue/$JS.API.CONSUMER.MSG.NEXT.scenario-8080-test-stream-4.scenario-8080-test-stream-4-durable,
                  networkAddress: '', refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -365,8 +376,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
       - segmentId: not null
         spans:
           - operationName: HEAD:/nats/check
@@ -400,7 +411,8 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: 'GET:/nats/start', networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null,
@@ -421,7 +433,10 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
+              - {key: transmission.latency, value: ge 0}
               - {key: sid, value: '1'}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/scenario-8080-subject-1, networkAddress: 'nats://nats-server:4222',
                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -442,8 +457,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: 'GET:/nats/start', networkAddress: '', refType: CrossThread,
                  parentSpanId: 2, parentTraceSegmentId: not null,
@@ -464,7 +480,8 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Sub/scenario-8080-subject-2, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null,
@@ -485,7 +502,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              
+              - {key: mq.queue, value: not blank}
+
           - operationName: Nats/Sub/scenario-8080-subject-2
             operationId: 0
             parentSpanId: -1
@@ -499,8 +517,11 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
+              - {key: transmission.latency, value: ge 0}
+              - {key: reply_to, value: not blank}
               - {key: sid, value: '1'}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/scenario-8080-subject-2, networkAddress: 'nats://nats-server:4222',
                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -521,7 +542,10 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
+              - {key: transmission.latency, value: ge 0}
               - {key: sid, value: '1'}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: not null,
                  networkAddress: 'nats://nats-server:4222', refType: CrossProcess, parentSpanId: 0,
@@ -543,8 +567,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: 'GET:/nats/start', networkAddress: '', refType: CrossThread,
                  parentSpanId: 3, parentTraceSegmentId: not null,
@@ -565,7 +590,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              
+              - {key: mq.queue, value: not blank}
+
           - operationName: Nats/Sub/scenario-8080-subject-3
             operationId: 0
             parentSpanId: -1
@@ -579,8 +605,12 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
+              - {key: transmission.latency, value: ge 0}
+              - {key: reply_to, value: not blank}
               - {key: sid, value: '2'}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
+
             refs:
               - {parentEndpoint: Nats/Pub/scenario-8080-subject-3, networkAddress: 'nats://nats-server:4222',
                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -601,7 +631,8 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Sub/scenario-8080-subject-3, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null,
@@ -622,8 +653,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: 'GET:/nats/start', networkAddress: '', refType: CrossThread,
                  parentSpanId: 4, parentTraceSegmentId: not null,
@@ -644,8 +676,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: 'GET:/nats/start', networkAddress: '', refType: CrossThread,
                  parentSpanId: 6, parentTraceSegmentId: not null,
@@ -666,8 +699,11 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
+              - {key: transmission.latency, value: ge 0}
+              - {key: reply_to, value: not blank}
               - {key: sid, value: '2'}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: Nats/Pub/scenario-8080-subject-4, networkAddress: 'nats://nats-server:4222',
                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null,
@@ -688,7 +724,7 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              
+              - {key: mq.queue, value: not blank}
           - operationName: Nats/Pub/Enqueue/scenario-8080-subject-2
             operationId: 0
             parentSpanId: 0
@@ -702,8 +738,9 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+
           - operationName: Nats/Pub/Enqueue/$JS.API.STREAM.INFO.scenario-8080-test-stream-3
             operationId: 0
             parentSpanId: 0
@@ -717,8 +754,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
           - operationName: Nats/Pub/Enqueue/scenario-8080-subject-3
             operationId: 0
             parentSpanId: 0
@@ -732,8 +769,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
           - operationName: Nats/Pub/Enqueue/$JS.API.STREAM.INFO.scenario-8080-test-stream-4
             operationId: 0
             parentSpanId: 0
@@ -747,8 +784,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
           - operationName: Nats/Pub/Enqueue/scenario-8080-subject-4
             operationId: 0
             parentSpanId: 0
@@ -762,8 +799,8 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
           - operationName: GET:/nats/start
             operationId: 0
             parentSpanId: -1
@@ -795,8 +832,9 @@ segmentItems:
             peer: nats://nats-server:4222
             skipAnalysis: false
             tags:
-              - {key: reply_to, value: not null}
-              
+              - {key: reply_to, value: not blank}
+              - {key: mq.queue, value: not blank}
+              - {key: mq.broker, value: 'nats://nats-server:4222'}
             refs:
               - {parentEndpoint: 'GET:/nats/start', networkAddress: '', refType: CrossThread,
                  parentSpanId: 5, parentTraceSegmentId: not null,

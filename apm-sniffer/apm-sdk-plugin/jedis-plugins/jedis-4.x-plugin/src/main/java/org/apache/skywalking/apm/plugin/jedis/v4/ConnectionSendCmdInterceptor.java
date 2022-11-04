@@ -24,7 +24,6 @@ import java.util.Iterator;
 
 public class ConnectionSendCmdInterceptor extends AbstractConnectionInterceptor {
 
-    //public void sendCommand(final CommandArguments args)
     @Override
     protected Iterator<Rawable> getCommands(Object[] allArguments) {
         CommandArguments commandArguments = (CommandArguments) allArguments[0];

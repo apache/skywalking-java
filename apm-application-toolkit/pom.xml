@@ -35,5 +35,6 @@
         <module>apm-toolkit-meter</module>
         <module>apm-toolkit-micrometer-registry</module>
         <module>apm-toolkit-kafka</module>
+        <module>apm-toolkit-webflux</module>
     </modules>
 </project>

@@ -17,27 +17,17 @@
 
 package org.apache.skywalking.apm.plugin.nats.client;
 
+import io.nats.client.Connection;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-import java.lang.reflect.Method;
+import static org.apache.skywalking.apm.plugin.nats.client.NatsCommons.buildServers;
 
-public class SocketDataPortConnectInterceptor implements InstanceMethodsAroundInterceptor {
-    @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-
-    }
+public class NatsConnectionWriterConstructorInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        //Hold current serverURI
-        objInst.setSkyWalkingDynamicField(allArguments[0]);
-        return ret;
-    }
-
-    @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-
+    public void onConstruct(final EnhancedInstance objInst, final Object[] allArguments) throws Throwable {
+        Connection connection = (Connection) allArguments[0];
+        objInst.setSkyWalkingDynamicField(buildServers(connection));
     }
 }

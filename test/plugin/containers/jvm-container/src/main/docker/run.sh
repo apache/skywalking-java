@@ -85,6 +85,7 @@ export agent_opts="
     -Xms256m -Xmx256m ${agent_opts}"
 
 bash /var/run/${SCENARIO_NAME}/${SCENARIO_START_SCRIPT} 1>${LOGS_HOME}/scenario.out &
+sleep 5
 
 healthCheck ${SCENARIO_HEALTH_CHECK_URL}
 

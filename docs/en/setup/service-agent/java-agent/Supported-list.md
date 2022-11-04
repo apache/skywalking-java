@@ -20,7 +20,7 @@ metrics based on the tracing data.
   * [Play Framework](https://www.playframework.com/) 2.6.x -> 2.8.x
   * [Light4J Microservices Framework](https://doc.networknt.com/) 1.6.x -> 2.x
   * [Netty SocketIO](https://github.com/mrniko/netty-socketio) 1.x
-  * [Micrinaut Http Server](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
+  * [Micronaut HTTP Server](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
 * HTTP Client
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
@@ -32,7 +32,7 @@ metrics based on the tracing data.
   * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
   * JRE HttpURLConnection (Optional²)
   * [Hutool-http](https://www.hutool.cn/) client 5.x
-  * [Micrinaut Http Client](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
+  * [Micronaut HTTP Client](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
 * HTTP Gateway
   * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 3.x (Optional²)
   * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)
@@ -129,7 +129,7 @@ metrics based on the tracing data.
   * [Ehcache](https://www.ehcache.org/) 2.x
   * [GuavaCache](https://github.com/google/guava) 18.x -> 23.x (Optional²)
 * Kotlin
-  * [Coroutine](https://kotlinlang.org/docs/reference/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
+  * [Coroutine](https://kotlinlang.org/docs/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
 * GraphQL
   * [Graphql](https://github.com/graphql-java) 8.0 -> 17.x
 * Pool

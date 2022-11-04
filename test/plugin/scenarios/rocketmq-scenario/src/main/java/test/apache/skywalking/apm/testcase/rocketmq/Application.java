@@ -16,17 +16,19 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.rabbitmq;
+package test.apache.skywalking.apm.testcase.rocketmq;
 
-import com.rabbitmq.client.Connection;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class RabbitMQProducerAndConsumerConstructorInterceptor implements InstanceConstructorInterceptor {
-    @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        Connection connection = (Connection) allArguments[0];
-        String url = connection.getAddress().toString().replace("/", "") + ":" + connection.getPort();
-        objInst.setSkyWalkingDynamicField(url);
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        try {
+            SpringApplication.run(Application.class, args);
+        } catch (Exception e) {
+            // Never do this
+        }
     }
 }

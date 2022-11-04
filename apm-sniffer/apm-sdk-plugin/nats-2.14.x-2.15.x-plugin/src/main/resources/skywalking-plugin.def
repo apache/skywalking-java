@@ -19,4 +19,3 @@ nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.Na
 nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsConnectionWriterInstrumentation
 nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsSubscriptionInstrumentation
 nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsJetStreamInstrumentation
-nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.SocketDataPortInstrumentation

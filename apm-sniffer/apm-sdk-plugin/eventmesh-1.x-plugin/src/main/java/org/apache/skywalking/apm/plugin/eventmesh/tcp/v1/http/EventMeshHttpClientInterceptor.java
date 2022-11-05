@@ -55,7 +55,6 @@ public class EventMeshHttpClientInterceptor implements StaticMethodsAroundInterc
     public static final String OPERATE_NAME_PREFIX = "EventMesh/";
     public static final String PRODUCER_OPERATE_NAME_SUFFIX = "/Producer";
     public static final List<Command> EXCLUDE_COMMAND = new ArrayList<>(16);
-    public static final String CONSTANT_TOPIC = "topic";
 
     static {
         Collections.addAll(EXCLUDE_COMMAND, HEARTBEAT_REQUEST, HELLO_REQUEST,

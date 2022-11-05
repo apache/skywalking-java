@@ -18,33 +18,15 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.common;
 
-import org.apache.pulsar.client.impl.PulsarClientImpl;
 import org.apache.pulsar.client.impl.conf.ConsumerConfigurationData;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-/**
- * Interceptor of pulsar consumer constructor.
- * <p>
- * The interceptor create {@link ConsumerEnhanceRequiredInfo} which is required by instance method interceptor, So use
- * it to update the skywalking dynamic field of pulsar consumer enhanced instance. So that the instance methods can get
- * the {@link ConsumerEnhanceRequiredInfo}
- */
 public class ConsumerConstructorInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        PulsarClientImpl pulsarClient = (PulsarClientImpl) allArguments[0];
-        String topic = (String) allArguments[1];
         ConsumerConfigurationData consumerConfigurationData = (ConsumerConfigurationData) allArguments[2];
-        ConsumerEnhanceRequiredInfo requireInfo = new ConsumerEnhanceRequiredInfo();
-        /*
-         * Pulsar url can specify with specific URL or a service url provider, use pulsarClient.getLookup().getServiceUrl()
-         * can handle the service url provider which use a dynamic service url
-         */
-        requireInfo.setServiceUrl(pulsarClient.getLookup().getServiceUrl());
-        requireInfo.setTopic(topic);
-        requireInfo.setSubscriptionName(consumerConfigurationData.getSubscriptionName());
-        objInst.setSkyWalkingDynamicField(requireInfo);
+        objInst.setSkyWalkingDynamicField(consumerConfigurationData.getSubscriptionName());
     }
 }

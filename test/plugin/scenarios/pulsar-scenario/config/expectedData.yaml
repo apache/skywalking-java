@@ -28,9 +28,9 @@ segmentItems:
           componentId: 73
           isError: false
           spanType: Exit
-          peer: not null
+          peer: not blank
           tags:
-            - { key: mq.broker, value: not null }
+            - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: test }
           skipAnalysis: 'false'
         - operationName: Pulsar/testMultiPartition/Producer
@@ -42,10 +42,10 @@ segmentItems:
           componentId: 73
           isError: false
           spanType: Exit
-          peer: not null
+          peer: not blank
           skipAnalysis: false
           tags:
-            - { key: mq.broker, value: not null }
+            - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: testMultiPartition }
         - operationName: GET:/case/pulsar-case
           parentSpanId: -1
@@ -92,10 +92,10 @@ segmentItems:
           componentId: 74
           isError: false
           spanType: Entry
-          peer: ''
+          peer: not blank
           tags:
-            - { key: transmission.latency, value: not null }
-            - { key: mq.broker, value: not null }
+            - { key: transmission.latency, value: not blank }
+            - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: test }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null, refType: CrossProcess,
@@ -113,11 +113,11 @@ segmentItems:
           componentId: 74
           isError: false
           spanType: Entry
-          peer: ''
+          peer: not blank
           skipAnalysis: 'false'
           tags:
-            - { key: transmission.latency, value: not null }
-            - { key: mq.broker, value: not null }
+            - { key: transmission.latency, value: not blank }
+            - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: test }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null,
@@ -173,10 +173,10 @@ segmentItems:
           componentId: 74
           isError: false
           spanType: Entry
-          peer: ''
+          peer: not blank
           tags:
-            - { key: transmission.latency, value: not null }
-            - { key: mq.broker, value: not null }
+            - { key: transmission.latency, value: not blank }
+            - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: testMultiPartition }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null, refType: CrossProcess,
@@ -194,11 +194,11 @@ segmentItems:
           componentId: 74
           isError: false
           spanType: Entry
-          peer: ''
+          peer: not blank
           skipAnalysis: 'false'
           tags:
-            - { key: transmission.latency, value: not null }
-            - { key: mq.broker, value: not null }
+            - { key: transmission.latency, value: not blank }
+            - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: testMultiPartition }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null,

@@ -27,6 +27,7 @@ Release Notes.
 * Support mannual propagation of tracing context to next operators for webflux.
 * Add MQ_TOPIC and MQ_BROKER tags for RocketMQ consumer's span. 
 * Polish up Pulsar plugins to remove unnecessary dynamic value , set peer at consumer side 
+* Polish up kafka,nats,activemq,rabbitmq plugins to set peer at consumer side
 
 #### Documentation
 

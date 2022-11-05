@@ -82,6 +82,7 @@ public class TracerConsumer implements Consumer {
         Tags.MQ_TOPIC.set(activeSpan, envelope.getExchange());
         Tags.MQ_QUEUE.set(activeSpan, envelope.getRoutingKey());
         activeSpan.setComponent(ComponentsDefine.RABBITMQ_CONSUMER);
+        activeSpan.setPeer(serverUrl);
         SpanLayer.asMQ(activeSpan);
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {

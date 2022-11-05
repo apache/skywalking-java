@@ -231,4 +231,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent IMPALA_JDBC_DRIVER = new OfficialComponent(133, "Impala-jdbc-driver");
 
+    public static final OfficialComponent EVENT_MESH = new OfficialComponent(134, "EventMesh");
+
 }

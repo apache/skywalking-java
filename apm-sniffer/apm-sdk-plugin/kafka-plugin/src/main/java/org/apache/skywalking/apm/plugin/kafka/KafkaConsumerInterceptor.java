@@ -79,7 +79,7 @@ public class KafkaConsumerInterceptor implements InstanceMethodsAroundIntercepto
             SpanLayer.asMQ(activeSpan);
             Tags.MQ_BROKER.set(activeSpan, requiredInfo.getBrokerServers());
             Tags.MQ_TOPIC.set(activeSpan, requiredInfo.getTopics());
-
+            activeSpan.setPeer(requiredInfo.getBrokerServers());
             for (List<ConsumerRecord<?, ?>> consumerRecords : records.values()) {
                 for (ConsumerRecord<?, ?> record : consumerRecords) {
                     ContextCarrier contextCarrier = new ContextCarrier();

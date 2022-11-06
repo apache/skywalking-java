@@ -45,6 +45,7 @@ public class SubscriptionNextMsgInterceptor implements InstanceMethodsAroundInte
         Message msg = (Message) ret;
         AbstractSpan span = createEntrySpan(msg);
         Tags.MQ_BROKER.set(span , servers);
+        span.setPeer(servers);
         // Close the span immediately , as no chance to trace what user want to do
         ContextManager.stopSpan(span);
         return ret;

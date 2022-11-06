@@ -36,7 +36,9 @@ public class DeliverReplyInterceptor implements InstanceMethodsAroundInterceptor
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         final AbstractSpan entrySpan = createEntrySpan((Message) allArguments[0]);
-        Tags.MQ_BROKER.set(entrySpan, buildServers((Connection) objInst));
+        final String servers = buildServers((Connection) objInst);
+        Tags.MQ_BROKER.set(entrySpan, servers);
+        entrySpan.setPeer(servers);
     }
 
     @Override

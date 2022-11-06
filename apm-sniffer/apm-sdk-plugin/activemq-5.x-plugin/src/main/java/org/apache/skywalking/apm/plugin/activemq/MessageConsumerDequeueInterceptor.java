@@ -83,6 +83,7 @@ public class MessageConsumerDequeueInterceptor implements InstanceMethodsAroundI
         if (activeSpan == null) {
             return ret;
         }
+        activeSpan.setPeer(url);
         activeSpan.setComponent(ComponentsDefine.ACTIVEMQ_CONSUMER);
         SpanLayer.asMQ(activeSpan);
         CarrierItem next = contextCarrier.items();

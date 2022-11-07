@@ -22,7 +22,7 @@ inputs:
   base_image_java:
     description: "The Java Docker image under which this test case will run"
     required: false
-    default: "eclipse-temurin:8-jre"
+    default: "eclipse-temurin:8-jdk"
   base_image_tomcat:
     description: "The Tomcat Docker image under which this test case will run"
     required: false

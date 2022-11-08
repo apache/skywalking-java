@@ -36,7 +36,7 @@
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>0.33.0</version>
+                <version>0.40.2</version>
                 <configuration>
                     <images>
                         <image>
@@ -52,7 +52,9 @@
                                 <runCmds>
                                     <run>chmod +x /usr/local/skywalking/run.sh</run>
                                     <run>tar -xvf ../tools/skywalking-mock-collector.tar.gz -C ../tools</run>
-                                    <run>apk add --no-cache bash curl</run>
+                                    <run>apt-get update -y</run>
+                                    <run>apt-get install -y unzip</run>
+                                    <run>rm -rf /var/lib/apt/lists/*</run>
                                 </runCmds>
                                 <cmd>["/usr/local/skywalking/run.sh"]</cmd>
                             </build>

@@ -51,6 +51,5 @@ else
     [[ $status -ne 0 ]] && docker logs ${container_name} >&2
     docker logs ${container_name} >${SCENARIO_HOME}/logs/container.log
     docker container rm -f $container_name
-    docker wait $container_name
 fi
 </#noparse>

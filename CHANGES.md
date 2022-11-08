@@ -5,7 +5,7 @@ Release Notes.
 8.14.0
 ------------------
 
-
+* Polish test framework to support `arm64/v8` platforms
 
 #### Documentation
 

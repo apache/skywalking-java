@@ -301,6 +301,23 @@
                         <containerNamePattern>%a-%t-%i</containerNamePattern>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <mainClass>com.st.Task</mainClass>
+                            </manifest>
+                            <manifestEntries>
+                                <Agent-Class>
+                                    org.apache.skywalking.apm.agent.SkyWalkingAgent
+                                </Agent-Class>
+                            </manifestEntries>
+                        </archive>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -374,59 +391,6 @@
                         <phase>none</phase>
                         <goals>
                             <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
-                <configuration>
-                    <configLocation>${maven.multiModuleProjectDirectory}/apm-checkstyle/checkStyle.xml</configLocation>
-                    <headerLocation>${maven.multiModuleProjectDirectory}/apm-checkstyle/CHECKSTYLE_HEAD</headerLocation>
-                    <encoding>UTF-8</encoding>
-                    <consoleOutput>true</consoleOutput>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <failOnViolation>${checkstyle.fails.on.error}</failOnViolation>
-                    <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                        <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-                    </sourceDirectories>
-                    <resourceIncludes>
-                        **/*.properties,
-                        **/*.sh,
-                        **/*.bat,
-                        **/*.yml,
-                        **/*.yaml,
-                        **/*.xml
-                    </resourceIncludes>
-                    <resourceExcludes>
-                        **/.asf.yaml,
-                        **/.github/**
-                    </resourceExcludes>
-                    <excludes>
-                        **/target/generated-test-sources/**,
-                        org/apache/skywalking/apm/network/register/v2/**/*.java,
-                        org/apache/skywalking/apm/network/common/**/*.java,
-                        org/apache/skywalking/apm/network/servicemesh/**/*.java,
-                        org/apache/skywalking/apm/network/language/**/*.java,
-                        org/apache/skywalking/oap/server/core/remote/grpc/proto/*.java,
-                        org/apache/skywalking/oal/rt/grammar/*.java,
-                        org/apache/skywalking/oap/server/exporter/grpc/*.java,
-                        org/apache/skywalking/oap/server/configuration/service/*.java,
-                        **/jmh_generated/*_jmhType*.java,
-                        **/jmh_generated/*_jmhTest.java
-                    </excludes>
-                    <propertyExpansion>
-                        import.control=${maven.multiModuleProjectDirectory}/apm-checkstyle/importControl.xml
-                    </propertyExpansion>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>

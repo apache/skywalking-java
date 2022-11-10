@@ -60,6 +60,14 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
 public class SkyWalkingAgent {
     private static ILog LOGGER = LogManager.getLogger(SkyWalkingAgent.class);
 
+
+    /**
+     * Attach Main entrance
+     */
+    public static void agentmain(String agentArgs, Instrumentation instrumentation){
+        premain(agentArgs, instrumentation);
+    }
+
     /**
      * Main entrance. Use byte-buddy transform to enhance all classes, which define in plugins.
      */

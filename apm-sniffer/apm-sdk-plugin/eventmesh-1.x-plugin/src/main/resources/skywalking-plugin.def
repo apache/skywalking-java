@@ -15,6 +15,8 @@
 # limitations under the License.
 
 eventmesh-1.x=org.apache.skywalking.apm.plugin.eventmesh.tcp.v1.define.tcp.EventMeshTcpClientInstrumentation
+eventmesh-1.x=org.apache.skywalking.apm.plugin.eventmesh.tcp.v1.define.tcp.EventMeshMessageUtilsInstrumentation
 eventmesh-1.x=org.apache.skywalking.apm.plugin.eventmesh.tcp.v1.define.http.EventMeshHttpInstrumentation
 eventmesh-1.x=org.apache.skywalking.apm.plugin.eventmesh.tcp.v1.define.http.EventMeshHttpProducerInstrumentation
 eventmesh-1.x=org.apache.skywalking.apm.plugin.eventmesh.tcp.v1.define.http.EventMeshMessageProducerInstrumentation
+eventmesh-1.x=org.apache.skywalking.apm.plugin.eventmesh.tcp.v1.define.tcp.EventMeshTcpSubHandlerInstrumentation

@@ -23,5 +23,6 @@ public class EventMeshConstants {
     private EventMeshConstants() {
     }
 
-    public static final String CONSTANT_SW_CLOUD_EVENT_HEAD = "_SW_SUBJECT";
+    public static final String CONSTANT_SW_CLOUD_EVENT_HEAD = "sweventmeshsubject";
+
 }

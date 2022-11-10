@@ -32,6 +32,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.eventmesh.tcp.v1.EventMeshConstants;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -74,8 +75,9 @@ public class EventMeshTcpClientInterceptor implements InstanceMethodsAroundInter
         ContextCarrier contextCarrier = new ContextCarrier();
         AbstractSpan span = ContextManager.createExitSpan(OPERATE_NAME_PREFIX + cmd.name() + PRODUCER_OPERATE_NAME_SUFFIX, contextCarrier, (String) objInst.getSkyWalkingDynamicField());
         span.setLayer(SpanLayer.MQ);
-        span.setComponent(ComponentsDefine.EVENT_MESH);
-        Tags.URL.set(span, (String) objInst.getSkyWalkingDynamicField());
+        span.setComponent(ComponentsDefine.EVENT_MESH_PRODUCER);
+        Tags.MQ_BROKER.set(span, (String) objInst.getSkyWalkingDynamicField());
+        Tags.MQ_QUEUE.set(span, (String) packages.getHeader().getProperty(EventMeshConstants.CONSTANT_SW_CLOUD_EVENT_HEAD));
     }
 
     @Override

@@ -70,10 +70,10 @@ public class EventMeshHttpClientInterceptor implements StaticMethodsAroundInterc
 
         ContextCarrier contextCarrier = new ContextCarrier();
         AbstractSpan span = ContextManager.createExitSpan(OPERATE_NAME_PREFIX + "Http" + PRODUCER_OPERATE_NAME_SUFFIX, contextCarrier, remoteAddr);
-        span.setComponent(ComponentsDefine.EVENT_MESH);
+        span.setComponent(ComponentsDefine.EVENT_MESH_PRODUCER);
         span.setLayer(SpanLayer.MQ);
-        span.setPeer(remoteAddr);
-        Tags.MQ_TOPIC.set(span, requestParam.getHeaders().get(EventMeshConstants.CONSTANT_SW_CLOUD_EVENT_HEAD));
+        Tags.MQ_QUEUE.set(span, requestParam.getHeaders().get(EventMeshConstants.CONSTANT_SW_CLOUD_EVENT_HEAD));
+        Tags.MQ_BROKER.set(span, remoteAddr);
     }
 
     @Override

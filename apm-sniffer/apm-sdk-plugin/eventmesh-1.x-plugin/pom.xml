@@ -21,6 +21,7 @@
             <groupId>org.apache.eventmesh</groupId>
             <artifactId>eventmesh-sdk-java</artifactId>
             <version>${eventmesh-sdk-java.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

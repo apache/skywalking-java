@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Polish test framework to support `arm64/v8` platforms
+* Fix wrong config name `plugin.toolkit.use_qualified_name_as_operation_name`, and system variable name `SW_PLUGIN_TOOLKIT_USE_QUALIFIED_NAME_AS_OPERATION_NAME:false`. They were **toolit**.
 
 #### Documentation
 

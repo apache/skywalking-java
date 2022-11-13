@@ -29,7 +29,7 @@ public class ConnectionTracing {
 
     public static <R> R execute(java.sql.Connection realConnection, ConnectionInfo connectInfo, String method,
         String sql, Executable<R> exec) throws SQLException {
-        AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBI/Connection/" + method, connectInfo
+        AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/Connection/" + method, connectInfo
             .getDatabasePeer());
         try {
             Tags.DB_TYPE.set(span, "sql");

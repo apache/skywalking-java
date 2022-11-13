@@ -113,7 +113,7 @@ public class PreparedStatementExecuteMethodsInterceptorTest {
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("Mariadb/JDBI/PreparedStatement/"));
+        assertThat(span.getOperationName(), is("Mariadb/JDBC/PreparedStatement/"));
         SpanAssert.assertTag(span, 0, "sql");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, SQL);
@@ -143,7 +143,7 @@ public class PreparedStatementExecuteMethodsInterceptorTest {
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("Mariadb/JDBI/PreparedStatement/"));
+        assertThat(span.getOperationName(), is("Mariadb/JDBC/PreparedStatement/"));
         SpanAssert.assertTag(span, 0, "sql");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, "Select * f...");

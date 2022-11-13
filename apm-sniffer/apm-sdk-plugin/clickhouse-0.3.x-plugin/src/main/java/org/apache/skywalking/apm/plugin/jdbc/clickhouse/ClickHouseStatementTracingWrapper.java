@@ -33,7 +33,7 @@ public class ClickHouseStatementTracingWrapper {
     public static <T> T of(ConnectionInfo connectionInfo, String methodName, String sql,
             SupplierWithException<T> supplier) throws SQLException {
         final AbstractSpan span = ContextManager.createExitSpan(
-                connectionInfo.getDBType() + "/JDBI/Statement/" + methodName, connectionInfo.getDatabasePeer());
+                connectionInfo.getDBType() + "/JDBC/Statement/" + methodName, connectionInfo.getDatabasePeer());
         try {
             Tags.DB_TYPE.set(span, "sql");
             Tags.DB_INSTANCE.set(span, connectionInfo.getDatabaseName());

@@ -481,7 +481,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeQuery", "SELECT * FROM test");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeQuery", "SELECT * FROM test");
     }
 
     @Test
@@ -498,7 +498,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeQuery", "SELECT * FROM test");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeQuery", "SELECT * FROM test");
     }
 
     @Test
@@ -513,7 +513,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "INSERT INTO test VALUES(1)");
     }
 
     @Test
@@ -530,7 +530,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "INSERT INTO test VALUES(1)");
     }
 
     @Test
@@ -547,7 +547,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "INSERT INTO test VALUES(1)");
     }
 
     @Test
@@ -564,7 +564,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -581,7 +581,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = ?");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = ?");
     }
 
     @Test
@@ -598,7 +598,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -614,7 +614,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -630,7 +630,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -646,7 +646,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -666,7 +666,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeBatch", "");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeBatch", "");
     }
 
     @Test
@@ -710,7 +710,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
             TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
             List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
             assertThat(spans.size(), is(1));
-            assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeQuery", "SELECT * FROM test WHERE a = ? OR b = ? OR c=? OR d = ? OR e=?");
+            assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeQuery", "SELECT * FROM test WHERE a = ? OR b = ? OR c=? OR d = ? OR e=?");
             List<LogDataEntity> logs = SpanHelper.getLogs(spans.get(0));
             Assert.assertThat(logs.size(), is(1));
             assertDBSpanLog(logs.get(0));

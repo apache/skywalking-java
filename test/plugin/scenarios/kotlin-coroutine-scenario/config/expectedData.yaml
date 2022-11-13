@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -34,7 +34,7 @@ segmentItems:
       - {key: db.instance, value: demo}
       - {key: db.statement, value: 'SELECT * FROM PERSON WHERE ID = ?'}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/Connection/commit
+    - operationName: H2/JDBC/Connection/commit
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -65,7 +65,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -80,7 +80,7 @@ segmentItems:
       - {key: db.instance, value: demo}
       - {key: db.statement, value: 'SELECT * FROM PERSON WHERE ID = ?'}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/Connection/commit
+    - operationName: H2/JDBC/Connection/commit
       parentSpanId: 0
       spanId: 2
       spanLayer: Database

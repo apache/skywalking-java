@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: kylin/JDBI/Statement/execute
+    - operationName: kylin/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -35,7 +35,7 @@ segmentItems:
       - {key: db.instance, value: learn_kylin}
       - key: db.statement
         value: "select * from KYLIN_ACCOUNT LIMIT 1"
-    - operationName: kylin/JDBI/PreparedStatement/executeQuery
+    - operationName: kylin/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -50,7 +50,7 @@ segmentItems:
       - {key: db.type, value: sql}
       - {key: db.instance, value: learn_kylin}
       - {key: db.statement, value: "select * from KYLIN_ACCOUNT"}
-    - operationName: kylin/JDBI/Connection/close
+    - operationName: kylin/JDBC/Connection/close
       parentSpanId: 0
       spanId: 3
       spanLayer: Database

@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -51,7 +51,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -83,7 +83,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -128,7 +128,7 @@ segmentItems:
       tags:
       - {key: db.statement, value: SELECT * FROM t_order}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 3
       spanId: 4
       spanLayer: Database

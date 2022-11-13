@@ -91,7 +91,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/commit");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/commit");
     }
 
     @Test
@@ -104,7 +104,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/commit");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/commit");
     }
 
     @Test(expected = SQLException.class)
@@ -119,7 +119,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
             List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
             assertThat(spans.size(), is(1));
-            assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/commit");
+            assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/commit");
             assertThat(SpanHelper.getLogs(spans.get(0)).size(), is(1));
             assertDBSpanLog(SpanHelper.getLogs(spans.get(0)).get(0));
         }
@@ -135,7 +135,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/rollback");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/rollback");
     }
 
     @Test
@@ -148,7 +148,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/rollback");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/rollback");
     }
 
     @Test(expected = SQLException.class)
@@ -162,7 +162,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/rollback");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/rollback");
     }
 
     @Test
@@ -174,7 +174,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/rollback to savepoint");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/rollback to savepoint");
 
     }
 
@@ -187,7 +187,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/rollback to savepoint");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/rollback to savepoint");
 
     }
 
@@ -202,7 +202,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/rollback to savepoint");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/rollback to savepoint");
         assertDBSpanLog(SpanHelper.getLogs(spans.get(0)).get(0));
 
     }
@@ -217,7 +217,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/close");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/close");
 
     }
 
@@ -230,7 +230,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/close");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/close");
 
     }
 
@@ -245,7 +245,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/close");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/close");
         assertDBSpanLog(SpanHelper.getLogs(spans.get(0)).get(0));
     }
 
@@ -259,7 +259,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/releaseSavepoint savepoint");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/releaseSavepoint savepoint");
 
     }
 
@@ -272,7 +272,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/releaseSavepoint savepoint");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/releaseSavepoint savepoint");
     }
 
     @Test(expected = SQLException.class)
@@ -286,7 +286,7 @@ public class SWConnectionTest extends AbstractStatementTest {
 
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/Connection/releaseSavepoint savepoint");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/Connection/releaseSavepoint savepoint");
         assertDBSpanLog(SpanHelper.getLogs(spans.get(0)).get(0));
     }
 

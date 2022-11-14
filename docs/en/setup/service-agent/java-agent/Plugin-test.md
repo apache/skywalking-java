@@ -212,8 +212,7 @@ as the version number, which will be changed in the test for each version.
 **Expected Data Format Of The Segment**
 ```yml
 segmentItems:
--
-  serviceName: SERVICE_NAME(string)
+- serviceName: SERVICE_NAME(string)
   segmentSize: SEGMENT_SIZE(int)
   segments:
   - segmentId: SEGMENT_ID(string)
@@ -295,8 +294,7 @@ The verify description for SegmentRef
 **Expected Data Format Of The Meter Items**
 ```yml
 meterItems:
--
-  serviceName: SERVICE_NAME(string)
+- serviceName: SERVICE_NAME(string)
   meterSize: METER_SIZE(int)
   meters:
   - ...
@@ -336,8 +334,7 @@ The verify description for MeterId
 **Expected Data Format Of The Log Items**
 ```yml
 logItems:
--
-  serviceName: SERVICE_NAME(string)
+- serviceName: SERVICE_NAME(string)
   logSize: LOG_SIZE(int)
   logs:
   - ...

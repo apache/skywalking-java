@@ -69,3 +69,55 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
             skipAnalysis: 'false'
+meterItems:
+  - serviceName: dubbo-2.7.x--thread-pool-scenario
+    meterSize: 5
+    meters:
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: core_pool_size}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 1
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: max_pool_size}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 1
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: largest_pool_size}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 1
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: pool_size}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 0
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: queue_size}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 0
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: active_size}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 0
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: task_count}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 0
+      - meterId:
+          name: thread_pool
+          tags:
+            - {name: metric_type, value: completed_task_count}
+            - {name: pool_name, value: dubbo-provider-20080}
+        singleValue: ge 0

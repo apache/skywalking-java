@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: Mariadb/JDBI/Statement/execute
+    - operationName: Mariadb/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -36,7 +36,7 @@ segmentItems:
       - key: db.statement
         value: "CREATE TABLE test_table(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(10)\
           \ NOT NULL)"
-    - operationName: Mariadb/JDBI/PreparedStatement/execute
+    - operationName: Mariadb/JDBC/PreparedStatement/execute
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -51,7 +51,7 @@ segmentItems:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: "INSERT INTO test_table(id, value) VALUES(?,?)"}
-    - operationName: Mariadb/JDBI/PreparedStatement/execute
+    - operationName: Mariadb/JDBC/PreparedStatement/execute
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -66,7 +66,7 @@ segmentItems:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: "SELECT id, value FROM test_table WHERE id = ?"}
-    - operationName: Mariadb/JDBI/Statement/execute
+    - operationName: Mariadb/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -81,7 +81,7 @@ segmentItems:
       - {key: db.type, value: sql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: "DROP table test_table"}
-    - operationName: Mariadb/JDBI/Connection/close
+    - operationName: Mariadb/JDBC/Connection/close
       parentSpanId: 0
       spanId: 5
       spanLayer: Database

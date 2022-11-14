@@ -19,7 +19,7 @@ segmentItems:
     segments:
     - segmentId: not null
       spans:
-      - operationName: Impala/JDBI/Statement/execute
+      - operationName: Impala/JDBC/Statement/execute
         parentSpanId: 0
         spanId: 1
         spanLayer: Database
@@ -35,7 +35,7 @@ segmentItems:
           - { key: db.instance, value: '' }
           - key: db.statement
             value: "CREATE TABLE IF NOT EXISTS default.impala_test (test_id BIGINT, test_name STRING);"
-      - operationName: Impala/JDBI/Statement/execute
+      - operationName: Impala/JDBC/Statement/execute
         parentSpanId: 0
         spanId: 2
         spanLayer: Database
@@ -51,7 +51,7 @@ segmentItems:
         - { key: db.instance, value: '' }
         - key: db.statement
           value: "INSERT INTO impala_test VALUES (123, 'test');"
-      - operationName: Impala/JDBI/PreparedStatement/executeQuery
+      - operationName: Impala/JDBC/PreparedStatement/executeQuery
         parentSpanId: 0
         spanId: 3
         spanLayer: Database
@@ -67,7 +67,7 @@ segmentItems:
           - { key: db.instance, value: '' }
           - key: db.statement
             value: "SELECT COUNT(*) FROM impala_test;"
-      - operationName: Impala/JDBI/PreparedStatement/executeQuery
+      - operationName: Impala/JDBC/PreparedStatement/executeQuery
         parentSpanId: 0
         spanId: 4
         spanLayer: Database
@@ -84,7 +84,7 @@ segmentItems:
           - key: db.statement
             value: 'SELECT COUNT(*) FROM impala_test WHERE test_id = ?;'
           - { key: db.sql.parameters, value: '[123]'}
-      - operationName: Impala/JDBI/Connection/close
+      - operationName: Impala/JDBC/Connection/close
         parentSpanId: 0
         spanId: 5
         spanLayer: Database

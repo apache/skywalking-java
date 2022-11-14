@@ -311,7 +311,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeQuery", "SELECT * FROM test");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeQuery", "SELECT * FROM test");
     }
 
     @Test
@@ -326,7 +326,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/execute", "SELECT * FROM test");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/execute", "SELECT * FROM test");
     }
 
     @Test
@@ -342,7 +342,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeQuery", "SELECT * FROM test");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeQuery", "SELECT * FROM test");
 
     }
 
@@ -357,7 +357,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/execute", "INSERT INTO test VALUES(1)");
 
     }
 
@@ -374,7 +374,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/execute", "INSERT INTO test VALUES(1)");
 
     }
 
@@ -391,7 +391,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/execute", "INSERT INTO test VALUES(1)");
 
     }
 
@@ -408,7 +408,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/execute", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/execute", "UPDATE test SET  a = 1");
 
     }
 
@@ -425,7 +425,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeUpdate", "UPDATE test SET  a = ?");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeUpdate", "UPDATE test SET  a = ?");
 
     }
 
@@ -442,7 +442,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
 
     }
 
@@ -458,7 +458,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -473,7 +473,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
 
     }
 
@@ -489,7 +489,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -508,7 +508,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeBatch", "");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeBatch", "");
 
     }
 
@@ -556,7 +556,7 @@ public class SwPreparedStatementTest extends AbstractStatementTest {
             TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
             List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
             assertThat(spans.size(), is(1));
-            assertDBSpan(spans.get(0), "Mysql/JDBI/PreparedStatement/executeQuery", "SELECT * FROM test WHERE a = ? or b = ? or c=? or d = ? or e=?");
+            assertDBSpan(spans.get(0), "Mysql/JDBC/PreparedStatement/executeQuery", "SELECT * FROM test WHERE a = ? or b = ? or c=? or d = ? or e=?");
 
             List<LogDataEntity> logData = SpanHelper.getLogs(spans.get(0));
             Assert.assertThat(logData.size(), is(1));

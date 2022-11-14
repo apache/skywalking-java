@@ -19,7 +19,7 @@ segmentItems:
   segments:
     - segmentId: not null
       spans:
-      - operationName: Mysql/JDBI/PreparedStatement/execute
+      - operationName: Mysql/JDBC/PreparedStatement/execute
         parentSpanId: 1
         spanId: 2
         spanLayer: Database
@@ -47,7 +47,7 @@ segmentItems:
         skipAnalysis: 'false'
         tags:
         - {key: mybatis.mapper, value: test.apache.skywalking.apm.testcase.mybatis.mapper.DemoMapper.insert}
-      - operationName: Mysql/JDBI/Connection/close
+      - operationName: Mysql/JDBC/Connection/close
         parentSpanId: 0
         spanId: 3
         spanLayer: Database
@@ -62,7 +62,7 @@ segmentItems:
           - {key: db.type, value: sql}
           - {key: db.instance, value: ''}
           - {key: db.statement, value: ''}
-      - operationName: Mysql/JDBI/PreparedStatement/execute
+      - operationName: Mysql/JDBC/PreparedStatement/execute
         parentSpanId: 4
         spanId: 5
         spanLayer: Database
@@ -90,7 +90,7 @@ segmentItems:
         skipAnalysis: 'false'
         tags:
         - {key: mybatis.mapper, value: test.apache.skywalking.apm.testcase.mybatis.mapper.DemoMapper.insert}
-      - operationName: Mysql/JDBI/Connection/close
+      - operationName: Mysql/JDBC/Connection/close
         parentSpanId: 0
         spanId: 6
         spanLayer: Database

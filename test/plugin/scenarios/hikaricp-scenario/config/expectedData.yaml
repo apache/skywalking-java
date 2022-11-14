@@ -29,7 +29,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -64,7 +64,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 5
       spanLayer: Database
@@ -98,7 +98,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 8
       spanLayer: Database
@@ -132,7 +132,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 11
       spanLayer: Database
@@ -166,7 +166,7 @@ segmentItems:
       isError: false
       spanType: Local
       peer: ''
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 14
       spanLayer: Database

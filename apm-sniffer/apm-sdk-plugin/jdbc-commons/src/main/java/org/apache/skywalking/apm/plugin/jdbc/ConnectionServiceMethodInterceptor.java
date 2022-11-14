@@ -39,7 +39,7 @@ public class ConnectionServiceMethodInterceptor implements InstanceMethodsAround
         Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         ConnectionInfo connectInfo = (ConnectionInfo) objInst.getSkyWalkingDynamicField();
         if (connectInfo != null) {
-            AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBI/Connection/" + method.getName(), connectInfo
+            AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/Connection/" + method.getName(), connectInfo
                 .getDatabasePeer());
             Tags.DB_TYPE.set(span, "sql");
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());

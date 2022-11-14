@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: Mysql/JDBI/Connection/close
+    - operationName: Mysql/JDBC/Connection/close
       parentSpanId: 1
       spanId: 2
       componentId: 33
@@ -41,7 +41,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 3
       startTime: gt 0
@@ -77,7 +77,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 6
       startTime: gt 0
@@ -112,7 +112,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 9
       startTime: gt 0
@@ -147,7 +147,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 12
       startTime: gt 0
@@ -182,7 +182,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 15
       startTime: gt 0

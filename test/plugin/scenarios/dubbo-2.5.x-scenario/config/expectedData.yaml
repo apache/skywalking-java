@@ -67,8 +67,8 @@ segmentItems:
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
 meterItems:
-  - serviceName: dubbo-2.5.x-thread-pool-scenario
-    meterSize: 5
+  - serviceName: dubbo-2.5.x-scenario
+    meterSize: ge 8
     meters:
       - meterId:
           name: thread_pool

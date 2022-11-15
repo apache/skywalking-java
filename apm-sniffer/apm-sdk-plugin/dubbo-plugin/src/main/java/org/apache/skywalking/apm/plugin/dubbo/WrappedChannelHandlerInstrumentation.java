@@ -30,7 +30,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 
 public class WrappedChannelHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String ENHANCE_CLASS = "com.alibaba.dubbo.remoting.transport.dispatcher.WrappedChannelHandler";
-    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.msf.dubbo.WrappedChannelHandlerConstructorInterceptor";
+    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.dubbo.WrappedChannelHandlerConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

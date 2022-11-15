@@ -34,7 +34,7 @@ segmentItems:
               - {key: url, value: not null}
               - {key: arguments, value: helloWorld}
             refs:
-              - {parentEndpoint: GET:/dubbo-2.7.x-scenario/case/dubbo, networkAddress: 'localhost:20080',
+              - {parentEndpoint: GET:/dubbo-2.7.x-scenario/case/dubbo, networkAddress: 'localhost:20880',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: dubbo-2.7.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -49,9 +49,9 @@ segmentItems:
             componentId: 3
             isError: false
             spanType: Exit
-            peer: localhost:20080
+            peer: localhost:20880
             tags:
-              - {key: url, value: 'dubbo://localhost:20080/org.apache.skywalking.apm.testcase.dubbo.services.GreetService.doBusiness(String)'}
+              - {key: url, value: 'dubbo://localhost:20880/org.apache.skywalking.apm.testcase.dubbo.services.GreetService.doBusiness(String)'}
               - {key: arguments, value: helloWorld}
             skipAnalysis: 'false'
           - operationName: GET:/dubbo-2.7.x-scenario/case/dubbo
@@ -77,47 +77,47 @@ meterItems:
           name: thread_pool
           tags:
             - {name: metric_type, value: core_pool_size}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: max_pool_size}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: largest_pool_size}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: pool_size}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: queue_size}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: active_size}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: task_count}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: completed_task_count}
-            - {name: pool_name, value: dubbo-provider-20080}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0

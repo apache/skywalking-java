@@ -15,4 +15,4 @@
 # limitations under the License.
 
 dubbo-2.7.x=org.apache.skywalking.apm.plugin.asf.dubbo.DubboInstrumentation
-dubbo-threadpool-2.7.x=org.apache.skywalking.apm.plugin.asf.dubbo.WrappedChannelHandlerInstrumentation
+dubbo-threadpool-2.7.x=org.apache.skywalking.apm.plugin.asf.dubbo.AbstractServerInstrumentation

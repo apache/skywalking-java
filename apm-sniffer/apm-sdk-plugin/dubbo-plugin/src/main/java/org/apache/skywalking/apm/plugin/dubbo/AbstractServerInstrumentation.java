@@ -28,9 +28,9 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class WrappedChannelHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    private static final String ENHANCE_CLASS = "com.alibaba.dubbo.remoting.transport.dispatcher.WrappedChannelHandler";
-    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.dubbo.WrappedChannelHandlerConstructorInterceptor";
+public class AbstractServerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+    private static final String ENHANCE_CLASS = "com.alibaba.dubbo.remoting.transport.AbstractServer";
+    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.dubbo.AbstractServerConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

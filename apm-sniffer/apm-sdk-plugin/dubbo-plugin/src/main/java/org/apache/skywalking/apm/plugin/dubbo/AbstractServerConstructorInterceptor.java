@@ -16,37 +16,38 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.asf.dubbo;
+package org.apache.skywalking.apm.plugin.dubbo;
 
-import org.apache.dubbo.common.URL;
-import org.apache.dubbo.common.extension.ExtensionLoader;
-import org.apache.dubbo.common.store.DataStore;
+import com.alibaba.dubbo.common.URL;
+import com.alibaba.dubbo.remoting.transport.AbstractServer;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class WrappedChannelHandlerConstructorInterceptor implements InstanceConstructorInterceptor {
+public class AbstractServerConstructorInterceptor implements InstanceConstructorInterceptor {
     private static final String METER_NAME = "thread_pool";
     private static final String METRIC_POOL_NAME_TAG_NAME = "pool_name";
     private static final String METRIC_TYPE_TAG_NAME = "metric_type";
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
-        URL url = (URL) allArguments[1];
+        Field executorField = AbstractServer.class.getDeclaredField("executor");
+        executorField.setAccessible(true);
+        ExecutorService executor = (ExecutorService) executorField.get(objInst);
 
-        DataStore dataStore = ExtensionLoader.getExtensionLoader(DataStore.class).getDefaultExtension();
-        String port = Integer.toString(url.getPort());
+        URL url = (URL) allArguments[0];
+        int port = url.getPort();
 
-        final String componentKey = ExecutorService.class.getName();
-        ExecutorService executor = (ExecutorService) dataStore.get(componentKey, port);
         if (!(executor instanceof ThreadPoolExecutor)) {
             return;
         }
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
-        String threadPoolName = String.format("dubbo-provider-%s", port);
+        // TODO String.format("DubboServerHandler-%s:%s", host, port) will be better
+        String threadPoolName = String.format("DubboServerHandler-%s", port);
 
         MeterFactory.gauge(METER_NAME, () -> (double) (threadPoolExecutor.getCorePoolSize()))
                 .tag(METRIC_POOL_NAME_TAG_NAME, threadPoolName)

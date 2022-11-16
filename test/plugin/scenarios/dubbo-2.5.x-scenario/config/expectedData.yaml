@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: dubbo-scenario
+- serviceName: dubbo-2.5.x-scenario
   segmentSize: ge 3
   segments:
   - segmentId: not null
@@ -32,9 +32,9 @@ segmentItems:
       tags:
       - {key: url, value: not null}
       refs:
-      - {parentEndpoint: GET:/dubbo-scenario/case/dubbo, networkAddress: 'localhost:20880',
+      - {parentEndpoint: GET:/dubbo-2.5.x-scenario/case/dubbo, networkAddress: 'localhost:20880',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
-          null, parentService: dubbo-scenario, traceId: not null}
+          null, parentService: dubbo-2.5.x-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
@@ -51,7 +51,7 @@ segmentItems:
       tags:
       - {key: url, value: 'dubbo://localhost:20880/org.apache.skywalking.apm.testcase.dubbo.services.GreetService.doBusiness()'}
       skipAnalysis: 'false'
-    - operationName: GET:/dubbo-scenario/case/dubbo
+    - operationName: GET:/dubbo-2.5.x-scenario/case/dubbo
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -62,12 +62,12 @@ segmentItems:
       spanType: Entry
       peer: ''
       tags:
-      - {key: url, value: 'http://localhost:8080/dubbo-scenario/case/dubbo'}
+      - {key: url, value: 'http://localhost:8080/dubbo-2.5.x-scenario/case/dubbo'}
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
 meterItems:
-  - serviceName: dubbo-scenario
+  - serviceName: dubbo-2.5.x-scenario
     meterSize: ge 8
     meters:
       - meterId:

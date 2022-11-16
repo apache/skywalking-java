@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.apache.skywalking</groupId>
-    <artifactId>dubbo-scenario</artifactId>
+    <artifactId>dubbo-2.5.x-scenario</artifactId>
     <version>5.0.0</version>
 
     <properties>
@@ -34,7 +34,7 @@
         <test.framework.version>2.5.4</test.framework.version>
     </properties>
 
-    <name>skywalking-dubbo-scenario</name>
+    <name>skywalking-dubbo-2.5.x-scenario</name>
 
     <dependencyManagement>
         <dependencies>
@@ -63,7 +63,7 @@
     </dependencies>
 
     <build>
-        <finalName>dubbo-scenario</finalName>
+        <finalName>dubbo-2.5.x-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>./target/dubbo-2.5.x-scenario.jar</source>
+            <source>./target/dubbo-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>

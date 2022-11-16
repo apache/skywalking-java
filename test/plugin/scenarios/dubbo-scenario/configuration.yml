@@ -14,8 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-server:
-  port: 8080
-  servlet:
-    context-path: /dubbo-2.5.x-scenario
-
+type: jvm
+entryService: http://localhost:8080/dubbo-scenario/case/dubbo
+healthCheck: http://localhost:8080/dubbo-scenario/case/healthCheck
+startScript: ./bin/startup.sh
+environment:
+  - SW_METER_REPORT_INTERVAL=1

@@ -44,7 +44,7 @@ public class Application {
 
         private RegistryConfig registryConfig = new RegistryConfig("N/A");
 
-        private ProtocolConfig protocolConfig = new ProtocolConfig("dubbo", 20080);
+        private ProtocolConfig protocolConfig = new ProtocolConfig("dubbo", 20880);
 
         @Bean(destroyMethod = "unexport")
         public ServiceConfig<GreetService> service() {
@@ -65,7 +65,7 @@ public class Application {
             referenceConfig.setApplication(applicationConfig);
 
             referenceConfig.setInterface(GreetService.class);
-            referenceConfig.setUrl("dubbo://localhost:20080");
+            referenceConfig.setUrl("dubbo://localhost:20880");
 
             return referenceConfig;
         }

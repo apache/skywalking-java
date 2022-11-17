@@ -40,14 +40,14 @@ public class AbstractServerConstructorInterceptor implements InstanceConstructor
         ExecutorService executor = (ExecutorService) executorField.get(objInst);
 
         URL url = (URL) allArguments[0];
+        String host = url.getHost();
         int port = url.getPort();
 
         if (!(executor instanceof ThreadPoolExecutor)) {
             return;
         }
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
-        // TODO String.format("DubboServerHandler-%s:%s", host, port) will be better
-        String threadPoolName = String.format("DubboServerHandler-%s", port);
+        String threadPoolName = String.format("DubboServerHandler-%s:%s", host, port);
 
         MeterFactory.gauge(METER_NAME, () -> (double) (threadPoolExecutor.getCorePoolSize()))
                 .tag(METRIC_POOL_NAME_TAG_NAME, threadPoolName)

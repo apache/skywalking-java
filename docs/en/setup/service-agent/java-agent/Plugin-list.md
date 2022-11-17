@@ -15,6 +15,8 @@
 - dubbo
 - dubbo-2.7.x
 - dubbo-3.x
+- dubbo-threadpool
+- dubbo-threadpool-2.7.x
 - ehcache-2.x
 - elastic-job-2.x
 - elasticjob-3.x

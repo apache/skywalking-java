@@ -9,6 +9,7 @@ Release Notes.
 * Fix wrong config name `plugin.toolkit.use_qualified_name_as_operation_name`, and system variable name `SW_PLUGIN_TOOLKIT_USE_QUALIFIED_NAME_AS_OPERATION_NAME:false`. They were **toolit**.
 * Rename `JDBI` to `JDBC`
 * Support collecting dubbo thread pool metrics
+* Bump up byte-buddy to 1.12.19
 
 #### Documentation
 

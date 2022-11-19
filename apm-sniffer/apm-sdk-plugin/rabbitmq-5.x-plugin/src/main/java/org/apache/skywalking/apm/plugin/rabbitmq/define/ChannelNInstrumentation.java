@@ -45,7 +45,7 @@ public class ChannelNInstrumentation extends ClassInstanceMethodsEnhancePluginDe
             new ConstructorInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return takesArgumentWithType(3, "com.rabbitmq.client.MetricsCollector");
+                    return takesArgumentWithType(0, "com.rabbitmq.client.impl.AMQConnection");
                 }
 
                 @Override

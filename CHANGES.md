@@ -10,8 +10,11 @@ Release Notes.
 * Rename `JDBI` to `JDBC`
 * Support collecting dubbo thread pool metrics
 * Bump up byte-buddy to 1.12.19
+* Upgrade agent test tools
 
 #### Documentation
+
+* Update `Plugin-test.md`, support string operators `start with` and `end with`
 
 
 

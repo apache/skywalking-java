@@ -46,7 +46,6 @@ public class AbstractServerConstructorInterceptor implements InstanceConstructor
             return;
         }
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
-        // TODO String.format("DubboServerHandler-%s:%s", host, port) will be better
         String threadPoolName = String.format("DubboServerHandler-%s", port);
 
         MeterFactory.gauge(METER_NAME, () -> (double) (threadPoolExecutor.getCorePoolSize()))

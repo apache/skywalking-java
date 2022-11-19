@@ -91,7 +91,7 @@ The following files are required in every test case.
 File Name | Descriptions
 ---|---
 `configuration.yml` | Declare the basic case information, including case name, entrance endpoints, mode, and dependencies.
-`expectedData.yaml` | Describe the expected segmentItems.
+`expectedData.yaml` | Describe the expected segmentItems, meterItems or logItems.
 `support-version.list` | List the target versions for this case.
 `startup.sh` |`JVM-container` only. This is not required when using `Tomcat-container`.
 
@@ -202,12 +202,14 @@ as the version number, which will be changed in the test for each version.
 
 **Operator for String**
 
-| Operator    | Description                                                                                                   |
-|:------------|:--------------------------------------------------------------------------------------------------------------|
-| `not null`  | Not null                                                                                                      |
-| `not blank` | Not blank ,it's recommended for String type field as the default value maybe blank string, such as span tags  |
-| `null`      | Null or empty String                                                                                          |
-| `eq`        | Equal(default)                                                                                                |
+| Operator     | Description                                                                                                   |
+|:-------------|:--------------------------------------------------------------------------------------------------------------|
+| `not null`   | Not null                                                                                                      |
+| `not blank`  | Not blank ,it's recommended for String type field as the default value maybe blank string, such as span tags  |
+| `null`       | Null or empty String                                                                                          |
+| `eq`         | Equal(default)                                                                                                |
+| `start with` | Tests if this string starts with the specified prefix. DO NOT use it with meterItem tags value                |
+| `end with`   | Tests if this string ends with the specified suffix. DO NOT use it with meterItem tags value                  |
 
 **Expected Data Format Of The Segment**
 ```yml

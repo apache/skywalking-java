@@ -22,7 +22,7 @@ WORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &&cd ../.. && pwd)"
 GENERNATE_PLUGINS_LIST=${SRC_DIR}/genernate-javaagent-plugin-list.txt
 MD_PLUGINS_LIST=${SRC_DIR}/md-javaagent-plugin-list.txt
 
-function genernateJavaagentPluginList() {
+function generateJavaagentPluginList() {
     position_file="javaagent-position.txt"
     find ${WORK_DIR}/apm-sniffer -name "skywalking-plugin.def"|grep "src/main/resources" > ${position_file}
     cat ${position_file} | while read line
@@ -38,7 +38,7 @@ function getMdJavaagentPluginList() {
     cat  ${md_javaagent_plugins_file}|grep -v "#" |awk -F " " '{ print $2}'|grep -E '^[a-z].*'|sort|uniq|awk NF >${MD_PLUGINS_LIST}
 }
 
-genernateJavaagentPluginList
+generateJavaagentPluginList
 getMdJavaagentPluginList
 diff -w -bB -U0 ${MD_PLUGINS_LIST} ${GENERNATE_PLUGINS_LIST}
 

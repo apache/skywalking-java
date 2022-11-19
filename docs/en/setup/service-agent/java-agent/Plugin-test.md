@@ -91,7 +91,7 @@ The following files are required in every test case.
 File Name | Descriptions
 ---|---
 `configuration.yml` | Declare the basic case information, including case name, entrance endpoints, mode, and dependencies.
-`expectedData.yaml` | Describe the expected segmentItems.
+`expectedData.yaml` | Describe the expected segmentItems, meterItems or logItems.
 `support-version.list` | List the target versions for this case.
 `startup.sh` |`JVM-container` only. This is not required when using `Tomcat-container`.
 

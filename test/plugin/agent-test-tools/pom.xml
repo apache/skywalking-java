@@ -35,7 +35,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <agent-test-tools.version>b2c68c3274a19d40056f109f8145109225c697fa</agent-test-tools.version>
+        <agent-test-tools.version>8a09b6f16b0b3fb535ca515437ef107042aaae45</agent-test-tools.version>
         <agent-test-tools.workingDirectory>${project.basedir}/target/agent-test-tools</agent-test-tools.workingDirectory>
         <agent-test-tools.repos>https://github.com/nisiyong/skywalking-agent-test-tool.git</agent-test-tools.repos>
     </properties>

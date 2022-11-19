@@ -74,47 +74,47 @@ meterItems:
           name: thread_pool
           tags:
             - {name: metric_type, value: core_pool_size}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: max_pool_size}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: largest_pool_size}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: pool_size}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: queue_size}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: active_size}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: task_count}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: completed_task_count}
-            - {name: pool_name, value: start with DubboServerHandler-}
+            - {name: pool_name, value: DubboServerHandler-20880}
         singleValue: ge 0

@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rabbitmq-5.x=org.apache.skywalking.apm.plugin.rabbitmq.define.ChannelNInstrumentation
+rabbitmq=org.apache.skywalking.apm.plugin.rabbitmq.define.ChannelNInstrumentation

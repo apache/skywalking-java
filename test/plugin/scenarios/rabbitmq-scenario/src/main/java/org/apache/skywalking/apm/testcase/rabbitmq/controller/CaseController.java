@@ -22,7 +22,10 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
+
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -78,13 +81,16 @@ public class CaseController {
             LOGGER.info("Message has been published-------------->" + MESSAGE);
 
             final CountDownLatch waitForConsume = new CountDownLatch(1);
-            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
-                LOGGER.info("Message received-------------->" + message);
-                waitForConsume.countDown();
+            DefaultConsumer callback = new DefaultConsumer(channel) {
+                @Override
+                public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                    String message = new String(body, "UTF-8");
+                    LOGGER.info("Message received-------------->" + message);
+                    waitForConsume.countDown();
+                }
             };
-            channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> {
-            });
+
+            channel.basicConsume(QUEUE_NAME, true, callback);
             waitForConsume.await(5000L, TimeUnit.MILLISECONDS);
             LOGGER.info("Message Consumed-------------->");
 

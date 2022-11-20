@@ -75,7 +75,7 @@
 - pulsar-2.2-2.7
 - quasar
 - quartz-scheduler-2.x
-- rabbitmq-5.x
+- rabbitmq
 - redisson-3.x
 - resteasy-server-3.x
 - resteasy-server-4.x

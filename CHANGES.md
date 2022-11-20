@@ -11,6 +11,7 @@ Release Notes.
 * Support collecting dubbo thread pool metrics
 * Bump up byte-buddy to 1.12.19
 * Upgrade agent test tools
+* [Breaking Change] Compatible with 3.x and 4.x RabbitMQ Client, rename `rabbitmq-5.x-plugin` to `rabbitmq-plugin`
 
 #### Documentation
 

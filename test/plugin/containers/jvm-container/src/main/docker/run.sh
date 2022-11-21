@@ -85,6 +85,7 @@ export agent_opts="
     -Xms256m -Xmx256m ${agent_opts}"
 
 bash /var/run/${SCENARIO_NAME}/${SCENARIO_START_SCRIPT} 1>${LOGS_HOME}/scenario.out &
+sleep 5
 
 healthCheck ${SCENARIO_HEALTH_CHECK_URL}
 
@@ -101,7 +102,7 @@ java -jar \
     -Xmx256m -Xms256m \
     -DcaseName="${SCENARIO_NAME}-${SCENARIO_VERSION}" \
     -DtestCasePath=${SCENARIO_HOME}/data/ \
-    ${TOOLS_HOME}/skywalking-validator.jar 1>${LOGS_HOME}/validatolr.out
+    ${TOOLS_HOME}/skywalking-validator.jar 1>${LOGS_HOME}/validator.out
 status=$?
 
 if [[ $status -eq 0 ]]; then

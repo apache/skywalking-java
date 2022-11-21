@@ -34,7 +34,7 @@ segmentItems:
       - {key: propagationBehavior, value: '0'}
       - {key: timeout, value: '-1'}
       skipAnalysis: 'false'
-    - operationName: Mysql/JDBI/PreparedStatement/executeUpdate
+    - operationName: Mysql/JDBC/PreparedStatement/executeUpdate
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -49,7 +49,7 @@ segmentItems:
       - {key: db.instance, value: ''}
       - {key: db.statement, value: 'insert into `test`.`table_demo`(name) values(?)'}
       skipAnalysis: 'false'
-    - operationName: Mysql/JDBI/PreparedStatement/executeUpdate
+    - operationName: Mysql/JDBC/PreparedStatement/executeUpdate
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -64,7 +64,7 @@ segmentItems:
       - {key: db.instance, value: ''}
       - {key: db.statement, value: 'insert into `test`.`table_demo`(name) values(?)'}
       skipAnalysis: 'false'
-    - operationName: Mysql/JDBI/Connection/commit
+    - operationName: Mysql/JDBC/Connection/commit
       parentSpanId: 4
       spanId: 5
       spanLayer: Database
@@ -79,7 +79,7 @@ segmentItems:
       - {key: db.instance, value: ''}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'
-    - operationName: Mysql/JDBI/Statement/executeQuery
+    - operationName: Mysql/JDBC/Statement/executeQuery
       parentSpanId: 4
       spanId: 6
       spanLayer: Database
@@ -94,7 +94,7 @@ segmentItems:
       - {key: db.instance, value: ''}
       - {key: db.statement, value: select @@session.tx_read_only}
       skipAnalysis: 'false'
-    - operationName: Mysql/JDBI/Connection/close
+    - operationName: Mysql/JDBC/Connection/close
       parentSpanId: 4
       spanId: 7
       spanLayer: Database

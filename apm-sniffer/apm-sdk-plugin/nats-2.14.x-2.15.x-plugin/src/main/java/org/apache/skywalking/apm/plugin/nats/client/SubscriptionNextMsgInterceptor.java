@@ -19,6 +19,7 @@ package org.apache.skywalking.apm.plugin.nats.client;
 
 import io.nats.client.Message;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -39,9 +40,12 @@ public class SubscriptionNextMsgInterceptor implements InstanceMethodsAroundInte
         if (ret == null) {
             return null;
         }
-
+        // set by  NatsSubscriptionConstructorInterceptor
+        String servers = (String) objInst.getSkyWalkingDynamicField();
         Message msg = (Message) ret;
         AbstractSpan span = createEntrySpan(msg);
+        Tags.MQ_BROKER.set(span , servers);
+        span.setPeer(servers);
         // Close the span immediately , as no chance to trace what user want to do
         ContextManager.stopSpan(span);
         return ret;

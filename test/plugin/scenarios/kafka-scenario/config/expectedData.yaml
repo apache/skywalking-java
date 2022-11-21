@@ -158,11 +158,11 @@ segmentItems:
       componentId: 41
       isError: false
       spanType: Entry
-      peer: ''
+      peer: kafka-server:9092
       tags:
       - {key: mq.broker, value: 'kafka-server:9092'}
       - {key: mq.topic, value: test}
-      - {key: transmission.latency, value: not null}
+      - {key: transmission.latency, value: ge 0}
       refs:
       - {parentEndpoint: GET:/case/kafka-case, networkAddress: 'kafka-server:9092', refType: CrossProcess,
         parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -194,12 +194,12 @@ segmentItems:
         componentId: 41
         isError: false
         spanType: Entry
-        peer: ''
+        peer: kafka-server:9092
         tags:
           - {key: mq.broker, value: 'kafka-server:9092'}
           - {key: mq.topic, value: test.}
-          - {key: transmission.latency, value: not null}
-          - {key: transmission.latency, value: not null}
+          - {key: transmission.latency, value: ge 0}
+          - {key: transmission.latency, value: ge 0}
         refs:
           - {parentEndpoint: GET:/case/kafka-case, networkAddress: 'kafka-server:9092', refType: CrossProcess,
              parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -241,7 +241,7 @@ segmentItems:
         componentId: 41
         isError: false
         spanType: Entry
-        peer: ''
+        peer: kafka-server:9092
         tags:
           - { key: mq.broker, value: 'kafka-server:9092' }
           - { key: mq.topic, value: assign }

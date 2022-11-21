@@ -17,6 +17,7 @@
 
 package org.apache.skywalking.apm.plugin.nats.client;
 
+import io.nats.client.Connection;
 import io.nats.client.Message;
 import io.nats.client.MessageHandler;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
@@ -24,6 +25,7 @@ import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.IntegerTag;
 import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
@@ -37,6 +39,7 @@ public class NatsCommons {
     private static final String REPLY_TO = "reply_to";
     private static final String MSG_STATE = "state";
     private static final String MSG = "message";
+    private static final String UNKNOWN_SERVER = "unknown_server";
 
     static boolean skipTrace(Object msg) {
         // include null
@@ -64,11 +67,12 @@ public class NatsCommons {
     static void injectCarrier(Message message) {
         ContextCarrier contextCarrier = new ContextCarrier();
         ContextManager.inject(contextCarrier);
+        contextCarrier.extensionInjector().injectSendingTimestamp();
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {
             next = next.next();
             if (StringUtil.isNotEmpty(next.getHeadKey())
-                    && StringUtil.isNotEmpty(next.getHeadValue())) {
+                && StringUtil.isNotEmpty(next.getHeadValue())) {
                 message.getHeaders().add(next.getHeadKey(), next.getHeadValue());
             }
         }
@@ -77,6 +81,7 @@ public class NatsCommons {
     static void addCommonTag(AbstractSpan span, Message message) {
         Optional.ofNullable(message.getReplyTo()).ifPresent(v -> span.tag(new StringTag(REPLY_TO), v));
         Optional.ofNullable(message.getSID()).ifPresent(v -> span.tag(new StringTag(SID), v));
+        Tags.MQ_QUEUE.set(span, message.getSubject());
         span.setComponent(ComponentsDefine.NATS);
         SpanLayer.asMQ(span);
         if (message.getStatus() != null) {
@@ -92,7 +97,7 @@ public class NatsCommons {
         }
     }
 
-    static MessageHandler buildTraceMsgHandler(MessageHandler msgHandler) {
+    static MessageHandler buildTraceMsgHandler(String servers, MessageHandler msgHandler) {
         if (msgHandler == null) {
             return null;
         }
@@ -102,6 +107,8 @@ public class NatsCommons {
                 return;
             }
             AbstractSpan span = NatsCommons.createEntrySpan(msg);
+            Tags.MQ_BROKER.set(span, servers);
+            span.setPeer(servers);
             try {
                 msgHandler.onMessage(msg);
             } catch (Exception e) {
@@ -113,4 +120,9 @@ public class NatsCommons {
         };
 
     }
+
+    static String buildServers(Connection connection) {
+        return connection.getServers().stream().reduce((a, b) -> a + "," + b).orElse(UNKNOWN_SERVER);
+    }
+
 }

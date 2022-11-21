@@ -64,6 +64,9 @@ services:
         <#if service.remoteOnExit??>
         remoteOnExit: ${service.remoteOnExit}
         </#if>
+        <#if service.command??>
+        command: ${service.command}
+        </#if>
         <#if service.volumes??>
         volumes:
         <#list service.volumes as volume>

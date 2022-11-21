@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>java-agent-sniffer</artifactId>
-        <version>8.13.0-SNAPSHOT</version>
+        <version>8.14.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>apm-sdk-plugin</artifactId>
@@ -70,7 +70,7 @@
         <module>elasticsearch-6.x-plugin</module>
         <module>elasticsearch-7.x-plugin</module>
         <module>undertow-plugins</module>
-        <module>rabbitmq-5.x-plugin</module>
+        <module>rabbitmq-plugin</module>
         <module>dubbo-conflict-patch</module>
         <module>canal-1.x-plugin</module>
         <module>dubbo-2.7.x-plugin</module>

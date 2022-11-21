@@ -19,7 +19,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: Mssql/JDBI/PreparedStatement/execute
+          - operationName: Mssql/JDBC/PreparedStatement/execute
             parentSpanId: 0
             spanId: 1
             tags:
@@ -37,7 +37,7 @@ segmentItems:
             componentId: 104
             peer: mssql-server:1433
             skipAnalysis: 'false'
-          - operationName: Mssql/JDBI/PreparedStatement/execute
+          - operationName: Mssql/JDBC/PreparedStatement/execute
             parentSpanId: 0
             spanId: 2
             tags:
@@ -54,7 +54,7 @@ segmentItems:
             componentId: 104
             peer: mssql-server:1433
             skipAnalysis: 'false'
-          - operationName: Mssql/JDBI/PreparedStatement/execute
+          - operationName: Mssql/JDBC/PreparedStatement/execute
             parentSpanId: 0
             spanId: 3
             tags:
@@ -71,7 +71,7 @@ segmentItems:
             componentId: 104
             peer: mssql-server:1433
             skipAnalysis: 'false'
-          - operationName: Mssql/JDBI/Statement/execute
+          - operationName: Mssql/JDBC/Statement/execute
             parentSpanId: 0
             spanId: 4
             tags:
@@ -87,7 +87,7 @@ segmentItems:
             componentId: 104
             peer: mssql-server:1433
             skipAnalysis: 'false'
-          - operationName: Mssql/JDBI/Connection/close
+          - operationName: Mssql/JDBC/Connection/close
             parentSpanId: 0
             spanId: 5
             tags:

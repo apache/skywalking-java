@@ -28,9 +28,9 @@ segmentItems:
       componentId: 45
       isError: false
       spanType: Exit
-      peer: not null
+      peer: not blank
       tags:
-      - {key: mq.broker, value: not null}
+      - {key: mq.broker, value: not blank}
       - {key: mq.queue, value: test}
       skipAnalysis: 'false'
     - operationName: GET:/activemq-scenario/case/activemq
@@ -59,11 +59,11 @@ segmentItems:
       componentId: 46
       isError: false
       spanType: Entry
-      peer: ''
+      peer: not blank
       tags:
-      - {key: mq.broker, value: not null}
+      - {key: mq.broker, value: not blank}
       - {key: mq.queue, value: test}
-      - {key: transmission.latency, value: not null}
+      - {key: transmission.latency, value: ge 0}
       refs:
       - {parentEndpoint: GET:/activemq-scenario/case/activemq, networkAddress: not null,
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,

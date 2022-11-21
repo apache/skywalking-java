@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: PostgreSQL/JDBI/PreparedStatement/execute
+    - operationName: PostgreSQL/JDBC/PreparedStatement/execute
       parentSpanId: 0
       spanId: 1
       tags:
@@ -36,7 +36,7 @@ segmentItems:
       componentId: 37
       peer: postgresql-server:5432
       skipAnalysis: 'false'
-    - operationName: PostgreSQL/JDBI/CallableStatement/execute
+    - operationName: PostgreSQL/JDBC/CallableStatement/execute
       parentSpanId: 0
       spanId: 2
       tags:
@@ -51,7 +51,7 @@ segmentItems:
       componentId: 37
       peer: postgresql-server:5432
       skipAnalysis: 'false'
-    - operationName: PostgreSQL/JDBI/Statement/execute
+    - operationName: PostgreSQL/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 3
       tags:
@@ -66,7 +66,7 @@ segmentItems:
       componentId: 37
       peer: postgresql-server:5432
       skipAnalysis: 'false'
-    - operationName: PostgreSQL/JDBI/Connection/close
+    - operationName: PostgreSQL/JDBC/Connection/close
       parentSpanId: 0
       spanId: 4
       tags:

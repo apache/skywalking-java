@@ -15,6 +15,8 @@
 - dubbo
 - dubbo-2.7.x
 - dubbo-3.x
+- dubbo-threadpool
+- dubbo-threadpool-2.7.x
 - ehcache-2.x
 - elastic-job-2.x
 - elasticjob-3.x
@@ -73,7 +75,7 @@
 - pulsar-2.2-2.7
 - quasar
 - quartz-scheduler-2.x
-- rabbitmq-5.x
+- rabbitmq
 - redisson-3.x
 - resteasy-server-3.x
 - resteasy-server-4.x
@@ -122,6 +124,7 @@
 - toolkit-tag
 - toolkit-trace
 - toolkit-exception
+- toolkit-webflux
 - undertow-2.x-plugin
 - vertx-core-3.x
 - vertx-core-4.x

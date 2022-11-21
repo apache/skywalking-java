@@ -186,7 +186,7 @@ The value of `x-le` should be in JSON format. There are two options:
 }
 ```
 
-#### Vitural Database Relative Tags
+#### Virtual Database Relative Tags
 SkyWalking analysis Database(SQL-like) performance metrics through the following tags.
 
 ```java
@@ -199,8 +199,8 @@ SkyWalking analysis Database(SQL-like) performance metrics through the following
 
 Read [backend's virtual database doc](https://skywalking.apache.org/docs/main/next/en/setup/service-agent/virtual-database/) for more details. 
 
-#### Vitural Cache Relative Tags
-Skywalking analysis cache performance related metrics through the following tags.
+#### Virtual Cache Relative Tags
+SkyWalking analysis cache performance related metrics through the following tags.
 
 ```java
     public static final StringTag CACHE_TYPE = new StringTag(15, "cache.type");
@@ -209,13 +209,29 @@ Skywalking analysis cache performance related metrics through the following tags
     public static final StringTag CACHE_KEY = new StringTag(18, "cache.key");
 ```
 
-* `cache.type` indicates the cache type , usually it's cache client library name (e.g. Jedis)
+* `cache.type` indicates the cache type , usually it's official name of cache (e.g. Redis)
 * `cache.cmd`  indicates the cache command that would be sent to cache server (e.g. setnx)
 * `cache.op`   indicates the command is used for `write` or `read` operation , usually the value is converting from `command` 
 * `cache.key`  indicates the cache key that would be sent to cache server , this tag maybe null , as string type key would be collected usually.  
 
 In order to decide which `op` should be converted to flexibly , It's better that providing config property .
 Reference  [Jedis-4.x-plugin](https://github.com/apache/skywalking-java/blob/main/apm-sniffer/apm-sdk-plugin/jedis-plugins/jedis-4.x-plugin/src/main/java/org/apache/skywalking/apm/plugin/jedis/v4/JedisPluginConfig.java)
+
+#### Virtual Message Queue (MQ) Relative Tags
+
+SkyWalking analysis MQ performance related metrics through the following tags.
+
+```java
+    public static final StringTag MQ_QUEUE = new StringTag(7, "mq.queue");
+    public static final StringTag MQ_TOPIC = new StringTag(9, "mq.topic");
+    public static final StringTag TRANSMISSION_LATENCY = new StringTag(15, "transmission.latency", false);
+```
+* `mq.queue`   indicates MQ queue name 
+* `mq.topic`   indicates MQ topic name , It's optional as some MQ don't hava concept of `topic`
+* `transmission.latency` The transmission latency from consumer to producer. Usually you needn't to record this tag manually, instead to call  `contextCarrier.extensionInjector().injectSendingTimestamp();` to record tag `sendingTimestamp` on producer side , and SkyWalking would record this tag on consumer side if `sw8-x` context carrier(from producer side) contains `sendingTimestamp`
+
+Notice , you should set `peer` at both sides(producer and consumer). And the value of peer should represent the MQ server cluster.
+
 
 ### Advanced APIs
 

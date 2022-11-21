@@ -20,7 +20,7 @@ The test framework provides `JVM-container` and `Tomcat-container` base images i
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `adoptopenjdk/openjdk8:alpine-jre` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `adoptopenjdk/openjdk8:alpine-jre` and `eclipse-temurin:17-alpine`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `eclipse-temurin:8-jdk` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `eclipse-temurin:8-jdk` and `eclipse-temurin:17-jdk`.
 It is supported to custom the base Java docker image by specify `base_image_java`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
@@ -91,7 +91,7 @@ The following files are required in every test case.
 File Name | Descriptions
 ---|---
 `configuration.yml` | Declare the basic case information, including case name, entrance endpoints, mode, and dependencies.
-`expectedData.yaml` | Describe the expected segmentItems.
+`expectedData.yaml` | Describe the expected segmentItems, meterItems or logItems.
 `support-version.list` | List the target versions for this case.
 `startup.sh` |`JVM-container` only. This is not required when using `Tomcat-container`.
 
@@ -109,7 +109,7 @@ File Name | Descriptions
 | withPlugins | Plugin selector rule, e.g.:`apm-spring-annotation-plugin-*.jar`. Required for `runningMode=with_optional` or `runningMode=with_bootstrap`.
 | environment | Same as `docker-compose#environment`.
 | depends_on | Same as `docker-compose#depends_on`.
-| dependencies | Same as `docker-compose#services`, `image`, `links`, `hostname`, `environment` and `depends_on` are supported.
+| dependencies | Same as `docker-compose#services`, `image`, `links`, `hostname`, `command`, `environment` and `depends_on` are supported.
 
 **Note:, `docker-compose` activates only when `dependencies` is blank.**
 
@@ -202,17 +202,19 @@ as the version number, which will be changed in the test for each version.
 
 **Operator for String**
 
-| Operator | Description |
-| :--- | :--- |
-| `not null` | Not null |
-| `null` | Null or empty String |
-| `eq` | Equal(default) |
+| Operator     | Description                                                                                                   |
+|:-------------|:--------------------------------------------------------------------------------------------------------------|
+| `not null`   | Not null                                                                                                      |
+| `not blank`  | Not blank ,it's recommended for String type field as the default value maybe blank string, such as span tags  |
+| `null`       | Null or empty String                                                                                          |
+| `eq`         | Equal(default)                                                                                                |
+| `start with` | Tests if this string starts with the specified prefix. DO NOT use it with meterItem tags value                |
+| `end with`   | Tests if this string ends with the specified suffix. DO NOT use it with meterItem tags value                  |
 
 **Expected Data Format Of The Segment**
 ```yml
 segmentItems:
--
-  serviceName: SERVICE_NAME(string)
+- serviceName: SERVICE_NAME(string)
   segmentSize: SEGMENT_SIZE(int)
   segments:
   - segmentId: SEGMENT_ID(string)
@@ -294,8 +296,7 @@ The verify description for SegmentRef
 **Expected Data Format Of The Meter Items**
 ```yml
 meterItems:
--
-  serviceName: SERVICE_NAME(string)
+- serviceName: SERVICE_NAME(string)
   meterSize: METER_SIZE(int)
   meters:
   - ...
@@ -335,8 +336,7 @@ The verify description for MeterId
 **Expected Data Format Of The Log Items**
 ```yml
 logItems:
--
-  serviceName: SERVICE_NAME(string)
+- serviceName: SERVICE_NAME(string)
   logSize: LOG_SIZE(int)
   logs:
   - ...

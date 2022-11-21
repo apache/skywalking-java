@@ -32,6 +32,7 @@ public class NatsSubscriptionInstrumentation extends ClassInstanceMethodsEnhance
 
     private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsSubscription";
     private static final String NEXT_MSG_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.SubscriptionNextMsgInterceptor";
+    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.NatsSubscriptionConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -40,7 +41,19 @@ public class NatsSubscriptionInstrumentation extends ClassInstanceMethodsEnhance
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[] {
+            new ConstructorInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                    return takesArguments(5);
+                }
+
+                @Override
+                public String getConstructorInterceptor() {
+                    return CONSTRUCTOR_INTERCEPTOR;
+                }
+            }
+        };
     }
 
     @Override

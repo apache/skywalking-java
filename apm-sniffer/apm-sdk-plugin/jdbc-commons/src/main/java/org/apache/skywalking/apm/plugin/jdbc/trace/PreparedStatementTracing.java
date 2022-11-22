@@ -35,7 +35,7 @@ public class PreparedStatementTracing {
         final AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/PreparedStatement/" + method, connectInfo
             .getDatabasePeer());
         try {
-            Tags.DB_TYPE.set(span, "sql");
+            Tags.DB_TYPE.set(span, connectInfo.getDBType());
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
             Tags.DB_STATEMENT.set(span, sql);
             span.setComponent(connectInfo.getComponent());

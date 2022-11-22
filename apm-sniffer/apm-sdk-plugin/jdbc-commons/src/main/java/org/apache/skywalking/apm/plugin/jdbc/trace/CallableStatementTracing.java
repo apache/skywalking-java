@@ -35,7 +35,7 @@ public class CallableStatementTracing {
         AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/CallableStatement/" + method, connectInfo
             .getDatabasePeer());
         try {
-            Tags.DB_TYPE.set(span, "sql");
+            Tags.DB_TYPE.set(span, connectInfo.getDBType());
             SpanLayer.asDB(span);
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
             Tags.DB_STATEMENT.set(span, sql);

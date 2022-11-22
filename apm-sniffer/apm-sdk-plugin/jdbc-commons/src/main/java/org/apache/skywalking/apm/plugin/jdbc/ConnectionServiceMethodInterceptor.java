@@ -41,7 +41,7 @@ public class ConnectionServiceMethodInterceptor implements InstanceMethodsAround
         if (connectInfo != null) {
             AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/Connection/" + method.getName(), connectInfo
                 .getDatabasePeer());
-            Tags.DB_TYPE.set(span, "sql");
+            Tags.DB_TYPE.set(span, connectInfo.getDBType());
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
             Tags.DB_STATEMENT.set(span, "");
             span.setComponent(connectInfo.getComponent());

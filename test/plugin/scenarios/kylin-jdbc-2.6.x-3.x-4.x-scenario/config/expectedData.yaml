@@ -31,7 +31,7 @@ segmentItems:
       peer: kylin-server:7070
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: kylin}
       - {key: db.instance, value: learn_kylin}
       - key: db.statement
         value: "select * from KYLIN_ACCOUNT LIMIT 1"
@@ -47,7 +47,7 @@ segmentItems:
       peer: kylin-server:7070
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: kylin}
       - {key: db.instance, value: learn_kylin}
       - {key: db.statement, value: "select * from KYLIN_ACCOUNT"}
     - operationName: kylin/JDBC/Connection/close
@@ -62,7 +62,7 @@ segmentItems:
       peer: kylin-server:7070
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: kylin}
       - {key: db.instance, value: learn_kylin}
       - {key: db.statement, value: ''}
     - operationName: HEAD:/kylin-jdbc-2.6.x-3.x-4.x-scenario/case/healthCheck

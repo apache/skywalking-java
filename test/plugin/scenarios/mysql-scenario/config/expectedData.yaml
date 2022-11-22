@@ -23,7 +23,7 @@ segmentItems:
       parentSpanId: 0
       spanId: 1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - key: db.statement
         value: "CREATE TABLE test_007(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(1)\
@@ -41,7 +41,7 @@ segmentItems:
       parentSpanId: 0
       spanId: 2
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
       logs: []
@@ -57,7 +57,7 @@ segmentItems:
       parentSpanId: 0
       spanId: 3
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: DROP table test_007}
       logs: []
@@ -73,7 +73,7 @@ segmentItems:
       parentSpanId: 0
       spanId: 4
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - {key: db.statement, value: "create procedure testProcedure(IN id varchar(10)) \n begin \n select id; \n end"}
       logs: []
@@ -97,14 +97,14 @@ segmentItems:
       peer: mysql-server:3306
       skipAnalysis: false
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - {key: db.statement, value: SHOW CREATE PROCEDURE `test`.`testProcedure`}
     - operationName: Mysql/JDBC/CallableStatement/execute
       parentSpanId: 0
       spanId: 6
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - {key: db.statement, value: "call testProcedure( ? )"}
       logs: []
@@ -120,7 +120,7 @@ segmentItems:
       parentSpanId: 0
       spanId: 7
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - {key: db.statement, value: "drop procedure testProcedure"}
       logs: []
@@ -136,7 +136,7 @@ segmentItems:
       parentSpanId: 0
       spanId: 8
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: ''}
       logs: []

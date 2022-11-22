@@ -35,7 +35,7 @@ public class ClickHouseStatementTracingWrapper {
         final AbstractSpan span = ContextManager.createExitSpan(
                 connectionInfo.getDBType() + "/JDBC/Statement/" + methodName, connectionInfo.getDatabasePeer());
         try {
-            Tags.DB_TYPE.set(span, "sql");
+            Tags.DB_TYPE.set(span, connectionInfo.getDBType());
             Tags.DB_INSTANCE.set(span, connectionInfo.getDatabaseName());
             Tags.DB_STATEMENT.set(span, sql);
             span.setComponent(connectionInfo.getComponent());

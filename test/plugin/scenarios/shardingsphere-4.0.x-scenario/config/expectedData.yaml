@@ -30,7 +30,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_1}
       - {key: db.statement, value: SELECT * FROM t_order_1}
       skipAnalysis: 'false'
@@ -62,7 +62,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_0}
       - {key: db.statement, value: SELECT * FROM t_order_1}
       skipAnalysis: 'false'
@@ -94,7 +94,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_1}
       - {key: db.statement, value: SELECT * FROM t_order_0}
       skipAnalysis: 'false'
@@ -139,7 +139,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_0}
       - {key: db.statement, value: SELECT * FROM t_order_0}
       skipAnalysis: 'false'

@@ -31,7 +31,7 @@ segmentItems:
         peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
-          - { key: db.type, value: sql }
+          - {key: db.type, value: Impala}
           - { key: db.instance, value: '' }
           - key: db.statement
             value: "CREATE TABLE IF NOT EXISTS default.impala_test (test_id BIGINT, test_name STRING);"
@@ -47,7 +47,7 @@ segmentItems:
         peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
-        - { key: db.type, value: sql }
+        - {key: db.type, value: Impala}
         - { key: db.instance, value: '' }
         - key: db.statement
           value: "INSERT INTO impala_test VALUES (123, 'test');"
@@ -63,7 +63,7 @@ segmentItems:
         peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
-          - { key: db.type, value: sql }
+          - {key: db.type, value: Impala}
           - { key: db.instance, value: '' }
           - key: db.statement
             value: "SELECT COUNT(*) FROM impala_test;"
@@ -79,7 +79,7 @@ segmentItems:
         peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
-          - { key: db.type, value: sql }
+          - {key: db.type, value: Impala}
           - { key: db.instance, value: '' }
           - key: db.statement
             value: 'SELECT COUNT(*) FROM impala_test WHERE test_id = ?;'
@@ -96,7 +96,7 @@ segmentItems:
         peer: impala-server:21050
         skipAnalysis: 'false'
         tags:
-          - { key: db.type, value: sql }
+          - {key: db.type, value: Impala}
           - { key: db.instance, value: '' }
           - { key: db.statement, value: '' }
       - operationName: HEAD:/impala-jdbc-2.6.x-scenario/case/healthCheck

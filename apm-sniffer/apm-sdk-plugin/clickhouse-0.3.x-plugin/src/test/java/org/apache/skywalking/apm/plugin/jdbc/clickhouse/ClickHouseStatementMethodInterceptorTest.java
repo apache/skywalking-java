@@ -121,7 +121,7 @@ public class ClickHouseStatementMethodInterceptorTest {
         SpanAssert.assertComponent(span, ComponentsDefine.CLICKHOUSE_JDBC_DRIVER);
         SpanAssert.assertLayer(span, SpanLayer.DB);
         SpanAssert.assertTagSize(span, 3);
-        SpanAssert.assertTag(span, 0, "sql");
+        SpanAssert.assertTag(span, 0, "ClickHouse");
         SpanAssert.assertTag(span, 1, "default");
         SpanAssert.assertTag(span, 2, SQL);
     }

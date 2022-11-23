@@ -114,7 +114,7 @@ public class PreparedStatementExecuteMethodsInterceptorTest {
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
         assertThat(span.getOperationName(), is("kylin/JDBC/PreparedStatement/"));
-        SpanAssert.assertTag(span, 0, "sql");
+        SpanAssert.assertTag(span, 0, "kylin");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, SQL);
         SpanAssert.assertTag(span, 3, "[abcd,efgh]");
@@ -144,7 +144,7 @@ public class PreparedStatementExecuteMethodsInterceptorTest {
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
         assertThat(span.getOperationName(), is("kylin/JDBC/PreparedStatement/"));
-        SpanAssert.assertTag(span, 0, "sql");
+        SpanAssert.assertTag(span, 0, "kylin");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, "Select * f...");
         SpanAssert.assertTag(span, 3, "[abcd,efgh]");

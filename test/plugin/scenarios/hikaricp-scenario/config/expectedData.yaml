@@ -40,7 +40,7 @@ segmentItems:
       spanType: Exit
       peer: mysql-server:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'CREATE TABLE test_Hikari(id VARCHAR(1) PRIMARY
           KEY, value VARCHAR(1) NOT NULL)'}
@@ -75,7 +75,7 @@ segmentItems:
       spanType: Exit
       peer: mysql-server:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'INSERT INTO test_Hikari(id, value) VALUES(1,1)'}
     - operationName: HikariCP/Connection/close
@@ -109,7 +109,7 @@ segmentItems:
       spanType: Exit
       peer: mysql-server:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'SELECT id, value FROM test_Hikari WHERE id=1'}
     - operationName: HikariCP/Connection/close
@@ -143,7 +143,7 @@ segmentItems:
       spanType: Exit
       peer: mysql-server:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'DELETE FROM test_Hikari WHERE id=1'}
     - operationName: HikariCP/Connection/close
@@ -177,7 +177,7 @@ segmentItems:
       spanType: Exit
       peer: mysql-server:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'DROP table test_Hikari'}
     - operationName: HikariCP/Connection/close

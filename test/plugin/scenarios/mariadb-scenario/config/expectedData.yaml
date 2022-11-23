@@ -31,7 +31,7 @@ segmentItems:
       peer: mariadb-server:3306
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mariadb}
       - {key: db.instance, value: test}
       - key: db.statement
         value: "CREATE TABLE test_table(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(10)\
@@ -48,7 +48,7 @@ segmentItems:
       peer: mariadb-server:3306
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mariadb}
       - {key: db.instance, value: test}
       - {key: db.statement, value: "INSERT INTO test_table(id, value) VALUES(?,?)"}
     - operationName: Mariadb/JDBC/PreparedStatement/execute
@@ -63,7 +63,7 @@ segmentItems:
       peer: mariadb-server:3306
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mariadb}
       - {key: db.instance, value: test}
       - {key: db.statement, value: "SELECT id, value FROM test_table WHERE id = ?"}
     - operationName: Mariadb/JDBC/Statement/execute
@@ -78,7 +78,7 @@ segmentItems:
       peer: mariadb-server:3306
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mariadb}
       - {key: db.instance, value: test}
       - {key: db.statement, value: "DROP table test_table"}
     - operationName: Mariadb/JDBC/Connection/close
@@ -93,7 +93,7 @@ segmentItems:
       peer: mariadb-server:3306
       skipAnalysis: 'false'
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mariadb}
       - {key: db.instance, value: test}
       - {key: db.statement, value: ''}
     - operationName: GET:/mariadb-scenario/case/mariadb-scenario

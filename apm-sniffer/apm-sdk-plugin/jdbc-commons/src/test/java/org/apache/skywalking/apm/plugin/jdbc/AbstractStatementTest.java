@@ -53,7 +53,7 @@ public abstract class AbstractStatementTest {
         assertThat(span.getOperationName(), is(exceptOperationName));
         assertThat(SpanHelper.getComponentId(span), is(33));
         List<TagValuePair> tags = SpanHelper.getTags(span);
-        assertThat(tags.get(0).getValue(), is("sql"));
+        assertThat(tags.get(0).getValue(), is("Mysql"));
         assertThat(tags.get(1).getValue(), is("test"));
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.DB));
     }

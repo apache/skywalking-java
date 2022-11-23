@@ -45,7 +45,7 @@ segmentItems:
       spanType: Exit
       peer: mysql:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: ''}
       - {key: db.statement, value: 'insert into `test`.`table_demo`(name) values(?)'}
       skipAnalysis: 'false'
@@ -60,7 +60,7 @@ segmentItems:
       spanType: Exit
       peer: mysql:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: ''}
       - {key: db.statement, value: 'insert into `test`.`table_demo`(name) values(?)'}
       skipAnalysis: 'false'
@@ -75,7 +75,7 @@ segmentItems:
       spanType: Exit
       peer: mysql:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: ''}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'
@@ -90,7 +90,7 @@ segmentItems:
       spanType: Exit
       peer: mysql:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: ''}
       - {key: db.statement, value: select @@session.tx_read_only}
       skipAnalysis: 'false'
@@ -105,7 +105,7 @@ segmentItems:
       spanType: Exit
       peer: mysql:3306
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: Mysql}
       - {key: db.instance, value: ''}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'

@@ -50,7 +50,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'select timezone(), version()'}
               - {key: http.status_code, value: '200'}
@@ -67,7 +67,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT * FROM clusters}
               - {key: http.status_code, value: '200'}
@@ -84,7 +84,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT 1}
               - {key: http.status_code, value: '200'}
@@ -101,7 +101,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: ''}
           - operationName: ClickHouse/JDBC/Statement/executeQuery
@@ -117,7 +117,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'select timezone(), version()'}
               - {key: http.status_code, value: '200'}
@@ -134,7 +134,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT * FROM clusters}
               - {key: http.status_code, value: '200'}
@@ -151,7 +151,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT 1}
               - {key: http.status_code, value: '200'}
@@ -168,7 +168,7 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: db.type, value: sql}
+              - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: ''}
           - operationName: GET:/clickhouse-scenario/case/clickhouse-scenario

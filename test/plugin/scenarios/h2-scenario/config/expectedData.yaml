@@ -30,7 +30,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - key: db.statement
         value: "CREATE TABLE test_007(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(1)\
@@ -47,7 +47,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
       skipAnalysis: 'false'
@@ -62,7 +62,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - {key: db.statement, value: DROP table test_007}
       skipAnalysis: 'false'
@@ -77,7 +77,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'

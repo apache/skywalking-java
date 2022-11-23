@@ -97,7 +97,7 @@ public class StatementExecuteMethodsInterceptorTest {
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
         assertThat(span.getOperationName(), is("kylin/JDBC/CallableStatement/"));
-        SpanAssert.assertTag(span, 0, "sql");
+        SpanAssert.assertTag(span, 0, "kylin");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, SQL);
     }
@@ -114,7 +114,7 @@ public class StatementExecuteMethodsInterceptorTest {
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
         assertThat(span.getOperationName(), is("kylin/JDBC/CallableStatement/"));
-        SpanAssert.assertTag(span, 0, "sql");
+        SpanAssert.assertTag(span, 0, "kylin");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, "Select * f...");
     }

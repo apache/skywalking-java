@@ -20,14 +20,23 @@ package org.apache.skywalking.apm.agent.core.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
 import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.common.v3.KeyStringValuePair;
 import org.apache.skywalking.apm.util.StringUtil;
 
 public class InstanceJsonPropertiesUtil {
+
+    private static ILog LOGGER = LogManager.getLogger(InstanceJsonPropertiesUtil.class);
     private static final Gson GSON = new Gson();
 
     public static List<KeyStringValuePair> parseProperties() {
@@ -45,7 +54,27 @@ public class InstanceJsonPropertiesUtil {
 
         properties.add(KeyStringValuePair.newBuilder().setKey("namespace").setValue(Config.Agent.NAMESPACE).build());
         properties.add(KeyStringValuePair.newBuilder().setKey("cluster").setValue(Config.Agent.CLUSTER).build());
+        properties.add(KeyStringValuePair.newBuilder().setKey("version").setValue(getAgentVersion()).build());
 
         return properties;
+    }
+
+    public static String getAgentVersion() {
+        try {
+            Properties gitProperties = new Properties();
+            InputStream inputStream = InstanceJsonPropertiesUtil.class.getClassLoader().getResourceAsStream("skywalking-agent-git.properties");
+            gitProperties.load(inputStream);
+
+            String commitIdAbbrev = gitProperties.getProperty("git.commit.id.abbrev");
+            String buildTime = gitProperties.getProperty("git.build.time");
+            String buildVersion = gitProperties.getProperty("git.build.version");
+            String version =  buildVersion + "-" + commitIdAbbrev + "-" + buildTime;
+
+            LOGGER.info("SkyWalking agent version: {}", version);
+            return version;
+        } catch (IOException e) {
+            LOGGER.error("Failed to get agent version", e);
+            return "Unknown";
+        }
     }
 }

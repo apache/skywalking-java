@@ -36,7 +36,8 @@ import org.apache.skywalking.apm.util.StringUtil;
 
 public class InstanceJsonPropertiesUtil {
 
-    private static ILog LOGGER = LogManager.getLogger(InstanceJsonPropertiesUtil.class);
+    private static final ILog LOGGER = LogManager.getLogger(InstanceJsonPropertiesUtil.class);
+    private static final String GIT_PROPERTIES = "skywalking-agent-git.properties";
     private static final Gson GSON = new Gson();
 
     public static List<KeyStringValuePair> parseProperties() {
@@ -61,20 +62,25 @@ public class InstanceJsonPropertiesUtil {
 
     public static String getAgentVersion() {
         try {
-            Properties gitProperties = new Properties();
-            InputStream inputStream = InstanceJsonPropertiesUtil.class.getClassLoader().getResourceAsStream("skywalking-agent-git.properties");
-            gitProperties.load(inputStream);
+            InputStream inStream = InstanceJsonPropertiesUtil.class.getClassLoader()
+                    .getResourceAsStream(GIT_PROPERTIES);
+            if (inStream != null) {
+                Properties gitProperties = new Properties();
+                gitProperties.load(inStream);
+                String commitIdAbbrev = gitProperties.getProperty("git.commit.id.abbrev");
+                String buildTime = gitProperties.getProperty("git.build.time");
+                String buildVersion = gitProperties.getProperty("git.build.version");
+                String version =  buildVersion + "-" + commitIdAbbrev + "-" + buildTime;
 
-            String commitIdAbbrev = gitProperties.getProperty("git.commit.id.abbrev");
-            String buildTime = gitProperties.getProperty("git.build.time");
-            String buildVersion = gitProperties.getProperty("git.build.version");
-            String version =  buildVersion + "-" + commitIdAbbrev + "-" + buildTime;
-
-            LOGGER.info("SkyWalking agent version: {}", version);
-            return version;
+                LOGGER.info("SkyWalking agent version: {}", version);
+                return version;
+            } else {
+                LOGGER.warn("{} not found, SkyWalking agent version: unknown", GIT_PROPERTIES);
+            }
         } catch (IOException e) {
             LOGGER.error("Failed to get agent version", e);
-            return "Unknown";
         }
+
+        return "UNKNOWN";
     }
 }

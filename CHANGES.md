@@ -13,7 +13,7 @@ Release Notes.
 * Upgrade agent test tools
 * [Breaking Change] Compatible with 3.x and 4.x RabbitMQ Client, rename `rabbitmq-5.x-plugin` to `rabbitmq-plugin`
 * Polish JDBC plugins to make DBType accurate
-* Support the agent version to report to OAP as an instance attribute
+* Report the agent version to OAP as an instance attribute
 
 #### Documentation
 

@@ -59,10 +59,10 @@ git checkout ${TAG_NAME}
 git submodule init
 git submodule update
 
-# Generate a static version.properties and override the template when releasing source tar
+# Generate a static skywalking-agent-version.properties and override the template when releasing source tar
 # because after that there is no Git information anymore.
 ./mvnw -pl apm-sniffer/apm-agent-core initialize \
-       -DgenerateGitPropertiesFilename="$(pwd)/apm-sniffer/apm-agent-core/src/main/resources/version.properties"
+       -DgenerateGitPropertiesFilename="$(pwd)/apm-sniffer/apm-agent-core/src/main/resources/skywalking-agent-version.properties"
 
 cd ..
 # Build source code tar

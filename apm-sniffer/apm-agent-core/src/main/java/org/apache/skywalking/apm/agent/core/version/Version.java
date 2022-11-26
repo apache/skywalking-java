@@ -19,14 +19,18 @@
 package org.apache.skywalking.apm.agent.core.version;
 
 import lombok.Getter;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 @Getter
 public enum Version {
     CURRENT;
 
+    private static final ILog LOGGER = LogManager.getLogger(Version.class);
     private static final String VERSION_FILE_NAME = "skywalking-agent-version.properties";
     private final String buildVersion;
     private final String commitIdAbbrev;
@@ -34,14 +38,22 @@ public enum Version {
 
     Version() {
         try {
+            InputStream inputStream = Version.class.getClassLoader().getResourceAsStream(VERSION_FILE_NAME);
+            if (inputStream == null) {
+                throw new IOException("Can't find " + VERSION_FILE_NAME);
+            }
             Properties properties = new Properties();
-            properties.load(Version.class.getClassLoader().getResourceAsStream(VERSION_FILE_NAME));
+            properties.load(inputStream);
             buildVersion = properties.getProperty("git.build.version");
             commitIdAbbrev = properties.getProperty("git.commit.id.abbrev");
             buildTime = properties.getProperty("git.build.time");
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
         }
+    }
+
+    static {
+        LOGGER.info("SkyWalking agent version: {}", CURRENT);
     }
 
     @Override

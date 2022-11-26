@@ -33,7 +33,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <generateGitPropertiesFilename>${generateGitPropertiesFilename}</generateGitPropertiesFilename>
+        <generateGitPropertiesFilename>${project.build.outputDirectory}/skywalking-agent-version.properties</generateGitPropertiesFilename>
         <guava.version>30.1.1-jre</guava.version>
         <wiremock.version>2.6.0</wiremock.version>
         <netty-tcnative-boringssl-static.version>2.0.7.Final</netty-tcnative-boringssl-static.version>

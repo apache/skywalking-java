@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.agent.core.version;
 import lombok.Getter;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+import org.apache.skywalking.apm.util.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +59,8 @@ public enum Version {
 
     @Override
     public String toString() {
-        return String.format("%s-%s-%s", buildVersion, commitIdAbbrev, buildTime);
+        return StringUtil.isEmpty(buildTime) ?
+                String.format("%s-%s", buildVersion, commitIdAbbrev) :
+                String.format("%s-%s-%s", buildVersion, commitIdAbbrev, buildTime);
     }
 }

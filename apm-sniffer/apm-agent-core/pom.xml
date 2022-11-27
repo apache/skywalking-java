@@ -187,15 +187,16 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>${generateGitPropertiesFilename}</generateGitPropertiesFilename>
+                    <dateFormat>yyyyMMddHHmmss</dateFormat>
+                    <dateFormatTimeZone>UTC</dateFormatTimeZone>
+                    <commitIdGenerationMode>full</commitIdGenerationMode>
                     <includeOnlyProperties>
                         <includeOnlyProperty>^git.build.(time|version)$</includeOnlyProperty>
                         <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
                     </includeOnlyProperties>
-                    <commitIdGenerationMode>full</commitIdGenerationMode>
-                    <dateFormat>yyMMdd</dateFormat>
                 </configuration>
             </plugin>
             <plugin>

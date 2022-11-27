@@ -61,11 +61,8 @@ git submodule update
 
 # Generate a static skywalking-agent-version.properties and override the template when releasing source tar
 # because after that there is no Git information anymore.
-GIT_PROPERTIES_PATH=$(pwd)/apm-sniffer/apm-agent-core/src/main/resources/skywalking-agent-version.properties
-./mvnw -q -pl apm-sniffer/apm-agent-core initialize -DgenerateGitPropertiesFilename="${GIT_PROPERTIES_PATH}.tmp"
-# Remove this line, because the `git.build.time` could not be overridden.
-sed '/git.build.time/d' ${GIT_PROPERTIES_PATH}.tmp > ${GIT_PROPERTIES_PATH}
-rm -f ${GIT_PROPERTIES_PATH}.tmp
+./mvnw -q -pl apm-sniffer/apm-agent-core initialize \
+       -DgenerateGitPropertiesFilename="$(pwd)/apm-sniffer/apm-agent-core/src/main/resources/skywalking-agent-version.properties"
 
 cd ..
 # Build source code tar

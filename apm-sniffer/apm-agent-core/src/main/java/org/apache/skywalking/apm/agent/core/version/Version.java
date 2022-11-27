@@ -21,7 +21,6 @@ package org.apache.skywalking.apm.agent.core.version;
 import lombok.Getter;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.util.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +34,6 @@ public enum Version {
     private static final String VERSION_FILE_NAME = "skywalking-agent-version.properties";
     private final String buildVersion;
     private final String commitIdAbbrev;
-    private final String buildTime;
 
     Version() {
         try {
@@ -47,7 +45,6 @@ public enum Version {
             properties.load(inputStream);
             buildVersion = properties.getProperty("git.build.version");
             commitIdAbbrev = properties.getProperty("git.commit.id.abbrev");
-            buildTime = properties.getProperty("git.build.time");
         } catch (Exception e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -59,8 +56,6 @@ public enum Version {
 
     @Override
     public String toString() {
-        return StringUtil.isEmpty(buildTime) ?
-                String.format("%s-%s", buildVersion, commitIdAbbrev) :
-                String.format("%s-%s-%s", buildVersion, commitIdAbbrev, buildTime);
+        return String.format("%s-%s", buildVersion, commitIdAbbrev);
     }
 }

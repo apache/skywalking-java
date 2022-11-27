@@ -4,6 +4,9 @@
       "pattern": "^http://localhost"
     },
     {
+      "pattern": "^http://127.0.0.1"
+    },
+    {
       "pattern": "^https://github.com/apache/skywalking-java/blob/master/changes/changes-x.y.z.md$"
     },
     {

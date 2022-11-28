@@ -28,6 +28,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <test.framework.version>1.0.0</test.framework.version>
         <test.framework>spring</test.framework>
 
@@ -105,6 +106,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${compiler.version}</source>
                     <target>${compiler.version}</target>

@@ -28,17 +28,16 @@ import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-public class MicrometerSenderTracingHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class MicrometerContextManagerThreadLocalAccessorInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    public static final String ENHANCE_CLASS = "org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingSenderTracingHandler";
+    public static final String ENHANCE_CLASS = "org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor";
 
-    public static final String INTERCEPT_START_POINT_METHOD = "onStart";
+    public static final String INTERCEPT_GET_VALUE_POINT_METHOD = "getValue";
 
-    public static final String INTERCEPT_ERROR_POINT_METHOD = "onError";
+    public static final String INTERCEPT_SET_VALUE_POINT_METHOD = "setValue";
 
-    public static final String INTERCEPT_STOP_POINT_METHOD = "onStop";
-
-    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.micrometer.MicrometerSenderTracingHandlerInterceptor";
+    public static final String INTERCEPT_RESET_POINT_METHOD = "reset";
+    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.micrometer.MicrometerContextSnapshotThreadLocalAccessorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -56,9 +55,9 @@ public class MicrometerSenderTracingHandlerInstrumentation extends ClassInstance
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(INTERCEPT_START_POINT_METHOD)
-                        .or(named(INTERCEPT_STOP_POINT_METHOD))
-                        .or(named(INTERCEPT_ERROR_POINT_METHOD));
+                    return named(INTERCEPT_GET_VALUE_POINT_METHOD)
+                        .or(named(INTERCEPT_SET_VALUE_POINT_METHOD))
+                        .or(named(INTERCEPT_RESET_POINT_METHOD));
                 }
 
                 @Override

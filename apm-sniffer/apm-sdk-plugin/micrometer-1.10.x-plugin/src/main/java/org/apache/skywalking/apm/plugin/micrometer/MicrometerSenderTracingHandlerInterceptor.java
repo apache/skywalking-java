@@ -18,12 +18,14 @@
 
 package org.apache.skywalking.apm.plugin.micrometer;
 
+import io.micrometer.common.KeyValue;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.transport.SenderContext;
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -53,17 +55,37 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
                 context.getSetter().set(context.getCarrier(), next.getHeadKey(), next.getHeadValue());
             }
             span.setComponent(ComponentsDefine.MICROMETER);
-            // tags
         } else if ("onStop".equals(methodName)) {
             SenderContext<Object> context = (SenderContext<Object>) allArguments[0];
-            ContextManager.activeSpan()
-                          .setOperationName(StringUtil.isBlank(
-                              context.getContextualName()) ? context.getName() : context.getContextualName());
+            AbstractSpan abstractSpan = ContextManager.activeSpan();
+            abstractSpan
+                .setPeer(tryToGetPeer(context))
+                .setOperationName(StringUtil.isBlank(
+                    context.getContextualName()) ? context.getName() : context.getContextualName());
+            context.getAllKeyValues()
+                   .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));
             ContextManager.stopSpan();
         } else if ("onError".equals(methodName)) {
             Observation.Context context = (Observation.Context) allArguments[0];
             ContextManager.activeSpan().log(context.getError());
         }
+    }
+
+    private String tryToGetPeer(SenderContext<Object> context) {
+        if (context.getRemoteServiceAddress() != null) {
+            return context.getRemoteServiceAddress();
+        }
+        KeyValue uri = context.getLowCardinalityKeyValue("uri");
+        if (uri != null) {
+            return uri.getValue();
+        }
+        return context.getAllKeyValues()
+                      .stream()
+                      .filter(keyValue -> "uri".equalsIgnoreCase(keyValue.getKey()) || "http.url".equalsIgnoreCase(
+                          keyValue.getKey()))
+                      .findFirst()
+                      .map(KeyValue::getValue)
+                      .orElse("unknown");
     }
 
     @Override

@@ -25,7 +25,10 @@ import io.micrometer.observation.ObservationRegistry;
 import jakarta.annotation.PreDestroy;
 import java.util.List;
 import org.apache.skywalking.apm.meter.micrometer.SkywalkingMeterRegistry;
+import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingDefaultTracingHandler;
 import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingMeterHandler;
+import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingReceiverTracingHandler;
+import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingSenderTracingHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -47,6 +50,7 @@ public class ResttemplateConfiguration {
         ObservationRegistry observationRegistry(List<MeterObservationHandler<?>> handlers) {
             ObservationRegistry registry = ObservationRegistry.create();
             registry.observationConfig().observationHandler(new ObservationHandler.FirstMatchingCompositeObservationHandler(handlers));
+            registry.observationConfig().observationHandler(new ObservationHandler.FirstMatchingCompositeObservationHandler(new SkywalkingSenderTracingHandler(), new SkywalkingReceiverTracingHandler(), new SkywalkingDefaultTracingHandler()));
             return registry;
         }
 

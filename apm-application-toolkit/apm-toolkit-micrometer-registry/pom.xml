@@ -31,6 +31,7 @@
 
     <properties>
         <micrometer-core.version>1.10.2</micrometer-core.version>
+        <context-propagation.version>1.0.0</context-propagation.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,11 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
             <version>${micrometer-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>context-propagation</artifactId>
+            <version>${context-propagation.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>

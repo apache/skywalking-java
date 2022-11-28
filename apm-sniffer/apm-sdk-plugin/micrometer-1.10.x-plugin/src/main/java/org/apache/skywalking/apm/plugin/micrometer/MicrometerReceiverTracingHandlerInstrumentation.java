@@ -34,6 +34,8 @@ public class MicrometerReceiverTracingHandlerInstrumentation extends ClassInstan
 
     public static final String INTERCEPT_START_POINT_METHOD = "onStart";
 
+    public static final String INTERCEPT_ERROR_POINT_METHOD = "onError";
+
     public static final String INTERCEPT_STOP_POINT_METHOD = "onStop";
 
     public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.micrometer.MicrometerReceiverTracingHandlerInterceptor";
@@ -45,7 +47,7 @@ public class MicrometerReceiverTracingHandlerInstrumentation extends ClassInstan
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return null;
+        return new ConstructorInterceptPoint[0];
     }
 
     @Override
@@ -54,24 +56,9 @@ public class MicrometerReceiverTracingHandlerInstrumentation extends ClassInstan
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(INTERCEPT_START_POINT_METHOD);
-                }
-
-                @Override
-                public String getMethodsInterceptor() {
-                    return INTERCEPT_CLASS;
-                }
-
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            },
-
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(INTERCEPT_STOP_POINT_METHOD);
+                    return named(INTERCEPT_START_POINT_METHOD)
+                        .or(named(INTERCEPT_STOP_POINT_METHOD))
+                        .or(named(INTERCEPT_ERROR_POINT_METHOD));
                 }
 
                 @Override

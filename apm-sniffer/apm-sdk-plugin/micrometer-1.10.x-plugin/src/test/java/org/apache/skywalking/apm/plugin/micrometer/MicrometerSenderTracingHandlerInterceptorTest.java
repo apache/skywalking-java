@@ -20,8 +20,12 @@ package org.apache.skywalking.apm.plugin.micrometer;
 
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationHandler;
+import io.micrometer.observation.transport.ReceiverContext;
+import io.micrometer.observation.transport.SenderContext;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.context.ContextManagerExtendService;
@@ -36,6 +40,7 @@ import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,35 +53,16 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(TracingSegmentRunner.class)
-public class MicrometerDefaultTracingHandlerInterceptorTest {
+public class MicrometerSenderTracingHandlerInterceptorTest {
 
-    private final Observation.Context context = new Observation.Context();
-    private final Observation.Event event = new Observation.Event() {
-        @Override
-        public String getContextualName() {
-            return "eventContextualName";
-        }
-
-        @Override
-        public String getName() {
-            return "eventName";
-        }
-    };
+    private final SenderContext<Map<String, String>> context = new SenderContext<>(
+        (carrier, key, value) -> carrier.put(key, value));
+    private final Map<String, String> carrier = new HashMap<>();
     private final Object[] consumerArguments = new Object[] {context};
-    private final Object[] eventArguments = new Object[] {
-        event,
-        context
-    };
-    private final Class[] argumentTypes = new Class[] {Observation.Context.class};
-    private final Class[] eventArgumentTypes = new Class[] {
-        Observation.Event.class,
-        Observation.Context.class
-    };
+    private final Class[] argumentTypes = new Class[] {ReceiverContext.class};
     private final Method onStart = ObservationHandler.class.getMethod("onStart", Observation.Context.class);
     private final Method onStop = ObservationHandler.class.getMethod("onStop", Observation.Context.class);
     private final Method onError = ObservationHandler.class.getMethod("onError", Observation.Context.class);
-    private final Method onEvent = ObservationHandler.class.getMethod(
-        "onEvent", Observation.Event.class, Observation.Context.class);
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();
     @SegmentStoragePoint
@@ -85,19 +71,21 @@ public class MicrometerDefaultTracingHandlerInterceptorTest {
     private EnhancedInstance enhancedInstance;
     @Mock
     private MethodInterceptResult result;
-    private MicrometerDefaultTracingHandlerInterceptor interceptor;
+    private MicrometerSenderTracingHandlerInterceptor interceptor;
 
-    public MicrometerDefaultTracingHandlerInterceptorTest() throws NoSuchMethodException {
+    public MicrometerSenderTracingHandlerInterceptorTest() throws NoSuchMethodException {
     }
 
     @Before
     public void setUp() throws Exception {
         context.setName("name");
         context.setContextualName("contextualName");
+        context.setCarrier(carrier);
+        context.setRemoteServiceAddress("http://localhost:8080");
 
-        interceptor = new MicrometerDefaultTracingHandlerInterceptor();
+        interceptor = new MicrometerSenderTracingHandlerInterceptor();
 
-        Config.Agent.SERVICE_NAME = "MicrometerTestCases-APP";
+        Config.Agent.SERVICE_NAME = "MicrometerSenderTestCases-APP";
     }
 
     @Test
@@ -116,26 +104,6 @@ public class MicrometerDefaultTracingHandlerInterceptorTest {
     }
 
     @Test
-    public void testDefaultStartEventStop() throws Throwable {
-        interceptor.beforeMethod(
-            enhancedInstance, onStart, consumerArguments, argumentTypes, result);
-        interceptor.beforeMethod(
-            enhancedInstance, onEvent, eventArguments, eventArgumentTypes, result);
-        interceptor.beforeMethod(
-            enhancedInstance, onStop, consumerArguments, argumentTypes, result);
-
-        AbstractTracingSpan abstractTracingSpan = onlySpan();
-        assertThat(abstractTracingSpan.getOperationName(), equalTo("contextualName"));
-        List<LogDataEntity> logs = AbstractTracingSpanHelper.getParentFieldLogs(abstractTracingSpan);
-        assertThat(logs.size(), is(1));
-        LogDataEntity logDataEntity = logs.get(0);
-        assertThat(logDataEntity.getLogs().size(), is(1));
-        KeyValuePair keyValuePair = logDataEntity.getLogs().get(0);
-        assertThat(keyValuePair.getKey(), equalTo("event"));
-        assertThat(keyValuePair.getValue(), equalTo("eventContextualName"));
-    }
-
-    @Test
     public void testDefaultStartExceptionStop() throws Throwable {
         interceptor.beforeMethod(
             enhancedInstance, onStart, consumerArguments, argumentTypes, result);
@@ -147,12 +115,15 @@ public class MicrometerDefaultTracingHandlerInterceptorTest {
 
         AbstractTracingSpan abstractTracingSpan = onlySpan();
         assertThat(abstractTracingSpan.getOperationName(), equalTo("contextualName"));
-        List<LogDataEntity> logs = AbstractTracingSpanHelper.getParentFieldLogs(abstractTracingSpan);
+        assertThat(abstractTracingSpan.isExit(), is(true));
+        List<LogDataEntity> logs = AbstractTracingSpanHelper.get2LevelParentFieldLogs(abstractTracingSpan);
         assertThat(logs.size(), is(1));
         assertThat(logs.get(0).getLogs().size(), is(4)); // 4 events represent an exception
         KeyValuePair errorLog = logs.get(0).getLogs().get(0);
         assertThat(errorLog.getKey(), equalTo("event"));
         assertThat(errorLog.getValue(), equalTo("error"));
+        assertThat(
+            carrier.keySet(), CoreMatchers.hasItems("sw8", "sw8-correlation", "sw8-x")); // headers got instrumented
     }
 
     private AbstractTracingSpan onlySpan() {

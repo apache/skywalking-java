@@ -18,12 +18,14 @@
 
 package org.apache.skywalking.apm.plugin.micrometer;
 
+import io.micrometer.common.KeyValue;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.transport.ReceiverContext;
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -51,20 +53,43 @@ public class MicrometerReceiverTracingHandlerInterceptor implements InstanceMeth
                 next.setHeadValue(context.getGetter().get(context.getCarrier(), next.getHeadKey()));
             }
             AbstractSpan span = ContextManager.createEntrySpan(context.getName(), contextCarrier);
-            span.setPeer(context.getRemoteServiceAddress());
             span.setComponent(ComponentsDefine.MICROMETER);
-            // tags
+            //            TODO: We can't really set these because ReceiverContext is super generic. We don't know what the protocol will be. We can guess it from the tags maybe? But there's no certainty that same tags will be used everywhere. OTOH
+            //            entrySpan.setLayer(SpanLayer.HTTP);
+            //            Tags.URL.set(entrySpan, httpRequest.path());
+            //            Tags.HTTP.METHOD.set(entrySpan, httpRequest.method().name());
+
         } else if ("onStop".equals(methodName)) {
             ReceiverContext<Object> context = (ReceiverContext<Object>) allArguments[0];
-            ContextManager.activeSpan()
-                          .setOperationName(StringUtil.isBlank(
-                              context.getContextualName()) ? context.getName() : context.getContextualName());
+            AbstractSpan abstractSpan = ContextManager.activeSpan();
+            abstractSpan
+                .setPeer(tryToGetPeer(context))
+                .setOperationName(StringUtil.isBlank(
+                    context.getContextualName()) ? context.getName() : context.getContextualName());
+            context.getAllKeyValues()
+                   .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));
             ContextManager.stopSpan();
         } else if ("onError".equals(methodName)) {
             Observation.Context context = (Observation.Context) allArguments[0];
             ContextManager.activeSpan().log(context.getError());
         }
-        // TODO: Micrometer Context-Propagation with ThreadLocalAccessor for ContextManager ???
+    }
+
+    private String tryToGetPeer(ReceiverContext<Object> context) {
+        if (context.getRemoteServiceAddress() != null) {
+            return context.getRemoteServiceAddress();
+        }
+        KeyValue uri = context.getLowCardinalityKeyValue("uri");
+        if (uri != null) {
+            return uri.getValue();
+        }
+        return context.getAllKeyValues()
+                      .stream()
+                      .filter(keyValue -> "uri".equalsIgnoreCase(keyValue.getKey()) || "http.url".equalsIgnoreCase(
+                          keyValue.getKey()))
+                      .findFirst()
+                      .map(KeyValue::getValue)
+                      .orElse("unknown");
     }
 
     @Override

@@ -18,16 +18,22 @@
 
 package org.apache.skywalking.testcase.resttemplate;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/resttemplate")
 public class BackController {
+    private static final Logger LOGGER = LogManager.getLogger(BackController.class);
+
     @GetMapping("/syncback")
-    public String syncBack() {
+    public String syncBack(@RequestHeader HttpHeaders httpHeaders) {
+        LOGGER.info("Got following headers [" + httpHeaders + "]");
         return "Hello back";
     }
 

@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-micrometerdefaulttracing=org.apache.skywalking.apm.plugin.micrometer.MicrometerDefaultTracingHandlerInstrumentation
-micrometersendertracing=org.apache.skywalking.apm.plugin.micrometer.MicrometerSenderTracingHandlerInstrumentation
-micrometerreceivertracing=org.apache.skywalking.apm.plugin.micrometer.MicrometerReceiverTracingHandlerInstrumentation
+micrometer-1.10.x=org.apache.skywalking.apm.plugin.micrometer.MicrometerContextManagerThreadLocalAccessorInstrumentation
+micrometer-1.10.x=org.apache.skywalking.apm.plugin.micrometer.MicrometerDefaultTracingHandlerInstrumentation
+micrometer-1.10.x=org.apache.skywalking.apm.plugin.micrometer.MicrometerSenderTracingHandlerInstrumentation
+micrometer-1.10.x=org.apache.skywalking.apm.plugin.micrometer.MicrometerReceiverTracingHandlerInstrumentation

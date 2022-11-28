@@ -18,58 +18,43 @@
 
 package org.apache.skywalking.apm.plugin.micrometer;
 
-import io.micrometer.observation.Observation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingDefaultTracingHandler;
+import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.util.StringUtil;
 
 /**
- * {@link MicrometerDefaultTracingHandlerInterceptor} define how to enhance classes
- * {@link SkywalkingDefaultTracingHandler}.
+ * {@link MicrometerContextSnapshotThreadLocalAccessorInterceptor} define how to enhance classes
+ * {@link SkywalkingContextSnapshotThreadLocalAccessor}.
  */
-public class MicrometerDefaultTracingHandlerInterceptor implements InstanceMethodsAroundInterceptor {
+public class MicrometerContextSnapshotThreadLocalAccessorInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        String methodName = method.getName();
-        if ("onStart".equals(methodName)) {
-            Observation.Context context = (Observation.Context) allArguments[0];
-            AbstractSpan span = ContextManager.createLocalSpan(context.getName());
-            span.setComponent(ComponentsDefine.MICROMETER);
-            // tags
-        } else if ("onStop".equals(methodName)) {
-            Observation.Context context = (Observation.Context) allArguments[0];
-            AbstractSpan abstractSpan = ContextManager.activeSpan();
-            abstractSpan
-                .setOperationName(StringUtil.isBlank(
-                    context.getContextualName()) ? context.getName() : context.getContextualName());
-            context.getAllKeyValues()
-                   .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));
-            ContextManager.stopSpan();
-        } else if ("onError".equals(methodName)) {
-            Observation.Context context = (Observation.Context) allArguments[0];
-            ContextManager.activeSpan().log(context.getError());
-        } else if ("onEvent".equals(methodName)) {
-            Observation.Event event = (Observation.Event) allArguments[0];
-            Map<String, String> map = new HashMap<>();
-            map.put("event", event.getContextualName() != null ? event.getContextualName() : event.getName());
-            ContextManager.activeSpan().log(System.currentTimeMillis(), map);
-        }
+
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
+        String methodName = method.getName();
+        if ("getValue".equals(methodName)) {
+            return ContextManager.capture();
+        } else if ("setValue".equals(methodName)) {
+            ContextSnapshot context = (ContextSnapshot) allArguments[0];
+            // TODO: I want to continue an existing span, what should be the name?
+            AbstractSpan span = ContextManager.createLocalSpan("continued");
+            span.setComponent(ComponentsDefine.MICROMETER);
+            ContextManager.continued(context);
+        } else if ("reset".equals(methodName)) {
+            // TODO: Can't do much about resetting
+        }
         return ret;
     }
 

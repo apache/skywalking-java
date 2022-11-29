@@ -402,7 +402,8 @@
                     </resourceIncludes>
                     <resourceExcludes>
                         **/.asf.yaml,
-                        **/.github/**
+                        **/.github/**,
+                        **/skywalking-agent-version.properties
                     </resourceExcludes>
                     <excludes>
                         **/target/generated-test-sources/**,

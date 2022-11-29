@@ -109,12 +109,11 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.source}</target>
+                    <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
@@ -131,9 +130,9 @@
                     <sourceDirectories>
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-<sourceDirectory>scenarios/dbcp-2.x-scenario</sourceDirectory>
-<sourceDirectory>scenarios/druid-1.x-scenario</sourceDirectory>
-<sourceDirectory>scenarios/druid-1.x</sourceDirectory>
+                        <sourceDirectory>scenarios/dbcp-2.x-scenario</sourceDirectory>
+                        <sourceDirectory>scenarios/druid-1.x-scenario</sourceDirectory>
+                        <sourceDirectory>scenarios/druid-1.x</sourceDirectory>
                     </sourceDirectories>
                     <resourceIncludes>
                         **/*.properties,

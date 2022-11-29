@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.meter.micrometer.observation;
+package org.apache.skywalking.apm.toolkit.micrometer.observation;
 
 import io.micrometer.core.tck.MeterRegistryAssert;
 import io.micrometer.observation.Observation;

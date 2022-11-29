@@ -35,7 +35,7 @@ import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
-import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor;
+import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

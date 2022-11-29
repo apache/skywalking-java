@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.meter.micrometer.observation;
+package org.apache.skywalking.apm.toolkit.micrometer.observation;
 
 import io.micrometer.core.instrument.observation.DefaultMeterObservationHandler;
 import org.apache.skywalking.apm.meter.micrometer.SkywalkingMeterRegistry;

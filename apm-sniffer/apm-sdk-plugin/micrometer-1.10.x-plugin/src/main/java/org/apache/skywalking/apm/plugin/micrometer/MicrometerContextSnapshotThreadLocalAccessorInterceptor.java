@@ -25,7 +25,7 @@ import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor;
+import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 /**

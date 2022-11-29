@@ -16,45 +16,45 @@
  *
  */
 
-package org.apache.skywalking.apm.meter.micrometer.observation;
+package org.apache.skywalking.apm.toolkit.micrometer.observation;
 
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationHandler;
-import io.micrometer.observation.transport.ReceiverContext;
+import io.micrometer.observation.transport.SenderContext;
 
-public class SkywalkingReceiverTracingHandler implements ObservationHandler<ReceiverContext<?>> {
+public class SkywalkingSenderTracingHandler implements ObservationHandler<SenderContext<?>> {
     @Override
     public boolean supportsContext(final Observation.Context context) {
-        return context instanceof ReceiverContext;
+        return context instanceof SenderContext;
     }
 
     @Override
-    public void onStart(final ReceiverContext<?> context) {
-
-    }
-
-    @Override
-    public void onError(final ReceiverContext<?> context) {
+    public void onStart(final SenderContext<?> context) {
 
     }
 
     @Override
-    public void onEvent(final Observation.Event event, final ReceiverContext<?> context) {
+    public void onError(final SenderContext<?> context) {
 
     }
 
     @Override
-    public void onScopeOpened(final ReceiverContext<?> context) {
+    public void onEvent(final Observation.Event event, final SenderContext<?> context) {
 
     }
 
     @Override
-    public void onScopeClosed(final ReceiverContext<?> context) {
+    public void onScopeOpened(final SenderContext<?> context) {
 
     }
 
     @Override
-    public void onStop(final ReceiverContext<?> context) {
+    public void onScopeClosed(final SenderContext<?> context) {
+
+    }
+
+    @Override
+    public void onStop(final SenderContext<?> context) {
 
     }
 }

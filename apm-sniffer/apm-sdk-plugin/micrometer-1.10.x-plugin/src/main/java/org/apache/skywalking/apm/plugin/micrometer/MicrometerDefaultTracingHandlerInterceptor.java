@@ -25,10 +25,11 @@ import java.util.Map;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingDefaultTracingHandler;
+import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingDefaultTracingHandler;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
 
@@ -49,12 +50,16 @@ public class MicrometerDefaultTracingHandlerInterceptor implements InstanceMetho
             // tags
         } else if ("onStop".equals(methodName)) {
             Observation.Context context = (Observation.Context) allArguments[0];
+            SpanLayer spanLayer = TaggingHelper.toLayer(context.getAllKeyValues());
             AbstractSpan abstractSpan = ContextManager.activeSpan();
             abstractSpan
                 .setOperationName(StringUtil.isBlank(
                     context.getContextualName()) ? context.getName() : context.getContextualName());
             context.getAllKeyValues()
                    .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));
+            if (spanLayer != null) {
+                abstractSpan.setLayer(spanLayer);
+            }
             ContextManager.stopSpan();
         } else if ("onError".equals(methodName)) {
             Observation.Context context = (Observation.Context) allArguments[0];

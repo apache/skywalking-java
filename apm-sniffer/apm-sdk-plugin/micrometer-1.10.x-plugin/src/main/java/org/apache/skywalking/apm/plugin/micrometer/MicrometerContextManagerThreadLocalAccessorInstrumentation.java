@@ -30,7 +30,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class MicrometerContextManagerThreadLocalAccessorInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    public static final String ENHANCE_CLASS = "org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor";
+    public static final String ENHANCE_CLASS = "org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor";
 
     public static final String INTERCEPT_GET_VALUE_POINT_METHOD = "getValue";
 

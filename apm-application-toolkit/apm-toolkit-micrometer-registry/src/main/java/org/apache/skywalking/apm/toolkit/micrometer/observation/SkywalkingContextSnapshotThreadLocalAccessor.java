@@ -16,44 +16,40 @@
  *
  */
 
-package org.apache.skywalking.apm.meter.micrometer.observation;
+package org.apache.skywalking.apm.toolkit.micrometer.observation;
 
-import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationHandler;
+import io.micrometer.context.ThreadLocalAccessor;
 
-public class SkywalkingDefaultTracingHandler implements ObservationHandler<Observation.Context> {
+/**
+ * A {@link ThreadLocalAccessor} to put and restore current {@code ContextSnapshot} from APM agent.
+ */
+public class SkywalkingContextSnapshotThreadLocalAccessor implements ThreadLocalAccessor<Object> {
+
+    /**
+     * Key under which ContextSnapshot is being registered.
+     */
+    public static final String KEY = "skywalking.contextsnapshot";
+
     @Override
-    public boolean supportsContext(final Observation.Context context) {
-        return true;
+    public Object key() {
+        return KEY;
     }
 
+    // Type will be ContextSnapshot
     @Override
-    public void onStart(final Observation.Context context) {
-
+    public Object getValue() {
+        return null;
     }
 
+    // Object to set will be ContextSnapshot
     @Override
-    public void onError(final Observation.Context context) {
-
-    }
-
-    @Override
-    public void onEvent(final Observation.Event event, final Observation.Context context) {
-
-    }
-
-    @Override
-    public void onScopeOpened(final Observation.Context context) {
-
-    }
-
-    @Override
-    public void onScopeClosed(final Observation.Context context) {
+    public void setValue(Object value) {
 
     }
 
     @Override
-    public void onStop(final Observation.Context context) {
+    public void reset() {
 
     }
+
 }

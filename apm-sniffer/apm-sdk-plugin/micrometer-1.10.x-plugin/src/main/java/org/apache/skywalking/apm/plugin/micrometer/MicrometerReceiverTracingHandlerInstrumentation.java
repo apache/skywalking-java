@@ -30,7 +30,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class MicrometerReceiverTracingHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    public static final String ENHANCE_CLASS = "org.apache.skywalking.apm.meter.micrometer.observation.SkywalkingReceiverTracingHandler";
+    public static final String ENHANCE_CLASS = "org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingReceiverTracingHandler";
 
     public static final String INTERCEPT_START_POINT_METHOD = "onStart";
 

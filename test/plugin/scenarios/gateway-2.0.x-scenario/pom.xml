@@ -35,6 +35,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <compiler.version>1.8</compiler.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <test.framework.version>2.0.2.RELEASE</test.framework.version>
         <docker.image.version>${test.framework.version}</docker.image.version>
     </properties>
@@ -43,12 +45,11 @@
         <finalName>gateway-2.0.x-scenario</finalName>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${compiler.version}</source>
+                    <target>${compiler.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>

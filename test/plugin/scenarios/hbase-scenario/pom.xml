@@ -33,6 +33,7 @@
         <spring.version>4.3.8.RELEASE</spring.version>
         <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
         <compiler.version>1.8</compiler.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     </properties>
 
     <name>skywalking-hbase-scenario</name>
@@ -108,6 +109,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${compiler.version}</source>
                     <target>${compiler.version}</target>

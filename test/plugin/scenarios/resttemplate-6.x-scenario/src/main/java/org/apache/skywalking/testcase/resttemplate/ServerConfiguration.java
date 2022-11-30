@@ -19,18 +19,21 @@
 package org.apache.skywalking.testcase.resttemplate;
 
 import io.micrometer.observation.ObservationRegistry;
+import jakarta.servlet.DispatcherType;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.core.Ordered;
+import org.springframework.web.filter.ServerHttpObservationFilter;
 
 @Configuration
-public class ResttemplateConfiguration {
-
+public class ServerConfiguration {
     @Bean
-    public RestTemplate restTemplate(ObservationRegistry observationRegistry) {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setObservationRegistry(observationRegistry);
-        return restTemplate;
+    FilterRegistrationBean testServerHttpObservationFilter(ObservationRegistry observationRegistry) {
+        FilterRegistrationBean registration = new FilterRegistrationBean(
+            new ServerHttpObservationFilter(observationRegistry));
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
+        registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
+        return registration;
     }
-
 }

@@ -23,15 +23,12 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/resttemplate/case")
 public class FrontController {
-
-    private static final Logger LOGGER = LogManager.getLogger(FrontController.class);
 
     @Autowired
     private RestTemplate restTemplate;
@@ -41,9 +38,9 @@ public class FrontController {
         return "Success";
     }
 
-    @GetMapping( "/resttemplate")
+    @GetMapping("/resttemplate")
     public String front() {
-        syncRequest("http://localhost:8080/resttemplate-6.x-observation-scenario/resttemplate/syncback");
+        syncRequest("http://localhost:8080/resttemplate-6.x-scenario/resttemplate/syncback");
         return "Success";
     }
 

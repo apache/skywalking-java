@@ -14,10 +14,13 @@ Release Notes.
 * [Breaking Change] Compatible with 3.x and 4.x RabbitMQ Client, rename `rabbitmq-5.x-plugin` to `rabbitmq-plugin`
 * Polish JDBC plugins to make DBType accurate
 * Report the agent version to OAP as an instance attribute
+* Polish jedis-4.x-plugin to change command to lowercase, which is consistent with jedis-2.x-3.x-plugin
+* Add micronauthttpclient,micronauthttpserver,memcached,ehcache,guavacache,jedis,redisson plugin config properties to agent.config
 
 #### Documentation
 
 * Update `Plugin-test.md`, support string operators `start with` and `end with`
+* Polish agent configurations doc to fix type error
 
 
 

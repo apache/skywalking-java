@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public abstract class AbstractConnectionInterceptor implements InstanceMethodsAroundInterceptor {
 
-    private static final String UNKNOWN = "UNKNOWN";
+    private static final String UNKNOWN = "unknown";
 
     private static final String CACHE_TYPE = "Redis";
 
@@ -46,7 +46,9 @@ public abstract class AbstractConnectionInterceptor implements InstanceMethodsAr
         if (iterator.hasNext()) {
             protocolCommand = iterator.next().toString();
         }
-        String cmd = protocolCommand == null ? UNKNOWN : protocolCommand;
+        // Use lowercase to make config compatible with jedis-2.x-3.x plugin
+        // Refer to `plugin.jedis.operation_mapping_read`, `plugin.jedis.operation_mapping_write` config item in agent.config
+        String cmd = protocolCommand == null ? UNKNOWN : protocolCommand.toLowerCase();
         String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + cmd, peer);
         span.setComponent(ComponentsDefine.JEDIS);

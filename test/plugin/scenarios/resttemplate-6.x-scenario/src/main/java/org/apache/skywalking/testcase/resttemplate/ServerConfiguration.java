@@ -20,6 +20,7 @@ package org.apache.skywalking.testcase.resttemplate;
 
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.DispatcherType;
+import java.util.Collections;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,12 +29,14 @@ import org.springframework.web.filter.ServerHttpObservationFilter;
 
 @Configuration
 public class ServerConfiguration {
+
     @Bean
     FilterRegistrationBean testServerHttpObservationFilter(ObservationRegistry observationRegistry) {
         FilterRegistrationBean registration = new FilterRegistrationBean(
             new ServerHttpObservationFilter(observationRegistry));
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
         registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
+        registration.setUrlPatterns(Collections.singletonList("/resttemplate/syncback"));
         return registration;
     }
 }

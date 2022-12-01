@@ -39,7 +39,7 @@
         (if you build from command line, just use ./mvnw -Dsw.version=x.y.z),
         but make sure not to check it into the code base / git
         -->
-        <sw.version>8.14.0-SNAPSHOT
+        <sw.version>
         </sw.version>
     </properties>
 
@@ -55,6 +55,19 @@
             <groupId>org.apache.skywalking</groupId>
             <artifactId>apm-toolkit-micrometer-registry</artifactId>
             <version>${sw.version}</version>
+        </dependency>
+        <!-- To remote debug the agent -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-micrometer-1.10.x-plugin</artifactId>
+            <version>${sw.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-agent-core</artifactId>
+            <version>${sw.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

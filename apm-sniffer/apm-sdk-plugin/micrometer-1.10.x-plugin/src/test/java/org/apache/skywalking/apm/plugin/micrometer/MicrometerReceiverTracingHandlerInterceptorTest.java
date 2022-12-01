@@ -80,7 +80,7 @@ public class MicrometerReceiverTracingHandlerInterceptorTest {
         Map<String, String> map = new HashMap<>();
         map.put(
             "sw8",
-            "sw8 -> 1-Njc3OTM1ZDM4ZTFiNDAwMzk3NDU4MjI2OTM4YWU3MmIuMS4xNjY5NjM5MDI1ODE1MDAwMQ==-Njc3OTM1ZDM4ZTFiNDAwMzk3NDU4MjI2OTM4YWU3MmIuMS4xNjY5NjM5MDI1ODE1MDAwMA==-0-TWljcm9tZXRlclJlY2VpdmVyVGVzdENhc2VzLUFQUA==-YWU5YWZkM2YxMDg0NGYzMzg1MGZlOGQwYzRkNzYwYTdAMTAuMTUuMTguMTE1-Y29udGV4dHVhbE5hbWU=-aHR0cDovL2xvY2FsaG9zdDo4MDgw"
+            "1-Njc3OTM1ZDM4ZTFiNDAwMzk3NDU4MjI2OTM4YWU3MmIuMS4xNjY5NjM5MDI1ODE1MDAwMQ==-Njc3OTM1ZDM4ZTFiNDAwMzk3NDU4MjI2OTM4YWU3MmIuMS4xNjY5NjM5MDI1ODE1MDAwMA==-0-TWljcm9tZXRlclJlY2VpdmVyVGVzdENhc2VzLUFQUA==-YWU5YWZkM2YxMDg0NGYzMzg1MGZlOGQwYzRkNzYwYTdAMTAuMTUuMTguMTE1-Y29udGV4dHVhbE5hbWU=-aHR0cDovL2xvY2FsaG9zdDo4MDgw"
         );
         map.put("sw8-correlation", "");
         map.put("sw8-x", "0- ");

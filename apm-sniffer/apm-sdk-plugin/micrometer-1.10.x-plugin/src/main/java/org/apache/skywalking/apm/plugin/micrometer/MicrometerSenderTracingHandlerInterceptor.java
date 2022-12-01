@@ -22,6 +22,7 @@ import io.micrometer.common.KeyValue;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.transport.SenderContext;
 import java.lang.reflect.Method;
+import java.net.URI;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -31,8 +32,8 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingSenderTracingHandler;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingSenderTracingHandler;
 import org.apache.skywalking.apm.util.StringUtil;
 
 /**
@@ -49,7 +50,7 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
             SenderContext<Object> context = (SenderContext<Object>) allArguments[0];
             final ContextCarrier contextCarrier = new ContextCarrier();
             AbstractSpan span = ContextManager.createExitSpan(
-                context.getContextualName(), contextCarrier, context.getRemoteServiceAddress());
+                getOperationName(context), contextCarrier, context.getRemoteServiceAddress());
             CarrierItem next = contextCarrier.items();
             while (next.hasNext()) {
                 next = next.next();
@@ -62,8 +63,7 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
             AbstractSpan abstractSpan = ContextManager.activeSpan();
             abstractSpan
                 .setPeer(tryToGetPeer(context))
-                .setOperationName(StringUtil.isBlank(
-                    context.getContextualName()) ? context.getName() : context.getContextualName());
+                .setOperationName(getOperationName(context));
             context.getAllKeyValues()
                    .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));
             if (spanLayer != null) {
@@ -76,21 +76,30 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
         }
     }
 
+    private static String getOperationName(final SenderContext<Object> context) {
+        return StringUtil.isBlank(
+            context.getContextualName()) ? context.getName() : context.getContextualName();
+    }
+
     private String tryToGetPeer(SenderContext<Object> context) {
         if (context.getRemoteServiceAddress() != null) {
             return context.getRemoteServiceAddress();
         }
-        KeyValue uri = context.getLowCardinalityKeyValue("uri");
-        if (uri != null) {
-            return uri.getValue();
+        String result = context.getAllKeyValues()
+                               .stream()
+                               .filter(keyValue -> "http.url".equalsIgnoreCase(
+                                   keyValue.getKey()) || "uri".equalsIgnoreCase(keyValue.getKey())
+                                   || keyValue.getKey().contains("uri") || keyValue.getKey().contains("url")
+                               )
+                               .findFirst()
+                               .map(KeyValue::getValue)
+                               .orElse("unknown");
+        try {
+            URI uri = URI.create(result);
+            return uri.getHost() + ":" + uri.getPort();
+        } catch (Exception ex) {
+            return "unknown";
         }
-        return context.getAllKeyValues()
-                      .stream()
-                      .filter(keyValue -> "uri".equalsIgnoreCase(keyValue.getKey()) || "http.url".equalsIgnoreCase(
-                          keyValue.getKey()))
-                      .findFirst()
-                      .map(KeyValue::getValue)
-                      .orElse("unknown");
     }
 
     @Override

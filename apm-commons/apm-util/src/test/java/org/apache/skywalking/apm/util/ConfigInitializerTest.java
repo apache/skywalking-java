@@ -67,8 +67,12 @@ public class ConfigInitializerTest {
         Assert.assertArrayEquals(new Integer[]{1, 2, 3, 4}, TestPropertiesObject.Level1Object.LIST_INT_ATTR_ED2.toArray());
         Assert.assertArrayEquals(new String[]{}, TestPropertiesObject.Level1Object.SET_STR_EMPTY_ATTR.toArray());
         Assert.assertArrayEquals(new Boolean[]{true, false}, TestPropertiesObject.Level1Object.LIST_BOOL_ATTR.toArray());
-        Assert.assertArrayEquals(new String[]{"a", "b", "c", "d"}, TestPropertiesObject.Level1Object.SET_STR_ATTR.toArray());
-        Assert.assertArrayEquals(new Integer[]{1, 2, 3, 4}, TestPropertiesObject.Level1Object.SET_INT_ATTR.toArray());
+        Object[] setStrAttrArray = TestPropertiesObject.Level1Object.SET_STR_ATTR.toArray();
+        Arrays.sort(setStrAttrArray);
+        Assert.assertArrayEquals(new String[]{"a", "b", "c", "d"}, setStrAttrArray);
+        Object[] setIntAttrArray = TestPropertiesObject.Level1Object.SET_INT_ATTR.toArray();
+        Arrays.sort(setIntAttrArray);
+        Assert.assertArrayEquals(new Integer[]{1, 2, 3, 4}, setIntAttrArray);
         Assert.assertArrayEquals(new Boolean[]{true}, TestPropertiesObject.Level1Object.SET_BOOL_ATTR.toArray());
         Assert.assertEquals(TestColorEnum.RED, TestPropertiesObject.Level1Object.Level2Object.ENUM_ATTR);
         //make sure that when descs is empty,toString() work right;

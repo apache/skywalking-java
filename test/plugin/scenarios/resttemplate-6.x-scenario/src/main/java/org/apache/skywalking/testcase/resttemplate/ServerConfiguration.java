@@ -20,6 +20,7 @@ package org.apache.skywalking.testcase.resttemplate;
 
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.DispatcherType;
+import java.util.Arrays;
 import java.util.Collections;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +37,7 @@ public class ServerConfiguration {
             new ServerHttpObservationFilter(observationRegistry));
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
         registration.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC);
-        registration.setUrlPatterns(Collections.singletonList("/resttemplate/syncback"));
+        registration.setUrlPatterns(Arrays.asList("/resttemplate/syncback", "/resttemplate/case/resttemplate"));
         return registration;
     }
 }

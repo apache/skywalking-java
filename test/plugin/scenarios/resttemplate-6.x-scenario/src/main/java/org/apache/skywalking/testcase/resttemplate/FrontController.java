@@ -19,6 +19,7 @@
 package org.apache.skywalking.testcase.resttemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,9 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/resttemplate/case")
 public class FrontController {
+
+    @Value("${server.port:8080}")
+    int port;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -38,7 +42,7 @@ public class FrontController {
 
     @GetMapping("/resttemplate")
     public String front() {
-        syncRequest("http://localhost:8080/resttemplate-6.x-scenario/resttemplate/syncback");
+        syncRequest("http://localhost:" + port + "/resttemplate-6.x-scenario/resttemplate/syncback");
         return "Success";
     }
 

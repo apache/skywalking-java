@@ -50,7 +50,7 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
             SenderContext<Object> context = (SenderContext<Object>) allArguments[0];
             final ContextCarrier contextCarrier = new ContextCarrier();
             AbstractSpan span = ContextManager.createExitSpan(
-                getOperationName(context), contextCarrier, context.getRemoteServiceAddress());
+                getOperationName(context), contextCarrier, tryToGetPeer(context));
             CarrierItem next = contextCarrier.items();
             while (next.hasNext()) {
                 next = next.next();
@@ -96,9 +96,12 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
                                .orElse("unknown");
         try {
             URI uri = URI.create(result);
+            if (uri.getHost() == null) {
+                return null;
+            }
             return uri.getHost() + ":" + uri.getPort();
         } catch (Exception ex) {
-            return "unknown";
+            return null;
         }
     }
 

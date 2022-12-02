@@ -96,9 +96,12 @@ public class MicrometerReceiverTracingHandlerInterceptor implements InstanceMeth
                                .orElse("unknown");
         try {
             URI uri = URI.create(result);
+            if (uri.getHost() == null) {
+                return null;
+            }
             return uri.getHost() + ":" + uri.getPort();
         } catch (Exception ex) {
-            return "unknown";
+            return null;
         }
     }
 

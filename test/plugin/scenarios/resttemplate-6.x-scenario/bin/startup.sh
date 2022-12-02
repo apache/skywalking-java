@@ -19,6 +19,5 @@
 home="$(cd "$(dirname $0)"; pwd)"
 
 export SW_EXCLUDE_PLUGINS=spring-mvc-annotation,spring-mvc-annotation-3.x,spring-mvc-annotation-4.x,spring-mvc-annotation-5.x,spring-resttemplate-4.x,tomcat-7.x/8.x,tomcat-10.x
-export SW_AGENT_KEEP_TRACING=true
 
 java -jar ${agent_opts} ${home}/../libs/resttemplate-6.x-scenario.jar &

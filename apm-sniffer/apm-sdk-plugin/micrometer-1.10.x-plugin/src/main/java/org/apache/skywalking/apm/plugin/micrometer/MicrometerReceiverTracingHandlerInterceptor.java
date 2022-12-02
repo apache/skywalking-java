@@ -18,11 +18,9 @@
 
 package org.apache.skywalking.apm.plugin.micrometer;
 
-import io.micrometer.common.KeyValue;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.transport.ReceiverContext;
 import java.lang.reflect.Method;
-import java.net.URI;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -62,7 +60,7 @@ public class MicrometerReceiverTracingHandlerInterceptor implements InstanceMeth
             SpanLayer spanLayer = TaggingHelper.toLayer(context.getAllKeyValues());
             AbstractSpan abstractSpan = ContextManager.activeSpan();
             abstractSpan
-                .setPeer(tryToGetPeer(context))
+                .setPeer(SpanHelper.tryToGetPeer(context.getRemoteServiceAddress(), context.getAllKeyValues()))
                 .setOperationName(getOperationName(context));
             context.getAllKeyValues()
                    .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));
@@ -79,30 +77,6 @@ public class MicrometerReceiverTracingHandlerInterceptor implements InstanceMeth
     private static String getOperationName(final ReceiverContext<Object> context) {
         return StringUtil.isBlank(
             context.getContextualName()) ? context.getName() : context.getContextualName();
-    }
-
-    private String tryToGetPeer(ReceiverContext<Object> context) {
-        if (context.getRemoteServiceAddress() != null) {
-            return context.getRemoteServiceAddress();
-        }
-        String result = context.getAllKeyValues()
-                               .stream()
-                               .filter(keyValue -> "http.url".equalsIgnoreCase(
-                                   keyValue.getKey()) || "uri".equalsIgnoreCase(keyValue.getKey())
-                                   || keyValue.getKey().contains("uri") || keyValue.getKey().contains("url")
-                               )
-                               .findFirst()
-                               .map(KeyValue::getValue)
-                               .orElse("unknown");
-        try {
-            URI uri = URI.create(result);
-            if (uri.getHost() == null) {
-                return null;
-            }
-            return uri.getHost() + ":" + uri.getPort();
-        } catch (Exception ex) {
-            return null;
-        }
     }
 
     @Override

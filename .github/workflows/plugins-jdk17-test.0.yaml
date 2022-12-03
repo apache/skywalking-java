@@ -59,6 +59,7 @@ jobs:
       matrix:
         case:
           - jdk17-with-gson-scenario
+          - resttemplate-6.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

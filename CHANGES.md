@@ -16,7 +16,7 @@ Release Notes.
 * Report the agent version to OAP as an instance attribute
 * Polish jedis-4.x-plugin to change command to lowercase, which is consistent with jedis-2.x-3.x-plugin
 * Add micronauthttpclient,micronauthttpserver,memcached,ehcache,guavacache,jedis,redisson plugin config properties to agent.config
-* Add [Micrometer Observation](https://micrometer.io/docs/observation) support
+* Add [Micrometer Observation](https://github.com/micrometer-metrics/micrometer/) support
 
 #### Documentation
 

@@ -30,7 +30,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <rocketmq-client.version>4.3.1</rocketmq-client.version>
+        <rocketmq-client.version>4.1.0-incubating</rocketmq-client.version>
     </properties>
 
     <dependencies>

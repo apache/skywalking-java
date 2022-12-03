@@ -59,10 +59,10 @@ public class CaseController {
 
             // send msg
             Message msg = new Message("TopicTest",
-                    "TagA",
-                    "KeyA",
                     ("Hello RocketMQ sendMsg " + new Date()).getBytes(RemotingHelper.DEFAULT_CHARSET)
             );
+            msg.setTags("TagA");
+            msg.setKeys("KeyA");
             SendResult sendResult = producer.send(msg);
             System.out.printf("%s send msg: %s%n", new Date(), sendResult);
             

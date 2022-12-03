@@ -33,7 +33,7 @@ public class BackController {
 
     @GetMapping("/syncback")
     public String syncBack(@RequestHeader HttpHeaders httpHeaders) {
-        LOGGER.info("Got following headers " + httpHeaders );
+        LOGGER.info("Got following headers " + httpHeaders);
         return "Hello back";
     }
 

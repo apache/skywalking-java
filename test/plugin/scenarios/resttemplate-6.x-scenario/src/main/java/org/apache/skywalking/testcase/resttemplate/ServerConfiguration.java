@@ -21,7 +21,6 @@ package org.apache.skywalking.testcase.resttemplate;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.servlet.DispatcherType;
 import java.util.Arrays;
-import java.util.Collections;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

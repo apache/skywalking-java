@@ -24,6 +24,8 @@ import io.micrometer.observation.ObservationHandler;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.annotation.PreDestroy;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.skywalking.apm.meter.micrometer.SkywalkingMeterRegistry;
 import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingDefaultTracingHandler;
 import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingMeterHandler;
@@ -34,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 class ObservationConfiguration {
+    private static final Logger LOGGER = LogManager.getLogger(ObservationConfiguration.class);
 
     @Bean
     ObservationRegistry observationRegistry(List<MeterObservationHandler<?>> handlers) {
@@ -72,13 +75,13 @@ class ObservationConfiguration {
 
         @PreDestroy
         void dumpMetrics() {
-            System.out.println("==== METRICS ====");
+            LOGGER.info("==== METRICS ====");
             this.meterRegistry.getMeters()
-                              .forEach(meter -> System.out.println(
+                              .forEach(meter -> LOGGER.info(
                                   " - Metric type \t[" + meter.getId().getType() + "],\tname [" + meter.getId()
                                                                                                        .getName() + "],\ttags " + meter.getId()
                                                                                                                                        .getTags() + ",\tmeasurements " + meter.measure()));
-            System.out.println("=================");
+            LOGGER.info("=================");
         }
     }
 }

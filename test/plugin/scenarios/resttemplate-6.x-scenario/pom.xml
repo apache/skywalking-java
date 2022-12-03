@@ -56,19 +56,6 @@
             <artifactId>apm-toolkit-micrometer-registry</artifactId>
             <version>${sw.version}</version>
         </dependency>
-        <!-- To remote debug the agent -->
-        <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-micrometer-1.10.x-plugin</artifactId>
-            <version>${sw.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-agent-core</artifactId>
-            <version>${sw.version}</version>
-            <scope>runtime</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>

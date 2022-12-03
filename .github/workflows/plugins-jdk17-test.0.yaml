@@ -59,7 +59,8 @@ jobs:
       matrix:
         case:
           - jdk17-with-gson-scenario
-          - resttemplate-6.x-scenario
+#          TODO: We can't test it just yet, because it requires a Skywalking release
+#          - resttemplate-6.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

@@ -59,6 +59,15 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         span.setComponent(ComponentsDefine.ROCKET_MQ_PRODUCER);
         Tags.MQ_BROKER.set(span, (String) allArguments[0]);
         Tags.MQ_TOPIC.set(span, message.getTopic());
+        String keys = message.getKeys();
+        if (StringUtil.isNotBlank(keys)) {
+            span.tag(Tags.ofKey("mq.message.keys"), keys);
+        }
+        String tags = message.getTags();
+        if (StringUtil.isNotBlank(tags)) {
+            span.tag(Tags.ofKey("mq.message.tags"), tags);
+        }
+
         contextCarrier.extensionInjector().injectSendingTimestamp();
         SpanLayer.asMQ(span);
 

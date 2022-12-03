@@ -61,11 +61,11 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         Tags.MQ_TOPIC.set(span, message.getTopic());
         String keys = message.getKeys();
         if (StringUtil.isNotBlank(keys)) {
-            span.tag(Tags.ofKey("message.keys"), keys);
+            span.tag(Tags.ofKey("mq.message.keys"), keys);
         }
         String tags = message.getTags();
         if (StringUtil.isNotBlank(tags)) {
-            span.tag(Tags.ofKey("message.tags"), tags);
+            span.tag(Tags.ofKey("mq.message.tags"), tags);
         }
 
         contextCarrier.extensionInjector().injectSendingTimestamp();

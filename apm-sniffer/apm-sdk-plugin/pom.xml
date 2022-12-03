@@ -126,7 +126,6 @@
         <module>nats-2.14.x-2.15.x-plugin</module>
         <module>jedis-plugins</module>
         <module>impala-jdbc-2.6.x-plugin</module>
-        <module>micrometer-1.10.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

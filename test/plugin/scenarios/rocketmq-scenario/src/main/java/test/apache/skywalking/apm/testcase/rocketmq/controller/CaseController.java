@@ -103,14 +103,6 @@ public class CaseController {
         producer.setNamesrvAddr(namerServer);
         producer.start();
         System.out.printf("HealthCheck Provider Started.%n");
-
-        // send msg
-        Message msg = new Message("HealthCheckTopicTest",
-                "TagA",
-                ("Hello RocketMQ sendMsg " + new Date()).getBytes(RemotingHelper.DEFAULT_CHARSET)
-        );
-        SendResult sendResult = producer.send(msg);
-        System.out.printf("healthCheck %s send msg: %s%n", new Date(), sendResult);
         return SUCCESS;
     }
 

@@ -67,7 +67,7 @@ compositeRegistry.add(new SkywalkingMeterRegistry());
    </dependency>
 ```
 
-* To use the [Micrometer Observation](https://micrometer.io/docs/observation) Registry with Skywalking, you need to add handlers to the registry. Skywalking comes
+* To use the Micrometer Observation Registry with Skywalking, you need to add handlers to the registry. Skywalking comes
 with dedicated `SkywalkingMeterHandler` (for metrics) and `SkywalkingSenderTracingHandler`, `SkywalkingReceiverTracingHandler`
 `SkywalkingDefaultTracingHandler` (for traces).
 

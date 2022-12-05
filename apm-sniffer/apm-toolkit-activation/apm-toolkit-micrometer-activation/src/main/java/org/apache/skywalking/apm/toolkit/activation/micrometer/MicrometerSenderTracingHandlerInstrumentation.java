@@ -38,7 +38,7 @@ public class MicrometerSenderTracingHandlerInstrumentation extends ClassInstance
 
     public static final String INTERCEPT_STOP_POINT_METHOD = "onStop";
 
-    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.micrometer.MicrometerSenderTracingHandlerInterceptor";
+    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.micrometer.MicrometerSenderTracingHandlerInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

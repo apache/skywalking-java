@@ -48,12 +48,13 @@ public class MicrometerContextSnapshotThreadLocalAccessorInterceptor implements 
             return ContextManager.capture();
         } else if ("setValue".equals(methodName)) {
             ContextSnapshot context = (ContextSnapshot) allArguments[0];
-            // TODO: I want to continue an existing span, what should be the name?
-            AbstractSpan span = ContextManager.createLocalSpan("continued");
+            AbstractSpan span = ContextManager.createLocalSpan("Thread");
             span.setComponent(ComponentsDefine.MICROMETER);
             ContextManager.continued(context);
         } else if ("reset".equals(methodName)) {
-            // TODO: Can't do much about resetting
+            if (ContextManager.isActive()) {
+                ContextManager.stopSpan();
+            }
         }
         return ret;
     }

@@ -37,7 +37,7 @@ public class MicrometerContextManagerThreadLocalAccessorInstrumentation extends 
     public static final String INTERCEPT_SET_VALUE_POINT_METHOD = "setValue";
 
     public static final String INTERCEPT_RESET_POINT_METHOD = "reset";
-    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.micrometer.MicrometerContextSnapshotThreadLocalAccessorInterceptor";
+    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.micrometer.MicrometerContextSnapshotThreadLocalAccessorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

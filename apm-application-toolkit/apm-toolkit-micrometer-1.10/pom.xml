@@ -24,25 +24,42 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-toolkit-micrometer-registry</artifactId>
+    <artifactId>apm-toolkit-micrometer-1.10</artifactId>
     <packaging>jar</packaging>
 
     <url>http://maven.apache.org</url>
 
     <properties>
-        <micrometer-core.version>1.5.0</micrometer-core.version>
+        <micrometer-core.version>1.10.2</micrometer-core.version>
+        <context-propagation.version>1.0.0</context-propagation.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-toolkit-meter</artifactId>
+            <artifactId>apm-toolkit-micrometer-registry</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-observation</artifactId>
+            <version>${micrometer-core.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-core</artifactId>
             <version>${micrometer-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>context-propagation</artifactId>
+            <version>${context-propagation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-test</artifactId>
+            <version>${micrometer-core.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

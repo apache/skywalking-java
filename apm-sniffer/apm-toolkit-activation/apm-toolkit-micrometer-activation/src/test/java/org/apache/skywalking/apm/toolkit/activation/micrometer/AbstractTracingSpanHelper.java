@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.micrometer;
+package org.apache.skywalking.apm.toolkit.activation.micrometer;
 
 import java.util.Collections;
 import java.util.List;

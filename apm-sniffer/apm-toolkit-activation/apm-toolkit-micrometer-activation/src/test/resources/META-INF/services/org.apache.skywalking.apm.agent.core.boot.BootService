@@ -16,5 +16,5 @@
 #
 #
 
-org.apache.skywalking.apm.plugin.micrometer.PluginBootService
-org.apache.skywalking.apm.plugin.micrometer.ContextManagerExtendOverrideService
+org.apache.skywalking.apm.toolkit.activation.micrometer.PluginBootService
+org.apache.skywalking.apm.toolkit.activation.micrometer.ContextManagerExtendOverrideService

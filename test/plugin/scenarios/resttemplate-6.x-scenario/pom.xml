@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.skywalking</groupId>
-            <artifactId>apm-toolkit-micrometer-registry</artifactId>
+            <artifactId>apm-toolkit-micrometer-1.10</artifactId>
             <version>${sw.version}</version>
         </dependency>
         <dependency>

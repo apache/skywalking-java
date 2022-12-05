@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.micrometer;
+package org.apache.skywalking.apm.toolkit.activation.micrometer;
 
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationHandler;
@@ -40,7 +40,6 @@ import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
-import org.apache.skywalking.apm.toolkit.activation.micrometer.MicrometerSenderTracingHandlerInterceptor;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;

@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.micrometer;
+package org.apache.skywalking.apm.toolkit.activation.micrometer;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -35,7 +35,6 @@ import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
-import org.apache.skywalking.apm.toolkit.activation.micrometer.MicrometerContextSnapshotThreadLocalAccessorInterceptor;
 import org.apache.skywalking.apm.toolkit.micrometer.observation.SkywalkingContextSnapshotThreadLocalAccessor;
 import org.junit.After;
 import org.junit.AfterClass;

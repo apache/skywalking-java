@@ -40,7 +40,7 @@ public class MicrometerDefaultTracingHandlerInstrumentation extends ClassInstanc
 
     public static final String INTERCEPT_EVENT_POINT_METHOD = "onEvent";
 
-    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.micrometer.MicrometerDefaultTracingHandlerInterceptor";
+    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.micrometer.MicrometerDefaultTracingHandlerInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

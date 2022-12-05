@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.micrometer;
+package org.apache.skywalking.apm.toolkit.activation.micrometer;
 
 import org.apache.skywalking.apm.agent.core.boot.OverrideImplementor;
 import org.apache.skywalking.apm.agent.core.context.ContextManagerExtendService;

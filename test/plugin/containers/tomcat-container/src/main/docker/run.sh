@@ -57,7 +57,7 @@ export LOGS_HOME=${SCENARIO_HOME}/logs # share to catalina.sh
 
 # Speed up launch tomcat
 rm /usr/local/tomcat/webapps/* -rf # remove needn't app
-sed -i "s%securerandom.source=file:/dev/random%securerandom.source=file:/dev/urandom%g" $JAVA_HOME/jre/lib/security/java.security
+sed -i "s%securerandom.source=file:/dev/random%securerandom.source=file:/dev/urandom%g" $JAVA_HOME/jre/lib/security/java.security || echo "Failed to speed up tomcat launch - will continue"
 
 # To deploy testcase
 cp ${SCENARIO_HOME}/*.war /usr/local/tomcat/webapps/

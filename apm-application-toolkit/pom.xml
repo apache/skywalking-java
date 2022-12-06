@@ -34,6 +34,7 @@
         <module>apm-toolkit-trace</module>
         <module>apm-toolkit-meter</module>
         <module>apm-toolkit-micrometer-registry</module>
+        <module>apm-toolkit-micrometer-1.10</module>
         <module>apm-toolkit-kafka</module>
         <module>apm-toolkit-webflux</module>
     </modules>

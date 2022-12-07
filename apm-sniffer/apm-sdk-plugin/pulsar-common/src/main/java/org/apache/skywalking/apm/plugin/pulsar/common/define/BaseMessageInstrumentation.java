@@ -18,6 +18,10 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.common.define;
 
+import static net.bytebuddy.matcher.ElementMatchers.isMethod;
+import static net.bytebuddy.matcher.ElementMatchers.isPublic;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 import net.bytebuddy.description.method.MethodDescription;
@@ -42,10 +46,12 @@ public class BaseMessageInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     public static final String ENHANCE_CLASS = "org.apache.pulsar.client.impl.MessageImpl";
     public static final String CONSTRUCTOR_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.pulsar.common.MessageConstructorInterceptor";
+    public static final String ENHANCE_METHOD = "recycle";
+    public static final String METHOD_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.pulsar.common.MessageRecycleMethodInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
+        return new ConstructorInterceptPoint[]{
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
@@ -62,7 +68,24 @@ public class BaseMessageInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[0];
+        return new InstanceMethodsInterceptPoint[]{
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return isMethod().and(named(ENHANCE_METHOD)).and(isPublic()).and(takesArguments(0));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return METHOD_INTERCEPTOR_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                }
+        };
     }
 
     @Override

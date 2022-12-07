@@ -18,6 +18,7 @@ Release Notes.
 * Add micronauthttpclient,micronauthttpserver,memcached,ehcache,guavacache,jedis,redisson plugin config properties to agent.config
 * Add [Micrometer Observation](https://github.com/micrometer-metrics/micrometer/) support
 * Add tags `mq.message.keys` and `mq.message.tags` for RocketMQ producer span
+* Clean the trace context which injected into Pulsar MessageImpl after the instance recycled
 
 #### Documentation
 

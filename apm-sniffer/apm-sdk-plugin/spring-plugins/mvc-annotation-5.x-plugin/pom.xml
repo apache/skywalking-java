@@ -31,7 +31,7 @@
 
     <properties>
         <spring-core.version>5.0.0.RELEASE</spring-core.version>
-        <spring-webmvc.version>5.0.0.RELEASE</spring-webmvc.version>
+        <spring-webmvc.version>5.2.20.RELEASE</spring-webmvc.version>
         <javax-servlet-api.version>3.0.1</javax-servlet-api.version>
         <spring-webflux.version>5.0.0.RELEASE</spring-webflux.version>
     </properties>

@@ -19,6 +19,7 @@ Release Notes.
 * Add [Micrometer Observation](https://github.com/micrometer-metrics/micrometer/) support
 * Add tags `mq.message.keys` and `mq.message.tags` for RocketMQ producer span
 * Clean the trace context which injected into Pulsar MessageImpl after the instance recycled
+* Support to customize the collect period of JVM relative metrics
 
 #### Documentation
 

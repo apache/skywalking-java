@@ -119,6 +119,22 @@ public class ConnectionInstrumentation extends AbstractMysqlInstrumentation {
                 public boolean isOverrideArgs() {
                     return false;
                 }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named("setDatabase");
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return org.apache.skywalking.apm.plugin.jdbc.mysql.Constants.SET_CATALOG_INTERCEPTOR;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
             }
         };
 

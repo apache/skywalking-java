@@ -30,7 +30,6 @@ on:
   push:
     branches:
       - test/ci/*
-      - revert-430-wu-sheng-patch-1
 
 concurrency:
   group: plugins-3-${{ github.event.pull_request.number || github.ref }}

@@ -28,7 +28,7 @@
     <artifactId>apm-kafka-plugin</artifactId>
 
     <properties>
-        <kafka-clients.version>2.0.1</kafka-clients.version>
+        <kafka-clients.version>3.2.3</kafka-clients.version>
     </properties>
 
     <dependencies>

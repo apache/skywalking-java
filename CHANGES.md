@@ -20,7 +20,8 @@ Release Notes.
 * Add tags `mq.message.keys` and `mq.message.tags` for RocketMQ producer span
 * Clean the trace context which injected into Pulsar MessageImpl after the instance recycled
 * Fix In the higher version of mysql-connector-java 8x, there is an error in the value of db.instance.
-* Add support for KafkaClients 3.2.x
+* Add support for KafkaClients 3.x.
+* Support to customize the collect period of JVM relative metrics.
 
 #### Documentation
 

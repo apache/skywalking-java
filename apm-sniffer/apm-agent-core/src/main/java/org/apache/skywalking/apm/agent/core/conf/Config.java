@@ -273,6 +273,10 @@ public class Config {
          * The buffer size of collected JVM info.
          */
         public static int BUFFER_SIZE = 60 * 10;
+        /**
+         * The period in seconds of JVM metrics collection.
+         */
+        public static int METRICS_COLLECT_PERIOD = 1;
     }
 
     public static class Log {

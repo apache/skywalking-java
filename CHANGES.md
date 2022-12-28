@@ -22,6 +22,7 @@ Release Notes.
 * Fix In the higher version of mysql-connector-java 8x, there is an error in the value of db.instance.
 * Add support for KafkaClients 3.x.
 * Support to customize the collect period of JVM relative metrics.
+* Upgrade netty-codec-http2 to 4.1.86.Final.
 
 #### Documentation
 

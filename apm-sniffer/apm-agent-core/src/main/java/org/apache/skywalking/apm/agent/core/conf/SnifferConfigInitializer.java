@@ -23,11 +23,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Enumeration;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackageNotFoundException;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackagePath;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
@@ -97,6 +102,8 @@ public class SnifferConfigInitializer {
         // reconfigure logger after config initialization
         configureLogger();
         LOGGER = LogManager.getLogger(SnifferConfigInitializer.class);
+
+        setAgentVersion();
 
         if (StringUtil.isEmpty(Config.Agent.SERVICE_NAME)) {
             throw new ExceptionInInitializerError("`agent.service_name` is missing.");
@@ -199,6 +206,34 @@ public class SnifferConfigInitializer {
                 String realKey = key.substring(ENV_KEY_PREFIX.length());
                 AGENT_SETTINGS.put(realKey, prop.getValue());
             }
+        }
+    }
+
+    /**
+     * Set agent version(Described in MANIFEST.MF)
+     */
+    private static void setAgentVersion() {
+        try {
+            Enumeration<URL> resources = SnifferConfigInitializer.class.getClassLoader().getResources(JarFile.MANIFEST_NAME);
+            while (resources.hasMoreElements()) {
+                URL url = resources.nextElement();
+                LOGGER.info("SnifferConfigInitializer url:{}", url.toString());
+                try (InputStream is = url.openStream()) {
+                    if (is != null) {
+                        Manifest manifest = new Manifest(is);
+                        Attributes mainAttribs = manifest.getMainAttributes();
+                        String projectName = mainAttribs.getValue("Implementation-Vendor-Id");
+                        if (projectName != null) {
+                            if ("org.apache.skywalking".equals(projectName)) {
+                                Config.Agent.VERSION = mainAttribs.getValue("Implementation-Version");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Can't read version from MANIFEST.MF in the agent jar");
         }
     }
 

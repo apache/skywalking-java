@@ -24,6 +24,7 @@ Release Notes.
 * Support to customize the collect period of JVM relative metrics.
 * Upgrade netty-codec-http2 to 4.1.86.Final.
 * Move `Agent-Version` property reading away from the class loading stage to avoid deadlock when use `jarsigner`.
+* Put `Agent-Version` property reading in premain stage to avoid deadlock when use `jarsigner`.
 
 #### Documentation
 

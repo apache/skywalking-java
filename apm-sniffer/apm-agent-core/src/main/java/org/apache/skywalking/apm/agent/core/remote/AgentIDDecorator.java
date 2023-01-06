@@ -26,29 +26,17 @@ import io.grpc.ClientInterceptors;
 import io.grpc.ForwardingClientCall;
 import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import org.apache.skywalking.apm.agent.core.conf.Config;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+
 
 /**
  * Add agent version(Described in MANIFEST.MF) to the connection establish stage.
  */
 public class AgentIDDecorator implements ChannelDecorator {
-    private static final ILog LOGGER = LogManager.getLogger(AgentIDDecorator.class);
     private static Metadata.Key<String> AGENT_VERSION_HEAD_HEADER_NAME;
 
     public AgentIDDecorator() {
-        try {
-            AGENT_VERSION_HEAD_HEADER_NAME = Metadata.Key.of("Agent-Version", Metadata.ASCII_STRING_MARSHALLER);
-        } catch (Exception e) {
-            LOGGER.warn("Can't read version from MANIFEST.MF in the agent jar");
-        }
+        AGENT_VERSION_HEAD_HEADER_NAME = Metadata.Key.of("Agent-Version", Metadata.ASCII_STRING_MARSHALLER);
     }
 
     @Override

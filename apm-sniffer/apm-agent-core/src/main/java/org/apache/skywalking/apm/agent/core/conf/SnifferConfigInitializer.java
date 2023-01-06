@@ -25,7 +25,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Enumeration;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -210,8 +214,9 @@ public class SnifferConfigInitializer {
      * Set agent version(Described in MANIFEST.MF)
      */
     private static void setAgentVersion() {
+        //set default value
+        AGENT_SETTINGS.put("agent.version", "UNKNOWN");
         try {
-            ClassLoader classLoader = SnifferConfigInitializer.class.getClassLoader();
             Enumeration<URL> resources = SnifferConfigInitializer.class.getClassLoader().getResources(JarFile.MANIFEST_NAME);
             while (resources.hasMoreElements()) {
                 URL url = resources.nextElement();
@@ -232,7 +237,6 @@ public class SnifferConfigInitializer {
             }
         } catch (Exception e) {
             LOGGER.warn("Can't read version from MANIFEST.MF in the agent jar");
-            AGENT_SETTINGS.put("agent.version", "UNKNOWN");
         }
     }
 

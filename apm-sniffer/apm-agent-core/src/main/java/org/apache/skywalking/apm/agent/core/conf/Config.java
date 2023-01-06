@@ -180,7 +180,7 @@ public class Config {
         public static String SSL_KEY_PATH;
 
         /**
-         * Agent version, auto set value in agent start by read skywalking-agent.jar MANIFEST.MF file
+         * Agent version. This is set by the agent kernel through reading MANIFEST.MF file in the skywalking-agent.jar.
          */
         public static String VERSION = "";
     }

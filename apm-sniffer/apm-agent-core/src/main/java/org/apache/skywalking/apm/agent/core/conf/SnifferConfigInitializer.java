@@ -98,13 +98,13 @@ public class SnifferConfigInitializer {
             }
         }
 
-        //set agent version
-        setAgentVersion();
-
         initializeConfig(Config.class);
         // reconfigure logger after config initialization
         configureLogger();
         LOGGER = LogManager.getLogger(SnifferConfigInitializer.class);
+
+        //set agent version
+        setAgentVersion();
 
         if (StringUtil.isEmpty(Config.Agent.SERVICE_NAME)) {
             throw new ExceptionInInitializerError("`agent.service_name` is missing.");
@@ -215,7 +215,7 @@ public class SnifferConfigInitializer {
      */
     private static void setAgentVersion() {
         //set default value
-        AGENT_SETTINGS.put("agent.version", "UNKNOWN");
+        Config.Agent.VERSION = "UNKNOWN";
         try {
             Enumeration<URL> resources = SnifferConfigInitializer.class.getClassLoader().getResources(JarFile.MANIFEST_NAME);
             while (resources.hasMoreElements()) {
@@ -228,8 +228,7 @@ public class SnifferConfigInitializer {
                         String projectName = mainAttribs.getValue("Implementation-Vendor-Id");
                         if (projectName != null) {
                             if ("org.apache.skywalking".equals(projectName)) {
-                                String version = mainAttribs.getValue("Implementation-Version");
-                                AGENT_SETTINGS.put("agent.version", version);
+                                Config.Agent.VERSION = mainAttribs.getValue("Implementation-Version");
                             }
                         }
                     }

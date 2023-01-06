@@ -207,9 +207,8 @@ public class SnifferConfigInitializer {
     }
 
     /**
-     * set agent version(Described in MANIFEST.MF)
-     *
-     * */
+     * Set agent version(Described in MANIFEST.MF)
+     */
     private static void setAgentVersion() {
         try {
             ClassLoader classLoader = SnifferConfigInitializer.class.getClassLoader();

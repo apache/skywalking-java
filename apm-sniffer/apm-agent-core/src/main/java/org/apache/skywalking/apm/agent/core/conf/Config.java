@@ -182,7 +182,7 @@ public class Config {
         /**
          * Agent version. This is set by the agent kernel through reading MANIFEST.MF file in the skywalking-agent.jar.
          */
-        public static String VERSION = "";
+        public static String VERSION = "UNKNOWN";
     }
 
     public static class OsInfo {

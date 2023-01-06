@@ -103,7 +103,6 @@ public class SnifferConfigInitializer {
         configureLogger();
         LOGGER = LogManager.getLogger(SnifferConfigInitializer.class);
 
-        //set agent version
         setAgentVersion();
 
         if (StringUtil.isEmpty(Config.Agent.SERVICE_NAME)) {
@@ -214,8 +213,6 @@ public class SnifferConfigInitializer {
      * Set agent version(Described in MANIFEST.MF)
      */
     private static void setAgentVersion() {
-        //set default value
-        Config.Agent.VERSION = "UNKNOWN";
         try {
             Enumeration<URL> resources = SnifferConfigInitializer.class.getClassLoader().getResources(JarFile.MANIFEST_NAME);
             while (resources.hasMoreElements()) {
@@ -229,6 +226,7 @@ public class SnifferConfigInitializer {
                         if (projectName != null) {
                             if ("org.apache.skywalking".equals(projectName)) {
                                 Config.Agent.VERSION = mainAttribs.getValue("Implementation-Version");
+                                break;
                             }
                         }
                     }

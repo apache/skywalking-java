@@ -178,6 +178,11 @@ public class Config {
          * Private key file. If ssl_cert_chain and ssl_key exist, will enable mTLS for gRPC channel.
          */
         public static String SSL_KEY_PATH;
+
+        /**
+         * Agent version, auto set value in agent start by read skywalking-agent.jar MANIFEST.MF file
+         */
+        public static String VERSION = "";
     }
 
     public static class OsInfo {

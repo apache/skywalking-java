@@ -30,9 +30,11 @@ segmentItems:
       spanType: Exit
       peer: not null
       tags:
-      - {key: db.type, value: Redis}
+      - {key: cache.type, value: Redis}
       - {key: db.instance, value: not null}
-      - {key: db.statement, value: 'SET key_a ?'}
+      - {key: cache.cmd, value: SET}
+      - {key: cache.op, value: write}
+      - {key: cache.key, value: key_a}
       skipAnalysis: 'false'
     - operationName: Redisson/BATCH_EXECUTE
       parentSpanId: 0
@@ -45,7 +47,7 @@ segmentItems:
       spanType: Exit
       peer: not null
       tags:
-      - {key: db.type, value: Redis}
+      - {key: cache.type, value: Redis}
       - {key: db.instance, value: not null}
       - {key: db.statement, value: 'SET batch_k_a ?;SET batch_k_b ?;PEXPIRE batch_k_b
           20000;'}

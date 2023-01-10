@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.redisson.v3;
 
+import com.google.common.base.Strings;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -32,6 +33,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.redisson.v3.util.ClassUtil;
+import org.apache.skywalking.apm.util.StringUtil;
 import org.redisson.client.RedisClient;
 import org.redisson.client.RedisConnection;
 import org.redisson.client.protocol.CommandData;
@@ -39,6 +41,7 @@ import org.redisson.client.protocol.CommandsData;
 
 import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.util.Optional;
 
 public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
 
@@ -60,6 +63,8 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
         StringBuilder dbStatement = new StringBuilder();
         String operationName = "Redisson/";
+        String methodName = "";
+        Object[] arguments = new Object[0];
 
         if (allArguments[0] instanceof CommandsData) {
             operationName = operationName + "BATCH_EXECUTE";
@@ -70,16 +75,22 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
             }
         } else if (allArguments[0] instanceof CommandData) {
             CommandData commandData = (CommandData) allArguments[0];
-            String command = commandData.getCommand().getName();
-            operationName = operationName + command;
-            addCommandData(dbStatement, commandData);
+            methodName = commandData.getCommand().getName();
+            operationName = operationName + methodName;
+            arguments = commandData.getParams();
         }
 
         AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
         span.setComponent(ComponentsDefine.REDISSON);
-        Tags.DB_TYPE.set(span, "Redis");
+        Tags.CACHE_TYPE.set(span, "Redis");
         Tags.DB_INSTANCE.set(span, dbInstance);
-        Tags.DB_STATEMENT.set(span, dbStatement.toString());
+        if (Strings.isNullOrEmpty(methodName)) {
+            Tags.DB_STATEMENT.set(span, dbStatement.toString());
+        } else {
+            Tags.CACHE_CMD.set(span, methodName);
+        }
+        getKey(arguments).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
+        parseOperation(methodName.toLowerCase()).ifPresent(op -> Tags.CACHE_OP.set(span, op));
         SpanLayer.asCache(span);
     }
 
@@ -130,5 +141,30 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
             }
         }
         objInst.setSkyWalkingDynamicField(peer);
+    }
+
+    private Optional<String> getKey(Object[] allArguments) {
+        if (!RedissonPluginConfig.Plugin.Redisson.TRACE_REDIS_PARAMETERS) {
+            return Optional.empty();
+        }
+        if (allArguments.length == 0) {
+            return Optional.empty();
+        }
+        Object argument = allArguments[0];
+        // include null
+        if (!(argument instanceof String)) {
+            return Optional.empty();
+        }
+        return Optional.of(StringUtil.cut((String) argument, RedissonPluginConfig.Plugin.Redisson.REDIS_PARAMETER_MAX_LENGTH));
+    }
+
+    private Optional<String> parseOperation(String cmd) {
+        if (RedissonPluginConfig.Plugin.Redisson.OPERATION_MAPPING_READ.contains(cmd)) {
+            return Optional.of("read");
+        }
+        if (RedissonPluginConfig.Plugin.Redisson.OPERATION_MAPPING_WRITE.contains(cmd)) {
+            return Optional.of("write");
+        }
+        return Optional.empty();
     }
 }

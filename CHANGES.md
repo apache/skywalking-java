@@ -26,6 +26,7 @@ Release Notes.
 * Put `Agent-Version` property reading in the premain stage to avoid deadlock when using `jarsigner`.
 * Add a config `agent.enable`(default: true) to support disabling the agent through system property `-Dskywalking.agent.disable=false` 
   or system environment variable setting `SW_AGENT_ENABLE=false`. 
+* Enhance redisson plugin to adopt uniform tags.
 
 #### Documentation
 

@@ -18,8 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.redisson.v3;
 
-import com.google.common.base.Strings;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
@@ -61,51 +59,29 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
         InetSocketAddress remoteAddress = (InetSocketAddress) channel.remoteAddress();
         String dbInstance = remoteAddress.getAddress().getHostAddress() + ":" + remoteAddress.getPort();
 
-        StringBuilder dbStatement = new StringBuilder();
         String operationName = "Redisson/";
-        String methodName = "";
+        String command = "";
         Object[] arguments = new Object[0];
 
         if (allArguments[0] instanceof CommandsData) {
             operationName = operationName + "BATCH_EXECUTE";
-            CommandsData commands = (CommandsData) allArguments[0];
-            for (CommandData commandData : commands.getCommands()) {
-                addCommandData(dbStatement, commandData);
-                dbStatement.append(";");
-            }
+            command = "BATCH_EXECUTE";
         } else if (allArguments[0] instanceof CommandData) {
             CommandData commandData = (CommandData) allArguments[0];
-            methodName = commandData.getCommand().getName();
-            operationName = operationName + methodName;
+            command = commandData.getCommand().getName();
+            operationName = operationName + command;
             arguments = commandData.getParams();
         }
 
         AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
         span.setComponent(ComponentsDefine.REDISSON);
         Tags.CACHE_TYPE.set(span, "Redis");
-        Tags.DB_INSTANCE.set(span, dbInstance);
-        if (Strings.isNullOrEmpty(methodName)) {
-            Tags.DB_STATEMENT.set(span, dbStatement.toString());
-        } else {
-            Tags.CACHE_CMD.set(span, methodName);
-        }
-        getKey(arguments).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
-        parseOperation(methodName.toLowerCase()).ifPresent(op -> Tags.CACHE_OP.set(span, op));
-        SpanLayer.asCache(span);
-    }
+        Tags.CACHE_INSTANCE.set(span, dbInstance);
+        Tags.CACHE_CMD.set(span, command);
 
-    private void addCommandData(StringBuilder dbStatement, CommandData commandData) {
-        dbStatement.append(commandData.getCommand().getName());
-        if (RedissonPluginConfig.Plugin.Redisson.TRACE_REDIS_PARAMETERS && commandData.getParams() != null) {
-            for (Object param : commandData.getParams()) {
-                dbStatement.append(DELIMITER_SPACE);
-                String paramStr = param instanceof ByteBuf ? QUESTION_MARK : String.valueOf(param.toString());
-                if (paramStr.length() > RedissonPluginConfig.Plugin.Redisson.REDIS_PARAMETER_MAX_LENGTH) {
-                    paramStr = paramStr.substring(0, RedissonPluginConfig.Plugin.Redisson.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
-                }
-                dbStatement.append(paramStr);
-            }
-        }
+        getKey(arguments).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
+        parseOperation(command.toLowerCase()).ifPresent(op -> Tags.CACHE_OP.set(span, op));
+        SpanLayer.asCache(span);
     }
 
     @Override

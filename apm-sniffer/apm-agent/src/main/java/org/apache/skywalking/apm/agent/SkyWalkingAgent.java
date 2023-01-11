@@ -77,6 +77,7 @@ public class SkyWalkingAgent {
         }
 
         if (!Config.Agent.ENABLE) {
+            LOGGER.warn("SkyWalking agent is disabled.");
             return;
         }
 

@@ -76,7 +76,7 @@ public class SkyWalkingAgent {
             LOGGER = LogManager.getLogger(SkyWalkingAgent.class);
         }
 
-        if (!Config.Agent.enable) {
+        if (!Config.Agent.ENABLE) {
             return;
         }
 

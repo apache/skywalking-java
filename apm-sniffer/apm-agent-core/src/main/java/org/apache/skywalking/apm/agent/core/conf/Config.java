@@ -187,7 +187,7 @@ public class Config {
         /**
          * Enable the agent kernel services and instrumentation.
          */
-        public static boolean enable = true;
+        public static boolean ENABLE = true;
     }
 
     public static class OsInfo {

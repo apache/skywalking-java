@@ -23,8 +23,11 @@ Release Notes.
 * Add support for KafkaClients 3.x.
 * Support to customize the collect period of JVM relative metrics.
 * Upgrade netty-codec-http2 to 4.1.86.Final.
-* Put `Agent-Version` property reading in the premain stage to avoid deadlock when using `jarsigner`.  
+* Put `Agent-Version` property reading in the premain stage to avoid deadlock when using `jarsigner`.
+* Add a config `agent.enable`(default: true) to support disabling the agent through system property `-Dskywalking.agent.disable=false` 
+  or system environment variable setting `SW_AGENT_ENABLE=false`. 
 * Enhance redisson plugin to adopt uniform tags.
+
 #### Documentation
 
 * Update `Plugin-test.md`, support string operators `start with` and `end with`

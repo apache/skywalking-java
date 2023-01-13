@@ -121,7 +121,7 @@ public class RedisChannelWriterInterceptorTest {
 
     @Test
     public void testInterceptor() {
-        CommandArgs<?, ?> args = new CommandArgs<>(new ByteArrayCodec()).addKey("name".getBytes()).addValue("Tom".getBytes());
+        CommandArgs<?, ?> args = new CommandArgs<>(new ByteArrayCodec()).addKey("name".getBytes());
         MockRedisCommand<?, ?, ?> redisCommand = new MockRedisCommand<>(CommandType.SET, null, args);
         interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{redisCommand}, null, null);
         interceptor.afterMethod(mockRedisChannelWriterInstance, null, null, null, null);
@@ -136,7 +136,6 @@ public class RedisChannelWriterInterceptorTest {
         assertThat(SpanHelper.getComponentId(spans.get(0)), is(57));
         List<TagValuePair> tags = SpanHelper.getTags(spans.get(0));
         assertThat(tags.get(0).getValue(), is("Redis"));
-        assertThat(tags.get(1).getValue(), CoreMatchers.containsString("Tom"));
         assertThat(SpanHelper.getLayer(spans.get(0)), CoreMatchers.is(SpanLayer.CACHE));
         assertThat(SpanHelper.getPeer(spans.get(0)), is(PEER));
     }

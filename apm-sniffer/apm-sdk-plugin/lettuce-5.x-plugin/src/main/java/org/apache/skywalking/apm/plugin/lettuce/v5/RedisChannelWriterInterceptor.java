@@ -95,19 +95,16 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
     }
 
     private String getArgsKey(RedisCommand<?, ?, ?> redisCommand) {
-        String key;
         if (AUTH.equalsIgnoreCase(redisCommand.getType().name())) {
-            key = PASSWORD_MASK;
-        } else {
-            CommandArgs<?, ?> args = redisCommand.getArgs();
-            if (args == null) {
-                key = Constants.EMPTY_STRING;
-            } else {
-                ByteBuffer firstEncodedKey = args.getFirstEncodedKey();
-                key = STRING_CODEC.decodeKey(firstEncodedKey);
-            }
+            return PASSWORD_MASK;
         }
-        if (StringUtil.isNotEmpty(key) && key.length() > LettucePluginConfig.Plugin.Lettuce.REDIS_PARAMETER_MAX_LENGTH) {
+        CommandArgs<?, ?> args = redisCommand.getArgs();
+        if (args == null) {
+            return Constants.EMPTY_STRING;
+        } 
+        ByteBuffer firstEncodedKey = args.getFirstEncodedKey();
+        String key = STRING_CODEC.decodeKey(firstEncodedKey);    
+        if (StringUtil.isNotEmpty(key)) {
             key = StringUtil.cut(key, LettucePluginConfig.Plugin.Lettuce.REDIS_PARAMETER_MAX_LENGTH) + ABBR;
         }
         return key;

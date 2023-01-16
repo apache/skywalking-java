@@ -5,7 +5,7 @@ Release Notes.
 8.15.0
 ------------------
 
-
+* Enhance lettuce plugin to adopt uniform tags.
 
 #### Documentation
 

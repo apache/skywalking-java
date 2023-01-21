@@ -64,7 +64,7 @@ public class CaseController {
 
         try {
             testService.asyncPrepareAndFinish();
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -97,7 +97,7 @@ public class CaseController {
     public String startAnotherNewProcess(@RequestParam Map<String, String> params) {
         testService.startServiceWithExtract("start-another-new-process", params);
         testService.doSomething("local-in-another-new-process");
-        testService.endService("exit-another-new-process","127.0.0.1:8888");
+        testService.endService("exit-another-new-process", "127.0.0.1:8888");
         return SUCCESS;
     }
 
@@ -112,7 +112,7 @@ public class CaseController {
         try {
             HttpPost httpPost = new HttpPost(url);
             List<NameValuePair> parameters = new ArrayList<>(0);
-            for(Map.Entry<String, String> entry : map.entrySet()){
+            for (Map.Entry<String, String> entry : map.entrySet()) {
                 parameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
             }
             UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(parameters);

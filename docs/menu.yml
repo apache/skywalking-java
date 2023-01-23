@@ -48,7 +48,7 @@ catalog:
                 path: "/en/setup/service-agent/java-agent/application-toolkit-trace-annotation"
               - name: "Use Correlation Context"
                 path: "/en/setup/service-agent/java-agent/application-toolkit-trace-correlation-context"
-              - name: "Another Across Thread Solution"
+              - name: "Across Thread Solution"
                 path: "/en/setup/service-agent/java-agent/application-toolkit-trace-cross-thread"
           - name: "OpenTracing Tracer"
             path: "/en/setup/service-agent/java-agent/opentracing"

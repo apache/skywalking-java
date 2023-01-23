@@ -55,7 +55,7 @@ The Inject/extract is to pass context information between different process. The
 
 ```java
 /* 
-	You can consider map as the message body, such as Http, MQ and RPC. 
+	You can consider map as the message header/metadata, such as Http, MQ and RPC. 
 	This code block do the inject operation in one process and then pass the map message.
 */
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();

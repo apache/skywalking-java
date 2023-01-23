@@ -71,7 +71,7 @@ while (next.hasNext()) {
 ```
 
 ```java
-// Receive the map in header/metadata and do the extract operation in another process. 
+// Receive the map representing a  header/metadata and do the extract operation in another process. 
 ...
 
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();

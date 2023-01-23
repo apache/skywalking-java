@@ -1,4 +1,4 @@
-Also, you can use annotation to mark the method you want to trace.
+# Use annotation to mark the method you want to trace.
 
 * Add `@Trace` to any method you want to trace. After that, you can see the span in the Stack.
 * Methods annotated with `@Tag` will try to tag the **current active span** with the given key (`Tag#key()`) and (`Tag#value()`),

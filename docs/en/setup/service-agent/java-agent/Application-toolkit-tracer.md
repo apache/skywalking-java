@@ -1,13 +1,3 @@
-* The new toolkit is included in the apm-toolkit-trace package, you can dependency the toolkit using maven or gradle.
-
-  ```maven
-     <dependency>
-        <groupId>org.apache.skywalking</groupId>
-        <artifactId>apm-toolkit-trace</artifactId>
-        <version>${skywalking.version}</version>
-     </dependency>
-  ```
-
 # Span creating
 
 * Use `Tracer.createEntrySpan()` API to create entry span, and then use `SpanRef` to contain the reference of created span in agent kernel. The first parameter is operation name of span and the second parameter is the `ContextCarrierRef` instance which is the reference of contextcarrier in agent kernel. If the second parameter is not null, the process of creating entry span will do the extract operation which will be introduced in **inject/extract** scenario.
@@ -195,3 +185,29 @@ SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
   thread.start();
   thread.join();
   ```
+
+# ActiveSpan
+
+You can use the `ActiveSpan` to get the current span and do some operations.
+
+* Add custom tag in the context of traced method, `ActiveSpan.tag("key", "val")`.
+
+* `ActiveSpan.error()` Mark the current span as error status.
+* `ActiveSpan.error(String errorMsg)` Mark the current span as error status with a message.
+* `ActiveSpan.error(Throwable throwable)` Mark the current span as error status with a Throwable.
+* `ActiveSpan.debug(String debugMsg)` Add a debug level log message in the current span.
+* `ActiveSpan.info(String infoMsg)` Add an info level log message in the current span.
+* `ActiveSpan.setOperationName(String operationName)` Customize an operation name. 
+
+```java
+ActiveSpan.tag("my_tag", "my_value");
+ActiveSpan.error();
+ActiveSpan.error("Test-Error-Reason");
+
+ActiveSpan.error(new RuntimeException("Test-Error-Throwable"));
+ActiveSpan.info("Test-Info-Msg");
+ActiveSpan.debug("Test-debug-Msg");
+
+ActiveSpan.setOperationName("${opetationName}");
+```
+

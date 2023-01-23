@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>${project.build.directory}/apm-newtoolkit-trace-scenario.jar</source>
+            <source>${project.build.directory}/apm-toolkit-tracer-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>

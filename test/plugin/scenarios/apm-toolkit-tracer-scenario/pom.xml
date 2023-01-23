@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>org.apache.skywalking.apm.testcase</groupId>
-    <artifactId>apm-newtoolkit-trace-scenario</artifactId>
+    <artifactId>apm-toolkit-tracer-scenario</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -36,7 +36,7 @@
         <lombok.version>1.18.20</lombok.version>
     </properties>
 
-    <name>skywalking-apm-newtoolkit-trace-scenario</name>
+    <name>skywalking-apm-toolkit-tracer-scenario</name>
 
     <dependencyManagement>
         <dependencies>
@@ -79,7 +79,7 @@
     </dependencies>
 
     <build>
-        <finalName>apm-newtoolkit-trace-scenario</finalName>
+        <finalName>apm-toolkit-tracer-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

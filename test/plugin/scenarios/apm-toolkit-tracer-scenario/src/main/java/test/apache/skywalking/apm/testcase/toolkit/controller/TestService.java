@@ -51,6 +51,7 @@ public class TestService {
 
     public void startServiceWithExtract(String operationName, Map<String, String> map) {
         SpanRef entrySpanRef = Tracer.createEntrySpan(operationName, null);
+        entrySpanRef.tag("enter_position", "startServiceWithExtract");
         doExtract(map);
         Tracer.stopSpan();
     }
@@ -68,6 +69,7 @@ public class TestService {
     public Map<String, String> endServiceWithCarrier(String operationName, String remotePeer) {
         ContextCarrierRef contextCarrierRef = new ContextCarrierRef();
         SpanRef exitSpanRef = Tracer.createExitSpan(operationName, contextCarrierRef, remotePeer);
+        exitSpanRef.tag("exit_position", "endServiceWithCarrier");
         Map<String, String> map = new HashMap<>();
         CarrierItemRef next = contextCarrierRef.items();
         while (next.hasNext()) {

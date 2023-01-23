@@ -18,6 +18,6 @@
 server:
   port: 8080
   servlet:
-    context-path: /apm-newtoolkit-trace-scenario
+    context-path: /apm-toolkit-tracer-scenario
 logging:
   config: classpath:log4j2.xml

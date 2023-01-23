@@ -47,6 +47,10 @@ public class SpanRefActivation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String LOG_MAP_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.toolkit.activation.trace.SpanRefLogMapInterceptor";
 
+    private static final String TAG_METHOD_NAME = "tag";
+
+    private static final String TAG_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.toolkit.activation.trace.SpanRefTagInterceptor";
+
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[0];
@@ -112,6 +116,22 @@ public class SpanRefActivation extends ClassInstanceMethodsEnhancePluginDefine {
                 @Override
                 public String getMethodsInterceptor() {
                     return LOG_MAP_INTERCEPTOR_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(TAG_METHOD_NAME);
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return TAG_INTERCEPTOR_CLASS;
                 }
 
                 @Override

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-  - serviceName: apm-newtoolkit-trace-scenario
+  - serviceName: apm-toolkit-tracer-scenario
     segmentSize: eq 5
     segments:
       - segmentId: not null
@@ -31,7 +31,7 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: url, value: 'http://localhost:8080/apm-newtoolkit-trace-scenario/case/healthCheck'}
+              - {key: url, value: 'http://localhost:8080/apm-toolkit-tracer-scenario/case/healthCheck'}
               - {key: http.method, value: HEAD}
               - {key: http.status_code, value: '200'}
       - segmentId: not null
@@ -57,7 +57,7 @@ segmentItems:
             refs:
               - {parentEndpoint: trace-scenario-entry, networkAddress: '', refType: CrossThread,
                  parentSpanId: 0, parentTraceSegmentId: not null,
-                 parentServiceInstance: not null, parentService: apm-newtoolkit-trace-scenario,
+                 parentServiceInstance: not null, parentService: apm-toolkit-tracer-scenario,
                  traceId: not null}
       - segmentId: not null
         spans:
@@ -79,11 +79,12 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
+              - {key: enter_position, value: startServiceWithExtract}
               - {key: http.status_code, value: '200'}
             refs:
               - {parentEndpoint: start-new-process, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 3, parentTraceSegmentId: not null,
-                 parentServiceInstance: not null, parentService: apm-newtoolkit-trace-scenario,
+                 parentServiceInstance: not null, parentService: apm-toolkit-tracer-scenario,
                  traceId: not null}
       - segmentId: not null
         spans:
@@ -93,7 +94,7 @@ segmentItems:
           - {operationName: exit-new-process, parentSpanId: 0, spanId: 2, spanLayer: Unknown,
              startTime: nq 0, endTime: nq 0, componentId: 0, isError: false,
              spanType: Exit, peer: '127.0.0.1:6666', skipAnalysis: false}
-          - operationName: /apm-newtoolkit-trace-scenario/case/startAnotherNewProcess
+          - operationName: /apm-toolkit-tracer-scenario/case/startAnotherNewProcess
             parentSpanId: 0
             spanId: 3
             spanLayer: Http
@@ -105,7 +106,7 @@ segmentItems:
             peer: localhost:8080
             skipAnalysis: false
             tags:
-              - {key: url, value: 'http://localhost:8080/apm-newtoolkit-trace-scenario/case/startAnotherNewProcess'}
+              - {key: url, value: 'http://localhost:8080/apm-toolkit-tracer-scenario/case/startAnotherNewProcess'}
               - {key: http.method, value: POST}
               - {key: http.status_code, value: '200'}
           - operationName: start-new-process
@@ -124,7 +125,7 @@ segmentItems:
             refs:
               - {parentEndpoint: trace-scenario-entry, networkAddress: 'localhost:8080', refType: CrossProcess,
                  parentSpanId: 4, parentTraceSegmentId: not null,
-                 parentServiceInstance: not null, parentService: apm-newtoolkit-trace-scenario,
+                 parentServiceInstance: not null, parentService: apm-toolkit-tracer-scenario,
                  traceId: not null}
       - segmentId: not null
         spans:
@@ -146,10 +147,20 @@ segmentItems:
               - logEvent:
                   - {key: event, value: info}
                   - {key: message, value: in async thread}
-          - {operationName: trace-scenario-exit, parentSpanId: 0, spanId: 3, spanLayer: Unknown,
-             startTime: nq 0, endTime: nq 0, componentId: 0, isError: false,
-             spanType: Exit, peer: '127.0.0.1:5555', skipAnalysis: false}
-          - operationName: /apm-newtoolkit-trace-scenario/case/startNewProcess
+          - operationName: trace-scenario-exit
+            parentSpanId: 0
+            spanId: 3
+            spanLayer: Unknown
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 0
+            isError: false
+            spanType: Exit
+            peer: 127.0.0.1:5555
+            skipAnalysis: false
+            tags:
+              - {key: exit_position, value: endServiceWithCarrier}
+          - operationName: /apm-toolkit-tracer-scenario/case/startNewProcess
             parentSpanId: 0
             spanId: 4
             spanLayer: Http
@@ -161,7 +172,7 @@ segmentItems:
             peer: localhost:8080
             skipAnalysis: false
             tags:
-              - {key: url, value: 'http://localhost:8080/apm-newtoolkit-trace-scenario/case/startNewProcess'}
+              - {key: url, value: 'http://localhost:8080/apm-toolkit-tracer-scenario/case/startNewProcess'}
               - {key: http.method, value: POST}
               - {key: http.status_code, value: '200'}
           - operationName: trace-scenario-entry

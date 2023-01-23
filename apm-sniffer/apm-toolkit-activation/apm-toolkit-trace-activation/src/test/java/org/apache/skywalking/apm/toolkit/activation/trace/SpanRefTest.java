@@ -76,6 +76,8 @@ public class SpanRefTest {
 
     private SpanRefLogThrowableInterceptor spanRefLogThrowableInterceptor;
 
+    private SpanRefTagInterceptor spanRefTagInterceptor;
+
     private TracerCreateLocalSpanInterceptor tracerCreateLocalSpanInterceptor;
 
     private TracerStopSpanInterceptor tracerStopSpanInterceptor;
@@ -86,6 +88,7 @@ public class SpanRefTest {
         spanRefAsyncFinishInterceptor = new SpanRefAsyncFinishInterceptor();
         spanRefLogMapInterceptor = new SpanRefLogMapInterceptor();
         spanRefLogThrowableInterceptor = new SpanRefLogThrowableInterceptor();
+        spanRefTagInterceptor = new SpanRefTagInterceptor();
         tracerCreateLocalSpanInterceptor = new TracerCreateLocalSpanInterceptor();
         tracerStopSpanInterceptor = new TracerStopSpanInterceptor();
 
@@ -112,7 +115,7 @@ public class SpanRefTest {
         Method stopSpan = Tracer.class.getDeclaredMethod("stopSpan");
 
         tracerCreateLocalSpanInterceptor.beforeMethod(Tracer.class, createLocalSpan, null, null, null);
-        enhancedSpanRef = (EnhancedInstance) tracerCreateLocalSpanInterceptor.afterMethod(Tracer.class, createLocalSpan, new Object[] {"localSpanForAsync"}, null, enhancedSpanRef);
+        enhancedSpanRef = (EnhancedInstance) tracerCreateLocalSpanInterceptor.afterMethod(Tracer.class, createLocalSpan, new Object[]{"localSpanForAsync"}, null, enhancedSpanRef);
         spanRefPrepareForAsyncInterceptor.beforeMethod(enhancedSpanRef, prepareForAsync, null, null, null);
         enhancedSpanRef = (EnhancedInstance) spanRefPrepareForAsyncInterceptor.afterMethod(enhancedSpanRef, prepareForAsync, null, null, enhancedSpanRef);
         tracerStopSpanInterceptor.beforeMethod(Tracer.class, stopSpan, null, null, null);
@@ -143,8 +146,8 @@ public class SpanRefTest {
         testEvents.put("message", eventInfo);
 
         tracerCreateLocalSpanInterceptor.beforeMethod(Tracer.class, createLocalSpan, null, null, null);
-        enhancedSpanRef = (EnhancedInstance) tracerCreateLocalSpanInterceptor.afterMethod(Tracer.class, createLocalSpan, new Object[] {"localSpanForLogMap"}, null, enhancedSpanRef);
-        spanRefLogMapInterceptor.beforeMethod(enhancedSpanRef, logForMap, new Object[] {testEvents}, null, null);
+        enhancedSpanRef = (EnhancedInstance) tracerCreateLocalSpanInterceptor.afterMethod(Tracer.class, createLocalSpan, new Object[]{"localSpanForLogMap"}, null, enhancedSpanRef);
+        spanRefLogMapInterceptor.beforeMethod(enhancedSpanRef, logForMap, new Object[]{testEvents}, null, null);
         spanRefLogMapInterceptor.afterMethod(enhancedSpanRef, logForMap, null, null, null);
         tracerStopSpanInterceptor.beforeMethod(Tracer.class, stopSpan, null, null, null);
         tracerStopSpanInterceptor.afterMethod(Tracer.class, stopSpan, null, null, null);
@@ -167,8 +170,8 @@ public class SpanRefTest {
         Method stopSpan = Tracer.class.getDeclaredMethod("stopSpan");
 
         tracerCreateLocalSpanInterceptor.beforeMethod(Tracer.class, createLocalSpan, null, null, null);
-        enhancedSpanRef = (EnhancedInstance) tracerCreateLocalSpanInterceptor.afterMethod(Tracer.class, createLocalSpan, new Object[] {"localSpanForLogThrowable"}, null, enhancedSpanRef);
-        spanRefLogThrowableInterceptor.beforeMethod(enhancedSpanRef, logForThrowable, new Object[] {new RuntimeException("test-Throwable")}, null, null);
+        enhancedSpanRef = (EnhancedInstance) tracerCreateLocalSpanInterceptor.afterMethod(Tracer.class, createLocalSpan, new Object[]{"localSpanForLogThrowable"}, null, enhancedSpanRef);
+        spanRefLogThrowableInterceptor.beforeMethod(enhancedSpanRef, logForThrowable, new Object[]{new RuntimeException("test-Throwable")}, null, null);
         spanRefLogThrowableInterceptor.afterMethod(enhancedSpanRef, logForThrowable, null, null, null);
         tracerStopSpanInterceptor.beforeMethod(Tracer.class, stopSpan, null, null, null);
         tracerStopSpanInterceptor.afterMethod(Tracer.class, stopSpan, null, null, null);
@@ -182,5 +185,31 @@ public class SpanRefTest {
         assertThat(spans.size(), is(1));
         AbstractTracingSpan span = spans.get(0);
         SpanAssert.assertLogSize(span, 1);
+    }
+
+    @Test
+    public void testSpanRefTag() throws Throwable {
+        Method tag = SpanRef.class.getDeclaredMethod("tag", String.class, String.class);
+        Method createLocalSpan = Tracer.class.getDeclaredMethod("createLocalSpan", String.class);
+        Method stopSpan = Tracer.class.getDeclaredMethod("stopSpan");
+
+        tracerCreateLocalSpanInterceptor.beforeMethod(Tracer.class, createLocalSpan, null, null, null);
+        enhancedSpanRef = (EnhancedInstance) tracerCreateLocalSpanInterceptor.afterMethod(Tracer.class, createLocalSpan, new Object[]{"localSpanForTag"}, null, enhancedSpanRef);
+        spanRefTagInterceptor.beforeMethod(enhancedSpanRef, tag, new Object[] {"skywalking_tag_key", "skywalking_tag_value"}, null, null);
+        spanRefTagInterceptor.afterMethod(enhancedSpanRef, tag, null, null, null);
+        tracerStopSpanInterceptor.beforeMethod(Tracer.class, stopSpan, null, null, null);
+        tracerStopSpanInterceptor.afterMethod(Tracer.class, stopSpan, null, null, null);
+
+        LocalSpan localSpan = (LocalSpan) enhancedSpanRef.getSkyWalkingDynamicField();
+        SpanAssert.assertTagSize(localSpan, 1);
+        SpanAssert.assertTag(localSpan, 0, "skywalking_tag_value");
+
+        assertThat(storage.getTraceSegments().size(), is(1));
+        TraceSegment traceSegment = storage.getTraceSegments().get(0);
+        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
+        assertThat(spans.size(), is(1));
+        AbstractTracingSpan span = spans.get(0);
+        SpanAssert.assertTagSize(span, 1);
+        SpanAssert.assertTag(span, 0, "skywalking_tag_value");
     }
 }

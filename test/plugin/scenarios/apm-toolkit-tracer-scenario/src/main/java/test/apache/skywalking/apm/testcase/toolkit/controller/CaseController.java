@@ -50,7 +50,7 @@ public class CaseController {
     @Autowired
     private TestService testService;
 
-    @RequestMapping("/apm-newtoolkit-trace-scenario")
+    @RequestMapping("/apm-toolkit-tracer-scenario")
     @ResponseBody
     public String testcase() {
         testService.startService("trace-scenario-entry");
@@ -71,7 +71,7 @@ public class CaseController {
         Map<String, String> map = testService.endServiceWithCarrier("trace-scenario-exit", "127.0.0.1:5555");
 
         try {
-            doPost("http://localhost:8080/apm-newtoolkit-trace-scenario/case/startNewProcess", map);
+            doPost("http://localhost:8080/apm-toolkit-tracer-scenario/case/startNewProcess", map);
         } catch (IOException e) {
             // ignore
         }
@@ -85,7 +85,7 @@ public class CaseController {
         testService.doSomething("local-in-new-process");
         Map<String, String> map = testService.endServiceWithInject("exit-new-process", "127.0.0.1:6666");
         try {
-            doPost("http://localhost:8080/apm-newtoolkit-trace-scenario/case/startAnotherNewProcess", map);
+            doPost("http://localhost:8080/apm-toolkit-tracer-scenario/case/startAnotherNewProcess", map);
         } catch (IOException e) {
             // ignore
         }

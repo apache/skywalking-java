@@ -35,4 +35,7 @@ public class SpanRef {
 
     public void log(Map<String, ?> event) {
     }
+
+    public void tag(String key, String value) {
+    }
 }

@@ -9,3 +9,4 @@ CorrelationContext will remove the item when the value is `null` or empty.
 Optional<String> value = TraceContext.getCorrelation("customKey");
 ```
 CorrelationContext configuration descriptions could be found in [the agent configuration](README.md#table-of-agent-configuration-properties) documentation, with `correlation.` as the prefix.
+_Sample codes only_

@@ -1,4 +1,4 @@
-# Span creating
+# Create Span
 
 * Use `Tracer.createEntrySpan()` API to create entry span, and then use `SpanRef` to contain the reference of created span in agent kernel. The first parameter is operation name of span and the second parameter is the `ContextCarrierRef` instance which is the reference of contextcarrier in agent kernel. If the second parameter is not null, the process of creating entry span will do the extract operation which will be introduced in **inject/extract** scenario.
 
@@ -40,7 +40,7 @@
   Tracer.stopSpan();
   ```
 
-# Inject/extract
+# Inject/Extract Context Carrier
 
 The Inject/extract is to pass context information between different process. The `ContextCarrierRef` contains the reference of `ContextCarrier` and the `CarrierItemRef` contains the reference of CarrierItem. The `CarrierItem` instances compose a linked list. 
 
@@ -55,8 +55,8 @@ The Inject/extract is to pass context information between different process. The
 
 ```java
 /* 
-	You can consider map as the message header/metadata, such as Http, MQ and RPC. 
-	This code block do the inject operation in one process and then pass the map message.
+	You can consider map as the message's header/metadata, such as Http, MQ and RPC. 
+	Do the inject operation in one process and then pass the map in header/metadata.
 */
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();
 Tracer.inject(contextCarrierRef);
@@ -71,7 +71,7 @@ while (next.hasNext()) {
 ```
 
 ```java
-// This code block receive the map message and do the extract operation in another process. 
+// Receive the map in header/metadata and do the extract operation in another process. 
 ...
 
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();
@@ -116,7 +116,7 @@ for (Map.Entry<String, String> entry : map.entrySet()) {
 SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
 ```
 
-# Capture/continue
+# Capture/Continue Context Snapshot
 
 * Use `Tracer.capture()` to capture the segment info and store it in `ContextSnapshotRef`, and then use `Tracer.continued()` to load the snapshot as the ref segment info. The capture/continue is used for tracing context in the x-thread tracing.
 
@@ -135,7 +135,7 @@ SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
   thread.join();
   ```
 
-# Tag and log of span
+# Add Span's Tag and Log
 
 * Use `log` of `SpanRef` instance to record log in span
 
@@ -165,7 +165,7 @@ SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
   spanRef.tag("${key}", "${value}");
   ```
 
-# Async prepare/finish
+# Async Prepare/Finish
 
 * Use `prepareForAsync` of `SpanRef` instance to make the span still alive until `asyncFinish` called, and then in specific time use `asyncFinish` of this `SpanRef` instance to notify this span that it could be finished.
 

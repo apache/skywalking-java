@@ -57,6 +57,7 @@ jobs:
         case:
           - activemq-scenario
           - apm-toolkit-trace-scenario
+          - apm-toolkit-tracer-scenario
           - armeria-0.96minus-scenario
           - armeria-0.96plus-scenario
           - avro-scenario

@@ -1,13 +1,5 @@
 # trace cross thread
-* Dependency the toolkit, such as using maven or gradle
-```xml
-   <dependency>
-      <groupId>org.apache.skywalking</groupId>
-      <artifactId>apm-toolkit-trace</artifactId>
-      <version>${skywalking.version}</version>
-   </dependency>
-```
-
+There are some other ways to trace cross thread except the methods in `Tracer`.
 * usage 1.
 ```java
     @TraceCrossThread

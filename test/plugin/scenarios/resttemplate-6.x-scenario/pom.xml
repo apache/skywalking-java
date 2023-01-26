@@ -39,7 +39,7 @@
         (if you build from command line, just use ./mvnw -Dsw.version=x.y.z),
         but make sure not to check it into the code base / git
         -->
-        <sw.version>
+        <sw.version>8.14.0
         </sw.version>
     </properties>
 

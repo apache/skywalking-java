@@ -33,6 +33,8 @@
         <module>spring-tx-plugin</module>
         <module>optional-spring-cloud</module>
         <module>spring-webflux-5.x-plugin</module>
+        <module>resttemplate-6.x-plugin</module>
+        <module>mvc-annotation-6.x-plugin</module>
     </modules>
 
     <properties>

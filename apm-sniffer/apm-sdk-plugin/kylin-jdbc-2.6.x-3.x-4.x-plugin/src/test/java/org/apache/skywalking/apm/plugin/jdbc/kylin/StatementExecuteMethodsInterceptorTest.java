@@ -20,8 +20,7 @@ package org.apache.skywalking.apm.plugin.jdbc.kylin;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.mockito.PowerMockito.when;
-
+import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -37,17 +36,15 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.jdbc.JDBCPluginConfig;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class StatementExecuteMethodsInterceptorTest {
 
     private static final String SQL = "Select * from test";
@@ -57,6 +54,8 @@ public class StatementExecuteMethodsInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     private StatementExecuteMethodsInterceptor serviceMethodInterceptor;
 
@@ -70,6 +69,7 @@ public class StatementExecuteMethodsInterceptorTest {
 
     @Before
     public void setUp() {
+        JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH = 2048;
         serviceMethodInterceptor = new StatementExecuteMethodsInterceptor();
 
         enhanceRequireCacheObject = new StatementEnhanceInfos(connectionInfo, SQL, "CallableStatement");
@@ -79,11 +79,6 @@ public class StatementExecuteMethodsInterceptorTest {
         when(connectionInfo.getDBType()).thenReturn("kylin");
         when(connectionInfo.getDatabaseName()).thenReturn("test");
         when(connectionInfo.getDatabasePeer()).thenReturn("localhost:3306");
-    }
-
-    @After
-    public void clean() {
-        JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH = 2048;
     }
 
     @Test
@@ -96,7 +91,7 @@ public class StatementExecuteMethodsInterceptorTest {
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("kylin/JDBC/CallableStatement/"));
+        assertThat(span.getOperationName(), is("kylin/JDBC/CallableStatement/executeQuery"));
         SpanAssert.assertTag(span, 0, "kylin");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, SQL);
@@ -113,7 +108,7 @@ public class StatementExecuteMethodsInterceptorTest {
         assertThat(SegmentHelper.getSpans(segment).size(), is(1));
         AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
         SpanAssert.assertLayer(span, SpanLayer.DB);
-        assertThat(span.getOperationName(), is("kylin/JDBC/CallableStatement/"));
+        assertThat(span.getOperationName(), is("kylin/JDBC/CallableStatement/executeQuery"));
         SpanAssert.assertTag(span, 0, "kylin");
         SpanAssert.assertTag(span, 1, "test");
         SpanAssert.assertTag(span, 2, "Select * f...");

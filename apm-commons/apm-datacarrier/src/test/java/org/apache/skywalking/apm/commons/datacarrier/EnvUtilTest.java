@@ -18,29 +18,25 @@
 
 package org.apache.skywalking.apm.commons.datacarrier;
 
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
+import uk.org.webcompere.systemstubs.rules.EnvironmentVariablesRule;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(EnvUtil.class)
+@RunWith(MockitoJUnitRunner.class)
 public class EnvUtilTest {
+    @Rule
+    public EnvironmentVariablesRule environmentVariablesRule = new EnvironmentVariablesRule();
 
     @Before
     public void before() {
-
-        PowerMockito.mockStatic(System.class);
-
-        when(System.getenv("myInt")).thenReturn("123");
-        when(System.getenv("wrongInt")).thenReturn("wrong123");
-        when(System.getenv("myLong")).thenReturn("12345678901234567");
-        when(System.getenv("wrongLong")).thenReturn("wrong123");
+        environmentVariablesRule.set("myInt", "123");
+        environmentVariablesRule.set("wrongInt", "wrong123");
+        environmentVariablesRule.set("myLong", "12345678901234567");
+        environmentVariablesRule.set("wrongLong", "wrong123");
     }
 
     @Test

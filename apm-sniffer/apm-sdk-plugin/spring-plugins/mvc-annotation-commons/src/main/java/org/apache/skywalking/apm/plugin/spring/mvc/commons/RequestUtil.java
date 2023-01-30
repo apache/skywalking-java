@@ -42,6 +42,16 @@ public class RequestUtil {
         }
     }
 
+    public static void collectHttpParam(jakarta.servlet.http.HttpServletRequest request, AbstractSpan span) {
+        final Map<String, String[]> parameterMap = request.getParameterMap();
+        if (parameterMap != null && !parameterMap.isEmpty()) {
+            String tagValue = CollectionUtil.toString(parameterMap);
+            tagValue = SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD > 0 ?
+                    StringUtil.cut(tagValue, SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD) : tagValue;
+            Tags.HTTP.PARAMS.set(span, tagValue);
+        }
+    }
+
     public static void collectHttpParam(ServerHttpRequest request, AbstractSpan span) {
         Map<String, String[]> parameterMap = new HashMap<>(request.getQueryParams().size());
         request.getQueryParams().forEach((key, value) -> {
@@ -56,6 +66,25 @@ public class RequestUtil {
     }
 
     public static void collectHttpHeaders(HttpServletRequest request, AbstractSpan span) {
+        final List<String> headersList = new ArrayList<>(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.size());
+        SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.stream()
+                .filter(
+                        headerName -> request.getHeaders(headerName) != null)
+                .forEach(headerName -> {
+                    Enumeration<String> headerValues = request.getHeaders(
+                            headerName);
+                    List<String> valueList = Collections.list(
+                            headerValues);
+                    if (!CollectionUtil.isEmpty(valueList)) {
+                        String headerValue = valueList.toString();
+                        headersList.add(headerName + "=" + headerValue);
+                    }
+                });
+
+        collectHttpHeaders(headersList, span);
+    }
+
+    public static void collectHttpHeaders(jakarta.servlet.http.HttpServletRequest request, AbstractSpan span) {
         final List<String> headersList = new ArrayList<>(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.size());
         SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.stream()
                 .filter(

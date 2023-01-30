@@ -18,10 +18,19 @@
 
 package org.apache.skywalking.apm.agent.core.meter;
 
-import io.grpc.stub.StreamObserver;
-import io.grpc.testing.GrpcServerRule;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.spy;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.context.util.FieldGetter;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus;
 import org.apache.skywalking.apm.agent.core.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.core.test.tools.TracingSegmentRunner;
@@ -38,26 +47,20 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.reflect.Whitebox;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.spy;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import io.grpc.stub.StreamObserver;
+import io.grpc.testing.GrpcServerRule;
 
 @RunWith(TracingSegmentRunner.class)
 public class MeterServiceTest {
 
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();
-
     @Rule
     public GrpcServerRule grpcServerRule = new GrpcServerRule().directExecutor();
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private MeterService registryService = new MeterService();
     private List<MeterData> upstreamMeters;
@@ -104,11 +107,17 @@ public class MeterServiceTest {
         spy(sender);
         spy(registryService);
 
-        Whitebox.setInternalState(
-            sender, "meterReportServiceStub", MeterReportServiceGrpc.newStub(grpcServerRule.getChannel()));
-        Whitebox.setInternalState(sender, "status", GRPCChannelStatus.CONNECTED);
+        Field meterReportServiceStub = MeterSender.class.getDeclaredField("meterReportServiceStub");
+        Field status = MeterSender.class.getDeclaredField("status");
+        Field senderField = MeterService.class.getDeclaredField("sender");
+        Stream.of(meterReportServiceStub, status, senderField).forEach(field -> {
+            field.setAccessible(true);
+        });
 
-        Whitebox.setInternalState(registryService, "sender", sender);
+        meterReportServiceStub.set(
+            sender, MeterReportServiceGrpc.newStub(grpcServerRule.getChannel()));
+        status.set(sender, GRPCChannelStatus.CONNECTED);
+        senderField.set(registryService, sender);
 
         upstreamMeters = new ArrayList<>();
     }
@@ -153,7 +162,7 @@ public class MeterServiceTest {
 
     @Test
     public void testMeterSizeAndShutdown() throws Throwable {
-        final Map<MeterId, BaseMeter> map = Whitebox.getInternalState(registryService, "meterMap");
+        final Map<MeterId, BaseMeter> map = FieldGetter.getValue(registryService, "meterMap");
         map.clear();
 
         // Check max meter size

@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
-  ~ contributor license agreements.  See the NOTICE file distributed with
-  ~ this work for additional information regarding copyright ownership.
+  ~ contributor license
+agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding
+copyright ownership.
   ~ The ASF licenses this file to You under the Apache License, Version 2.0
-  ~ (the "License"); you may not use this file except in compliance with
-  ~ the License.  You may obtain a copy of the License at
+  ~
+(the "License"); you may not use this file except in compliance with
+  ~ the License.  You may
+obtain a copy of the License at
   ~
   ~     http://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~
+Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the
+License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied.
   ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~
+limitations under the License.
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.apache.skywalking</groupId>
@@ -79,10 +89,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
-        <powermock.version>2.0.7</powermock.version>
         <checkstyle.version>6.18</checkstyle.version>
         <junit.version>4.12</junit.version>
-        <mockito-core.version>3.5.13</mockito-core.version>
+        <mockito-core.version>5.0.0</mockito-core.version>
+        <system-stubs-junit4.version>2.0.2</system-stubs-junit4.version>
         <lombok.version>1.18.20</lombok.version>
 
         <!-- core lib dependency -->
@@ -118,7 +128,7 @@
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <versions-maven-plugin.version>2.5</versions-maven-plugin.version>
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
-        <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
         <jmh.version>1.33</jmh.version>
         <gmaven-plugin.version>1.5</gmaven-plugin.version>
         <checkstyle.fails.on.error>true</checkstyle.fails.on.error>
@@ -169,16 +179,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy-agent</artifactId>
             <scope>test</scope>
@@ -208,6 +208,17 @@
             <version>${javax.annotation-api.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -225,17 +236,18 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${powermock.version}</version>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-inline</artifactId>
+                <version>${mockito-core.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito2</artifactId>
-                <version>${powermock.version}</version>
+                <groupId>uk.org.webcompere</groupId>
+                <artifactId>system-stubs-junit4</artifactId>
+                <version>${system-stubs-junit4.version}</version>
                 <scope>test</scope>
             </dependency>
+
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
@@ -286,7 +298,8 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${maven-jar-plugin.version}</version>
                     <configuration>
-                        <forceCreation>true</forceCreation>
+                        <forceCreation>
+                            true</forceCreation>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -298,7 +311,8 @@
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${maven-docker-plugin.version}</version>
                     <configuration>
-                        <containerNamePattern>%a-%t-%i</containerNamePattern>
+                        <containerNamePattern>
+                            %a-%t-%i</containerNamePattern>
                     </configuration>
                 </plugin>
             </plugins>
@@ -331,10 +345,12 @@
                             <rules>
                                 <requireJavaVersion>
                                     <!-- Build has not yet been updated for Java 9+ -->
-                                    <version>1.8</version>
+                                    <version>
+                                        1.8</version>
                                 </requireJavaVersion>
                                 <requireMavenVersion>
-                                    <version>3.6</version>
+                                    <version>
+                                        3.6</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
@@ -345,16 +361,19 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${compiler.version}</source>
+                    <source>
+                        ${compiler.version}</source>
                     <target>${compiler.version}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <encoding>
+                        ${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven-resource-plugin.version}</version>
                 <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <encoding>
+                        ${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
@@ -362,7 +381,8 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>${docker.plugin.version}</version>
                 <configuration>
-                    <skipDocker>true</skipDocker>
+                    <skipDocker>
+                        true</skipDocker>
                 </configuration>
             </plugin>
             <plugin>
@@ -382,16 +402,23 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
-                    <configLocation>${maven.multiModuleProjectDirectory}/apm-checkstyle/checkStyle.xml</configLocation>
-                    <headerLocation>${maven.multiModuleProjectDirectory}/apm-checkstyle/CHECKSTYLE_HEAD</headerLocation>
-                    <encoding>UTF-8</encoding>
+                    <configLocation>
+                        ${maven.multiModuleProjectDirectory}/apm-checkstyle/checkStyle.xml</configLocation>
+                    <headerLocation>
+                        ${maven.multiModuleProjectDirectory}/apm-checkstyle/CHECKSTYLE_HEAD</headerLocation>
+                    <encoding>
+                        UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <failOnViolation>${checkstyle.fails.on.error}</failOnViolation>
+                    <failOnViolation>
+                        ${checkstyle.fails.on.error}</failOnViolation>
                     <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                        <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-<sourceDirectory>scenarios/resttemplate-6.x-scenario</sourceDirectory>
+                        <sourceDirectory>
+                            ${project.build.sourceDirectory}</sourceDirectory>
+                        <sourceDirectory>
+                            ${project.build.testSourceDirectory}</sourceDirectory>
+                        <sourceDirectory>
+                            scenarios/resttemplate-6.x-scenario</sourceDirectory>
                     </sourceDirectories>
                     <resourceIncludes>
                         **/*.properties,
@@ -432,6 +459,24 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M8</version>
+                <configuration>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <argLine>
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+                        --add-opens java.base/java.io=ALL-UNNAMED
+                        --add-opens java.base/java.util=ALL-UNNAMED
+                        --add-opens java.base/java.nio.charset=ALL-UNNAMED
+                        --add-opens java.base/sun.security.action=ALL-UNNAMED
+                    </argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

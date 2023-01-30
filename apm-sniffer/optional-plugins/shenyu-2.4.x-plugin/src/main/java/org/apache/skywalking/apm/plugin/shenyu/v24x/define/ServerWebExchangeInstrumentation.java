@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.shenyu.v24x.define;
 
-
 /**
  * Since all plugins have access to the ServerWebExchange and the plugins are processed in asynchronous threads,
  * we can put the snapshot into the enhanced ServerWebExchange object.

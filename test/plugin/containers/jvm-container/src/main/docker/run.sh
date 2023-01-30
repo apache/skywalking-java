@@ -34,7 +34,7 @@ exitAndClean() {
 healthCheck() {
     HEALTH_CHECK_URL=$1
     STATUS=""
-    TIMES=${TIMES:-150}
+    TIMES=${TIMES:-60}
     i=1
     while [[ $i -lt ${TIMES} ]];
     do
@@ -43,7 +43,7 @@ healthCheck() {
           echo "${HEALTH_CHECK_URL}: ${STATUS}"
           return 0
         fi
-        sleep 2
+        sleep 3
         i=$(($i + 1))
     done
 

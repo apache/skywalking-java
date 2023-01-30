@@ -18,36 +18,41 @@
 
 package org.apache.skywalking.apm.agent.core.logging.core;
 
+import static org.junit.Assert.assertTrue;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackagePath;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.conf.SnifferConfigInitializer;
 import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertTrue;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(value = {
-    SnifferConfigInitializer.class,
-    PluginFinder.class,
-    AgentPackagePath.class
-})
+@RunWith(MockitoJUnitRunner.class)
 public class WriterFactoryTest {
+    private MockedStatic<SnifferConfigInitializer> mockedSnifferConfigInitializer =
+        Mockito.mockStatic(SnifferConfigInitializer.class);
+    private MockedStatic<PluginFinder> mockedPluginFinder =
+        Mockito.mockStatic(PluginFinder.class);
+    private MockedStatic<AgentPackagePath> mockedAgentPackagePath =
+        Mockito.mockStatic(AgentPackagePath.class);
+
+    @After
+    public void tearDown() {
+        mockedSnifferConfigInitializer.close();
+        mockedPluginFinder.close();
+        mockedAgentPackagePath.close();
+    }
 
     @Test
     public void alwaysReturnSystemLogWriteWithSetLoggingDir() {
         Config.Logging.OUTPUT = LogOutput.CONSOLE;
-        PowerMockito.mockStatic(SnifferConfigInitializer.class);
-        PowerMockito.mockStatic(PluginFinder.class);
-        PowerMockito.mockStatic(AgentPackagePath.class);
-        BDDMockito.given(SnifferConfigInitializer.isInitCompleted()).willReturn(true);
-        BDDMockito.given(PluginFinder.isPluginInitCompleted()).willReturn(true);
-        BDDMockito.given(AgentPackagePath.isPathFound()).willReturn(true);
+
+        mockedSnifferConfigInitializer.when(SnifferConfigInitializer::isInitCompleted).thenReturn(true);
+        mockedPluginFinder.when(PluginFinder::isPluginInitCompleted).thenReturn(true);
+        mockedAgentPackagePath.when(AgentPackagePath::isPathFound).thenReturn(true);
 
         assertTrue(SnifferConfigInitializer.isInitCompleted());
         assertTrue(PluginFinder.isPluginInitCompleted());
@@ -60,12 +65,9 @@ public class WriterFactoryTest {
     @Test
     public void returnFileWriterWriteWithBlankLoggingDir() {
         Config.Logging.OUTPUT = LogOutput.FILE;
-        PowerMockito.mockStatic(SnifferConfigInitializer.class);
-        PowerMockito.mockStatic(PluginFinder.class);
-        PowerMockito.mockStatic(AgentPackagePath.class);
-        BDDMockito.given(SnifferConfigInitializer.isInitCompleted()).willReturn(true);
-        BDDMockito.given(PluginFinder.isPluginInitCompleted()).willReturn(true);
-        BDDMockito.given(AgentPackagePath.isPathFound()).willReturn(true);
+        mockedSnifferConfigInitializer.when(SnifferConfigInitializer::isInitCompleted).thenReturn(true);
+        mockedPluginFinder.when(PluginFinder::isPluginInitCompleted).thenReturn(true);
+        mockedAgentPackagePath.when(AgentPackagePath::isPathFound).thenReturn(true);
 
         assertTrue(SnifferConfigInitializer.isInitCompleted());
         assertTrue(PluginFinder.isPluginInitCompleted());

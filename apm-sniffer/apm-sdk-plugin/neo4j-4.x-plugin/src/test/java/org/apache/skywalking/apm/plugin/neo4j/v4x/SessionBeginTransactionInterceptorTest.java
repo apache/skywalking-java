@@ -19,7 +19,6 @@
 package org.apache.skywalking.apm.plugin.neo4j.v4x;
 
 import static org.junit.Assert.assertNull;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import org.apache.skywalking.apm.agent.core.context.MockContextSnapshot;
@@ -28,9 +27,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("unchecked")
 public class SessionBeginTransactionInterceptorTest {
 

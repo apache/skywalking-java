@@ -18,10 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.undertow.v2x;
 
-import io.undertow.Undertow;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.RoutingHandler;
-import io.undertow.util.Methods;
+import static org.junit.Assert.assertTrue;
+import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
@@ -34,15 +32,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import io.undertow.Undertow;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.RoutingHandler;
+import io.undertow.util.Methods;
 
-import java.lang.reflect.Method;
-
-import static org.junit.Assert.assertTrue;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class RootHandlerInterceptorTest {
 
     private RootHandlerInterceptor rootHandlerInterceptor;
@@ -52,6 +49,8 @@ public class RootHandlerInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private HttpHandler httpHandler;

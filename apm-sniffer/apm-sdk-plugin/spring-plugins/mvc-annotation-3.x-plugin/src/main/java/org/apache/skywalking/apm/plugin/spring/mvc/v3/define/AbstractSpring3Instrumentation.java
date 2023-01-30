@@ -26,10 +26,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
  */
 public abstract class AbstractSpring3Instrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    public static final String WITHNESS_CLASSES = "org.springframework.web.servlet.view.xslt.AbstractXsltView";
+    public static final String[] WITHNESS_CLASSES = new String[] {
+        "org.springframework.web.servlet.view.xslt.AbstractXsltView"
+    };
 
     @Override
     protected final String[] witnessClasses() {
-        return new String[] {WITHNESS_CLASSES};
+        return WITHNESS_CLASSES;
     }
 }

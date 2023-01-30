@@ -99,12 +99,19 @@
         <finalName>spring-4.3.x-scenario</finalName>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+            </plugin>
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>${compiler.version}</source>
+                    <source>
+                        ${compiler.version}</source>
                     <target>${compiler.version}</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <encoding>
+                        ${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
         </plugins>

@@ -31,10 +31,12 @@ public class RestControllerInstrumentation extends AbstractControllerInstrumenta
 
     @Override
     protected String[] witnessClasses() {
-        return new String[] {
-            WITHNESS_CLASSES,
-            "org.springframework.cache.interceptor.DefaultKeyGenerator",
-            WITNESS_CLASSES_HIGH_VERSION
-        };
+        final String[] classes = new String[WITHNESS_CLASSES.length + 1];
+        int i = 0;
+        for (; i < WITHNESS_CLASSES.length; i++) {
+            classes[i] = WITHNESS_CLASSES[i];
+        }
+        classes[i++] = WITNESS_CLASSES_HIGH_VERSION;
+        return classes;
     }
 }

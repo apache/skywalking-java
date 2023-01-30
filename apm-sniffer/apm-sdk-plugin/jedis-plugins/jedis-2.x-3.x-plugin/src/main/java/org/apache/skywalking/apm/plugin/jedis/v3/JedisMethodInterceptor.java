@@ -26,6 +26,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
+import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Transaction;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -41,9 +43,13 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         SpanLayer.asCache(span);
         String methodName = method.getName();
         Tags.CACHE_TYPE.set(span, "Redis");
-        Tags.CACHE_CMD.set(span, methodName);
-        getKey(allArguments).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
-        parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
+        if (objInst instanceof Pipeline || objInst instanceof Transaction) {
+            Tags.CACHE_CMD.set(span, "BATCH_EXECUTE");
+        } else {
+            Tags.CACHE_CMD.set(span, methodName);
+            getKey(allArguments).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
+            parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
+        }
     }
 
     private Optional<String> getKey(Object[] allArguments) {

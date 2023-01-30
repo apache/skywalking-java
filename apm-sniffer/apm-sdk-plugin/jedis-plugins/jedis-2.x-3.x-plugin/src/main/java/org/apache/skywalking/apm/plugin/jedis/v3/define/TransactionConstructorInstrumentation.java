@@ -23,6 +23,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
+import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
@@ -30,6 +31,7 @@ public class TransactionConstructorInstrumentation extends AbstractWitnessInstru
 
     private static final String ENHANCE_CLASS = "redis.clients.jedis.Transaction";
     private static final String TRANSACTION_CONSTRUCTION_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.TransactionConstructorInterceptor";
+    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
     private static final String ARGUMENT_TYPE_NAME = "redis.clients.jedis.Client";
 
     @Override
@@ -56,6 +58,23 @@ public class TransactionConstructorInstrumentation extends AbstractWitnessInstru
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[0];
+        return new InstanceMethodsInterceptPoint[]{
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("exec").or(named("execGetResponse"));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return JEDIS_METHOD_INTERCEPT_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                }
+        };
     }
 }

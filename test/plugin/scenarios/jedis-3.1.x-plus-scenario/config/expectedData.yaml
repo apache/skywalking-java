@@ -105,7 +105,7 @@ segmentItems:
           - operationName: Jedis/exec
             operationId: 0
             parentSpanId: 0
-            spanId: 8
+            spanId: 6
             spanLayer: Cache
             startTime: gt 0
             endTime: gt 0

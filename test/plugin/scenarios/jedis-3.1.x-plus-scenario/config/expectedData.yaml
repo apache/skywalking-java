@@ -120,7 +120,7 @@ segmentItems:
           - operationName: Jedis/xadd
             operationId: 0
             parentSpanId: 0
-            spanId: 10
+            spanId: 7
             spanLayer: Cache
             startTime: gt 0
             endTime: gt 0
@@ -137,7 +137,7 @@ segmentItems:
           - operationName: Jedis/xread
             operationId: 0
             parentSpanId: 0
-            spanId: 11
+            spanId: 8
             spanLayer: Cache
             startTime: gt 0
             endTime: gt 0
@@ -153,7 +153,7 @@ segmentItems:
           - operationName: Jedis/xdel
             operationId: 0
             parentSpanId: 0
-            spanId: 12
+            spanId: 9
             spanLayer: Cache
             startTime: gt 0
             endTime: gt 0

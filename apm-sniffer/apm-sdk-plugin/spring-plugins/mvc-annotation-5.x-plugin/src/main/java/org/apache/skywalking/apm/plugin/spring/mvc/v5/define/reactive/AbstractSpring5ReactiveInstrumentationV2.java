@@ -21,8 +21,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassI
 
 public abstract class AbstractSpring5ReactiveInstrumentationV2 extends ClassInstanceMethodsEnhancePluginDefineV2 {
     public static final String[] WITNESS_CLASSES = new String[] {
-        "org.springframework.web.reactive.result.method.InvocableHandlerMethod",
-        "org.springframework.web.client.AsyncRequestCallback"
+        "org.springframework.web.reactive.result.method.InvocableHandlerMethod"
     };
 
     @Override

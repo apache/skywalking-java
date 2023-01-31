@@ -79,7 +79,14 @@
                 <artifactId>shenyu-spring-boot-starter-plugin-grpc</artifactId>
                 <version>${test.framework.version}</version>
             </dependency>
-            
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!--just for test-->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -105,7 +112,7 @@
             </plugin>
         </plugins>
     </build>
-    
-    
+
+
 
 </project>

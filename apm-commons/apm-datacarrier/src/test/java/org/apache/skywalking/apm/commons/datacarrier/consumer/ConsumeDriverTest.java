@@ -18,41 +18,39 @@
 
 package org.apache.skywalking.apm.commons.datacarrier.consumer;
 
+import org.apache.skywalking.apm.commons.datacarrier.FieldGetter;
 import org.apache.skywalking.apm.commons.datacarrier.SampleData;
 import org.apache.skywalking.apm.commons.datacarrier.buffer.BufferStrategy;
 import org.apache.skywalking.apm.commons.datacarrier.buffer.Channels;
 import org.apache.skywalking.apm.commons.datacarrier.partition.SimpleRollingPartitioner;
 import org.junit.Assert;
 import org.junit.Test;
-import org.powermock.api.support.membermodification.MemberModifier;
 
 public class ConsumeDriverTest {
     @Test
-    public void testBeginConsumeDriver() throws IllegalAccessException {
+    public void testBeginConsumeDriver() throws IllegalAccessException, NoSuchFieldException {
         Channels<SampleData> channels = new Channels<SampleData>(2, 100, new SimpleRollingPartitioner<SampleData>(), BufferStrategy.BLOCKING);
         ConsumeDriver<SampleData> pool = new ConsumeDriver<SampleData>("default", channels, new SampleConsumer(), 2, 20);
         pool.begin(channels);
 
-        ConsumerThread[] threads = (ConsumerThread[]) MemberModifier.field(ConsumeDriver.class, "consumerThreads")
-                                                                    .get(pool);
+        ConsumerThread[] threads = FieldGetter.getValue(pool, "consumerThreads");
         Assert.assertEquals(2, threads.length);
         Assert.assertTrue(threads[0].isAlive());
         Assert.assertTrue(threads[1].isAlive());
     }
 
     @Test
-    public void testCloseConsumeDriver() throws InterruptedException, IllegalAccessException {
+    public void testCloseConsumeDriver() throws InterruptedException, IllegalAccessException, NoSuchFieldException {
         Channels<SampleData> channels = new Channels<SampleData>(2, 100, new SimpleRollingPartitioner<SampleData>(), BufferStrategy.BLOCKING);
         ConsumeDriver<SampleData> pool = new ConsumeDriver<SampleData>("default", channels, new SampleConsumer(), 2, 20);
         pool.begin(channels);
 
         Thread.sleep(5000);
         pool.close(channels);
-        ConsumerThread[] threads = (ConsumerThread[]) MemberModifier.field(ConsumeDriver.class, "consumerThreads")
-                                                                    .get(pool);
+        ConsumerThread[] threads = FieldGetter.getValue(pool, "consumerThreads");
 
         Assert.assertEquals(2, threads.length);
-        Assert.assertFalse((Boolean) MemberModifier.field(ConsumerThread.class, "running").get(threads[0]));
-        Assert.assertFalse((Boolean) MemberModifier.field(ConsumerThread.class, "running").get(threads[1]));
+        Assert.assertFalse(FieldGetter.getValue(threads[0], "running"));
+        Assert.assertFalse(FieldGetter.getValue(threads[1], "running"));
     }
 }

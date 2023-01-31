@@ -35,7 +35,7 @@ function exitAndClean() {
 function healthCheck() {
     HEALTH_CHECK_URL=$1
 
-    TIMES=${TIMES:-150}
+    TIMES=${TIMES:-60}
     for ((i=1; i<=${TIMES}; i++));
     do
         STATUS_CODE="$(curl --max-time 3 -Is ${HEALTH_CHECK_URL} | head -n 1)"
@@ -43,7 +43,7 @@ function healthCheck() {
           echo "${HEALTH_CHECK_URL}: ${STATUS_CODE}"
           return 0
         fi
-        sleep 2
+        sleep 3
     done
 
     exitOnError "${SCENARIO_NAME}-${SCENARIO_VERSION} health check failed!"

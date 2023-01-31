@@ -27,9 +27,6 @@ on:
       - 'test/plugin/**'
       - '**/pom.xml'
       - '!**.md'
-  push:
-    branches:
-      - test/ci/*
 
 concurrency:
   group: plugins-jdk17-${{ github.event.pull_request.number || github.ref }}

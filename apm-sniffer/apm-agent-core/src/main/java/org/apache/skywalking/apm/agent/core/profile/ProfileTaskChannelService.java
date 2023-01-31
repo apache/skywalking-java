@@ -63,7 +63,6 @@ public class ProfileTaskChannelService implements BootService, Runnable, GRPCCha
     // gRPC stub
     private volatile ProfileTaskGrpc.ProfileTaskBlockingStub profileTaskBlockingStub;
 
-
     // segment snapshot sender
     private final BlockingQueue<TracingThreadSnapshot> snapshotQueue = new LinkedBlockingQueue<>(
         Config.Profile.SNAPSHOT_TRANSPORT_BUFFER_SIZE);

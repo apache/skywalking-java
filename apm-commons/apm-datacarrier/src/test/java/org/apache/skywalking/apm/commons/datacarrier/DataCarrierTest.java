@@ -29,43 +29,37 @@ import org.apache.skywalking.apm.commons.datacarrier.partition.ProducerThreadPar
 import org.apache.skywalking.apm.commons.datacarrier.partition.SimpleRollingPartitioner;
 import org.junit.Assert;
 import org.junit.Test;
-import org.powermock.api.support.membermodification.MemberModifier;
 
 public class DataCarrierTest {
     @Test
-    public void testCreateDataCarrier() throws IllegalAccessException {
+    public void testCreateDataCarrier() throws IllegalAccessException, NoSuchFieldException {
         DataCarrier<SampleData> carrier = new DataCarrier<>(5, 100, BufferStrategy.IF_POSSIBLE);
 
-        Channels<SampleData> channels = (Channels<SampleData>) (MemberModifier.field(DataCarrier.class, "channels")
-                                                                              .get(carrier));
+        Channels<SampleData> channels = FieldGetter.getValue(carrier, "channels");
         Assert.assertEquals(5, channels.getChannelSize());
 
         QueueBuffer<SampleData> buffer = channels.getBuffer(0);
         Assert.assertEquals(100, buffer.getBufferSize());
 
-        Assert.assertEquals(MemberModifier.field(buffer.getClass(), "strategy").get(buffer), BufferStrategy.IF_POSSIBLE);
-        Assert.assertEquals(MemberModifier.field(buffer.getClass(), "strategy")
-                                          .get(buffer), BufferStrategy.IF_POSSIBLE);
+        Assert.assertEquals(FieldGetter.getValue(buffer, "strategy"), BufferStrategy.IF_POSSIBLE);
+        Assert.assertEquals(FieldGetter.getValue(buffer, "strategy"), BufferStrategy.IF_POSSIBLE);
 
-        Assert.assertEquals(MemberModifier.field(Channels.class, "dataPartitioner")
-                                          .get(channels)
-                                          .getClass(), SimpleRollingPartitioner.class);
+        Assert.assertEquals(FieldGetter.getValue(channels, "dataPartitioner")
+                                       .getClass(), SimpleRollingPartitioner.class);
         carrier.setPartitioner(new ProducerThreadPartitioner<SampleData>());
-        Assert.assertEquals(MemberModifier.field(Channels.class, "dataPartitioner")
-                                          .get(channels)
-                                          .getClass(), ProducerThreadPartitioner.class);
+        Assert.assertEquals(FieldGetter.getValue(channels, "dataPartitioner")
+                                       .getClass(), ProducerThreadPartitioner.class);
     }
 
     @Test
-    public void testProduce() throws IllegalAccessException {
+    public void testProduce() throws IllegalAccessException, NoSuchFieldException {
         DataCarrier<SampleData> carrier = new DataCarrier<SampleData>(2, 100);
         Assert.assertTrue(carrier.produce(new SampleData().setName("a")));
         Assert.assertTrue(carrier.produce(new SampleData().setName("b")));
         Assert.assertTrue(carrier.produce(new SampleData().setName("c")));
         Assert.assertTrue(carrier.produce(new SampleData().setName("d")));
 
-        Channels<SampleData> channels = (Channels<SampleData>) (MemberModifier.field(DataCarrier.class, "channels")
-                                                                              .get(carrier));
+        Channels<SampleData> channels = FieldGetter.getValue(carrier, "channels");
         QueueBuffer<SampleData> buffer1 = channels.getBuffer(0);
 
         List result = new ArrayList();
@@ -80,7 +74,7 @@ public class DataCarrierTest {
     }
 
     @Test
-    public void testIfPossibleProduce() throws IllegalAccessException {
+    public void testIfPossibleProduce() throws IllegalAccessException, NoSuchFieldException {
         DataCarrier<SampleData> carrier = new DataCarrier<SampleData>(2, 100, BufferStrategy.IF_POSSIBLE);
 
         for (int i = 0; i < 200; i++) {
@@ -91,8 +85,7 @@ public class DataCarrierTest {
             Assert.assertFalse(carrier.produce(new SampleData().setName("d" + i + "_2")));
         }
 
-        Channels<SampleData> channels = (Channels<SampleData>) (MemberModifier.field(DataCarrier.class, "channels")
-                                                                              .get(carrier));
+        Channels<SampleData> channels = FieldGetter.getValue(carrier, "channels");
         QueueBuffer<SampleData> buffer1 = channels.getBuffer(0);
         List result = new ArrayList();
         buffer1.obtain(result);

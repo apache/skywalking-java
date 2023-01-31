@@ -28,7 +28,6 @@ import io.grpc.Metadata;
 import io.grpc.MethodDescriptor;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 
-
 /**
  * Add agent version(Described in MANIFEST.MF) to the connection establish stage.
  */

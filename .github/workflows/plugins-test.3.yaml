@@ -27,9 +27,6 @@ on:
       - 'test/plugin/**'
       - '**/pom.xml'
       - '!**.md'
-  push:
-    branches:
-      - test/ci/*
 
 concurrency:
   group: plugins-3-${{ github.event.pull_request.number || github.ref }}
@@ -114,7 +111,7 @@ jobs:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          distribution: adopt
+          distribution: temurin
           java-version: 8
       - name: Install Oracle Libs
         if: matrix.case == 'oracle-scenario'

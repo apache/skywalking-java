@@ -22,13 +22,13 @@ import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.dynamic.AgentConfigChangeWatcher;
 import org.apache.skywalking.apm.agent.core.conf.dynamic.watcher.IgnoreSuffixPatternsWatcher;
 import org.apache.skywalking.apm.agent.core.context.ContextManagerExtendService;
+import org.apache.skywalking.apm.agent.core.context.util.FieldGetter;
 import org.apache.skywalking.apm.agent.core.test.tools.AgentServiceRule;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 public class IgnoreSuffixPatternsWatcherTest {
 
@@ -48,9 +48,9 @@ public class IgnoreSuffixPatternsWatcherTest {
     }
 
     @Test
-    public void testConfigModifyEvent() {
-        IgnoreSuffixPatternsWatcher ignoreSuffixPatternsWatcher = Whitebox.getInternalState(contextManagerExtendService
-            , "ignoreSuffixPatternsWatcher");
+    public void testConfigModifyEvent() throws IllegalAccessException, NoSuchFieldException {
+        IgnoreSuffixPatternsWatcher ignoreSuffixPatternsWatcher =
+            FieldGetter.getValue(contextManagerExtendService, "ignoreSuffixPatternsWatcher");
         ignoreSuffixPatternsWatcher.notify(new AgentConfigChangeWatcher.ConfigChangeEvent(
             ".txt,.log",
             AgentConfigChangeWatcher.EventType.MODIFY
@@ -60,9 +60,9 @@ public class IgnoreSuffixPatternsWatcherTest {
     }
 
     @Test
-    public void testConfigDeleteEvent() {
-        IgnoreSuffixPatternsWatcher ignoreSuffixPatternsWatcher = Whitebox.getInternalState(contextManagerExtendService
-            , "ignoreSuffixPatternsWatcher");
+    public void testConfigDeleteEvent() throws IllegalAccessException, NoSuchFieldException {
+        IgnoreSuffixPatternsWatcher ignoreSuffixPatternsWatcher =
+            FieldGetter.getValue(contextManagerExtendService, "ignoreSuffixPatternsWatcher");
         ignoreSuffixPatternsWatcher.notify(new AgentConfigChangeWatcher.ConfigChangeEvent(
             null,
             AgentConfigChangeWatcher.EventType.DELETE

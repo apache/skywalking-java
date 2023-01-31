@@ -17,6 +17,11 @@
 
 package org.apache.skywalking.apm.toolkit.activation.trace;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.concurrent.Callable;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
@@ -32,18 +37,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class CallableOrRunnableInterceptorTest {
 
     private CallableOrRunnableConstructInterceptor constructorInterceptor;
@@ -51,6 +48,9 @@ public class CallableOrRunnableInterceptorTest {
     private CallableOrRunnableInvokeInterceptor callableCallInterceptor;
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
 

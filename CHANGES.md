@@ -8,7 +8,7 @@ Release Notes.
 * Enhance lettuce plugin to adopt uniform tags.
 * Expose complete Tracing APIs in the tracing toolkit.
 * Add plugin to trace Spring 6 and Resttemplate 6.
-* Move the baseline to JDK 17 for developement, the runtime baseline is still Java 8 compatible.
+* Move the baseline to JDK 17 for development, the runtime baseline is still Java 8 compatible.
 * Remove Powermock entirely from the test cases.
 
 #### Documentation

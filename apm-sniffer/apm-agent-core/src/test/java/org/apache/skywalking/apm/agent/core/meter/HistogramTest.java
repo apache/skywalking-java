@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.context.util.FieldGetter;
 import org.apache.skywalking.apm.agent.core.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.network.language.agent.v3.Label;
 import org.apache.skywalking.apm.network.language.agent.v3.MeterData;
@@ -31,7 +32,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 public class HistogramTest {
     @Rule
@@ -43,18 +43,18 @@ public class HistogramTest {
     }
 
     @After
-    public void after() {
+    public void after() throws IllegalAccessException, NoSuchFieldException {
         final MeterService meterService = ServiceManager.INSTANCE.findService(MeterService.class);
-        ((ConcurrentHashMap<MeterId, BaseMeter>) Whitebox.getInternalState(meterService, "meterMap")).clear();
+        ((ConcurrentHashMap<MeterId, BaseMeter>) FieldGetter.getValue(meterService, "meterMap")).clear();
     }
 
     @Test
-    public void testBuckets() {
+    public void testBuckets() throws IllegalAccessException, NoSuchFieldException {
         final MeterId meterId = new MeterId("test", MeterType.COUNTER, Arrays.asList(new MeterTag("k1", "v1")));
 
         // Check buckets
         final Histogram histogram = MeterFactory.histogram("test").steps(Arrays.asList(2d, 5d)).minValue(2d).build();
-        final Histogram.Bucket[] buckets = (Histogram.Bucket[]) Whitebox.getInternalState(histogram, "buckets");
+        final Histogram.Bucket[] buckets = FieldGetter.getValue(histogram, "buckets");
         Assert.assertEquals(2, buckets.length);
         Assert.assertEquals(buckets[0], new Histogram.Bucket(2));
         Assert.assertEquals(buckets[1], new Histogram.Bucket(5));

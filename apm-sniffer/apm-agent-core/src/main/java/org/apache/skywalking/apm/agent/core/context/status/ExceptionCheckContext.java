@@ -36,7 +36,7 @@ public enum ExceptionCheckContext {
 
     public boolean isError(Throwable throwable) {
         Class<? extends Throwable> clazz = throwable.getClass();
-        return errorStatusExceptions.contains(clazz) || (!ignoredExceptions.contains(clazz));
+        return errorStatusExceptions.contains(clazz) || !ignoredExceptions.contains(clazz);
     }
 
     public void registerIgnoredException(Throwable throwable) {

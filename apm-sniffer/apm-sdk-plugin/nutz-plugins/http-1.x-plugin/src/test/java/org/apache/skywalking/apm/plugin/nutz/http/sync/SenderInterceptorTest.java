@@ -33,6 +33,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.nutz.http.Request;
 import org.nutz.http.Request.METHOD;
 import org.nutz.http.Response;
@@ -40,7 +42,6 @@ import org.nutz.http.Sender;
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -48,8 +49,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(org.powermock.modules.junit4.PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class SenderInterceptorTest {
 
     @SegmentStoragePoint
@@ -57,6 +57,8 @@ public class SenderInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
     private EnhancedInstance enhancedInstance;

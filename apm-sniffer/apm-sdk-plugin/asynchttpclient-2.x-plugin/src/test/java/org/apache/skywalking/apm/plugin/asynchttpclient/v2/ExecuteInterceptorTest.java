@@ -17,6 +17,9 @@
 
 package org.apache.skywalking.apm.plugin.asynchttpclient.v2;
 
+import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -35,24 +38,14 @@ import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.OfficialComponent;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
-import org.asynchttpclient.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
-@PrepareForTest(Response.class)
+@RunWith(TracingSegmentRunner.class)
 public class ExecuteInterceptorTest {
 
     @SegmentStoragePoint

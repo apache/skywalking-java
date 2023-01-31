@@ -94,4 +94,11 @@ public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePlug
     protected ClassMatch enhanceClass() {
         return NameMatch.byName(ENHANCE_CLASS);
     }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[] {
+            "org.springframework.web.context.support.ServletContextAttributeFactoryBean"
+        };
+    }
 }

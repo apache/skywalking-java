@@ -18,7 +18,11 @@
 
 package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import java.util.List;
+import java.util.function.BiFunction;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
@@ -37,24 +41,17 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.reactivestreams.Publisher;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import reactor.core.publisher.Flux;
 import reactor.netty.Connection;
 import reactor.netty.NettyOutbound;
 import reactor.netty.http.client.HttpClientRequest;
 import reactor.netty.http.client.HttpClientResponse;
 
-import java.util.List;
-import java.util.function.BiFunction;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class HttpClientFinalizerInterceptorTest {
 
     private final static String URI = "http://localhost:8080/get";
@@ -80,6 +77,9 @@ public class HttpClientFinalizerInterceptorTest {
     };
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     private HttpClientResponse mockResponse;
     private HttpClientRequest mockRequest;
     @SegmentStoragePoint
@@ -155,7 +155,7 @@ public class HttpClientFinalizerInterceptorTest {
         Flux flux = Flux.just(0);
 
         flux = (Flux) responseConnectionInterceptor.afterMethod(enhancedInstance, null, new Object[0], null, flux);
-        
+
         ((BiFunction<? super HttpClientResponse, ? super Connection, ? extends Publisher<Void>>) responseConnectionArguments[0])
                 .apply(mockResponse, null);
         flux.blockFirst();

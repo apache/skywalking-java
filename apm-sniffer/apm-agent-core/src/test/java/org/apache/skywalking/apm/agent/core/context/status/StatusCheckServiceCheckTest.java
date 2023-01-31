@@ -21,11 +21,11 @@ package org.apache.skywalking.apm.agent.core.context.status;
 import java.util.Set;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.context.util.FieldGetter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.api.support.membermodification.MemberModifier;
 
 public class StatusCheckServiceCheckTest {
 
@@ -44,13 +44,11 @@ public class StatusCheckServiceCheckTest {
     }
 
     @After
-    public void after() throws IllegalAccessException {
-        ((Set) MemberModifier
-            .field(ExceptionCheckContext.class, "ignoredExceptions")
-            .get(ExceptionCheckContext.INSTANCE)).clear();
-        ((Set) MemberModifier
-            .field(ExceptionCheckContext.class, "errorStatusExceptions")
-            .get(ExceptionCheckContext.INSTANCE)).clear();
+    public void after() throws IllegalAccessException, NoSuchFieldException {
+        ((Set) FieldGetter.getValue(
+            ExceptionCheckContext.INSTANCE, "ignoredExceptions")).clear();
+        ((Set) FieldGetter.getValue(
+            ExceptionCheckContext.INSTANCE, "errorStatusExceptions")).clear();
     }
 
     @Test

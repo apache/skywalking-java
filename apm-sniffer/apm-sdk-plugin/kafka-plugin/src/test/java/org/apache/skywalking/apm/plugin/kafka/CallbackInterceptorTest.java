@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.kafka;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 import java.util.List;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.skywalking.apm.agent.core.context.MockContextSnapshot;
@@ -39,16 +41,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
-@PrepareForTest({RecordMetadata.class})
+@RunWith(TracingSegmentRunner.class)
 public class CallbackInterceptorTest {
 
     @SegmentStoragePoint
@@ -56,6 +52,8 @@ public class CallbackInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private RecordMetadata recordMetadata;

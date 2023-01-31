@@ -25,8 +25,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -45,12 +43,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import ru.yandex.clickhouse.ClickHouseStatementImpl;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class ClickHouseStatementMethodInterceptorTest {
 
     private final static String SQL = "SELECT 1";
@@ -70,6 +68,9 @@ public class ClickHouseStatementMethodInterceptorTest {
     private final ClickHouseStatementMethodInterceptor interceptor = new ClickHouseStatementMethodInterceptor();
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
     @Mock

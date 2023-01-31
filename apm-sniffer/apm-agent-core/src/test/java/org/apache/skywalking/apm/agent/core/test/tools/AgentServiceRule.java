@@ -18,38 +18,56 @@
 
 package org.apache.skywalking.apm.agent.core.test.tools;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
-
-import org.apache.skywalking.apm.agent.core.context.TracingThreadListener;
-import org.junit.rules.ExternalResource;
-import org.powermock.reflect.Whitebox;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.context.IgnoredTracerContext;
 import org.apache.skywalking.apm.agent.core.context.TracingContext;
 import org.apache.skywalking.apm.agent.core.context.TracingContextListener;
+import org.apache.skywalking.apm.agent.core.context.TracingThreadListener;
+import org.junit.rules.ExternalResource;
 
 public class AgentServiceRule extends ExternalResource {
 
     @Override
     protected void after() {
         super.after();
-        Whitebox.setInternalState(ServiceManager.INSTANCE, "bootedServices", new HashMap<Class, BootService>());
-        Whitebox.setInternalState(TracingContext.ListenerManager.class, "LISTENERS", new LinkedList<TracingContextListener>());
-        Whitebox.setInternalState(IgnoredTracerContext.ListenerManager.class, "LISTENERS", new LinkedList<TracingContextListener>());
-        Whitebox.setInternalState(TracingContext.TracingThreadListenerManager.class, "LISTENERS", new LinkedList<TracingThreadListener>());
+        reset();
     }
 
     @Override
     protected void before() throws Throwable {
         super.before();
 
-        Whitebox.setInternalState(ServiceManager.INSTANCE, "bootedServices", new HashMap<Class, BootService>());
-        Whitebox.setInternalState(TracingContext.ListenerManager.class, "LISTENERS", new LinkedList<TracingContextListener>());
-        Whitebox.setInternalState(IgnoredTracerContext.ListenerManager.class, "LISTENERS", new LinkedList<TracingContextListener>());
-        Whitebox.setInternalState(TracingContext.TracingThreadListenerManager.class, "LISTENERS", new LinkedList<TracingThreadListener>());
+        reset();
 
         ServiceManager.INSTANCE.boot();
+    }
+
+    private void reset() {
+        try {
+            Field bootedServices = ServiceManager.class.getDeclaredField("bootedServices");
+            bootedServices.setAccessible(true);
+            bootedServices.set(ServiceManager.INSTANCE, new HashMap<Class<?>, BootService>());
+
+            Field listeners = TracingContext.ListenerManager.class.getDeclaredField("LISTENERS");
+            listeners.setAccessible(true);
+            listeners.set(TracingContext.ListenerManager.class,
+                new LinkedList<TracingContextListener>());
+
+            listeners = IgnoredTracerContext.ListenerManager.class.getDeclaredField("LISTENERS");
+            listeners.setAccessible(true);
+            listeners.set(IgnoredTracerContext.ListenerManager.class,
+                new LinkedList<TracingContextListener>());
+
+            listeners =
+                TracingContext.TracingThreadListenerManager.class.getDeclaredField("LISTENERS");
+            listeners.setAccessible(true);
+            listeners.set(TracingContext.TracingThreadListenerManager.class, new LinkedList<TracingThreadListener>());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

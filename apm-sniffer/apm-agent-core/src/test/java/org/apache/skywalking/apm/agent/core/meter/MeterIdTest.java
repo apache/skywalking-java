@@ -21,15 +21,15 @@ package org.apache.skywalking.apm.agent.core.meter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.apache.skywalking.apm.agent.core.context.util.FieldGetter;
 import org.apache.skywalking.apm.network.language.agent.v3.Label;
 import org.junit.Assert;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 public class MeterIdTest {
 
     @Test
-    public void testTransformTags() {
+    public void testTransformTags() throws IllegalAccessException, NoSuchFieldException {
         MeterId meterId = new MeterId("test", MeterType.COUNTER, Arrays.asList(new MeterTag("k1", "v1")));
 
         // Label message check
@@ -41,7 +41,7 @@ public class MeterIdTest {
         Assert.assertEquals(MeterType.COUNTER, meterId.getType());
 
         // Must cache the Label message
-        final List<Label> cacheLabels = (List<Label>) Whitebox.getInternalState(meterId, "labels");
+        final List<Label> cacheLabels = FieldGetter.getValue(meterId, "labels");
         Assert.assertEquals(labels, cacheLabels);
 
         // Check empty tags

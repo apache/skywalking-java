@@ -18,8 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.light4j;
 
-import com.networknt.exception.ExceptionHandler;
-import io.undertow.server.HttpServerExchange;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -32,14 +32,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import com.networknt.exception.ExceptionHandler;
+import io.undertow.server.HttpServerExchange;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class HandleRequestInterceptorTest {
 
     private HandleRequestInterceptor handleRequestInterceptor;
@@ -49,6 +47,8 @@ public class HandleRequestInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private MethodInterceptResult methodInterceptResult;

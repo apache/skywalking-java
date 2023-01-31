@@ -103,7 +103,7 @@ public class ThreadProfiler {
         }
 
         // if is first dump, check is can start profiling
-        if (dumpSequence == 0 && (!executionContext.isStartProfileable())) {
+        if (dumpSequence == 0 && !executionContext.isStartProfileable()) {
             return null;
         }
 

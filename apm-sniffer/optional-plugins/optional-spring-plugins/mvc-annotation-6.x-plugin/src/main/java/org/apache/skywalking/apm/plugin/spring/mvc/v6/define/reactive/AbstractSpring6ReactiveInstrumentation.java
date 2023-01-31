@@ -17,10 +17,10 @@
 
 package org.apache.skywalking.apm.plugin.spring.mvc.v6.define.reactive;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassInstanceMethodsEnhancePluginDefineV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 
-public abstract class AbstractSpring5ReactiveInstrumentationV2 extends ClassInstanceMethodsEnhancePluginDefineV2 {
-    public static final String WITNESS_CLASSES = "org.springframework.web.reactive.result.method.InvocableHandlerMethod";
+public abstract class AbstractSpring6ReactiveInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+    public static final String WITNESS_CLASSES = "org.springframework.web.method.support.InvocableHandlerMethod";
 
     @Override
     protected final String[] witnessClasses() {

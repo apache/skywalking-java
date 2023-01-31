@@ -27,7 +27,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class InvocableHandlerMethodInstrumentation extends AbstractSpring5ReactiveInstrumentationV2 {
+public class InvocableHandlerMethodInstrumentation extends AbstractSpring6ReactiveInstrumentationV2 {
     @Override
     protected ClassMatch enhanceClass() {
         return byName("org.springframework.web.reactive.result.method.InvocableHandlerMethod");

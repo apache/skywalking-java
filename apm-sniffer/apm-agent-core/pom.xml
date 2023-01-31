@@ -16,9 +16,7 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -35,8 +33,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <generateGitPropertiesFilename>
-            ${project.build.outputDirectory}/skywalking-agent-version.properties</generateGitPropertiesFilename>
+        <generateGitPropertiesFilename>${project.build.outputDirectory}/skywalking-agent-version.properties</generateGitPropertiesFilename>
         <guava.version>30.1.1-jre</guava.version>
         <wiremock.version>2.6.0</wiremock.version>
         <netty-tcnative-boringssl-static.version>2.0.7.Final</netty-tcnative-boringssl-static.version>
@@ -121,7 +118,6 @@
             </exclusions>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.skywalking</groupId>
             <artifactId>java-agent-datacarrier</artifactId>
@@ -191,15 +187,12 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <failOnNoGitDirectory>
-                        false</failOnNoGitDirectory>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>
-                        ${generateGitPropertiesFilename}</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>${generateGitPropertiesFilename}</generateGitPropertiesFilename>
                     <commitIdGenerationMode>full</commitIdGenerationMode>
                     <includeOnlyProperties>
-                        <includeOnlyProperty>
-                            git.build.version</includeOnlyProperty>
+                        <includeOnlyProperty>git.build.version</includeOnlyProperty>
                         <includeOnlyProperty>^git.commit.id.(abbrev|full)$</includeOnlyProperty>
                     </includeOnlyProperties>
                 </configuration>
@@ -215,72 +208,52 @@
                         <configuration>
                             <artifactSet>
                                 <excludes>
-                                    <exclude>
-                                        net.bytebuddy:byte-buddy:jar:</exclude>
-                                    <exclude>
-                                        com.google.errorprone:error_prone_annotations:jar:</exclude>
-                                    <exclude>
-                                        com.google.code.findbugs:jsr305:jar:</exclude>
-                                    <exclude>
-                                        com.google.android:annotations:jar:</exclude>
-                                    <exclude>
-                                        com.google.api.grpc:proto-google-common-protos:jar:</exclude>
-                                    <exclude>
-                                        org.checkerframework:checker-compat-qual:jar:</exclude>
-                                    <exclude>
-                                        org.codehaus.mojo:animal-sniffer-annotations:jar:</exclude>
+                                    <exclude>net.bytebuddy:byte-buddy:jar:</exclude>
+                                    <exclude>com.google.errorprone:error_prone_annotations:jar:</exclude>
+                                    <exclude>com.google.code.findbugs:jsr305:jar:</exclude>
+                                    <exclude>com.google.android:annotations:jar:</exclude>
+                                    <exclude>com.google.api.grpc:proto-google-common-protos:jar:</exclude>
+                                    <exclude>org.checkerframework:checker-compat-qual:jar:</exclude>
+                                    <exclude>org.codehaus.mojo:animal-sniffer-annotations:jar:</exclude>
                                 </excludes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
-                                    <pattern>
-                                        ${shade.com.google.source}</pattern>
-                                    <shadedPattern>
-                                        ${shade.com.google.target}</shadedPattern>
+                                    <pattern>${shade.com.google.source}</pattern>
+                                    <shadedPattern>${shade.com.google.target}</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>
-                                        ${shade.io.grpc.source}</pattern>
+                                    <pattern>${shade.io.grpc.source}</pattern>
                                     <shadedPattern>${shade.io.grpc.target}</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>
-                                        ${shade.io.netty.source}</pattern>
+                                    <pattern>${shade.io.netty.source}</pattern>
                                     <shadedPattern>${shade.io.netty.target}</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>
-                                        ${shade.io.opencensus.source}</pattern>
-                                    <shadedPattern>
-                                        ${shade.io.opencensus.target}</shadedPattern>
+                                    <pattern>${shade.io.opencensus.source}</pattern>
+                                    <shadedPattern>${shade.io.opencensus.target}</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>
-                                        ${shade.io.perfmark.source}</pattern>
-                                    <shadedPattern>
-                                        ${shade.io.perfmark.target}</shadedPattern>
+                                    <pattern>${shade.io.perfmark.source}</pattern>
+                                    <shadedPattern>${shade.io.perfmark.target}</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>
-                                        ${shade.org.slf4j.source}</pattern>
+                                    <pattern>${shade.org.slf4j.source}</pattern>
                                     <shadedPattern>${shade.org.slf4j.target}</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
                                 <filter>
-                                    <artifact>
-                                        com.google.protobuf:protobuf-java</artifact>
+                                    <artifact>com.google.protobuf:protobuf-java</artifact>
                                     <excludes>
-                                        <exclude>
-                                            google/protobuf/*.proto</exclude>
-                                        <exclude>
-                                            google/protobuf/compiler/*.proto</exclude>
+                                        <exclude>google/protobuf/*.proto</exclude>
+                                        <exclude>google/protobuf/compiler/*.proto</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
                         </configuration>
                     </execution>
@@ -306,29 +279,15 @@
                         <configuration>
                             <target>
                                 <echo message="unjar" />
-                                <unzip
-                                    src="${project.build.directory}/${project.artifactId}-${project.version}.jar"
-                                    dest="${project.build.directory}/unpacked/" />
+                                <unzip src="${project.build.directory}/${project.artifactId}-${project.version}.jar" dest="${project.build.directory}/unpacked/" />
                                 <echo message="rename service providers in META-INF/services" />
-                                <move
-                                    file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_osx_aarch_64.jnilib"
-                                    tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_osx_aarch_64.jnilib" />
-                                <move
-                                    file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_linux_aarch_64.so"
-                                    tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_linux_aarch_64.so" />
-                                <move
-                                    file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_osx_x86_64.jnilib"
-                                    tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_osx_x86_64.jnilib" />
-                                <move
-                                    file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_linux_x86_64.so"
-                                    tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_linux_x86_64.so" />
-                                <move
-                                    file="${project.build.directory}/unpacked/META-INF/native/netty_tcnative_windows_x86_64.dll"
-                                    tofile="${project.build.directory}/unpacked/META-INF/native/org_apache_skywalking_apm_dependencies_netty_tcnative_windows_x86_64.dll" />
+                                <move file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_osx_aarch_64.jnilib" tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_osx_aarch_64.jnilib" />
+                                <move file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_linux_aarch_64.so" tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_linux_aarch_64.so" />
+                                <move file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_osx_x86_64.jnilib" tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_osx_x86_64.jnilib" />
+                                <move file="${project.build.directory}/unpacked/META-INF/native/libnetty_tcnative_linux_x86_64.so" tofile="${project.build.directory}/unpacked/META-INF/native/liborg_apache_skywalking_apm_dependencies_netty_tcnative_linux_x86_64.so" />
+                                <move file="${project.build.directory}/unpacked/META-INF/native/netty_tcnative_windows_x86_64.dll" tofile="${project.build.directory}/unpacked/META-INF/native/org_apache_skywalking_apm_dependencies_netty_tcnative_windows_x86_64.dll" />
                                 <echo message="jar back" />
-                                <jar
-                                    destfile="${project.build.directory}/${project.artifactId}-${project.version}.jar"
-                                    basedir="${project.build.directory}/unpacked" />
+                                <jar destfile="${project.build.directory}/${project.artifactId}-${project.version}.jar" basedir="${project.build.directory}/unpacked" />
                             </target>
                         </configuration>
                         <goals>

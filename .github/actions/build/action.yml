@@ -53,8 +53,8 @@ runs:
       run: |
         echo "::group::Build SkyWalking Agent"
         # Retry one more time due to frequent "maven connection reset"
-        ./mvnw --batch-mode clean package -Dmaven.test.skip || \
-        ./mvnw --batch-mode clean package -Dmaven.test.skip
+        ./mvnw -q --batch-mode clean package -Dmaven.test.skip || \
+        ./mvnw -q --batch-mode clean package -Dmaven.test.skip
         echo "::endgroup::"
     - uses: actions/upload-artifact@v2
       name: Upload Agent

@@ -19,7 +19,7 @@ package org.apache.skywalking.apm.plugin.spring.mvc.v6.define;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 
-public abstract class AbstractSpring5Instrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public abstract class AbstractSpring6Instrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     public static final String WITNESS_CLASSES = "org.springframework.web.servlet.resource.HttpResource";
 
     @Override

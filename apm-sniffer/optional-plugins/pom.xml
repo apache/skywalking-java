@@ -91,17 +91,14 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <shadedArtifactAttached>
-                                false</shadedArtifactAttached>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
                             <createSourcesJar>true</createSourcesJar>
-                            <shadeSourcesContent>
-                                true</shadeSourcesContent>
+                            <shadeSourcesContent>true</shadeSourcesContent>
                             <relocations>
                                 <relocation>
                                     <pattern>${shade.net.bytebuddy.source}</pattern>
-                                    <shadedPattern>
-                                        ${shade.net.bytebuddy.target}</shadedPattern>
+                                    <shadedPattern>${shade.net.bytebuddy.target}</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

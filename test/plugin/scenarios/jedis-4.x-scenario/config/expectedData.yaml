@@ -84,8 +84,8 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.cmd, value: BATCH_EXECUTE}
               - {key: cache.type, value: Redis}
+              - {key: cache.cmd, value: BATCH_EXECUTE}
           - operationName: Jedis/exec
             operationId: 0
             parentSpanId: 0
@@ -99,8 +99,8 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.cmd, value: BATCH_EXECUTE}
               - {key: cache.type, value: Redis}
+              - {key: cache.cmd, value: BATCH_EXECUTE}
           - operationName: Jedis/xadd
             operationId: 0
             parentSpanId: 0

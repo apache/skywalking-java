@@ -23,10 +23,8 @@ import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
-// import org.apache.skywalking.apm.toolkit.trace.SpanRef;
 
 import java.lang.reflect.Method;
-
 
 // Some problems about EnhancedInstance
 public class TracerCreateLocalSpanInterceptor implements StaticMethodsAroundInterceptor {

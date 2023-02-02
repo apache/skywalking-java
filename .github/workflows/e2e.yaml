@@ -37,14 +37,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 17
       - name: Build SkyWalking agent docker image
         run: make build docker.java8
       - name: Build consumer & provider images
         shell: bash
         run: |
           echo "::group::Install SNAPSHOT apm-application-toolkit"
-          ./mvnw -DskipTests -N install
-          ./mvnw -f apm-application-toolkit -DskipTests -am install
+          ./mvnw -B -Dmaven.test.skip -N install
+          ./mvnw -B -pl :apm-test-tools -Dmaven.test.skip -am install
+          ./mvnw -B -f apm-application-toolkit -Dmaven.test.skip -am install
           echo "::endgroup::"
           echo "::group::"
           SW_VERSION=$(./mvnw -q -DforceStdout -N org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version)

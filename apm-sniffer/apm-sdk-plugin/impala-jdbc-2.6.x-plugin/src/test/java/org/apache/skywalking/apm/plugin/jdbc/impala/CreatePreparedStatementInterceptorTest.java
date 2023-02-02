@@ -18,18 +18,17 @@
 
 package org.apache.skywalking.apm.plugin.jdbc.impala;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.when;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreatePreparedStatementInterceptorTest {
@@ -57,12 +56,12 @@ public class CreatePreparedStatementInterceptorTest {
     @Test
     public void testResultIsEnhanceInstance() {
         interceptor.afterMethod(objectInstance, null, new Object[]{SQL}, null, ret);
-        verify(ret).setSkyWalkingDynamicField(Matchers.any());
+        verify(ret).setSkyWalkingDynamicField(any());
     }
 
     @Test
     public void testResultIsNotEnhanceInstance() {
         interceptor.afterMethod(objectInstance, null, new Object[]{SQL}, null, new Object());
-        verify(ret, times(0)).setSkyWalkingDynamicField(Matchers.any());
+        verify(ret, times(0)).setSkyWalkingDynamicField(any());
     }
 }

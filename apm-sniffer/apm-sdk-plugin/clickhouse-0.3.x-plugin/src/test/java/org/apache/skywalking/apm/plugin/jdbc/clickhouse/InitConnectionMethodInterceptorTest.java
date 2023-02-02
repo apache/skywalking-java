@@ -21,17 +21,16 @@ package org.apache.skywalking.apm.plugin.jdbc.clickhouse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
-
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class InitConnectionMethodInterceptorTest {
 
     private final EnhancedInstance enhancedInstance = new EnhancedInstance() {

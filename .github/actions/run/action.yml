@@ -51,5 +51,11 @@ runs:
       shell: bash
       run: |
         echo "::group::Run Plugin Test ${{ inputs.test_case }}"
-        bash test/plugin/run.sh --image_version=${{ inputs.java_version }}-1.0.0 ${{ inputs.test_case }}
+        bash test/plugin/run.sh ${{ inputs.test_case }}
         echo "::endgroup::"
+    - uses: actions/upload-artifact@v2
+      name: Upload Agent
+      if: always()
+      with:
+        path: test/plugin/workspace
+        name: test-plugin-workspace-${{ inputs.test_case }}

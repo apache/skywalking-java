@@ -66,7 +66,7 @@ public class PipelineInstrumentation extends AbstractWitnessInstrumentation {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("sync").or(named("syncAndReturnAll"));
+                        return named("sync").or(named("syncAndReturnAll")).or(named("discard"));
                     }
 
                     @Override

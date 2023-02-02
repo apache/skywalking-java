@@ -15,27 +15,26 @@
  *   limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.jedis.v3.define;
+package org.apache.skywalking.apm.plugin.jedis.v4.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class TransactionConstructorInstrumentation extends AbstractWitnessInstrumentation {
+public class PipelineInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "redis.clients.jedis.Transaction";
-    private static final String TRANSACTION_CONSTRUCTION_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.TransactionConstructorInterceptor";
-    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
-    private static final String ARGUMENT_TYPE_NAME = "redis.clients.jedis.Client";
+    private static final String ENHANCE_CLASS = "redis.clients.jedis.Pipeline";
+    private static final String JEDIS_CONSTRUCTION_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v4.JedisConstructorInterceptor";
+    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v4.JedisMethodInterceptor";
 
     @Override
-    protected ClassMatch enhanceClass() {
+    public ClassMatch enhanceClass() {
         return byName(ENHANCE_CLASS);
     }
 
@@ -45,12 +44,13 @@ public class TransactionConstructorInstrumentation extends AbstractWitnessInstru
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgumentWithType(0, ARGUMENT_TYPE_NAME);
+                        return ElementMatchers.takesArgument(0, named("redis.clients.jedis.Jedis"))
+                                .or(ElementMatchers.takesArgument(0, named("redis.clients.jedis.Connection")));
                     }
 
                     @Override
                     public String getConstructorInterceptor() {
-                        return TRANSACTION_CONSTRUCTION_INTERCEPT_CLASS;
+                        return JEDIS_CONSTRUCTION_INTERCEPT_CLASS;
                     }
                 }
         };
@@ -58,11 +58,11 @@ public class TransactionConstructorInstrumentation extends AbstractWitnessInstru
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
+        return new InstanceMethodsInterceptPoint[] {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("exec").or(named("execGetResponse")).or(named("discard"));
+                        return named("sync").or(named("syncAndReturnAll"));
                     }
 
                     @Override

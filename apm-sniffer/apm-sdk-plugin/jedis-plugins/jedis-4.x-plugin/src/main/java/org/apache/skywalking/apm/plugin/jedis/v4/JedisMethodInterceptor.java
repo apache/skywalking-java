@@ -15,7 +15,7 @@
  *   limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.jedis.v3;
+package org.apache.skywalking.apm.plugin.jedis.v4;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
@@ -25,12 +25,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.util.StringUtil;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Transaction;
 
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -41,30 +37,8 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + method.getName(), peer);
         span.setComponent(ComponentsDefine.JEDIS);
         SpanLayer.asCache(span);
-        String methodName = method.getName();
         Tags.CACHE_TYPE.set(span, "Redis");
-        if (objInst instanceof Pipeline || objInst instanceof Transaction) {
-            Tags.CACHE_CMD.set(span, "BATCH_EXECUTE");
-        } else {
-            Tags.CACHE_CMD.set(span, methodName);
-            getKey(allArguments).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
-            parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
-        }
-    }
-
-    private Optional<String> getKey(Object[] allArguments) {
-        if (!JedisPluginConfig.Plugin.Jedis.TRACE_REDIS_PARAMETERS) {
-            return Optional.empty();
-        }
-        if (allArguments.length == 0) {
-            return Optional.empty();
-        }
-        Object argument = allArguments[0];
-        // include null
-        if (!(argument instanceof String)) {
-            return Optional.empty();
-        }
-        return Optional.of(StringUtil.cut((String) argument, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH));
+        Tags.CACHE_CMD.set(span, "BATCH_EXECUTE");
     }
 
     @Override
@@ -79,15 +53,5 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
                                       Class<?>[] argumentsTypes, Throwable t) {
         AbstractSpan span = ContextManager.activeSpan();
         span.log(t);
-    }
-
-    private Optional<String> parseOperation(String cmd) {
-        if (JedisPluginConfig.Plugin.Jedis.OPERATION_MAPPING_READ.contains(cmd)) {
-            return Optional.of("read");
-        }
-        if (JedisPluginConfig.Plugin.Jedis.OPERATION_MAPPING_WRITE.contains(cmd)) {
-            return Optional.of("write");
-        }
-        return Optional.empty();
     }
 }

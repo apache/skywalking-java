@@ -17,8 +17,6 @@
 jedis-2.x-3.x=org.apache.skywalking.apm.plugin.jedis.v3.define.JedisClusterInstrumentation
 jedis-2.x-3.x=org.apache.skywalking.apm.plugin.jedis.v3.define.JedisInstrumentation
 jedis-2.x-3.x=org.apache.skywalking.apm.plugin.jedis.v3.define.PipelineInstrumentation
-jedis-2.x-3.x=org.apache.skywalking.apm.plugin.jedis.v3.define.PipelineBaseInstrumentation
-jedis-2.x-3.x=org.apache.skywalking.apm.plugin.jedis.v3.define.MultiKeyPipelineBaseInstrumentation
 jedis-2.x-3.x=org.apache.skywalking.apm.plugin.jedis.v3.define.TransactionConstructorInstrumentation
 
 

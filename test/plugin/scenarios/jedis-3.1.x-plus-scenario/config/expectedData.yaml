@@ -102,7 +102,7 @@ segmentItems:
             tags:
               - {key: cache.type, value: Redis}
               - {key: cache.cmd, value: BATCH_EXECUTE}
-          - operationName: Jedis/exec
+          - operationName: Jedis/discard
             operationId: 0
             parentSpanId: 0
             spanId: 6
@@ -115,12 +115,42 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.type, value: Redis}
-              - {key: cache.cmd, value: BATCH_EXECUTE}
-          - operationName: Jedis/xadd
+              - { key: cache.type, value: Redis }
+              - { key: cache.cmd, value: BATCH_EXECUTE }
+          - operationName: Jedis/exec
             operationId: 0
             parentSpanId: 0
             spanId: 7
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-server:6379
+            skipAnalysis: false
+            tags:
+              - {key: cache.type, value: Redis}
+              - {key: cache.cmd, value: BATCH_EXECUTE}
+          - operationName: Jedis/discard
+            operationId: 0
+            parentSpanId: 0
+            spanId: 8
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-server:6379
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.cmd, value: BATCH_EXECUTE }
+          - operationName: Jedis/xadd
+            operationId: 0
+            parentSpanId: 0
+            spanId: 9
             spanLayer: Cache
             startTime: gt 0
             endTime: gt 0
@@ -137,7 +167,7 @@ segmentItems:
           - operationName: Jedis/xread
             operationId: 0
             parentSpanId: 0
-            spanId: 8
+            spanId: 10
             spanLayer: Cache
             startTime: gt 0
             endTime: gt 0
@@ -153,7 +183,7 @@ segmentItems:
           - operationName: Jedis/xdel
             operationId: 0
             parentSpanId: 0
-            spanId: 9
+            spanId: 11
             spanLayer: Cache
             startTime: gt 0
             endTime: gt 0

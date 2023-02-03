@@ -46,7 +46,7 @@ public class RedisPipelineCommandExecutor implements AutoCloseable {
     }
 
     public void close() throws Exception {
-        // In the lower version(2.4.2、2.5.2) of the test, jedis will close twice.
+        // In the lower version(2.4.2, 2.5.2) of the test, jedis will close twice.
         // Here, catch exceptions to prevent the impact on the test results.
         try {
             jedis.close();

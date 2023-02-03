@@ -36,6 +36,15 @@ public class RedisPipelineCommandExecutor implements AutoCloseable {
         pipeline.syncAndReturnAll();
     }
 
+    public void pipelineDiscard() {
+        Pipeline pipeline = jedis.pipelined();
+        pipeline.multi();
+        pipeline.hset("a", "a", "a");
+        pipeline.hget("a", "a");
+        pipeline.hdel("a", "a");
+        pipeline.discard();
+    }
+
     public void close() throws Exception {
         jedis.close();
     }

@@ -10,8 +10,9 @@ Release Notes.
 * Add plugin to trace Spring 6 and Resttemplate 6.
 * Move the baseline to JDK 17 for development, the runtime baseline is still Java 8 compatible.
 * Remove Powermock entirely from the test cases.
-* Fix H2 instrumentation point
-* Fix osgi environment not working
+* Fix H2 instrumentation point.
+* Refactor pipeline in jedis-plugin.
+* Add OSGI support.
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts

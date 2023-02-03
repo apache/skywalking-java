@@ -14,7 +14,8 @@ Release Notes.
 * Refactor pipeline in jedis-plugin.
 
 #### Documentation
-* Update docs of Tracing APIs, reorganize the API docs into six parts
+* Update docs of Tracing APIs, reorganize the API docs into six parts.
+* Correct missing package name in native manual API docs.
 
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/168?closed=1)

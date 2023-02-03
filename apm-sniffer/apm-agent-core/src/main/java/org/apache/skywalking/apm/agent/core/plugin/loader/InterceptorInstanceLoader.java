@@ -62,7 +62,7 @@ public class InterceptorInstanceLoader {
             try {
                 pluginLoader = EXTEND_PLUGIN_CLASSLOADERS.get(targetClassLoader);
                 if (pluginLoader == null) {
-                    pluginLoader = new AgentClassLoader(targetClassLoader);
+                    pluginLoader = AgentClassLoader.getClassLoader(targetClassLoader);
                     EXTEND_PLUGIN_CLASSLOADERS.put(targetClassLoader, pluginLoader);
                 }
             } finally {

@@ -3,7 +3,7 @@
 * Use `Tracer.createEntrySpan()` API to create entry span, and then use `SpanRef` to contain the reference of created span in agent kernel. The first parameter is operation name of span and the second parameter is the `ContextCarrierRef` instance which is the reference of contextcarrier in agent kernel. If the second parameter is not null, the process of creating entry span will do the extract operation which will be introduced in **inject/extract** scenario.
 
   ```java
-  import Tracer;
+  import org.apache.skywalking.apm.toolkit.trace.Tracer;
   ...
     
   SpanRef spanRef = Tracer.createEnteySpan("${operationName}", null);
@@ -12,7 +12,7 @@
 * Use `Tracer.createLocalSpan()` API to create local span, the only parameter is the operation name of span.
 
   ```java
-  import Tracer;
+  import org.apache.skywalking.apm.toolkit.trace.Tracer;
   ...
     
   SpanRef spanRef = Tracer.createLocalSpan("${operationName}");
@@ -23,7 +23,7 @@
   * **two parameters case**: the first parameter is the operation name of span, the second parameter is the remote peer which means the peer address of exit operation.
 
     ```java
-    import Tracer;
+    import org.apache.skywalking.apm.toolkit.trace.Tracer;
     ...
       
     SpanRef spanRef = Tracer.createExitSpan("${operationName}", "${remotePeer}");
@@ -34,7 +34,7 @@
 * Use `Tracer.stopSpan()` API to stop current span
 
   ```java
-  import Tracer;
+  import org.apache.skywalking.apm.toolkit.trace.Tracer;
   ...
     
   Tracer.stopSpan();
@@ -121,7 +121,7 @@ SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
 * Use `Tracer.capture()` to capture the segment info and store it in `ContextSnapshotRef`, and then use `Tracer.continued()` to load the snapshot as the ref segment info. The capture/continue is used for tracing context in the x-thread tracing.
 
   ```java
-  import Tracer;
+  import org.apache.skywalking.apm.toolkit.trace.Tracer;
   ...
     
   ContextSnapshotRef contextSnapshotRef = Tracer.capture();
@@ -140,7 +140,7 @@ SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
 * Use `log` of `SpanRef` instance to record log in span
 
   ```java
-  import SpanRef;
+  import org.apache.skywalking.apm.toolkit.trace.SpanRef;
   ...
   
   SpanRef spanRef = Tracer.createLocalSpan("${operationName}");
@@ -158,7 +158,7 @@ SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
 * Use `tag` of `SpanRef` instance to add tag to span, the parameters of tag are two String which are key and value respectively.
 
   ```java
-  import SpanRef;
+  import org.apache.skywalking.apm.toolkit.trace.SpanRef;
   ...
   
   SpanRef spanRef = Tracer.createLocalSpan(operationName);
@@ -170,7 +170,7 @@ SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
 * Use `prepareForAsync` of `SpanRef` instance to make the span still alive until `asyncFinish` called, and then in specific time use `asyncFinish` of this `SpanRef` instance to notify this span that it could be finished.
 
   ```java
-  import SpanRef;
+  import org.apache.skywalking.apm.toolkit.trace.SpanRef;
   ...
   
   SpanRef spanRef = Tracer.createLocalSpan("${operationName}");

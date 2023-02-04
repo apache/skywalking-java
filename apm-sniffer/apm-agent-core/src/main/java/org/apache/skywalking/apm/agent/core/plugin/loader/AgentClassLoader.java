@@ -45,7 +45,7 @@ public class AgentClassLoader extends URLClassLoader {
     /**
      * Storage plug-in jar package url address
      */
-    private static URL[] ARRAY_PLUGINS_URL;
+    private static URL[] PLUGIN_JAR_URLS;
 
     static {
         /*
@@ -69,7 +69,7 @@ public class AgentClassLoader extends URLClassLoader {
         List<File> classpath = new LinkedList<>();
         Config.Plugin.MOUNT.forEach(mountFolder -> classpath.add(new File(agentDictionary, mountFolder)));
         LinkedList<URL> jarFiles = doGetJars(classpath);
-        ARRAY_PLUGINS_URL = jarFiles.toArray(new URL[jarFiles.size()]);
+        PLUGIN_JAR_URLS = jarFiles.toArray(new URL[jarFiles.size()]);
     }
 
     /**
@@ -83,7 +83,7 @@ public class AgentClassLoader extends URLClassLoader {
      * @return User class loader adds skywalking plugin
      */
     public static AgentClassLoader getClassLoader(ClassLoader classLoader) {
-        return CLASS_LOADER_MAP.computeIfAbsent(classLoader, k -> new AgentClassLoader(ARRAY_PLUGINS_URL, k));
+        return CLASS_LOADER_MAP.computeIfAbsent(classLoader, k -> new AgentClassLoader(PLUGIN_JAR_URLS, k));
     }
 
     /**
@@ -104,7 +104,7 @@ public class AgentClassLoader extends URLClassLoader {
         if (DEFAULT_LOADER == null) {
             synchronized (AgentClassLoader.class) {
                 if (DEFAULT_LOADER == null) {
-                    DEFAULT_LOADER = new AgentClassLoader(ARRAY_PLUGINS_URL, PluginBootstrap.class.getClassLoader());
+                    DEFAULT_LOADER = new AgentClassLoader(PLUGIN_JAR_URLS, PluginBootstrap.class.getClassLoader());
                 }
             }
         }

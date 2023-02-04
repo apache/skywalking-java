@@ -15,3 +15,5 @@
 # limitations under the License.
 
 jedis-4.x=org.apache.skywalking.apm.plugin.jedis.v4.define.ConnectionInstrumentation
+jedis-4.x=org.apache.skywalking.apm.plugin.jedis.v4.define.PipelineInstrumentation
+jedis-4.x=org.apache.skywalking.apm.plugin.jedis.v4.define.TransactionConstructorInstrumentation

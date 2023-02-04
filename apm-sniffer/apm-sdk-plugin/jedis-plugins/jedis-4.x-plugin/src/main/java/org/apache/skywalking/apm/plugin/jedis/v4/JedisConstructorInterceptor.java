@@ -17,16 +17,22 @@
 
 package org.apache.skywalking.apm.plugin.jedis.v4;
 
-import redis.clients.jedis.CommandArguments;
-import redis.clients.jedis.args.Rawable;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import redis.clients.jedis.Connection;
+import redis.clients.jedis.Jedis;
 
-import java.util.Iterator;
-
-public class ConnectionSendCmdInterceptor extends AbstractConnectionInterceptor {
-
+public class JedisConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
-    protected Iterator<Rawable> getCommands(Object[] allArguments) {
-        CommandArguments commandArguments = (CommandArguments) allArguments[0];
-        return commandArguments.iterator();
+    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
+        Connection connection = null;
+        if (allArguments[0] instanceof Jedis) {
+            connection = ((Jedis) allArguments[0]).getConnection();
+        } else if (allArguments[0] instanceof Connection) {
+            connection = (Connection) allArguments[0];
+        }
+        if (connection instanceof EnhancedInstance) {
+            objInst.setSkyWalkingDynamicField(((EnhancedInstance) connection).getSkyWalkingDynamicField());
+        }
     }
 }

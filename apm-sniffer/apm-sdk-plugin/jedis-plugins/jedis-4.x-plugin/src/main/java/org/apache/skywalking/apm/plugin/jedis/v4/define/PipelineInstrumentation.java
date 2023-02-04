@@ -15,21 +15,23 @@
  *   limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.jedis.v3.define;
+package org.apache.skywalking.apm.plugin.jedis.v4.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.jedis.v3.RedisMethodMatch;
 
+import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class PipelineBaseInstrumentation extends AbstractWitnessInstrumentation {
+public class PipelineInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "redis.clients.jedis.PipelineBase";
-    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
+    private static final String ENHANCE_CLASS = "redis.clients.jedis.Pipeline";
+    private static final String JEDIS_CONSTRUCTION_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v4.JedisConstructorInterceptor";
+    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v4.JedisMethodInterceptor";
 
     @Override
     public ClassMatch enhanceClass() {
@@ -38,7 +40,20 @@ public class PipelineBaseInstrumentation extends AbstractWitnessInstrumentation 
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[]{
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return ElementMatchers.takesArgument(0, named("redis.clients.jedis.Jedis"))
+                                .or(ElementMatchers.takesArgument(0, named("redis.clients.jedis.Connection")));
+                    }
+
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return JEDIS_CONSTRUCTION_INTERCEPT_CLASS;
+                    }
+                }
+        };
     }
 
     @Override
@@ -47,7 +62,7 @@ public class PipelineBaseInstrumentation extends AbstractWitnessInstrumentation 
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return RedisMethodMatch.INSTANCE.getJedisMethodMatcher();
+                        return named("sync").or(named("syncAndReturnAll"));
                     }
 
                     @Override

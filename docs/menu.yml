@@ -96,7 +96,7 @@ catalog:
     catalog:
       - name: "Why is java.ext.dirs not supported?"
         path: "/en/faq/ext-dirs"
-      - name: "Why Skywalking doesn't work in `OSGI` environment?"
+      - name: "How to make SkyWalking agent works in `OSGI` environment?"
         path: "/en/faq/osgi"
   - name: "Contribution"
     catalog:

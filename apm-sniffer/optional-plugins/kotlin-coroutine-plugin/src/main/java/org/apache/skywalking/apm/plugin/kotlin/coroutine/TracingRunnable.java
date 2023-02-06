@@ -21,6 +21,8 @@ package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 /**
@@ -30,7 +32,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
  * A class implementation will be cheaper cost than lambda with captured variables implementation.
  */
 class TracingRunnable implements Runnable {
-    private static final String COROUTINE = "/Kotlin/Coroutine";
+    public static final String COROUTINE = "Kotlin/Coroutine";
 
     private ContextSnapshot snapshot;
     private Runnable delegate;
@@ -40,6 +42,8 @@ class TracingRunnable implements Runnable {
         this.delegate = delegate;
     }
 
+    static ILog LOGGER = LogManager.getLogger(TracingRunnable.class);
+
     /**
      * Wrap {@link Runnable} by {@link TracingRunnable} if active trace context existed.
      *
@@ -48,7 +52,7 @@ class TracingRunnable implements Runnable {
      */
     public static Runnable wrapOrNot(Runnable delegate) {
         // Just wrap continuation with active trace context
-        if (ContextManager.isActive()) {
+        if (ContextManager.isActive() && !(delegate instanceof TracingRunnable)) {
             return new TracingRunnable(ContextManager.capture(), delegate);
         } else {
             return delegate;

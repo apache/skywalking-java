@@ -28,6 +28,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DispatchedTaskInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -46,9 +48,11 @@ public class DispatchedTaskInterceptor implements InstanceMethodsAroundIntercept
             span.setComponent(ComponentsDefine.KT_COROUTINE);
 
             String[] elements = Utils.getStackTraceElements((Runnable) objInst);
+            Map<String, String> eventMap = new HashMap<String, String>();
             for (int i = 0; i < elements.length; i++) {
-                span.tag(Tags.ofKey("coroutine.stack[" + i + "]"), elements[i]);
+                eventMap.put("coroutine.stack[" + i + "]", elements[i]);
             }
+            span.log(System.currentTimeMillis(), eventMap);
 
             // Recover with snapshot
             ContextManager.continued(snapshot);

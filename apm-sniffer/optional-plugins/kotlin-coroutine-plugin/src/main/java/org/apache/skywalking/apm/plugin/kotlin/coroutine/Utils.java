@@ -21,6 +21,8 @@ package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 import kotlin.coroutines.jvm.internal.CoroutineStackFrame;
 import org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatchedTaskInstrumentation;
 
+import java.util.ArrayList;
+
 public class Utils {
     private static Class<?> DISPATCHED_TASK_CLASS;
 
@@ -35,21 +37,23 @@ public class Utils {
         return DISPATCHED_TASK_CLASS.isAssignableFrom(runnable.getClass());
     }
 
-    public static StackTraceElement getSuspensionPoint(Runnable runnable) {
+    public static String[] getCoroutineStackTraceElements(Runnable runnable) {
         if (!(runnable instanceof CoroutineStackFrame)) {
-            return null;
+            return new String[0];
         }
 
+        ArrayList<String> elements = new ArrayList<>();
         CoroutineStackFrame frame = (CoroutineStackFrame) runnable;
         while (frame != null) {
             StackTraceElement element = frame.getStackTraceElement();
             frame = frame.getCallerFrame();
 
-            if (element == null) continue;
-            if (element.getClassName().startsWith("kotlinx.coroutines")) continue;
-            if (element.getClassName().startsWith("kotlin.coroutines")) continue;
-            return element;
+            if (element != null) {
+                elements.add(element.toString());
+            } else {
+                elements.add("Unknown Source");
+            }
         }
-        return null;
+        return elements.toArray(new String[0]);
     }
 }

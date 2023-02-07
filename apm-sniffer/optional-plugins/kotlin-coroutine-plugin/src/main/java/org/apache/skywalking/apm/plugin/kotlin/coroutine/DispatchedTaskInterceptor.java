@@ -46,15 +46,6 @@ public class DispatchedTaskInterceptor implements InstanceMethodsAroundIntercept
             AbstractSpan span = ContextManager.createLocalSpan(TracingRunnable.COROUTINE);
             span.setComponent(ComponentsDefine.KT_COROUTINE);
 
-            if (KotlinCoroutinePluginConfig.Plugin.KotlinCoroutine.COLLECT_SUSPENSION_POINT) {
-                StackTraceElement element = Utils.getSuspensionPoint((Runnable) objInst);
-                if (element != null) {
-                    Map<String, String> eventMap = new HashMap<String, String>();
-                    eventMap.put("suspension.point", element.toString());
-                    span.log(System.currentTimeMillis(), eventMap);
-                }
-            }
-
             // Recover with snapshot
             ContextManager.continued(snapshot);
         }
@@ -72,8 +63,20 @@ public class DispatchedTaskInterceptor implements InstanceMethodsAroundIntercept
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        if (ContextManager.isActive() && ContextManager.activeSpan() != null) {
-            ContextManager.stopSpan(ContextManager.activeSpan());
+        if (ContextManager.isActive()) {
+            AbstractSpan span = ContextManager.activeSpan();
+
+            String[] elements = Utils.getCoroutineStackTraceElements((Runnable) objInst);
+            if (elements.length > 0) {
+                Map<String, String> eventMap = new HashMap<String, String>();
+                eventMap.put("coroutine.stack", String.join("\n", elements));
+                span.log(System.currentTimeMillis(), eventMap);
+            }
+
+            if (span != null) {
+                span.errorOccurred().log(t);
+                ContextManager.stopSpan(ContextManager.activeSpan());
+            }
         }
     }
 }

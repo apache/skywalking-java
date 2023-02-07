@@ -76,6 +76,9 @@ class TracingRunnable implements Runnable {
 
         try {
             delegate.run();
+        } catch (Throwable e) {
+            span.errorOccurred().log(e);
+            throw e;
         } finally {
             ContextManager.stopSpan(span);
         }

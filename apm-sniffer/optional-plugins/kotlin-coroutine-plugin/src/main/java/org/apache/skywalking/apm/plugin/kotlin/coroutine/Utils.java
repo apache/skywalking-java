@@ -21,38 +21,34 @@ package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 import kotlin.coroutines.jvm.internal.CoroutineStackFrame;
 import org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatchedTaskInstrumentation;
 
-import java.util.ArrayList;
-
 public class Utils {
-    private static final Class<?> DISPATCHED_TASK_CLASS;
-
-    static {
-        Class<?> clazz = null;
-        try {
-            clazz = Class.forName(DispatchedTaskInstrumentation.ENHANCE_CLASS);
-        } catch (ClassNotFoundException ignored) {
-        }
-        DISPATCHED_TASK_CLASS = clazz;
-    }
+    private static Class<?> DISPATCHED_TASK_CLASS;
 
     public static boolean isDispatchedTask(Runnable runnable) {
+        if (DISPATCHED_TASK_CLASS == null) {
+            try {
+                DISPATCHED_TASK_CLASS = Class.forName(DispatchedTaskInstrumentation.ENHANCE_CLASS);
+            } catch (ClassNotFoundException ignored) {
+            }
+        }
+        if (DISPATCHED_TASK_CLASS == null) return false;
         return DISPATCHED_TASK_CLASS.isAssignableFrom(runnable.getClass());
     }
 
-    public static String[] getStackTraceElements(Runnable runnable) {
-        ArrayList<String> elements = new ArrayList<>();
-        if (runnable instanceof CoroutineStackFrame) {
-            CoroutineStackFrame frame = (CoroutineStackFrame) runnable;
-            while (frame != null) {
-                StackTraceElement element = frame.getStackTraceElement();
-                if (element != null) {
-                    elements.add(element.toString());
-                } else {
-                    elements.add("Unknown Source");
-                }
-                frame = frame.getCallerFrame();
-            }
-            return elements.toArray(new String[0]);
+    public static StackTraceElement getSuspensionPoint(Runnable runnable) {
+        if (!(runnable instanceof CoroutineStackFrame)) {
+            return null;
+        }
+
+        CoroutineStackFrame frame = (CoroutineStackFrame) runnable;
+        while (frame != null) {
+            StackTraceElement element = frame.getStackTraceElement();
+            frame = frame.getCallerFrame();
+
+            if (element == null) continue;
+            if (element.getClassName().startsWith("kotlinx.coroutines")) continue;
+            if (element.getClassName().startsWith("kotlin.coroutines")) continue;
+            return element;
         }
         return null;
     }

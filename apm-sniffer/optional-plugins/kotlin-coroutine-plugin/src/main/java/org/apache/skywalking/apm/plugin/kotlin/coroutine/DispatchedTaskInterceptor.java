@@ -20,7 +20,6 @@ package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -47,12 +46,14 @@ public class DispatchedTaskInterceptor implements InstanceMethodsAroundIntercept
             AbstractSpan span = ContextManager.createLocalSpan(TracingRunnable.COROUTINE);
             span.setComponent(ComponentsDefine.KT_COROUTINE);
 
-            String[] elements = Utils.getStackTraceElements((Runnable) objInst);
-            Map<String, String> eventMap = new HashMap<String, String>();
-            for (int i = 0; i < elements.length; i++) {
-                eventMap.put("coroutine.stack[" + i + "]", elements[i]);
+            if (KotlinCoroutinePluginConfig.Plugin.KotlinCoroutine.COLLECT_SUSPENSION_POINT) {
+                StackTraceElement element = Utils.getSuspensionPoint((Runnable) objInst);
+                if (element != null) {
+                    Map<String, String> eventMap = new HashMap<String, String>();
+                    eventMap.put("suspension.point", element.toString());
+                    span.log(System.currentTimeMillis(), eventMap);
+                }
             }
-            span.log(System.currentTimeMillis(), eventMap);
 
             // Recover with snapshot
             ContextManager.continued(snapshot);

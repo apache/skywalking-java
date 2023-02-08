@@ -12,13 +12,6 @@ As we know, Kotlin coroutine switches the execution thread by `CoroutineDispatch
 03. Every new span which created in the new thread will be a child of this coroutine span. So we can link those span together in a tracing.
 04. After the original runnable executed, we need to stop the coroutine span for cleaning thread state.
 
-## Configuration
-### Collect the suspension point
-In 8.15 and newer versions, the kotlin coroutine plugin supports collecting suspension point information. This function is disabled by default and can be enabled through the configuration of `agent.conf`.
-```properties
-plugin.kotlincoroutine.collect_suspension_point=true
-```
-
 ## Some screenshots
 ### Run without the plugin
 We run a Kotlin coroutine based gRPC server without this coroutine plugin.  

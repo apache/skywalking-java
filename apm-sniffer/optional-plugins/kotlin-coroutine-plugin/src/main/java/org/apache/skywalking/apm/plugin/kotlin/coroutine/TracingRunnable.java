@@ -21,8 +21,6 @@ package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 /**
@@ -41,8 +39,6 @@ class TracingRunnable implements Runnable {
         this.snapshot = snapshot;
         this.delegate = delegate;
     }
-
-    static ILog LOGGER = LogManager.getLogger(TracingRunnable.class);
 
     /**
      * Wrap {@link Runnable} by {@link TracingRunnable} if active trace context existed.

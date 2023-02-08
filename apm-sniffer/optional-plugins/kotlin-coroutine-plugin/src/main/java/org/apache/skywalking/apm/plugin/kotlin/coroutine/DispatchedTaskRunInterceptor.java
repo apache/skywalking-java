@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -31,9 +32,10 @@ public class DispatchedTaskRunInterceptor implements InstanceMethodsAroundInterc
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
-        CoroutineContext context = (CoroutineContext) objInst.getSkyWalkingDynamicField();
-        if (context != null) {
-            if (ContextManager.isActive() && context.getContextSnapshot().isFromCurrent()) {
+        if (objInst.getSkyWalkingDynamicField() instanceof ContextSnapshot) {
+            ContextSnapshot snapshot = (ContextSnapshot) objInst.getSkyWalkingDynamicField();
+
+            if (ContextManager.isActive() && snapshot.isFromCurrent()) {
                 // Thread not switched, skip restore snapshot.
                 return;
             }
@@ -41,24 +43,31 @@ public class DispatchedTaskRunInterceptor implements InstanceMethodsAroundInterc
             // Create local coroutine span
             AbstractSpan span = ContextManager.createLocalSpan(TracingRunnable.COROUTINE);
             span.setComponent(ComponentsDefine.KT_COROUTINE);
+            objInst.setSkyWalkingDynamicField(span);
 
             // Recover with snapshot
-            ContextManager.continued(context.getContextSnapshot());
+            ContextManager.continued(snapshot);
         }
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
-        if (ContextManager.isActive() && ContextManager.activeSpan() != null) {
-            ContextManager.stopSpan();
+        if (ContextManager.isActive() && objInst.getSkyWalkingDynamicField() instanceof AbstractSpan) {
+            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            if (span != null) {
+                ContextManager.stopSpan(span);
+            }
         }
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-        if (ContextManager.isActive() && ContextManager.activeSpan() != null) {
-            ContextManager.stopSpan();
+        if (ContextManager.isActive() && objInst.getSkyWalkingDynamicField() instanceof AbstractSpan) {
+            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            if (span != null) {
+                ContextManager.stopSpan(span.errorOccurred().log(t));
+            }
         }
     }
 }

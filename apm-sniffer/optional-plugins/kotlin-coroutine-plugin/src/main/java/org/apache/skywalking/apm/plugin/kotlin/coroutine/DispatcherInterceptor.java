@@ -38,7 +38,7 @@ public class DispatcherInterceptor implements InstanceMethodsAroundInterceptor {
         if (Utils.isDispatchedTask(runnable)) {
             // Using instrumentation for DispatchedContinuation
             EnhancedInstance enhancedRunnable = (EnhancedInstance) runnable;
-            enhancedRunnable.setSkyWalkingDynamicField(new CoroutineContext(ContextManager.capture()));
+            enhancedRunnable.setSkyWalkingDynamicField(ContextManager.capture());
         } else {
             // Wrapping runnable with current context snapshot
             allArguments[1] = TracingRunnable.wrapOrNot(runnable);

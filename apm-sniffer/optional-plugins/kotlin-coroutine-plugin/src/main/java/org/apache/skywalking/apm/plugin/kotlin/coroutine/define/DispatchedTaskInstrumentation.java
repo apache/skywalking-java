@@ -30,9 +30,11 @@ import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class DispatchedTaskInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.kotlin.coroutine.DispatchedTaskInterceptor";
     public static final String ENHANCE_CLASS = "kotlinx.coroutines.DispatchedTask";
+    public static final String RUN_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.kotlin.coroutine.DispatchedTaskRunInterceptor";
     public static final String ENHANCE_METHOD_RUN = "run";
+    public static final String EXCEPTION_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.kotlin.coroutine.DispatchedTaskExceptionInterceptor";
+    public static final String ENHANCE_METHOD_GET_EXCEPTIONAL_RESULT = "getExceptionalResult$kotlinx_coroutines_core";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -55,12 +57,28 @@ public class DispatchedTaskInstrumentation extends ClassInstanceMethodsEnhancePl
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return INTERCEPTOR_CLASS;
+                        return RUN_INTERCEPTOR_CLASS;
                     }
 
                     @Override
                     public boolean isOverrideArgs() {
                         return true;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named(ENHANCE_METHOD_GET_EXCEPTIONAL_RESULT);
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return EXCEPTION_INTERCEPTOR_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
                     }
                 }
         };

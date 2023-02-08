@@ -19,7 +19,6 @@
 package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -27,17 +26,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
-public class DispatchedTaskInterceptor implements InstanceMethodsAroundInterceptor {
+public class DispatchedTaskRunInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                             MethodInterceptResult result) {
-        ContextSnapshot snapshot = (ContextSnapshot) objInst.getSkyWalkingDynamicField();
-        if (snapshot != null) {
-            if (ContextManager.isActive() && snapshot.isFromCurrent()) {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
+        CoroutineContext context = (CoroutineContext) objInst.getSkyWalkingDynamicField();
+        if (context != null) {
+            if (ContextManager.isActive() && context.getContextSnapshot().isFromCurrent()) {
                 // Thread not switched, skip restore snapshot.
                 return;
             }
@@ -47,36 +43,22 @@ public class DispatchedTaskInterceptor implements InstanceMethodsAroundIntercept
             span.setComponent(ComponentsDefine.KT_COROUTINE);
 
             // Recover with snapshot
-            ContextManager.continued(snapshot);
+            ContextManager.continued(context.getContextSnapshot());
         }
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                              Object ret) {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
         if (ContextManager.isActive() && ContextManager.activeSpan() != null) {
-            ContextManager.stopSpan(ContextManager.activeSpan());
+            ContextManager.stopSpan();
         }
         return ret;
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-                                      Class<?>[] argumentsTypes, Throwable t) {
-        if (ContextManager.isActive()) {
-            AbstractSpan span = ContextManager.activeSpan();
-
-            String[] elements = Utils.getCoroutineStackTraceElements((Runnable) objInst);
-            if (elements.length > 0) {
-                Map<String, String> eventMap = new HashMap<String, String>();
-                eventMap.put("coroutine.stack", String.join("\n", elements));
-                span.log(System.currentTimeMillis(), eventMap);
-            }
-
-            if (span != null) {
-                span.errorOccurred().log(t);
-                ContextManager.stopSpan(ContextManager.activeSpan());
-            }
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+        if (ContextManager.isActive() && ContextManager.activeSpan() != null) {
+            ContextManager.stopSpan();
         }
     }
 }

@@ -37,7 +37,7 @@ public class Utils {
         return DISPATCHED_TASK_CLASS.isAssignableFrom(runnable.getClass());
     }
 
-    public static String[] getCoroutineStackTraceElements(Runnable runnable) {
+    public static String[] getCoroutineStackTraceElements(Object runnable) {
         if (!(runnable instanceof CoroutineStackFrame)) {
             return new String[0];
         }

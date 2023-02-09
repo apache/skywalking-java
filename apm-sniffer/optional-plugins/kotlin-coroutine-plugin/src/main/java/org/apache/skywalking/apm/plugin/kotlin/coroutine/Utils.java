@@ -24,15 +24,21 @@ import org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatchedTaskIn
 import java.util.ArrayList;
 
 public class Utils {
-    private static Class<?> DISPATCHED_TASK_CLASS;
+    private static Class<?> DISPATCHED_TASK_CLASS = null;
+    private static Boolean IS_DISPATCHED_TASK_CLASS_LOADED = false;
+
+    private static void loadDispatchedTaskClass() {
+        if (IS_DISPATCHED_TASK_CLASS_LOADED) return;
+        try {
+            DISPATCHED_TASK_CLASS = Class.forName(DispatchedTaskInstrumentation.ENHANCE_CLASS);
+        } catch (ClassNotFoundException ignored) {
+        } finally {
+            IS_DISPATCHED_TASK_CLASS_LOADED = true;
+        }
+    }
 
     public static boolean isDispatchedTask(Runnable runnable) {
-        if (DISPATCHED_TASK_CLASS == null) {
-            try {
-                DISPATCHED_TASK_CLASS = Class.forName(DispatchedTaskInstrumentation.ENHANCE_CLASS);
-            } catch (ClassNotFoundException ignored) {
-            }
-        }
+        loadDispatchedTaskClass();
         if (DISPATCHED_TASK_CLASS == null) return false;
         return DISPATCHED_TASK_CLASS.isAssignableFrom(runnable.getClass());
     }

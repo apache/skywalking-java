@@ -43,7 +43,7 @@ public class DispatchedTaskExceptionInterceptor implements InstanceMethodsAround
             AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
             String[] elements = Utils.getCoroutineStackTraceElements(objInst);
             if (elements.length > 0) {
-                Map<String, String> eventMap = new HashMap<String, String>();
+                Map<String, String> eventMap = new HashMap<>();
                 eventMap.put("coroutine.stack", String.join("\n", elements));
                 span.log(System.currentTimeMillis(), eventMap);
             }

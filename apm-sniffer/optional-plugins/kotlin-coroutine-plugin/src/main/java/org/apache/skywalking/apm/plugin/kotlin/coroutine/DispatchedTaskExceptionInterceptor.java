@@ -19,34 +19,38 @@
 package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
-public class DispatcherInterceptor implements InstanceMethodsAroundInterceptor {
+public class DispatchedTaskExceptionInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
-        if (!ContextManager.isActive()) {
-            return;
-        }
-
-        Runnable runnable = (Runnable) allArguments[1];
-
-        if (Utils.isDispatchedTask(runnable)) {
-            // Using instrumentation for DispatchedContinuation
-            EnhancedInstance enhancedRunnable = (EnhancedInstance) runnable;
-            enhancedRunnable.setSkyWalkingDynamicField(ContextManager.capture());
-        } else {
-            // Wrapping runnable with current context snapshot
-            allArguments[1] = TracingRunnable.wrapOrNot(runnable);
-        }
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
+        if (!(ret instanceof Throwable)) return ret;
+        Throwable exception = (Throwable) ret;
+
+        if (ContextManager.isActive() && objInst.getSkyWalkingDynamicField() instanceof AbstractSpan) {
+            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            String[] elements = Utils.getCoroutineStackTraceElements(objInst);
+            if (elements.length > 0) {
+                Map<String, String> eventMap = new HashMap<>();
+                eventMap.put("coroutine.stack", String.join("\n", elements));
+                span.log(System.currentTimeMillis(), eventMap);
+            }
+
+            objInst.setSkyWalkingDynamicField(exception);
+            span.errorOccurred().log(exception);
+        }
         return ret;
     }
 

@@ -12,6 +12,7 @@ Release Notes.
 * Remove Powermock entirely from the test cases.
 * Fix H2 instrumentation point
 * Refactor pipeline in jedis-plugin.
+* Enhance kotlin coroutine plugin for stack tracing.
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

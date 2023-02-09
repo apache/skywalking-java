@@ -30,7 +30,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
  * A class implementation will be cheaper cost than lambda with captured variables implementation.
  */
 class TracingRunnable implements Runnable {
-    private static final String COROUTINE = "/Kotlin/Coroutine";
+    public static final String COROUTINE = "Kotlin/Coroutine";
 
     private ContextSnapshot snapshot;
     private Runnable delegate;
@@ -48,7 +48,7 @@ class TracingRunnable implements Runnable {
      */
     public static Runnable wrapOrNot(Runnable delegate) {
         // Just wrap continuation with active trace context
-        if (ContextManager.isActive()) {
+        if (ContextManager.isActive() && !(delegate instanceof TracingRunnable)) {
             return new TracingRunnable(ContextManager.capture(), delegate);
         } else {
             return delegate;
@@ -72,6 +72,9 @@ class TracingRunnable implements Runnable {
 
         try {
             delegate.run();
+        } catch (Throwable e) {
+            span.errorOccurred().log(e);
+            throw e;
         } finally {
             ContextManager.stopSpan(span);
         }

@@ -39,8 +39,11 @@ public class DispatchedTaskExceptionInterceptor implements InstanceMethodsAround
         if (!(ret instanceof Throwable)) return ret;
         Throwable exception = (Throwable) ret;
 
-        if (ContextManager.isActive() && objInst.getSkyWalkingDynamicField() instanceof AbstractSpan) {
-            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+        if (ContextManager.isActive() && objInst.getSkyWalkingDynamicField() instanceof CoroutineContext) {
+            CoroutineContext context = (CoroutineContext) objInst.getSkyWalkingDynamicField();
+            if (context.getError() != null) return ret;
+
+            AbstractSpan span = ContextManager.activeSpan();
             String[] elements = Utils.getCoroutineStackTraceElements(objInst);
             if (elements.length > 0) {
                 Map<String, String> eventMap = new HashMap<>();
@@ -48,8 +51,8 @@ public class DispatchedTaskExceptionInterceptor implements InstanceMethodsAround
                 span.log(System.currentTimeMillis(), eventMap);
             }
 
-            objInst.setSkyWalkingDynamicField(exception);
             span.errorOccurred().log(exception);
+            context.setError(exception);
         }
         return ret;
     }

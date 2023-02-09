@@ -16,3 +16,4 @@
 
 kotlin-coroutine=org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatcherInstrumentation
 kotlin-coroutine=org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatchedTaskInstrumentation
+kotlin-coroutine=org.apache.skywalking.apm.plugin.kotlin.coroutine.define.LimitedDispatcherInstrumentation

@@ -20,12 +20,15 @@ package org.apache.skywalking.apm.plugin.kotlin.coroutine;
 
 import kotlin.coroutines.jvm.internal.CoroutineStackFrame;
 import org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatchedTaskInstrumentation;
+import org.apache.skywalking.apm.plugin.kotlin.coroutine.define.LimitedDispatcherInstrumentation;
 
 import java.util.ArrayList;
 
 public class Utils {
     private static Class<?> DISPATCHED_TASK_CLASS = null;
     private static Boolean IS_DISPATCHED_TASK_CLASS_LOADED = false;
+    private static Class<?> LIMITED_DISPATCHER_CLASS = null;
+    private static Boolean IS_LIMITED_DISPATCHER_CLASS_LOADED = false;
 
     private static void loadDispatchedTaskClass() {
         if (IS_DISPATCHED_TASK_CLASS_LOADED) return;
@@ -37,10 +40,26 @@ public class Utils {
         }
     }
 
+    private static void loadLimitedDispatcherClass() {
+        if (IS_LIMITED_DISPATCHER_CLASS_LOADED) return;
+        try {
+            LIMITED_DISPATCHER_CLASS = Class.forName(LimitedDispatcherInstrumentation.ENHANCE_CLASS);
+        } catch (ClassNotFoundException ignored) {
+        } finally {
+            IS_LIMITED_DISPATCHER_CLASS_LOADED = true;
+        }
+    }
+
     public static boolean isDispatchedTask(Runnable runnable) {
         loadDispatchedTaskClass();
-        if (DISPATCHED_TASK_CLASS == null) return false;
-        return DISPATCHED_TASK_CLASS.isAssignableFrom(runnable.getClass());
+        loadLimitedDispatcherClass();
+        if (DISPATCHED_TASK_CLASS != null && DISPATCHED_TASK_CLASS.isAssignableFrom(runnable.getClass())) {
+            return true;
+        }
+        if (LIMITED_DISPATCHER_CLASS != null && LIMITED_DISPATCHER_CLASS.isAssignableFrom(runnable.getClass())) {
+            return true;
+        }
+        return false;
     }
 
     public static String[] getCoroutineStackTraceElements(Object runnable) {

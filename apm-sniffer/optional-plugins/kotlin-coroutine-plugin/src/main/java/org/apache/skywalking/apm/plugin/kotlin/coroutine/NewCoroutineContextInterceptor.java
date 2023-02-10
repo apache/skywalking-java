@@ -35,11 +35,14 @@ public class NewCoroutineContextInterceptor implements StaticMethodsAroundInterc
     @Override
     public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Object ret, MethodInvocationContext context) {
         if (ContextManager.isActive()) {
+            // We just need create TracingCoroutineContext for in-tracing threads.
+            // Kotlin coroutine plugin does not automatically activate tracing.
             CoroutineContext coroutineContext = (CoroutineContext) ret;
+            // Provide context snapshot for current tracing to TracingCoroutineContext.
             return coroutineContext.plus(new TracingCoroutineContext(ContextManager.capture()));
         }
 
-        return null;
+        return ret;
     }
 
     @Override

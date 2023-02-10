@@ -44,6 +44,9 @@ public class CoroutineContextInstrumentation extends ClassStaticMethodsEnhancePl
                 new StaticMethodsInterceptV2Point() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        // This matcher will match the following method:
+                        // 1. CoroutineScope.newCoroutineContext(CoroutineContext)
+                        // 2. CoroutineContext.newCoroutineContext(CoroutineContext)
                         return named(ENHANCE_METHOD_NEW_COROUTINE_CONTEXT).and(takesArguments(2));
                     }
 

@@ -20,19 +20,18 @@ package org.apache.skywalking.apm.plugin.kotlin.coroutine.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassStaticMethodsEnhancePluginDefineV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsInterceptV2Point;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class LimitedDispatcherInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    public static final String ENHANCE_CLASS = "kotlinx.coroutines.internal.LimitedDispatcher";
-    public static final String RUN_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.kotlin.coroutine.DispatchedTaskRunInterceptor";
-    public static final String ENHANCE_METHOD_RUN = "run";
+public class CoroutineContextInstrumentation extends ClassStaticMethodsEnhancePluginDefineV2 {
+    public static final String ENHANCE_CLASS = "kotlinx.coroutines.CoroutineContextKt";
+    public static final String COROUTINE_CONTEXT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.kotlin.coroutine.NewCoroutineContextInterceptor";
+    public static final String ENHANCE_METHOD_NEW_COROUTINE_CONTEXT = "newCoroutineContext";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -40,22 +39,17 @@ public class LimitedDispatcherInstrumentation extends ClassInstanceMethodsEnhanc
     }
 
     @Override
-    public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
-    }
-
-    @Override
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
-                new InstanceMethodsInterceptPoint() {
+    public StaticMethodsInterceptV2Point[] getStaticMethodsInterceptV2Points() {
+        return new StaticMethodsInterceptV2Point[]{
+                new StaticMethodsInterceptV2Point() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_METHOD_RUN).and(takesNoArguments());
+                        return named(ENHANCE_METHOD_NEW_COROUTINE_CONTEXT).and(takesArguments(2));
                     }
 
                     @Override
-                    public String getMethodsInterceptor() {
-                        return RUN_INTERCEPTOR_CLASS;
+                    public String getMethodsInterceptorV2() {
+                        return COROUTINE_CONTEXT_INTERCEPTOR_CLASS;
                     }
 
                     @Override

@@ -41,7 +41,7 @@ public class ConnectionInstrumentation extends ClassInstanceMethodsEnhancePlugin
     private final static String ENHANCE_INIT_CONNECTION_METHOD = "com.clickhouse.jdbc.internal.ClickHouseJdbcUrlParser$ConnectionInfo";
     private final static String INIT_CONNECTION_METHOD_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.clickhouse.v32.InitConnectionConstructorInterceptor";
 
-    private final static String STATEMENT_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jdbc.clickhouse.v32.ClickhouseStatementInterceptor";
+    private final static String STATEMENT_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jdbc.clickhouse.v32.ClickHouseStatementInterceptor";
     private final static String PREPARE_STATEMENT_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jdbc.clickhouse.v32.ClickHousePrepareStatementMethodInterceptor";
 
     @Override

@@ -73,7 +73,7 @@
     </dependencies>
 
     <build>
-        <finalName>clickhouse-0.3.x-scenario</finalName>
+        <finalName>clickhouse-0.3.1-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-  - serviceName: clickhouse-0.3.x-scenario
+  - serviceName: clickhouse-0.3.1-scenario
     segmentSize: ge 2
     segments:
       - segmentId: not null

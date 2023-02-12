@@ -23,7 +23,7 @@ depends_on:
   - clickhouse-server
 dependencies:
   clickhouse-server:
-    image: yandex/clickhouse-server:21.8.8.29
+    image: yandex/clickhouse-server:22.1.2.2
     hostname: clickhouse-server
     expose:
       - 8123

@@ -21,7 +21,7 @@
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>org.apache.skywalking.apm.testcase</groupId>
-    <artifactId>clickhouse-0.3.x-scenario</artifactId>
+    <artifactId>clickhouse-0.3.1-scenario</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -35,7 +35,7 @@
         <spring.boot.version>2.5.1</spring.boot.version>
     </properties>
 
-    <name>skywalking-clickhouse-0.3.x-scenario</name>
+    <name>skywalking-clickhouse-0.3.1-scenario</name>
 
     <dependencyManagement>
         <dependencies>

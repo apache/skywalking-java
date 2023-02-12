@@ -21,4 +21,4 @@ home="$(
   pwd
 )"
 
-java -jar ${agent_opts} "-Dskywalking.plugin.neo4j.trace_cypher_parameters=true" ${home}/../libs/clickhouse-0.3.x-scenario.jar &
+java -jar ${agent_opts} "-Dskywalking.plugin.neo4j.trace_cypher_parameters=true" ${home}/../libs/clickhouse-0.3.1-scenario.jar &

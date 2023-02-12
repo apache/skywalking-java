@@ -24,10 +24,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-clickhouse-0.3.x-plugin</artifactId>
+    <artifactId>apm-clickhouse-0.3.1-plugin</artifactId>
     <packaging>jar</packaging>
 
-    <name>clickhouse-0.3.x-plugin</name>
+    <name>clickhouse-0.3.1-plugin</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

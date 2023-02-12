@@ -113,6 +113,7 @@
         <module>druid-1.x-plugin</module>
         <module>hikaricp-3.x-4.x-plugin</module>
         <module>httpclient-5.x-plugin</module>
+        <module>clickhouse-0.3.2.x-plugin</module>
         <module>clickhouse-0.3.x-plugin</module>
         <module>kylin-jdbc-2.6.x-3.x-4.x-plugin</module>
         <module>okhttp-2.x-plugin</module>

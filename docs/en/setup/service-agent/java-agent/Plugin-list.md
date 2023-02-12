@@ -140,7 +140,8 @@
 - jsonrpc4j
 - spring-cloud-gateway-3.x
 - neo4j-4.x
-- clickhouse-0.3.x
+- clickhouse-0.3.1
+- clickhouse-0.3.2.x
 - kylin-jdbc-2.6.x-3.x-4.x
 - okhttp-2.x
 - pulsar-2.8.x

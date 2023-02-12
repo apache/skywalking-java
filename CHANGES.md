@@ -13,6 +13,7 @@ Release Notes.
 * Fix H2 instrumentation point
 * Refactor pipeline in jedis-plugin.
 * Enhance kotlin coroutine plugin for stack tracing.
+* Add plugin to support ClickHouse JDBC driver (0.3.2.*).
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

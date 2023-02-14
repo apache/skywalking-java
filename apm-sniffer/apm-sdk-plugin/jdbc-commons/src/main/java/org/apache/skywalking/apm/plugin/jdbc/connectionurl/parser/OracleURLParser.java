@@ -27,8 +27,8 @@ import org.apache.skywalking.apm.util.StringUtil;
 /**
  * {@link OracleURLParser} presents that how to parse oracle connection url.
  * <p>
- * Note: {@link OracleURLParser} can parse the commons connection url. the commons connection url is of the form:
- * <code>jdbc:oracle:(drivertype):@(database)</code>,the other the form of connection url cannot be parsed success.
+ * Note: {@link OracleURLParser} can parse the commons/TNS connection url. the commons connection url is of the form:
+ * <code>jdbc:oracle:(drivertype):@(database)</code>, the other the form of connection url cannot be parsed successfully.
  */
 public class OracleURLParser extends AbstractURLParser {
 
@@ -49,7 +49,14 @@ public class OracleURLParser extends AbstractURLParser {
         } else {
             hostLabelStartIndex = url.indexOf("@") + 1;
         }
-        int hostLabelEndIndex = url.lastIndexOf(":");
+
+        String urlTrimmed = url.substring(hostLabelStartIndex);
+
+        // When /service/<property> exists, check the first slash in trimmed url
+        // otherwise use the last colon to locate the port number
+        int hostLabelEndIndex = urlTrimmed.contains("/") ?
+                hostLabelStartIndex + urlTrimmed.indexOf("/") : url.lastIndexOf(":");
+
         return new URLLocation(hostLabelStartIndex, hostLabelEndIndex);
     }
 

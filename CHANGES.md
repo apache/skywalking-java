@@ -12,8 +12,8 @@ Release Notes.
 * Remove Powermock entirely from the test cases.
 * Fix H2 instrumentation point
 * Refactor pipeline in jedis-plugin.
-* Enhance kotlin coroutine plugin for stack tracing.
 * Add plugin to support ClickHouse JDBC driver (0.3.2.*).
+* Refactor kotlin coroutine plugin with CoroutineContext.
 * Fix OracleURLParser ignoring actual port when :SID is absent.
 
 #### Documentation

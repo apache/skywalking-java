@@ -14,5 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kotlin-coroutine=org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatcherInstrumentation
-kotlin-coroutine=org.apache.skywalking.apm.plugin.kotlin.coroutine.define.DispatchedTaskInstrumentation
+kotlin-coroutine=org.apache.skywalking.apm.plugin.kotlin.coroutine.define.CoroutineContextInstrumentation

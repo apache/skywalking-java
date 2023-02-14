@@ -14,6 +14,7 @@ Release Notes.
 * Refactor pipeline in jedis-plugin.
 * Enhance kotlin coroutine plugin for stack tracing.
 * Add plugin to support ClickHouse JDBC driver (0.3.2.*).
+* Fix OracleURLParser ignoring actual port when :SID is absent.
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

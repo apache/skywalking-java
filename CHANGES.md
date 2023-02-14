@@ -15,6 +15,7 @@ Release Notes.
 * Add plugin to support ClickHouse JDBC driver (0.3.2.*).
 * Refactor kotlin coroutine plugin with CoroutineContext.
 * Fix OracleURLParser ignoring actual port when :SID is absent.
+* Change gRPC instrumentation point to fix plugin not working for server side.
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

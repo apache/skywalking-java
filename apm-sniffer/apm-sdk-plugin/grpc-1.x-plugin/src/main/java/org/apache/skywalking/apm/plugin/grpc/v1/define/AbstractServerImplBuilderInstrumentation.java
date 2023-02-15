@@ -26,15 +26,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
+import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     public static final String ENHANCE_CLASS = "io.grpc.internal.AbstractServerImplBuilder";
-    public static final String ENHANCE_METHOD = "addService";
+    public static final String ENHANCE_METHOD = "build";
     public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.grpc.v1.server.AbstractServerImplBuilderInterceptor";
-    public static final String ARGUMENT_TYPE = "io.grpc.ServerServiceDefinition";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -47,7 +46,7 @@ public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMetho
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_METHOD).and(takesArgumentWithType(0, ARGUMENT_TYPE));
+                    return named(ENHANCE_METHOD).and(takesNoArguments());
                 }
 
                 @Override

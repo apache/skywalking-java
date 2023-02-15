@@ -18,8 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.grpc.v1.server;
 
-import io.grpc.ServerInterceptors;
-import io.grpc.ServerServiceDefinition;
+import io.grpc.ServerBuilder;
 
 import java.lang.reflect.Method;
 
@@ -34,7 +33,12 @@ public class AbstractServerImplBuilderInterceptor implements InstanceMethodsArou
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) {
-        allArguments[0] = ServerInterceptors.intercept((ServerServiceDefinition) allArguments[0], new ServerInterceptor());
+        if (objInst.getSkyWalkingDynamicField() == null) {
+            ServerBuilder<?> builder = (ServerBuilder) objInst;
+            ServerInterceptor interceptor = new ServerInterceptor();
+            builder.intercept(interceptor);
+            objInst.setSkyWalkingDynamicField(interceptor);
+        }
     }
 
     @Override

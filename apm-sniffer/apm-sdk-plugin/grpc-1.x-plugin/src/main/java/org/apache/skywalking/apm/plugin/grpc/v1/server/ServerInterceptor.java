@@ -32,6 +32,8 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
 
+import static org.apache.skywalking.apm.plugin.grpc.v1.OperationNameFormatUtil.formatOperationName;
+
 public class ServerInterceptor implements io.grpc.ServerInterceptor {
 
     static final Context.Key<ContextSnapshot> CONTEXT_SNAPSHOT_KEY = Context.key("skywalking-grpc-context-snapshot");
@@ -51,7 +53,7 @@ public class ServerInterceptor implements io.grpc.ServerInterceptor {
         }
 
         final AbstractSpan span = ContextManager
-                .createEntrySpan(call.getMethodDescriptor().getFullMethodName(), contextCarrier);
+                .createEntrySpan(formatOperationName(call.getMethodDescriptor()), contextCarrier);
         span.setComponent(ComponentsDefine.GRPC);
         span.setLayer(SpanLayer.RPC_FRAMEWORK);
         ContextSnapshot contextSnapshot = ContextManager.capture();

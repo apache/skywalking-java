@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-armeria-099=org.apache.skywalking.apm.plugin.armeria.define.Armeria099ClientInstrumentation
+armeria-0.99.0=org.apache.skywalking.apm.plugin.armeria.define.Armeria099ClientInstrumentation

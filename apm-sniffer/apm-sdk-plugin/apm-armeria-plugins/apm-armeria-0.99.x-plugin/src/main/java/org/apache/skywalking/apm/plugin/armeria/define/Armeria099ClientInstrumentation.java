@@ -25,10 +25,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
+/**
+ * Instruments Armeria client 0.99.x
+ */
 public class Armeria099ClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "com.linecorp.armeria.client.UserClient";
@@ -51,7 +53,6 @@ public class Armeria099ClientInstrumentation extends ClassInstanceMethodsEnhance
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named("execute")
-                                .and(takesArguments(7))
                                 .and(takesArgument(0, named("com.linecorp.armeria.common.SessionProtocol")))
                                 .and(takesArgument(1, named("com.linecorp.armeria.client.endpoint.EndpointGroup")))
                                 .and(takesArgument(2, named("com.linecorp.armeria.common.HttpMethod")))
@@ -75,8 +76,6 @@ public class Armeria099ClientInstrumentation extends ClassInstanceMethodsEnhance
 
     @Override
     protected String[] witnessClasses() {
-        return new String[] {
-                "com.linecorp.armeria.common.AbstractHttpHeadersBuilder"
-        };
+        return new String[]{};
     }
 }

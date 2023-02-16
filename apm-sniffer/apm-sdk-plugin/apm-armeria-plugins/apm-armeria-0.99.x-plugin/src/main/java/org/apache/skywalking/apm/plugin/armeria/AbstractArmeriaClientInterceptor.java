@@ -18,7 +18,6 @@
 package org.apache.skywalking.apm.plugin.armeria;
 
 import com.linecorp.armeria.client.Clients;
-import com.linecorp.armeria.common.HttpHeadersBuilder;
 import com.linecorp.armeria.common.HttpMethod;
 import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.common.util.SafeCloseable;
@@ -49,13 +48,13 @@ public abstract class AbstractArmeriaClientInterceptor implements InstanceMethod
     protected abstract HttpRequest getHttpRequest(Object[] allArguments);
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
         URI uri = getUri(objInst);
         HttpMethod httpMethod = getHttpMethod(allArguments);
         String path = getPath(allArguments);
 
         final ContextCarrier contextCarrier = new ContextCarrier();
-        final String remotePeer = uri.getHost() + ":" + uri.getPort();
+        final String remotePeer = uri.getPort() > 0 ? uri.getHost() + ":" + uri.getPort() : uri.getHost();
 
         final AbstractSpan exitSpan = ContextManager.createExitSpan(path, contextCarrier, remotePeer);
 
@@ -63,22 +62,19 @@ public abstract class AbstractArmeriaClientInterceptor implements InstanceMethod
         exitSpan.setLayer(SpanLayer.HTTP);
         Tags.HTTP.METHOD.set(exitSpan, httpMethod.name());
 
-        ContextManager.getRuntimeContext().put(KEY_SAFE_CLOSEABLE, Clients.withHttpHeaders(headers -> {
-            HttpHeadersBuilder builder = headers.toBuilder();
+        ContextManager.getRuntimeContext().put(KEY_SAFE_CLOSEABLE, Clients.withHttpHeaders(builder -> {
             for (CarrierItem item = contextCarrier.items(); item.hasNext(); ) {
                 item = item.next();
                 builder.add(AsciiString.of(item.getHeadKey()), item.getHeadValue());
             }
-            return builder.build();
         }));
-
     }
 
     @Override
     public Object afterMethod(final EnhancedInstance objInst, final Method method, final Object[] allArguments,
                               final Class<?>[] argumentsTypes, final Object ret) {
         HttpRequest req = getHttpRequest(allArguments);
-        if (req instanceof HttpRequest && ContextManager.isActive()) {
+        if (req != null && ContextManager.isActive()) {
             ContextManager.stopSpan();
         }
 

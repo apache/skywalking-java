@@ -20,7 +20,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database

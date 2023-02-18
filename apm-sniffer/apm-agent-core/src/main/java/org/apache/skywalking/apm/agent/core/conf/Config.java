@@ -178,6 +178,16 @@ public class Config {
          * Private key file. If ssl_cert_chain and ssl_key exist, will enable mTLS for gRPC channel.
          */
         public static String SSL_KEY_PATH;
+
+        /**
+         * Agent version. This is set by the agent kernel through reading MANIFEST.MF file in the skywalking-agent.jar.
+         */
+        public static String VERSION = "UNKNOWN";
+
+        /**
+         * Enable the agent kernel services and instrumentation.
+         */
+        public static boolean ENABLE = true;
     }
 
     public static class OsInfo {
@@ -273,6 +283,10 @@ public class Config {
          * The buffer size of collected JVM info.
          */
         public static int BUFFER_SIZE = 60 * 10;
+        /**
+         * The period in seconds of JVM metrics collection.
+         */
+        public static int METRICS_COLLECT_PERIOD = 1;
     }
 
     public static class Log {

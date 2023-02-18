@@ -108,6 +108,7 @@ public class NatsCommons {
             }
             AbstractSpan span = NatsCommons.createEntrySpan(msg);
             Tags.MQ_BROKER.set(span, servers);
+            span.setPeer(servers);
             try {
                 msgHandler.onMessage(msg);
             } catch (Exception e) {

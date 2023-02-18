@@ -56,7 +56,8 @@ public class MeterService implements BootService, Runnable {
         }
         if (meterMap.size() >= Config.Meter.MAX_METER_SIZE) {
             LOGGER.warn(
-                "Already out of the meter system max size, will not report. meter name:{}", meter.getName());
+                "Already out of the meter system max size [{}], will not report. meter name:{}, meter size:{}",
+                    Config.Meter.MAX_METER_SIZE, meter.getName(), meterMap.size());
             return meter;
         }
 

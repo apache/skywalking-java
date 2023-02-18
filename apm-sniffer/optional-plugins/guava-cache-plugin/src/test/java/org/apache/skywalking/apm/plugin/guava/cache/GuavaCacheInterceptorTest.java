@@ -18,6 +18,11 @@
 
 package org.apache.skywalking.apm.plugin.guava.cache;
 
+import static org.hamcrest.CoreMatchers.is;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
@@ -28,17 +33,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.powermock.reflect.Whitebox;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class GuavaCacheInterceptorTest {
 
     @SegmentStoragePoint
@@ -63,6 +61,8 @@ public class GuavaCacheInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Before
     public void setUp() throws Exception {
@@ -71,13 +71,13 @@ public class GuavaCacheInterceptorTest {
         exception = new Exception();
         operateObjectArguments = new Object[]{"dataKey"};
         Class<?> cache = Class.forName("com.google.common.cache.LocalCache$LocalManualCache");
-        getAllPresentMethod = Whitebox.getMethods(cache, "getAllPresent")[0];
-        invalidateAllMethod = Whitebox.getMethods(cache, "invalidateAll")[0];
-        getMethod = Whitebox.getMethods(cache, "get")[0];
-        invalidateMethod = Whitebox.getMethods(cache, "invalidate")[0];
-        putAllMethod = Whitebox.getMethods(cache, "putAll")[0];
-        putMethod = Whitebox.getMethods(cache, "put")[0];
-        getIfPresentMethod = Whitebox.getMethods(cache, "getIfPresent")[0];
+        getAllPresentMethod = cache.getDeclaredMethod("getAllPresent", Iterable.class);
+        invalidateAllMethod = cache.getDeclaredMethod("invalidateAll", Iterable.class);
+        getMethod = cache.getDeclaredMethod("get", Object.class, Callable.class);
+        invalidateMethod = cache.getDeclaredMethod("invalidate", Object.class);
+        putAllMethod = cache.getDeclaredMethod("putAll", Map.class);
+        putMethod = cache.getDeclaredMethod("put", Object.class, Object.class);
+        getIfPresentMethod = cache.getDeclaredMethod("getIfPresent", Object.class);
 
     }
 

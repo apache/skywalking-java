@@ -18,6 +18,15 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.common;
 
+import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine.PULSAR_CONSUMER;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import java.util.List;
+import org.apache.pulsar.client.impl.LookupService;
+import org.apache.pulsar.client.impl.PulsarClientImpl;
 import org.apache.pulsar.common.api.proto.PulsarApi;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
@@ -37,18 +46,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import java.util.List;
-
-import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine.PULSAR_CONSUMER;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class PulsarConsumerInterceptorTest {
 
     @SegmentStoragePoint
@@ -56,46 +57,35 @@ public class PulsarConsumerInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
-
-    private ConsumerEnhanceRequiredInfo consumerEnhanceRequiredInfo;
-
-    private MessageEnhanceRequiredInfo messageEnhanceRequiredInfo;
-
-    private PulsarConsumerInterceptor consumerInterceptor;
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     private MockMessage msg;
 
     private EnhancedInstance consumerInstance = new EnhancedInstance() {
         @Override
         public Object getSkyWalkingDynamicField() {
-            return consumerEnhanceRequiredInfo;
+            return "my-sub";
         }
 
         @Override
         public void setSkyWalkingDynamicField(Object value) {
-            consumerEnhanceRequiredInfo = (ConsumerEnhanceRequiredInfo) value;
+
         }
     };
 
     @Before
     public void setUp() {
-        consumerInterceptor = new PulsarConsumerInterceptor();
-        consumerEnhanceRequiredInfo = new ConsumerEnhanceRequiredInfo();
-
-        consumerEnhanceRequiredInfo.setTopic("persistent://my-tenant/my-ns/my-topic");
-        consumerEnhanceRequiredInfo.setServiceUrl("pulsar://localhost:6650");
-        consumerEnhanceRequiredInfo.setSubscriptionName("my-sub");
         msg = new MockMessage();
         msg.getMessageBuilder()
                 .addProperties(PulsarApi.KeyValue.newBuilder()
                         .setKey(SW8CarrierItem.HEADER_NAME)
                         .setValue("1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA="));
-        messageEnhanceRequiredInfo = new MessageEnhanceRequiredInfo();
-        msg.setSkyWalkingDynamicField(messageEnhanceRequiredInfo);
     }
 
     @Test
     public void testConsumerWithNullMessage() throws Throwable {
+        PulsarConsumerInterceptor consumerInterceptor = new PulsarConsumerInterceptor();
         consumerInterceptor.beforeMethod(consumerInstance, null, new Object[] {null}, new Class[0], null);
         consumerInterceptor.afterMethod(consumerInstance, null, new Object[] {null}, new Class[0], null);
 
@@ -105,8 +95,10 @@ public class PulsarConsumerInterceptorTest {
 
     @Test
     public void testConsumerWithMessage() throws Throwable {
-        consumerInterceptor.beforeMethod(consumerInstance, null, new Object[] {msg}, new Class[0], null);
-        consumerInterceptor.afterMethod(consumerInstance, null, new Object[] {msg}, new Class[0], null);
+        EnhancedInstance enhancedInstance = mockConsumer();
+        PulsarConsumerInterceptor consumerInterceptor = new PulsarConsumerInterceptor();
+        consumerInterceptor.beforeMethod(enhancedInstance, null, new Object[] {msg}, new Class[0], null);
+        consumerInterceptor.afterMethod(enhancedInstance, null, new Object[] {msg}, new Class[0], null);
 
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         assertThat(traceSegments.size(), is(1));
@@ -122,8 +114,10 @@ public class PulsarConsumerInterceptorTest {
 
     @Test
     public void testConsumerWithMessageListener() throws Throwable {
-        consumerInterceptor.beforeMethod(consumerInstance, null, new Object[]{msg}, new Class[0], null);
-        consumerInterceptor.afterMethod(consumerInstance, null, new Object[]{msg}, new Class[0], null);
+        EnhancedInstance enhancedInstance = mockConsumer();
+        PulsarConsumerInterceptor consumerInterceptor = new PulsarConsumerInterceptor();
+        consumerInterceptor.beforeMethod(enhancedInstance, null, new Object[]{msg}, new Class[0], null);
+        consumerInterceptor.afterMethod(enhancedInstance, null, new Object[]{msg}, new Class[0], null);
 
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         assertThat(traceSegments.size(), is(1));
@@ -137,8 +131,6 @@ public class PulsarConsumerInterceptorTest {
         assertConsumerSpan(spans.get(0));
 
         final MessageEnhanceRequiredInfo requiredInfo = (MessageEnhanceRequiredInfo) msg.getSkyWalkingDynamicField();
-        assertThat(requiredInfo.getTopic(), is(
-                ((ConsumerEnhanceRequiredInfo) consumerInstance.getSkyWalkingDynamicField()).getTopic()));
         assertNotNull(requiredInfo.getContextSnapshot());
     }
 
@@ -154,5 +146,17 @@ public class PulsarConsumerInterceptorTest {
         MatcherAssert.assertThat(SegmentRefHelper.getParentServiceInstance(ref), is("instance"));
         MatcherAssert.assertThat(SegmentRefHelper.getSpanId(ref), is(3));
         MatcherAssert.assertThat(SegmentRefHelper.getTraceSegmentId(ref).toString(), is("3.4.5"));
+    }
+
+    private EnhancedInstance mockConsumer() throws Throwable {
+        MockConsumerImpl pulsarProducerInstance = mock(MockConsumerImpl.class);
+        final LookupService lookup = mock(LookupService.class);
+        final PulsarClientImpl client = mock(PulsarClientImpl.class);
+        when(lookup.getServiceUrl()).thenReturn("pulsar://localhost:6650");
+        when(client.getLookup()).thenReturn(lookup);
+        when(pulsarProducerInstance.getClient()).thenReturn(client);
+        when(pulsarProducerInstance.getTopic()).thenReturn("persistent://my-tenant/my-ns/my-topic");
+        when(pulsarProducerInstance.getSkyWalkingDynamicField()).thenReturn("my-sub");
+        return pulsarProducerInstance;
     }
 }

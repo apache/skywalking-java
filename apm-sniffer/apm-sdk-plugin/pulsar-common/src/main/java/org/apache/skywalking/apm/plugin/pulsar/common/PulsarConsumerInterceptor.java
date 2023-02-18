@@ -18,7 +18,9 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.common;
 
+import java.lang.reflect.Method;
 import org.apache.pulsar.client.api.Message;
+import org.apache.pulsar.client.impl.ConsumerImpl;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -30,15 +32,13 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
-import java.lang.reflect.Method;
-
 /**
  * Interceptor for pulsar consumer enhanced instance
  * <p>
  * Here is the intercept process steps:
  *
  * <pre>
- *  1. Get the @{@link ConsumerEnhanceRequiredInfo} and record the service url, topic name and subscription name
+ *  1. Record the service url, topic name and subscription name through this(ConsumerImpl)
  *  2. Create the entry span when call <code>messageProcessed</code> method
  *  3. Extract all the <code>Trace Context</code> when call <code>messageProcessed</code> method
  *  4. Capture trace context and set into SkyWalkingDynamic field if consumer has a message listener when <code>messageProcessed</code> method finished
@@ -52,9 +52,11 @@ public class PulsarConsumerInterceptor implements InstanceMethodsAroundIntercept
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
+                             MethodInterceptResult result) throws Throwable {
         if (allArguments[0] != null) {
-            ConsumerEnhanceRequiredInfo requiredInfo = (ConsumerEnhanceRequiredInfo) objInst.getSkyWalkingDynamicField();
+            ConsumerImpl consumer = (ConsumerImpl) objInst;
+            final String serviceUrl = consumer.getClient().getLookup().getServiceUrl();
+
             Message msg = (Message) allArguments[0];
             ContextCarrier carrier = new ContextCarrier();
             CarrierItem next = carrier.items();
@@ -62,29 +64,31 @@ public class PulsarConsumerInterceptor implements InstanceMethodsAroundIntercept
                 next = next.next();
                 next.setHeadValue(msg.getProperty(next.getHeadKey()));
             }
-            AbstractSpan activeSpan = ContextManager.createEntrySpan(OPERATE_NAME_PREFIX + requiredInfo.getTopic() + CONSUMER_OPERATE_NAME + requiredInfo
-                .getSubscriptionName(), carrier);
+            AbstractSpan activeSpan = ContextManager.createEntrySpan(
+                OPERATE_NAME_PREFIX + consumer.getTopic() + CONSUMER_OPERATE_NAME + objInst.getSkyWalkingDynamicField(),
+                carrier
+            );
             activeSpan.setComponent(ComponentsDefine.PULSAR_CONSUMER);
             SpanLayer.asMQ(activeSpan);
-            Tags.MQ_BROKER.set(activeSpan, requiredInfo.getServiceUrl());
-            Tags.MQ_TOPIC.set(activeSpan, requiredInfo.getTopic());
+            Tags.MQ_BROKER.set(activeSpan, serviceUrl);
+            Tags.MQ_TOPIC.set(activeSpan, consumer.getTopic());
+            activeSpan.setPeer(serviceUrl);
         }
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
+                              Object ret) throws Throwable {
         if (allArguments[0] != null) {
-            final ConsumerEnhanceRequiredInfo requiredInfo = (ConsumerEnhanceRequiredInfo) objInst
-                    .getSkyWalkingDynamicField();
+            ConsumerImpl consumer = (ConsumerImpl) objInst;
             EnhancedInstance msg = (EnhancedInstance) allArguments[0];
             MessageEnhanceRequiredInfo messageEnhanceRequiredInfo = (MessageEnhanceRequiredInfo) msg
-                    .getSkyWalkingDynamicField();
+                .getSkyWalkingDynamicField();
             if (messageEnhanceRequiredInfo == null) {
                 messageEnhanceRequiredInfo = new MessageEnhanceRequiredInfo();
                 msg.setSkyWalkingDynamicField(messageEnhanceRequiredInfo);
             }
-            messageEnhanceRequiredInfo.setTopic(requiredInfo.getTopic());
+            messageEnhanceRequiredInfo.setTopic(consumer.getTopic());
             messageEnhanceRequiredInfo.setContextSnapshot(ContextManager.capture());
             ContextManager.stopSpan();
         }
@@ -93,7 +97,7 @@ public class PulsarConsumerInterceptor implements InstanceMethodsAroundIntercept
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
+                                      Class<?>[] argumentsTypes, Throwable t) {
         if (allArguments[0] != null) {
             ContextManager.activeSpan().log(t);
         }

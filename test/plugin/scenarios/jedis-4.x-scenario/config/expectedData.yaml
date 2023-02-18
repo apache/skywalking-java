@@ -20,7 +20,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: Jedis/ECHO
+          - operationName: Jedis/set
             operationId: 0
             parentSpanId: 0
             spanId: 1
@@ -33,10 +33,11 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.key, value: Test}
-              - {key: cache.cmd, value: ECHO}
+              - {key: cache.key, value: a}
+              - {key: cache.cmd, value: set}
               - {key: cache.type, value: Redis}
-          - operationName: Jedis/SET
+              - {key: cache.op, value: write}
+          - operationName: Jedis/get
             operationId: 0
             parentSpanId: 0
             spanId: 2
@@ -50,10 +51,10 @@ segmentItems:
             skipAnalysis: false
             tags:
               - {key: cache.key, value: a}
-              - {key: cache.cmd, value: SET}
+              - {key: cache.cmd, value: get}
               - {key: cache.type, value: Redis}
-              - {key: cache.op, value: write}
-          - operationName: Jedis/GET
+              - {key: cache.op, value: read}
+          - operationName: Jedis/del
             operationId: 0
             parentSpanId: 0
             spanId: 3
@@ -67,10 +68,10 @@ segmentItems:
             skipAnalysis: false
             tags:
               - {key: cache.key, value: a}
-              - {key: cache.cmd, value: GET}
+              - {key: cache.cmd, value: del}
               - {key: cache.type, value: Redis}
-              - {key: cache.op, value: read}
-          - operationName: Jedis/DEL
+              - {key: cache.op, value: write}
+          - operationName: Jedis/syncAndReturnAll
             operationId: 0
             parentSpanId: 0
             spanId: 4
@@ -83,11 +84,9 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.key, value: a}
-              - {key: cache.cmd, value: DEL}
               - {key: cache.type, value: Redis}
-              - {key: cache.op, value: write}
-          - operationName: Jedis/HSET
+              - {key: cache.cmd, value: BATCH_EXECUTE}
+          - operationName: Jedis/exec
             operationId: 0
             parentSpanId: 0
             spanId: 5
@@ -100,11 +99,9 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.key, value: a}
-              - {key: cache.cmd, value: HSET}
               - {key: cache.type, value: Redis}
-              - {key: cache.op, value: write}
-          - operationName: Jedis/HGET
+              - {key: cache.cmd, value: BATCH_EXECUTE}
+          - operationName: Jedis/discard
             operationId: 0
             parentSpanId: 0
             spanId: 6
@@ -117,11 +114,9 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.key, value: a}
-              - {key: cache.cmd, value: HGET}
               - {key: cache.type, value: Redis}
-              - {key: cache.op, value: read}
-          - operationName: Jedis/HDEL
+              - {key: cache.cmd, value: BATCH_EXECUTE}
+          - operationName: Jedis/xadd
             operationId: 0
             parentSpanId: 0
             spanId: 7
@@ -134,11 +129,11 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.key, value: a}
-              - {key: cache.cmd, value: HDEL}
+              - {key: cache.key, value: abc}
+              - {key: cache.cmd, value: xadd}
               - {key: cache.type, value: Redis}
               - {key: cache.op, value: write}
-          - operationName: Jedis/MULTI
+          - operationName: Jedis/xread
             operationId: 0
             parentSpanId: 0
             spanId: 8
@@ -151,9 +146,10 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.cmd, value: MULTI}
-              - {key: cache.type, value: Redis}
-          - operationName: Jedis/SET
+            - {key: cache.cmd, value: xread}
+            - {key: cache.type, value: Redis}
+            - {key: cache.op, value: read}
+          - operationName: Jedis/xdel
             operationId: 0
             parentSpanId: 0
             spanId: 9
@@ -166,89 +162,8 @@ segmentItems:
             peer: redis-server:6379
             skipAnalysis: false
             tags:
-              - {key: cache.key, value: key}
-              - {key: cache.cmd, value: SET}
-              - {key: cache.type, value: Redis}
-              - {key: cache.op, value: write}
-          - operationName: Jedis/EXPIRE
-            operationId: 0
-            parentSpanId: 0
-            spanId: 10
-            spanLayer: Cache
-            startTime: gt 0
-            endTime: gt 0
-            componentId: 30
-            isError: false
-            spanType: Exit
-            peer: redis-server:6379
-            skipAnalysis: false
-            tags:
-              - {key: cache.key, value: key}
-              - {key: cache.cmd, value: EXPIRE}
-              - {key: cache.type, value: Redis}
-          - operationName: Jedis/EXEC
-            operationId: 0
-            parentSpanId: 0
-            spanId: 11
-            spanLayer: Cache
-            startTime: gt 0
-            endTime: gt 0
-            componentId: 30
-            isError: false
-            spanType: Exit
-            peer: redis-server:6379
-            skipAnalysis: false
-            tags:
-              - {key: cache.cmd, value: EXEC}
-              - {key: cache.type, value: Redis}
-          - operationName: Jedis/XADD
-            operationId: 0
-            parentSpanId: 0
-            spanId: 12
-            spanLayer: Cache
-            startTime: gt 0
-            endTime: gt 0
-            componentId: 30
-            isError: false
-            spanType: Exit
-            peer: redis-server:6379
-            skipAnalysis: false
-            tags:
               - {key: cache.key, value: abc}
-              - {key: cache.cmd, value: XADD}
-              - {key: cache.type, value: Redis}
-              - {key: cache.op, value: write}
-          - operationName: Jedis/XREAD
-            operationId: 0
-            parentSpanId: 0
-            spanId: 13
-            spanLayer: Cache
-            startTime: gt 0
-            endTime: gt 0
-            componentId: 30
-            isError: false
-            spanType: Exit
-            peer: redis-server:6379
-            skipAnalysis: false
-            tags:
-            - {key: cache.cmd, value: XREAD}
-            - {key: cache.type, value: Redis}
-            - {key: cache.op, value: read}
-          - operationName: Jedis/XDEL
-            operationId: 0
-            parentSpanId: 0
-            spanId: 14
-            spanLayer: Cache
-            startTime: gt 0
-            endTime: gt 0
-            componentId: 30
-            isError: false
-            spanType: Exit
-            peer: redis-server:6379
-            skipAnalysis: false
-            tags:
-              - {key: cache.key, value: abc}
-              - {key: cache.cmd, value: XDEL}
+              - {key: cache.cmd, value: xdel}
               - {key: cache.type, value: Redis}
               - {key: cache.op, value: write}
           - operationName: GET:/jedis-scenario/case/jedis-scenario

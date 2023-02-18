@@ -47,7 +47,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
         AbstractSpan span = ContextManager.createExitSpan(
             buildOperationName(connectInfo, method.getName(), cacheObject.getStatementName()), connectInfo
                 .getDatabasePeer());
-        Tags.DB_TYPE.set(span, "sql");
+        Tags.DB_TYPE.set(span, connectInfo.getDBType());
         Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
         Tags.DB_STATEMENT.set(span, SqlBodyUtil.limitSqlBodySize(cacheObject.getSql()));
         span.setComponent(connectInfo.getComponent());
@@ -84,7 +84,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
     }
 
     private String buildOperationName(ConnectionInfo connectionInfo, String methodName, String statementName) {
-        return connectionInfo.getDBType() + "/JDBI/" + statementName + "/" + methodName;
+        return connectionInfo.getDBType() + "/JDBC/" + statementName + "/" + methodName;
     }
 
     private String getParameterString(Object[] parameters, int maxIndex) {

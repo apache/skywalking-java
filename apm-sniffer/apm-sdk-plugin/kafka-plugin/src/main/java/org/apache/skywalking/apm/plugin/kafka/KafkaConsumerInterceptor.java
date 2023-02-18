@@ -61,7 +61,7 @@ public class KafkaConsumerInterceptor implements InstanceMethodsAroundIntercepto
         if (ret == null) {
             return ret;
         }
-        Map<TopicPartition, List<ConsumerRecord<?, ?>>> records = (Map<TopicPartition, List<ConsumerRecord<?, ?>>>) ret;
+        Map<TopicPartition, List<ConsumerRecord<?, ?>>> records = fetchRecords(ret);
         //
         // The entry span will only be created when the consumer received at least one message.
         //
@@ -79,7 +79,7 @@ public class KafkaConsumerInterceptor implements InstanceMethodsAroundIntercepto
             SpanLayer.asMQ(activeSpan);
             Tags.MQ_BROKER.set(activeSpan, requiredInfo.getBrokerServers());
             Tags.MQ_TOPIC.set(activeSpan, requiredInfo.getTopics());
-
+            activeSpan.setPeer(requiredInfo.getBrokerServers());
             for (List<ConsumerRecord<?, ?>> consumerRecords : records.values()) {
                 for (ConsumerRecord<?, ?> record : consumerRecords) {
                     ContextCarrier contextCarrier = new ContextCarrier();
@@ -98,6 +98,11 @@ public class KafkaConsumerInterceptor implements InstanceMethodsAroundIntercepto
             ContextManager.stopSpan();
         }
         return ret;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    protected Map<TopicPartition, List<ConsumerRecord<?, ?>>> fetchRecords(Object retObj) {
+        return (Map<TopicPartition, List<ConsumerRecord<?, ?>>>) retObj;
     }
 
     @Override

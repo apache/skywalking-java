@@ -18,20 +18,18 @@
 
 package org.apache.skywalking.apm.plugin.struts2;
 
-import com.opensymphony.xwork2.ActionContext;
+import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
+import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertException;
+import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertLayer;
+import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertTag;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
-import org.apache.struts2.StrutsStatics;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -47,20 +45,21 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.struts2.StrutsStatics;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import com.opensymphony.xwork2.ActionContext;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
-import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertException;
-import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertLayer;
-import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertTag;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
-@PrepareForTest({ActionContext.class})
+@RunWith(TracingSegmentRunner.class)
 public class Struts2InterceptorTest {
 
     private Struts2Interceptor struts2Interceptor;
@@ -68,10 +67,14 @@ public class Struts2InterceptorTest {
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
 
+    private static MockedStatic<ActionContext> MOCKED_ACTION_CONTEXT;
+
     private ActionContext actionContext;
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private HttpServletRequest request;
@@ -89,6 +92,16 @@ public class Struts2InterceptorTest {
     private Object[] exceptionArguments;
     private Class[] exceptionArgumentType;
 
+    @BeforeClass
+    public static void beforeClass() {
+        MOCKED_ACTION_CONTEXT = Mockito.mockStatic(ActionContext.class);
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        MOCKED_ACTION_CONTEXT.close();
+    }
+
     @Before
     public void setUp() throws Exception {
         struts2Interceptor = new Struts2Interceptor();
@@ -96,11 +109,10 @@ public class Struts2InterceptorTest {
         when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/testRequestURL"));
         when(response.getStatus()).thenReturn(200);
 
-        mockStatic(ActionContext.class);
         actionContext = mock(ActionContext.class);
         when(actionContext.get(org.apache.struts2.StrutsStatics.HTTP_RESPONSE)).thenReturn(response);
         when(actionContext.get(StrutsStatics.HTTP_REQUEST)).thenReturn(request);
-        when(ActionContext.getContext()).thenReturn(actionContext);
+        MOCKED_ACTION_CONTEXT.when(ActionContext::getContext).thenReturn(actionContext);
 
         arguments = new Object[] {
             request,

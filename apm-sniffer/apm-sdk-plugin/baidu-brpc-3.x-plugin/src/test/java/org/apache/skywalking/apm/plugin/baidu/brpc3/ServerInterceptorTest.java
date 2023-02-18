@@ -21,11 +21,10 @@ package org.apache.skywalking.apm.plugin.baidu.brpc3;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.when;
-
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
@@ -48,19 +47,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import com.baidu.brpc.interceptor.InterceptorChain;
 import com.baidu.brpc.protocol.Request;
 import com.baidu.brpc.protocol.Response;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class ServerInterceptorTest {
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
     @Mock
@@ -68,10 +67,13 @@ public class ServerInterceptorTest {
 
     private ServerInterceptor serverInterceptor;
 
-    private Request request = PowerMockito.mock(Request.class);
-    private Response response = PowerMockito.mock(Response.class);
+    @Mock
+    private Request request;
+    @Mock
+    private Response response;
 
-    private InterceptorChain interceptorChain = PowerMockito.mock(InterceptorChain.class);
+    @Mock
+    private InterceptorChain interceptorChain;
 
     @Mock
     private MethodInterceptResult methodInterceptResult;
@@ -83,7 +85,7 @@ public class ServerInterceptorTest {
     public void setUp() throws Exception {
         serverInterceptor = new ServerInterceptor();
 
-        Map<String, Object> kvAttachment = PowerMockito.mock(Map.class);
+        Map<String, Object> kvAttachment = mock(Map.class);
         when(kvAttachment.get(SW8CarrierItem.HEADER_NAME)).thenReturn("1-My40LjU=-MS4yLjM=-3-c2VydmljZQ"
                 + "==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA=");
         when(request.getKvAttachment()).thenReturn(kvAttachment);

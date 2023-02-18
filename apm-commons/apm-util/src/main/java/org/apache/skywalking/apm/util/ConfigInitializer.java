@@ -127,7 +127,6 @@ public class ConfigInitializer {
         return collection;
     }
 
-
     /**
      * Convert string value to typical type.
      *

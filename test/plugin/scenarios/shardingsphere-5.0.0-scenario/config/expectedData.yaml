@@ -19,7 +19,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: H2/JDBI/PreparedStatement/executeQuery
+          - operationName: H2/JDBC/PreparedStatement/executeQuery
             operationId: 0
             parentSpanId: -1
             spanId: 0
@@ -32,12 +32,12 @@ segmentItems:
             peer: localhost:-1
             skipAnalysis: false
             tags:
-              - { key: db.type, value: sql}
+              - { key: db.type, value: H2}
               - { key: db.instance, value: not null}
               - { key: db.statement, value: not null}
       - segmentId: not null
         spans:
-          - operationName: H2/JDBI/Statement/executeUpdate
+          - operationName: H2/JDBC/Statement/executeUpdate
             operationId: 0
             parentSpanId: 0
             spanId: 1
@@ -50,7 +50,7 @@ segmentItems:
             peer: localhost:-1
             skipAnalysis: false
             tags:
-              - { key: db.type, value: sql }
+              - {key: db.type, value: H2}
               - { key: db.instance, value: not null }
               - { key: db.statement, value: not null }
           - operationName: /ShardingSphere/executeSQL/
@@ -72,7 +72,7 @@ segmentItems:
                   traceId: not null }
       - segmentId: not null
         spans:
-          - operationName: H2/JDBI/Connection/close
+          - operationName: H2/JDBC/Connection/close
             operationId: 0
             parentSpanId: -1
             spanId: 0
@@ -85,12 +85,12 @@ segmentItems:
             peer: localhost:-1
             skipAnalysis: false
             tags:
-              - { key: db.type, value: sql }
+              - {key: db.type, value: H2}
               - { key: db.instance, value: not null }
               - { key: db.statement, value: '' }
       - segmentId: not null
         spans:
-          - operationName: H2/JDBI/PreparedStatement/executeQuery
+          - operationName: H2/JDBC/PreparedStatement/executeQuery
             operationId: 0
             parentSpanId: 0
             spanId: 1
@@ -103,7 +103,7 @@ segmentItems:
             peer: localhost:-1
             skipAnalysis: false
             tags:
-              - { key: db.type, value: sql }
+              - {key: db.type, value: H2}
               - { key: db.instance, value: not null }
               - { key: db.statement, value: not null }
           - operationName: /ShardingSphere/executeSQL/
@@ -160,7 +160,7 @@ segmentItems:
             spanType: Local
             peer: ''
             skipAnalysis: false
-          - operationName: H2/JDBI/PreparedStatement/executeQuery
+          - operationName: H2/JDBC/PreparedStatement/executeQuery
             parentSpanId: 5
             spanId: 6
             spanLayer: Database
@@ -172,7 +172,7 @@ segmentItems:
             peer: localhost:-1
             skipAnalysis: false
             tags:
-              - { key: db.type, value: sql }
+              - {key: db.type, value: H2}
               - { key: db.instance, value: not null }
               - { key: db.statement, value: not null }
           - operationName: /ShardingSphere/executeSQL/

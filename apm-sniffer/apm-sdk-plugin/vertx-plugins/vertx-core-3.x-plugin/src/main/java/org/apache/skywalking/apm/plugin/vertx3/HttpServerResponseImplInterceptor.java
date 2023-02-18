@@ -40,8 +40,8 @@ public class HttpServerResponseImplInterceptor implements InstanceMethodsAroundI
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
-        if ((VertxContext.VERTX_VERSION < 36 && allArguments[0] instanceof ByteBuf)
-                || ((VertxContext.VERTX_VERSION >= 36 && VertxContext.VERTX_VERSION <= 37) || allArguments.length == 2)) {
+        if (VertxContext.VERTX_VERSION < 36 && allArguments[0] instanceof ByteBuf
+                || VertxContext.VERTX_VERSION >= 36 && VertxContext.VERTX_VERSION <= 37 || allArguments.length == 2) {
             VertxContext context = (VertxContext) objInst.getSkyWalkingDynamicField();
             Tags.HTTP_RESPONSE_STATUS_CODE.set(context.getSpan(), ((HttpServerResponse) objInst).getStatusCode());
             context.getSpan().asyncFinish();

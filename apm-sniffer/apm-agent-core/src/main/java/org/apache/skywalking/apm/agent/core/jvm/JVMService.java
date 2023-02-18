@@ -25,6 +25,7 @@ import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
 import org.apache.skywalking.apm.agent.core.boot.DefaultNamedThreadFactory;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.jvm.clazz.ClassProvider;
 import org.apache.skywalking.apm.agent.core.jvm.cpu.CPUProvider;
 import org.apache.skywalking.apm.agent.core.jvm.gc.GCProvider;
@@ -66,7 +67,7 @@ public class JVMService implements BootService, Runnable {
                                                    LOGGER.error("JVMService produces metrics failure.", t);
                                                }
                                            }
-                                       ), 0, 1, TimeUnit.SECONDS);
+                                       ), 0, Config.Jvm.METRICS_COLLECT_PERIOD, TimeUnit.SECONDS);
         sendMetricFuture = Executors.newSingleThreadScheduledExecutor(
             new DefaultNamedThreadFactory("JVMService-consume"))
                                     .scheduleAtFixedRate(new RunnableWithExceptionProtection(

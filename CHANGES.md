@@ -2,34 +2,27 @@ Changes by Version
 ==================
 Release Notes.
 
-8.13.0
+8.15.0
 ------------------
 
-* Support set-type in the agent or plugin configurations
-* Optimize ConfigInitializer to output warning messages when the config value is truncated.
-* Fix the default value of the Map field would merge rather than override by new values in the config.
-* Support to set the value of Map/List field to an empty map/list.
-* Add plugin to support [Impala JDBC](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x.
-* Update guava-cache, jedis, memcached, ehcache plugins to adopt uniform tags.
-* Fix `Apache ShenYu` plugin traceId empty string value. 
-* Add plugin to support [brpc-java-3.x](https://github.com/baidu/starlight/tree/brpc-java-v3)
-* Update `compose-start-script.template` to make compatible with new version docker compose
-* Bump up grpc to 1.50.0 to fix CVE-2022-3171
-* Polish up nats plugin to unify MQ related tags  
-* Correct the duration of the transaction span for Neo4J 4.x.
-* Plugin-test configuration.yml dependencies support docker service command field
-* Polish up rabbitmq-5.x plugin to fix missing broker tag on consumer side
-* Polish up activemq plugin to fix missing broker tag on consumer side
-* Enhance MQ plugin relative tests to check key tags not blank.
+* Enhance lettuce plugin to adopt uniform tags.
+* Expose complete Tracing APIs in the tracing toolkit.
+* Add plugin to trace Spring 6 and Resttemplate 6.
+* Move the baseline to JDK 17 for development, the runtime baseline is still Java 8 compatible.
+* Remove Powermock entirely from the test cases.
+* Fix H2 instrumentation point
+* Refactor pipeline in jedis-plugin.
+* Add plugin to support ClickHouse JDBC driver (0.3.2.*).
+* Refactor kotlin coroutine plugin with CoroutineContext.
+* Fix OracleURLParser ignoring actual port when :SID is absent.
+* Change gRPC instrumentation point to fix plugin not working for server side.
 
 #### Documentation
+* Update docs of Tracing APIs, reorganize the API docs into six parts.
+* Correct missing package name in native manual API docs.
+* Add a FAQ doc about "How to make SkyWalking agent works in `OSGI` environment?"
 
-* Update `configuration` doc about overriding default value as empty map/list accordingly.
-* Update plugin dev tags for cache relative tags.
-* Add plugin dev docs for virtual database tags.
-* Add plugin dev docs for virtual MQ tags.
-
-All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/150?closed=1)
+All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/168?closed=1)
 
 ------------------
 Find change logs of all versions [here](changes).

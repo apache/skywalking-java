@@ -1,0 +1,73 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+segmentItems:
+  - serviceName: rocketmq-scenario
+    segmentSize: ge 2
+    segments:
+      - segmentId: not null
+        spans:
+          - operationName: RocketMQ/TopicTest/Producer
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: MQ
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 38
+            isError: false
+            spanType: Exit
+            peer: not null
+            tags:
+              - {key: mq.broker, value: not null}
+              - {key: mq.topic, value: TopicTest}
+              - {key: mq.message.keys, value: KeyA}
+              - {key: mq.message.tags, value: TagA}
+            skipAnalysis: 'false'
+          - operationName: GET:/case/rocketmq-scenario
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - {key: url, value: 'http://localhost:8080/rocketmq-scenario/case/rocketmq-scenario'}
+              - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
+            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
+          - operationName: RocketMQ/TopicTest/Consumer
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: MQ
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 39
+            isError: false
+            spanType: Entry
+            peer: not blank
+            tags:
+              - {key: transmission.latency, value: not null}
+              - {key: mq.topic, value: TopicTest }
+              - {key: mq.broker, value: not blank }
+            refs:
+              - {parentEndpoint: GET:/case/rocketmq-scenario, networkAddress: not null,
+                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: not null, traceId: not null}
+            skipAnalysis: 'false'

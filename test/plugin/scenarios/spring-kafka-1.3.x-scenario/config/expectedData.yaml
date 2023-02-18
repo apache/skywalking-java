@@ -96,7 +96,7 @@ segmentItems:
             componentId: 41
             isError: false
             spanType: Entry
-            peer: ''
+            peer: kafka-server:9092
             skipAnalysis: false
             tags:
               - {key: mq.broker, value: 'kafka-server:9092'}

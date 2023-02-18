@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/execute
+    - operationName: H2/JDBC/PreparedStatement/execute
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -30,13 +30,13 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - key: db.statement
         value: "CREATE TABLE test_007(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(1)\
           \ NOT NULL)"
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/CallableStatement/execute
+    - operationName: H2/JDBC/CallableStatement/execute
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -47,11 +47,11 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/Statement/execute
+    - operationName: H2/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 3
       spanLayer: Database
@@ -62,11 +62,11 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - {key: db.statement, value: DROP table test_007}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/Connection/close
+    - operationName: H2/JDBC/Connection/close
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -77,7 +77,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: test}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'

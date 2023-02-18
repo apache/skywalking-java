@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -30,11 +30,11 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo}
       - {key: db.statement, value: 'SELECT * FROM PERSON WHERE ID = ?'}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/Connection/commit
+    - operationName: H2/JDBC/Connection/commit
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -45,11 +45,11 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'
-    - operationName: /Kotlin/Coroutine
+    - operationName: Kotlin/Coroutine
       parentSpanId: -1
       spanId: 0
       startTime: nq 0
@@ -65,7 +65,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -76,11 +76,11 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo}
       - {key: db.statement, value: 'SELECT * FROM PERSON WHERE ID = ?'}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/Connection/commit
+    - operationName: H2/JDBC/Connection/commit
       parentSpanId: 0
       spanId: 2
       spanLayer: Database
@@ -91,7 +91,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'

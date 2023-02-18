@@ -18,7 +18,15 @@
 
 package org.apache.skywalking.apm.plugin.pulsar.common;
 
+import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine.PULSAR_PRODUCER;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import java.util.List;
+import org.apache.pulsar.client.impl.LookupService;
 import org.apache.pulsar.client.impl.MessageImpl;
+import org.apache.pulsar.client.impl.PulsarClientImpl;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
@@ -33,17 +41,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-import java.util.List;
-
-import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine.PULSAR_PRODUCER;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class PulsarProducerInterceptorTest {
 
     @SegmentStoragePoint
@@ -56,21 +55,6 @@ public class PulsarProducerInterceptorTest {
 
     private Object[] arguments;
     private Class[] argumentType;
-
-    private EnhancedInstance pulsarProducerInstance = new EnhancedInstance() {
-
-        @Override
-        public Object getSkyWalkingDynamicField() {
-            ProducerEnhanceRequiredInfo requiredInfo = new ProducerEnhanceRequiredInfo();
-            requiredInfo.setTopic("persistent://my-tenant/my-ns/my-topic");
-            requiredInfo.setServiceUrl("pulsar://localhost:6650");
-            return requiredInfo;
-        }
-
-        @Override
-        public void setSkyWalkingDynamicField(Object value) {
-        }
-    };
 
     private MessageImpl msg = new MockMessage();
 
@@ -86,6 +70,16 @@ public class PulsarProducerInterceptorTest {
 
     @Test
     public void testSendMessage() throws Throwable {
+
+        MockProducerImpl pulsarProducerInstance = mock(MockProducerImpl.class);
+        final LookupService lookup = mock(LookupService.class);
+        final PulsarClientImpl client = mock(PulsarClientImpl.class);
+        when(lookup.getServiceUrl()).thenReturn("pulsar://localhost:6650");
+        when(client.getLookup()).thenReturn(lookup);
+        when(pulsarProducerInstance.getClient()).thenReturn(client);
+        when(pulsarProducerInstance.getTopic()).thenReturn("persistent://my-tenant/my-ns/my-topic");
+        when(pulsarProducerInstance.getSkyWalkingDynamicField()).thenReturn((MessagePropertiesInjector) (message, carrierItem) -> {
+            });
         producerInterceptor.beforeMethod(pulsarProducerInstance, null, arguments, argumentType, null);
         producerInterceptor.afterMethod(pulsarProducerInstance, null, arguments, argumentType, null);
 
@@ -101,6 +95,9 @@ public class PulsarProducerInterceptorTest {
 
     @Test
     public void testSendWithNullMessage() throws Throwable {
+        EnhancedInstance pulsarProducerInstance = mock(MockProducerImpl.class);
+        when(pulsarProducerInstance.getSkyWalkingDynamicField()).thenReturn((MessagePropertiesInjector) (message, carrierItem) -> {
+        });
         producerInterceptor.beforeMethod(pulsarProducerInstance, null, new Object[] {null}, argumentType, null);
         producerInterceptor.afterMethod(pulsarProducerInstance, null, new Object[] {null}, argumentType, null);
         List<TraceSegment> traceSegmentList = segmentStorage.getTraceSegments();

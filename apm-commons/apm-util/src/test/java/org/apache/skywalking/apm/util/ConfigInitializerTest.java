@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -67,8 +68,8 @@ public class ConfigInitializerTest {
         Assert.assertArrayEquals(new Integer[]{1, 2, 3, 4}, TestPropertiesObject.Level1Object.LIST_INT_ATTR_ED2.toArray());
         Assert.assertArrayEquals(new String[]{}, TestPropertiesObject.Level1Object.SET_STR_EMPTY_ATTR.toArray());
         Assert.assertArrayEquals(new Boolean[]{true, false}, TestPropertiesObject.Level1Object.LIST_BOOL_ATTR.toArray());
-        Assert.assertArrayEquals(new String[]{"a", "b", "c", "d"}, TestPropertiesObject.Level1Object.SET_STR_ATTR.toArray());
-        Assert.assertArrayEquals(new Integer[]{1, 2, 3, 4}, TestPropertiesObject.Level1Object.SET_INT_ATTR.toArray());
+        Assert.assertEquals(new HashSet<>(Arrays.asList("a", "b", "c", "d")), TestPropertiesObject.Level1Object.SET_STR_ATTR);
+        Assert.assertEquals(new HashSet<>(Arrays.asList(1, 2, 3, 4)), TestPropertiesObject.Level1Object.SET_INT_ATTR);
         Assert.assertArrayEquals(new Boolean[]{true}, TestPropertiesObject.Level1Object.SET_BOOL_ATTR.toArray());
         Assert.assertEquals(TestColorEnum.RED, TestPropertiesObject.Level1Object.Level2Object.ENUM_ATTR);
         //make sure that when descs is empty,toString() work right;

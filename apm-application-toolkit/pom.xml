@@ -20,7 +20,7 @@
     <parent>
         <artifactId>java-agent</artifactId>
         <groupId>org.apache.skywalking</groupId>
-        <version>8.13.0-SNAPSHOT</version>
+        <version>8.15.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apm-application-toolkit</artifactId>
@@ -34,6 +34,8 @@
         <module>apm-toolkit-trace</module>
         <module>apm-toolkit-meter</module>
         <module>apm-toolkit-micrometer-registry</module>
+        <module>apm-toolkit-micrometer-1.10</module>
         <module>apm-toolkit-kafka</module>
+        <module>apm-toolkit-webflux</module>
     </modules>
 </project>

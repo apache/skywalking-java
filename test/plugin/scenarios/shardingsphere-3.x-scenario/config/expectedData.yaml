@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -30,7 +30,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_1}
       - {key: db.statement, value: SELECT * FROM t_order_1}
       skipAnalysis: 'false'
@@ -51,7 +51,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -62,7 +62,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_0}
       - {key: db.statement, value: SELECT * FROM t_order_1}
       skipAnalysis: 'false'
@@ -83,7 +83,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 0
       spanId: 1
       spanLayer: Database
@@ -94,7 +94,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_1}
       - {key: db.statement, value: SELECT * FROM t_order_0}
       skipAnalysis: 'false'
@@ -128,7 +128,7 @@ segmentItems:
       tags:
       - {key: db.statement, value: SELECT * FROM t_order}
       skipAnalysis: 'false'
-    - operationName: H2/JDBI/PreparedStatement/executeQuery
+    - operationName: H2/JDBC/PreparedStatement/executeQuery
       parentSpanId: 3
       spanId: 4
       spanLayer: Database
@@ -139,7 +139,7 @@ segmentItems:
       spanType: Exit
       peer: localhost:-1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: H2}
       - {key: db.instance, value: demo_ds_0}
       - {key: db.statement, value: SELECT * FROM t_order_0}
       skipAnalysis: 'false'

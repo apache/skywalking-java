@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: Mysql/JDBI/Connection/close
+    - operationName: Mysql/JDBC/Connection/close
       parentSpanId: 1
       spanId: 2
       componentId: 33
@@ -28,7 +28,7 @@ segmentItems:
       peer: mysql-server:3306
       skipAnalysis: false
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - {key: db.statement, value: ''}
     - operationName: DBCP/Connection/getConnection
@@ -41,7 +41,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 3
       startTime: gt 0
@@ -52,7 +52,7 @@ segmentItems:
       peer: mysql-server:3306
       skipAnalysis: false
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - key: db.statement
           value: "CREATE TABLE test_DBCP(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(1)\
@@ -77,7 +77,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 6
       startTime: gt 0
@@ -88,7 +88,7 @@ segmentItems:
       peer: mysql-server:3306
       skipAnalysis: false
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - key: db.statement
           value: 'INSERT INTO test_DBCP(id, value) VALUES(1,1)'
@@ -112,7 +112,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 9
       startTime: gt 0
@@ -123,7 +123,7 @@ segmentItems:
       peer: mysql-server:3306
       skipAnalysis: false
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - key: db.statement
           value: 'SELECT id, value FROM test_DBCP WHERE id=1'
@@ -147,7 +147,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 12
       startTime: gt 0
@@ -158,7 +158,7 @@ segmentItems:
       peer: mysql-server:3306
       skipAnalysis: false
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - key: db.statement
           value: "DELETE FROM test_DBCP WHERE id=1"
@@ -182,7 +182,7 @@ segmentItems:
       spanType: Local
       peer: ''
       skipAnalysis: false
-    - operationName: Mysql/JDBI/Statement/execute
+    - operationName: Mysql/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 15
       startTime: gt 0
@@ -193,7 +193,7 @@ segmentItems:
       peer: mysql-server:3306
       skipAnalysis: false
       tags:
-        - {key: db.type, value: sql}
+        - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - key: db.statement
           value: "DROP table test_DBCP"

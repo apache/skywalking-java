@@ -31,9 +31,9 @@ scenarios_home="${home}/scenarios"
 num_of_testcases=
 
 container_image_version="1.0.0"
-base_image_java="adoptopenjdk/openjdk8:alpine"
+base_image_java="eclipse-temurin:8-jdk"
 base_image_tomcat="tomcat:8.5-jdk8-openjdk"
-jacoco_version="${JACOCO_VERSION:-0.8.6}"
+jacoco_version="${JACOCO_VERSION:-0.8.8}"
 
 os="$(uname)"
 
@@ -148,6 +148,14 @@ agent_home_selector() {
     _agent_home=${target_agent_home}
 }
 
+remove_dir() {
+    dir=$1
+    if [[ "${os}" == "Darwin" ]]; then
+        find ${dir} -type d -exec chmod -a "$(whoami) deny delete" {} \;
+    fi
+    rm -rf $dir
+}
+
 start_stamp=`date +%s`
 parse_commandline "$@"
 
@@ -160,7 +168,7 @@ test -z "$scenario_name" && exitWithMessage "Missing value for the scenario argu
 
 if [[ ! -d ${agent_home} ]]; then
     echo "[WARN] SkyWalking Agent not exists"
-    ${mvnw} --batch-mode -f ${home}/../../pom.xml -Pagent -DskipTests clean package
+    ${mvnw} -q --batch-mode -f ${home}/../../pom.xml -Pagent -DskipTests clean package
 fi
 # if it fails last time, relevant information will be deleted
 
@@ -176,7 +184,7 @@ sed -i '' '/<\/sourceDirectories>/i\'$'\n''<sourceDirectory>scenarios\/'"$scenar
 sed -i '/<\/sourceDirectories>/i <sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>' ./pom.xml
 
 if [[ "$force_build" == "on" ]]; then
-    ${mvnw} --batch-mode \
+    ${mvnw} -q --batch-mode \
       -f ${home}/pom.xml \
       -DskipTests \
       -Dbase_image_java=${base_image_java} \
@@ -235,7 +243,7 @@ do
     cp ./config/expectedData.yaml ${case_work_base}/data
 
     # echo "build ${testcase_name}"
-    ${mvnw} --batch-mode clean package -Dtest.framework.version=${version} && \
+    ${mvnw} -q --batch-mode clean package -Dtest.framework.version=${version} && \
         mv ./target/${scenario_name}.* ${case_work_base}
 
     java -jar \
@@ -257,7 +265,7 @@ do
     bash ${case_work_base}/scenario.sh $debug_mode 1>${case_work_logs_dir}/${testcase_name}.log
     status=$?
     if [[ $status == 0 ]]; then
-        [[ -z $debug_mode ]] && rm -rf ${case_work_base}
+        [[ -z $debug_mode ]] && remove_dir ${case_work_base}
     else
         exitWithMessage "Testcase ${testcase_name} failed!"
     fi

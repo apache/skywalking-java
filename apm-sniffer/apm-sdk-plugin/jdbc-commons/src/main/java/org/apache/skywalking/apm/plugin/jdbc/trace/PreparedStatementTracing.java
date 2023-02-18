@@ -32,10 +32,10 @@ public class PreparedStatementTracing {
 
     public static <R> R execute(java.sql.PreparedStatement realStatement, ConnectionInfo connectInfo, String method,
         String sql, Executable<R> exec) throws SQLException {
-        final AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBI/PreparedStatement/" + method, connectInfo
+        final AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/PreparedStatement/" + method, connectInfo
             .getDatabasePeer());
         try {
-            Tags.DB_TYPE.set(span, "sql");
+            Tags.DB_TYPE.set(span, connectInfo.getDBType());
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
             Tags.DB_STATEMENT.set(span, sql);
             span.setComponent(connectInfo.getComponent());

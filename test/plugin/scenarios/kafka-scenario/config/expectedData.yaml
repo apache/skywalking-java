@@ -158,7 +158,7 @@ segmentItems:
       componentId: 41
       isError: false
       spanType: Entry
-      peer: ''
+      peer: kafka-server:9092
       tags:
       - {key: mq.broker, value: 'kafka-server:9092'}
       - {key: mq.topic, value: test}
@@ -194,7 +194,7 @@ segmentItems:
         componentId: 41
         isError: false
         spanType: Entry
-        peer: ''
+        peer: kafka-server:9092
         tags:
           - {key: mq.broker, value: 'kafka-server:9092'}
           - {key: mq.topic, value: test.}
@@ -241,7 +241,7 @@ segmentItems:
         componentId: 41
         isError: false
         spanType: Entry
-        peer: ''
+        peer: kafka-server:9092
         tags:
           - { key: mq.broker, value: 'kafka-server:9092' }
           - { key: mq.topic, value: assign }

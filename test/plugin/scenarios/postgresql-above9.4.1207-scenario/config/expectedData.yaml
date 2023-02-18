@@ -19,11 +19,11 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: PostgreSQL/JDBI/PreparedStatement/executeWithFlags
+    - operationName: PostgreSQL/JDBC/PreparedStatement/executeWithFlags
       parentSpanId: 0
       spanId: 1
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: PostgreSQL}
       - {key: db.instance, value: postgres}
       - key: db.statement
         value: "CREATE TABLE test_007(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(1)\
@@ -36,11 +36,11 @@ segmentItems:
       componentId: 37
       peer: postgresql-server:5432
       skipAnalysis: 'false'
-    - operationName: PostgreSQL/JDBI/CallableStatement/executeWithFlags
+    - operationName: PostgreSQL/JDBC/CallableStatement/executeWithFlags
       parentSpanId: 0
       spanId: 2
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: PostgreSQL}
       - {key: db.instance, value: postgres}
       - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
       - {key: db.sql.parameters, value: '[1,1]'}
@@ -52,11 +52,11 @@ segmentItems:
       componentId: 37
       peer: postgresql-server:5432
       skipAnalysis: 'false'
-    - operationName: PostgreSQL/JDBI/Statement/execute
+    - operationName: PostgreSQL/JDBC/Statement/execute
       parentSpanId: 0
       spanId: 3
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: PostgreSQL}
       - {key: db.instance, value: postgres}
       - {key: db.statement, value: DROP table test_007}
       startTime: nq 0
@@ -67,11 +67,11 @@ segmentItems:
       componentId: 37
       peer: postgresql-server:5432
       skipAnalysis: 'false'
-    - operationName: PostgreSQL/JDBI/Connection/close
+    - operationName: PostgreSQL/JDBC/Connection/close
       parentSpanId: 0
       spanId: 4
       tags:
-      - {key: db.type, value: sql}
+      - {key: db.type, value: PostgreSQL}
       - {key: db.instance, value: postgres}
       - {key: db.statement, value: ''}
       startTime: nq 0

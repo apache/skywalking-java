@@ -28,7 +28,7 @@ segmentItems:
       componentId: 45
       isError: false
       spanType: Exit
-      peer: not null
+      peer: not blank
       tags:
       - {key: mq.broker, value: not blank}
       - {key: mq.queue, value: test}
@@ -59,7 +59,7 @@ segmentItems:
       componentId: 46
       isError: false
       spanType: Entry
-      peer: ''
+      peer: not blank
       tags:
       - {key: mq.broker, value: not blank}
       - {key: mq.queue, value: test}

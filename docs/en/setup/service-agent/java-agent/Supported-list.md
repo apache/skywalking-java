@@ -1,5 +1,5 @@
 # Tracing and Tracing based Metrics Analyze Plugins
-The following plugins provide the distributed tracing capability, and the OAP backend would analyze the topology and 
+The following plugins provide the distributed tracing capability, and the OAP backend would analyze the topology and
 metrics based on the tracing data.
 
 * HTTP Server
@@ -9,6 +9,7 @@ metrics based on the tracing data.
   * [Tomcat](https://github.com/apache/tomcat) 10
   * [Spring Boot](https://github.com/spring-projects/spring-boot) Web 4.x
   * Spring MVC 3.x, 4.x 5.x with servlet 3.x
+  * Spring MVC 6.x (Optional²)
   * [Nutz Web Framework](https://github.com/nutzam/nutz)  1.x
   * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x
   * [Resin](https://www.caucho.com/resin-4.0/) 3 (Optional¹)
@@ -27,6 +28,7 @@ metrics based on the tracing data.
   * [Okhttp](https://github.com/square/okhttp) 2.x -> 3.x -> 4.x
   * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 4.x
+  * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 6.x (Optional²)
   * [Jetty Client](http://www.eclipse.org/jetty/) 9
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
   * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
@@ -66,10 +68,10 @@ metrics based on the tracing data.
   * [JSONRPC4J](https://github.com/briandilley/jsonrpc4j) 1.2.0 -> 1.6
 * MQ
   * [RocketMQ](https://github.com/apache/rocketmq) 4.x
-  * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 2.8.0
+  * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 3.2.3
   * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 2.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
-  * [RabbitMQ](https://www.rabbitmq.com/) 5.x
+  * [RabbitMQ](https://www.rabbitmq.com/) 3.x-> 5.x
   * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.9.x
   * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.15.x
   * Aliyun ONS 1.x (Optional¹)
@@ -138,7 +140,7 @@ metrics based on the tracing data.
   * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x
 * Logging Framework
   * [log4j](https://github.com/apache/log4j) 2.x
-  * [log4j2](https://github.com/apache/logging-log4j2) 1.2.x 
+  * [log4j2](https://github.com/apache/logging-log4j2) 1.2.x
   * [logback](https://github.com/qos-ch/logback) 1.2.x
 * ORM
   * [MyBatis](https://github.com/mybatis/mybatis-3) 3.4.x -> 3.5.x
@@ -151,8 +153,9 @@ The meter plugin provides the advanced metrics collections, which are not a part
 * Thread Pool
   * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
   * [Tomcat](https://github.com/apache/tomcat) 7.0.x -> 10.0.x
+  * [Dubbo](https://github.com/apache/dubbo) 2.5.x -> 2.7.x
 ___
-¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository, 
+¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository,
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.
 
 ²These plugins affect the performance or must be used under some conditions, from experiences. So only released in `/optional-plugins` or `/bootstrap-plugins`, copy to `/plugins` in order to make them work.

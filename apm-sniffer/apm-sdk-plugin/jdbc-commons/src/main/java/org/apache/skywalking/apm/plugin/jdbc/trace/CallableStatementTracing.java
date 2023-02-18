@@ -32,10 +32,10 @@ public class CallableStatementTracing {
 
     public static <R> R execute(java.sql.CallableStatement realStatement, ConnectionInfo connectInfo, String method,
         String sql, Executable<R> exec) throws SQLException {
-        AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBI/CallableStatement/" + method, connectInfo
+        AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/CallableStatement/" + method, connectInfo
             .getDatabasePeer());
         try {
-            Tags.DB_TYPE.set(span, "sql");
+            Tags.DB_TYPE.set(span, connectInfo.getDBType());
             SpanLayer.asDB(span);
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
             Tags.DB_STATEMENT.set(span, sql);

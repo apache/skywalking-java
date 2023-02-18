@@ -32,9 +32,9 @@ public class StatementTracing {
     public static <R> R execute(java.sql.Statement realStatement, ConnectionInfo connectInfo, String method, String sql,
         Executable<R> exec) throws SQLException {
         try {
-            AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBI/Statement/" + method, connectInfo
+            AbstractSpan span = ContextManager.createExitSpan(connectInfo.getDBType() + "/JDBC/Statement/" + method, connectInfo
                 .getDatabasePeer());
-            Tags.DB_TYPE.set(span, "sql");
+            Tags.DB_TYPE.set(span, connectInfo.getDBType());
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
             Tags.DB_STATEMENT.set(span, sql);
             span.setComponent(connectInfo.getComponent());

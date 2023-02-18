@@ -22,7 +22,7 @@ inputs:
   base_image_java:
     description: "The Java Docker image under which this test case will run"
     required: false
-    default: "adoptopenjdk/openjdk8:alpine"
+    default: "eclipse-temurin:8-jdk"
   base_image_tomcat:
     description: "The Tomcat Docker image under which this test case will run"
     required: false
@@ -44,19 +44,27 @@ runs:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-agent-test-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven-agent-test-
+    - uses: actions/setup-java@v2
+      with:
+        distribution: temurin
+        java-version: 17
     - name: Build SkyWalking Agent
       shell: bash
       run: |
         echo "::group::Build SkyWalking Agent"
         # Retry one more time due to frequent "maven connection reset"
-        ./mvnw --batch-mode clean package -Dmaven.test.skip || \
-        ./mvnw --batch-mode clean package -Dmaven.test.skip
+        ./mvnw -q --batch-mode clean package -Dmaven.test.skip || \
+        ./mvnw -q --batch-mode clean package -Dmaven.test.skip
         echo "::endgroup::"
     - uses: actions/upload-artifact@v2
       name: Upload Agent
       with:
         name: skywalking-agent
         path: skywalking-agent
+    - uses: actions/setup-java@v2
+      with:
+        distribution: temurin
+        java-version: 8
     - name: Build Docker Image
       shell: bash
       run: |

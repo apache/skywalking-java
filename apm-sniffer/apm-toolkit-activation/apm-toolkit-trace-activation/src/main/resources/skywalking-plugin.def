@@ -20,3 +20,9 @@ toolkit-trace=org.apache.skywalking.apm.toolkit.activation.trace.TraceContextAct
 toolkit-trace=org.apache.skywalking.apm.toolkit.activation.trace.CallableOrRunnableActivation
 toolkit-tag=org.apache.skywalking.apm.toolkit.activation.trace.TagAnnotationActivation
 toolkit-exception=org.apache.skywalking.apm.toolkit.activation.trace.IgnoredExceptionAnnotationActivation
+toolkit-tracer=org.apache.skywalking.apm.toolkit.activation.trace.CarrierItemRefActivation
+toolkit-tracer=org.apache.skywalking.apm.toolkit.activation.trace.ContextCarrierRefActivation
+toolkit-tracer=org.apache.skywalking.apm.toolkit.activation.trace.ContextSnapshotRefActivation
+toolkit-tracer=org.apache.skywalking.apm.toolkit.activation.trace.SpanRefActivation
+toolkit-tracer=org.apache.skywalking.apm.toolkit.activation.trace.TracerActivation
+

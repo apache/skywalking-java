@@ -18,7 +18,20 @@
 
 package org.apache.skywalking.apm.plugin.jdbc;
 
-import com.mysql.cj.api.jdbc.JdbcConnection;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyByte;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyShort;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -43,42 +56,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
 import org.apache.skywalking.apm.agent.test.helper.SpanHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
+import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
-import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import com.mysql.cj.api.jdbc.JdbcConnection;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyByte;
-import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyFloat;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyShort;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class SWCallableStatementTest extends AbstractStatementTest {
 
     @SegmentStoragePoint
@@ -86,6 +83,8 @@ public class SWCallableStatementTest extends AbstractStatementTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private Array array;
@@ -331,9 +330,9 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         verify(mysqlCallableStatement).setNCharacterStream(anyInt(), any(Reader.class), anyLong());
         verify(mysqlCallableStatement).setNClob(27, nClob);
         verify(mysqlCallableStatement).setNClob(28, reader, 1);
-        verify(mysqlCallableStatement).setObject(anyInt(), Matchers.anyObject());
-        verify(mysqlCallableStatement).setObject(anyInt(), Matchers.anyObject(), anyInt());
-        verify(mysqlCallableStatement).setObject(anyInt(), Matchers.anyObject(), anyInt(), anyInt());
+        verify(mysqlCallableStatement).setObject(anyInt(), any());
+        verify(mysqlCallableStatement).setObject(anyInt(), any(), anyInt());
+        verify(mysqlCallableStatement).setObject(anyInt(), any(), anyInt(), anyInt());
         verify(mysqlCallableStatement).setRef(anyInt(), any(Ref.class));
         verify(mysqlCallableStatement).setRowId(anyInt(), any(RowId.class));
         verify(mysqlCallableStatement).setSQLXML(anyInt(), any(SQLXML.class));
@@ -383,9 +382,9 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         verify(mysqlCallableStatement).setNCharacterStream(anyString(), any(Reader.class), anyLong());
         verify(mysqlCallableStatement).setNClob(27, nClob);
         verify(mysqlCallableStatement).setNClob(28, reader, 1);
-        verify(mysqlCallableStatement).setObject(anyString(), Matchers.anyObject());
-        verify(mysqlCallableStatement).setObject(anyString(), Matchers.anyObject(), anyInt());
-        verify(mysqlCallableStatement).setObject(anyString(), Matchers.anyObject(), anyInt(), anyInt());
+        verify(mysqlCallableStatement).setObject(anyString(), any());
+        verify(mysqlCallableStatement).setObject(anyString(), any(), anyInt());
+        verify(mysqlCallableStatement).setObject(anyString(), any(), anyInt(), anyInt());
         verify(mysqlCallableStatement).setRowId(anyString(), any(RowId.class));
         verify(mysqlCallableStatement).setSQLXML(anyString(), any(SQLXML.class));
         verify(mysqlCallableStatement).setTime(anyString(), any(Time.class));
@@ -481,7 +480,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeQuery", "SELECT * FROM test");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeQuery", "SELECT * FROM test");
     }
 
     @Test
@@ -498,7 +497,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeQuery", "SELECT * FROM test");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeQuery", "SELECT * FROM test");
     }
 
     @Test
@@ -513,7 +512,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "INSERT INTO test VALUES(1)");
     }
 
     @Test
@@ -530,7 +529,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "INSERT INTO test VALUES(1)");
     }
 
     @Test
@@ -547,7 +546,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "INSERT INTO test VALUES(1)");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "INSERT INTO test VALUES(1)");
     }
 
     @Test
@@ -564,7 +563,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/execute", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/execute", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -581,7 +580,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = ?");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = ?");
     }
 
     @Test
@@ -598,7 +597,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -614,7 +613,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -630,7 +629,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -646,7 +645,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeUpdate", "UPDATE test SET  a = 1");
     }
 
     @Test
@@ -666,7 +665,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeBatch", "");
+        assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeBatch", "");
     }
 
     @Test
@@ -710,7 +709,7 @@ public class SWCallableStatementTest extends AbstractStatementTest {
             TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
             List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
             assertThat(spans.size(), is(1));
-            assertDBSpan(spans.get(0), "Mysql/JDBI/CallableStatement/executeQuery", "SELECT * FROM test WHERE a = ? OR b = ? OR c=? OR d = ? OR e=?");
+            assertDBSpan(spans.get(0), "Mysql/JDBC/CallableStatement/executeQuery", "SELECT * FROM test WHERE a = ? OR b = ? OR c=? OR d = ? OR e=?");
             List<LogDataEntity> logs = SpanHelper.getLogs(spans.get(0));
             Assert.assertThat(logs.size(), is(1));
             assertDBSpanLog(logs.get(0));

@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>java-agent-sniffer</artifactId>
-        <version>8.13.0-SNAPSHOT</version>
+        <version>8.15.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>apm-sdk-plugin</artifactId>
@@ -70,7 +70,7 @@
         <module>elasticsearch-6.x-plugin</module>
         <module>elasticsearch-7.x-plugin</module>
         <module>undertow-plugins</module>
-        <module>rabbitmq-5.x-plugin</module>
+        <module>rabbitmq-plugin</module>
         <module>dubbo-conflict-patch</module>
         <module>canal-1.x-plugin</module>
         <module>dubbo-2.7.x-plugin</module>
@@ -113,7 +113,8 @@
         <module>druid-1.x-plugin</module>
         <module>hikaricp-3.x-4.x-plugin</module>
         <module>httpclient-5.x-plugin</module>
-        <module>clickhouse-0.3.x-plugin</module>
+        <module>clickhouse-0.3.2.x-plugin</module>
+        <module>clickhouse-0.3.1-plugin</module>
         <module>kylin-jdbc-2.6.x-3.x-4.x-plugin</module>
         <module>okhttp-2.x-plugin</module>
         <module>pulsar-common</module>
@@ -170,6 +171,15 @@
             <artifactId>apm-test-tools</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
         </dependency>
     </dependencies>
 

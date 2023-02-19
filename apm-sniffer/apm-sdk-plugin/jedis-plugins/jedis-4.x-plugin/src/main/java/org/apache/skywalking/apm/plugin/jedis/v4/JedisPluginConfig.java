@@ -41,7 +41,6 @@ public class JedisPluginConfig {
              */
             public static int REDIS_PARAMETER_MAX_LENGTH = 128;
 
-
             /**
              * Operation represent a cache span is "write" or "read" action , and "op"(operation) is tagged with key "cache.op" usually
              * This config term define which command should be converted to write Operation .

@@ -24,8 +24,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.when;
-
+import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +53,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Value;
 import org.neo4j.driver.internal.BoltServerAddress;
@@ -61,11 +62,8 @@ import org.neo4j.driver.internal.DatabaseName;
 import org.neo4j.driver.internal.spi.Connection;
 import org.neo4j.driver.internal.value.MapValue;
 import org.neo4j.driver.internal.value.StringValue;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 @SuppressWarnings("unchecked")
 public class SessionRunInterceptorTest {
 
@@ -77,6 +75,9 @@ public class SessionRunInterceptorTest {
     private final Method method = MockMethod.class.getMethod("runAsync");
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
     private SessionRunInterceptor sessionRunInterceptor;

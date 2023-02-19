@@ -25,6 +25,8 @@ import org.apache.skywalking.apm.agent.core.context.RuntimeContext;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -53,21 +55,36 @@ import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.RESP
  * the abstract method interceptor
  */
 public abstract class AbstractMethodInterceptor implements InstanceMethodsAroundInterceptor {
-
+    private static final ILog LOGGER = LogManager.getLogger(AbstractMethodInterceptor.class);
     private static boolean IS_SERVLET_GET_STATUS_METHOD_EXIST;
+    private static boolean IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST;
     private static final String SERVLET_RESPONSE_CLASS = "javax.servlet.http.HttpServletResponse";
+    private static final String JAKARTA_SERVLET_RESPONSE_CLASS = "jakarta.servlet.http.HttpServletResponse";
     private static final String GET_STATUS_METHOD = "getStatus";
 
     private static boolean IN_SERVLET_CONTAINER;
+    private static boolean IS_JAVAX = false;
+    private static boolean IS_JAKARTA = false;
 
     static {
         IS_SERVLET_GET_STATUS_METHOD_EXIST = MethodUtil.isMethodExist(
                 AbstractMethodInterceptor.class.getClassLoader(), SERVLET_RESPONSE_CLASS, GET_STATUS_METHOD);
+        IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST = MethodUtil.isMethodExist(
+                AbstractMethodInterceptor.class.getClassLoader(),
+            JAKARTA_SERVLET_RESPONSE_CLASS, GET_STATUS_METHOD);
         try {
             Class.forName(SERVLET_RESPONSE_CLASS, true, AbstractMethodInterceptor.class.getClassLoader());
             IN_SERVLET_CONTAINER = true;
+            IS_JAVAX = true;
         } catch (Exception ignore) {
-            IN_SERVLET_CONTAINER = false;
+            try {
+                Class.forName(
+                    JAKARTA_SERVLET_RESPONSE_CLASS, true, AbstractMethodInterceptor.class.getClassLoader());
+                IN_SERVLET_CONTAINER = true;
+                IS_JAKARTA = true;
+            } catch (Exception ignore2) {
+                IN_SERVLET_CONTAINER = false;
+            }
         }
     }
 
@@ -94,7 +111,7 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
             if (stackDepth == null) {
                 final ContextCarrier contextCarrier = new ContextCarrier();
 
-                if (IN_SERVLET_CONTAINER && HttpServletRequest.class.isAssignableFrom(request.getClass())) {
+                if (IN_SERVLET_CONTAINER && IS_JAVAX && HttpServletRequest.class.isAssignableFrom(request.getClass())) {
                     final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
                     CarrierItem next = contextCarrier.items();
                     while (next.hasNext()) {
@@ -115,6 +132,32 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
                     }
 
                     if (!CollectionUtil.isEmpty(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS)) {
+                        RequestUtil.collectHttpHeaders(httpServletRequest, span);
+                    }
+                } else if (IN_SERVLET_CONTAINER && IS_JAKARTA && jakarta.servlet.http.HttpServletRequest.class.isAssignableFrom(request.getClass())) {
+                    final jakarta.servlet.http.HttpServletRequest httpServletRequest = (jakarta.servlet.http.HttpServletRequest) request;
+                    CarrierItem next = contextCarrier.items();
+                    while (next.hasNext()) {
+                        next = next.next();
+                        next.setHeadValue(httpServletRequest.getHeader(next.getHeadKey()));
+                    }
+
+                    String operationName =
+                        this.buildOperationName(method, httpServletRequest.getMethod(),
+                            (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField());
+                    AbstractSpan span =
+                        ContextManager.createEntrySpan(operationName, contextCarrier);
+                    Tags.URL.set(span, httpServletRequest.getRequestURL().toString());
+                    Tags.HTTP.METHOD.set(span, httpServletRequest.getMethod());
+                    span.setComponent(ComponentsDefine.SPRING_MVC_ANNOTATION);
+                    SpanLayer.asHttp(span);
+
+                    if (SpringMVCPluginConfig.Plugin.SpringMVC.COLLECT_HTTP_PARAMS) {
+                        RequestUtil.collectHttpParam(httpServletRequest, span);
+                    }
+
+                    if (!CollectionUtil
+                        .isEmpty(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS)) {
                         RequestUtil.collectHttpHeaders(httpServletRequest, span);
                     }
                 } else if (ServerHttpRequest.class.isAssignableFrom(request.getClass())) {
@@ -191,8 +234,10 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
 
                     if (IS_SERVLET_GET_STATUS_METHOD_EXIST && HttpServletResponse.class.isAssignableFrom(response.getClass())) {
                         statusCode = ((HttpServletResponse) response).getStatus();
+                    } else if (IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST && jakarta.servlet.http.HttpServletResponse.class.isAssignableFrom(response.getClass())) {
+                        statusCode = ((jakarta.servlet.http.HttpServletResponse) response).getStatus();
                     } else if (ServerHttpResponse.class.isAssignableFrom(response.getClass())) {
-                        if (IS_SERVLET_GET_STATUS_METHOD_EXIST) {
+                        if (IS_SERVLET_GET_STATUS_METHOD_EXIST || IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST) {
                             statusCode = ((ServerHttpResponse) response).getRawStatusCode();
                         }
                         Object context = runtimeContext.get(REACTIVE_ASYNC_SPAN_IN_RUNTIME_CONTEXT);
@@ -216,8 +261,10 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
 
                 // Active HTTP parameter collection automatically in the profiling context.
                 if (!SpringMVCPluginConfig.Plugin.SpringMVC.COLLECT_HTTP_PARAMS && span.isProfiling()) {
-                    if (HttpServletRequest.class.isAssignableFrom(request.getClass())) {
+                    if (IS_JAVAX && HttpServletRequest.class.isAssignableFrom(request.getClass())) {
                         RequestUtil.collectHttpParam((HttpServletRequest) request, span);
+                    } else if (IS_JAKARTA && jakarta.servlet.http.HttpServletRequest.class.isAssignableFrom(request.getClass())) {
+                        RequestUtil.collectHttpParam((jakarta.servlet.http.HttpServletRequest) request, span);
                     } else if (ServerHttpRequest.class.isAssignableFrom(request.getClass())) {
                         RequestUtil.collectHttpParam((ServerHttpRequest) request, span);
                     }

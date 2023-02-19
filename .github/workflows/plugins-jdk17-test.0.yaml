@@ -27,9 +27,6 @@ on:
       - 'test/plugin/**'
       - '**/pom.xml'
       - '!**.md'
-  push:
-    branches:
-      - test/ci/*
 
 concurrency:
   group: plugins-jdk17-${{ github.event.pull_request.number || github.ref }}
@@ -59,8 +56,7 @@ jobs:
       matrix:
         case:
           - jdk17-with-gson-scenario
-#          TODO: We can't test it just yet, because it requires a Skywalking release
-#          - resttemplate-6.x-scenario
+          - resttemplate-6.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

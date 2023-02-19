@@ -64,7 +64,7 @@ public class FastPathMatcher implements TracePathMatcher {
             // pattern: a/?/c    a/b/c    a/b
             //            ↓        ↓       ↓
             // string:  a/b/c    a/b/d    a/d
-            if ((pc == '?' && sc != 0 && sc != '/') || pc == sc) {
+            if (pc == '?' && sc != 0 && sc != '/' || pc == sc) {
                 s++;
                 p++;
                 continue;

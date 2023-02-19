@@ -22,10 +22,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
-
+import static org.mockito.ArgumentMatchers.anyString;
 import java.io.PrintStream;
-
-import static org.mockito.Matchers.anyString;
 
 public class SystemOutWriterTest {
     private static PrintStream OUT_REF;

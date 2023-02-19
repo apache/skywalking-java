@@ -18,8 +18,9 @@
 
 package org.apache.skywalking.apm.plugin.mongodb.v2;
 
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 import java.lang.reflect.Method;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
@@ -42,15 +43,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class MongoDBCollectionMethodInterceptorTest {
 
     @SegmentStoragePoint
@@ -58,6 +56,8 @@ public class MongoDBCollectionMethodInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     private MongoDBCollectionMethodInterceptor interceptor;
 

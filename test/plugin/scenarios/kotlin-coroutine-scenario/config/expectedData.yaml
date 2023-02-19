@@ -49,7 +49,7 @@ segmentItems:
       - {key: db.instance, value: demo}
       - {key: db.statement, value: ''}
       skipAnalysis: 'false'
-    - operationName: /Kotlin/Coroutine
+    - operationName: Kotlin/Coroutine
       parentSpanId: -1
       spanId: 0
       startTime: nq 0

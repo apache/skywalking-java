@@ -21,12 +21,12 @@ package org.apache.skywalking.apm.plugin.trace.ignore;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.dynamic.AgentConfigChangeWatcher;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
+import org.apache.skywalking.apm.agent.test.helper.FieldGetter;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 public class TraceIgnorePatternWatcherTest {
 
@@ -42,9 +42,9 @@ public class TraceIgnorePatternWatcherTest {
     }
 
     @Test
-    public void testConfigModifyEvent() {
-        TraceIgnorePatternWatcher traceIgnorePatternWatcher = Whitebox.getInternalState(traceIgnoreExtendService
-            , "traceIgnorePatternWatcher");
+    public void testConfigModifyEvent() throws IllegalAccessException, NoSuchFieldException {
+        TraceIgnorePatternWatcher traceIgnorePatternWatcher =
+        FieldGetter.getValue(traceIgnoreExtendService, "traceIgnorePatternWatcher");
         traceIgnorePatternWatcher.notify(new AgentConfigChangeWatcher.ConfigChangeEvent(
             "/eureka/apps/**",
             AgentConfigChangeWatcher.EventType.MODIFY
@@ -54,9 +54,9 @@ public class TraceIgnorePatternWatcherTest {
     }
 
     @Test
-    public void testConfigDeleteEvent() {
-        TraceIgnorePatternWatcher traceIgnorePatternWatcher = Whitebox.getInternalState(traceIgnoreExtendService
-            , "traceIgnorePatternWatcher");
+    public void testConfigDeleteEvent() throws IllegalAccessException, NoSuchFieldException {
+        TraceIgnorePatternWatcher traceIgnorePatternWatcher =
+            FieldGetter.getValue(traceIgnoreExtendService, "traceIgnorePatternWatcher");
         traceIgnorePatternWatcher.notify(new AgentConfigChangeWatcher.ConfigChangeEvent(
             null,
             AgentConfigChangeWatcher.EventType.DELETE

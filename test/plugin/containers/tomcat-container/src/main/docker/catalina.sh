@@ -119,7 +119,7 @@ if [ -f "${AGENT_FILE_PATH}/skywalking-agent.jar" ]; then
     -Dskywalking.agent.authentication=test-token
     -Dskywalking.meter.report_interval=1
     -Dskywalking.logging.dir=${LOGS_HOME}
-    -Xms256m -Xmx256m -XX:PermSize=64M -XX:MaxPermSize=64"
+    -Xms256m -Xmx256m"
 fi
 
 # OS specific support.  $var _must_ be set to either true or false.

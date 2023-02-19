@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.skywalking.apm.commons.datacarrier.DataCarrier;
+import org.apache.skywalking.apm.commons.datacarrier.FieldGetter;
 import org.apache.skywalking.apm.commons.datacarrier.SampleData;
 import org.junit.Assert;
 import org.junit.Test;
-import org.powermock.api.support.membermodification.MemberModifier;
 
 public class ConsumerTest {
     public static LinkedBlockingQueue<SampleData> BUFFER = new LinkedBlockingQueue<SampleData>();
@@ -35,7 +35,7 @@ public class ConsumerTest {
     public static boolean IS_OCCUR_ERROR = false;
 
     @Test
-    public void testConsumerLessThanChannel() throws IllegalAccessException {
+    public void testConsumerLessThanChannel() throws IllegalAccessException, NoSuchFieldException {
 
         final DataCarrier<SampleData> carrier = new DataCarrier<SampleData>(2, 100);
 
@@ -127,11 +127,10 @@ public class ConsumerTest {
         }
     }
 
-    private IConsumer getConsumer(DataCarrier<SampleData> carrier) throws IllegalAccessException {
-        ConsumeDriver pool = (ConsumeDriver) MemberModifier.field(DataCarrier.class, "driver").get(carrier);
-        ConsumerThread[] threads = (ConsumerThread[]) MemberModifier.field(ConsumeDriver.class, "consumerThreads")
-                                                                    .get(pool);
+    private IConsumer getConsumer(DataCarrier<SampleData> carrier) throws IllegalAccessException, NoSuchFieldException {
+        ConsumeDriver pool = FieldGetter.getValue(carrier, "driver");
+        ConsumerThread[] threads = FieldGetter.getValue(pool, "consumerThreads");
 
-        return (IConsumer) MemberModifier.field(ConsumerThread.class, "consumer").get(threads[0]);
+        return FieldGetter.getValue(threads[0], "consumer");
     }
 }

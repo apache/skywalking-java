@@ -36,7 +36,22 @@ public class RedisPipelineCommandExecutor implements AutoCloseable {
         pipeline.syncAndReturnAll();
     }
 
+    public void pipelineDiscard() {
+        Pipeline pipeline = jedis.pipelined();
+        pipeline.multi();
+        pipeline.hset("a", "a", "a");
+        pipeline.hget("a", "a");
+        pipeline.hdel("a", "a");
+        pipeline.discard();
+    }
+
     public void close() throws Exception {
-        jedis.close();
+        // In the lower version(2.4.2, 2.5.2) of the test, jedis will close twice.
+        // Here, catch exceptions to prevent the impact on the test results.
+        try {
+            jedis.close();
+        } catch (Exception e) {
+            // ignore
+        }
     }
 }

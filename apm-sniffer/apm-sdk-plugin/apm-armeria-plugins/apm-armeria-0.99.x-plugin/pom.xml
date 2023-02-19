@@ -28,7 +28,7 @@
     <name>apm-armeria-0.99.x-plugin</name>
 
     <packaging>jar</packaging>
-    <description>SkyWalking Agent Plugin for Armeria 0.99.x</description>
+    <description>SkyWalking Agent Plugin for Armeria 0.99.x+</description>
 
     <dependencies>
         <dependency>

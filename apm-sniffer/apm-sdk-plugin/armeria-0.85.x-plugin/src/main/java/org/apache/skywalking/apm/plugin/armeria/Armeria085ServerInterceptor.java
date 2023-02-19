@@ -17,10 +17,9 @@
 
 package org.apache.skywalking.apm.plugin.armeria;
 
-import com.linecorp.armeria.common.DefaultHttpRequest;
 import com.linecorp.armeria.common.HttpHeaders;
+import com.linecorp.armeria.common.HttpRequest;
 import io.netty.util.AsciiString;
-import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -32,13 +31,15 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
+import java.lang.reflect.Method;
+
 @SuppressWarnings("unused") // actually used
 public class Armeria085ServerInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(final EnhancedInstance objInst, final Method method, final Object[] allArguments,
                              final Class<?>[] argumentsTypes, final MethodInterceptResult result) {
 
-        DefaultHttpRequest httpRequest = (DefaultHttpRequest) allArguments[1];
+        HttpRequest httpRequest = (HttpRequest) allArguments[1];
         HttpHeaders headers = httpRequest.headers();
 
         ContextCarrier carrier = new ContextCarrier();

@@ -52,13 +52,7 @@ public class Armeria099ClientInstrumentation extends ClassInstanceMethodsEnhance
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("execute")
-                                .and(takesArgument(0, named("com.linecorp.armeria.common.SessionProtocol")))
-                                .and(takesArgument(1, named("com.linecorp.armeria.client.endpoint.EndpointGroup")))
-                                .and(takesArgument(2, named("com.linecorp.armeria.common.HttpMethod")))
-                                .and(takesArgument(3, named("java.lang.String")))
-                                .and(takesArgument(4, named("java.lang.String")))
-                                .and(takesArgument(5, named("java.lang.String")));
+                        return named("execute").and(takesArgument(0, named("com.linecorp.armeria.common.SessionProtocol"))).and(takesArgument(1, named("com.linecorp.armeria.client.endpoint.EndpointGroup"))).and(takesArgument(2, named("com.linecorp.armeria.common.HttpMethod"))).and(takesArgument(3, named("java.lang.String"))).and(takesArgument(4, named("java.lang.String"))).and(takesArgument(5, named("java.lang.String")));
                     }
 
                     @Override
@@ -76,6 +70,6 @@ public class Armeria099ClientInstrumentation extends ClassInstanceMethodsEnhance
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{};
+        return new String[]{"com.linecorp.armeria.common.AbstractHttpHeadersBuilder"};
     }
 }

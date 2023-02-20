@@ -88,7 +88,6 @@ public class SkywalkingMeterRegistryTest {
             .register(registry);
     }
 
-
     /**
      * Working on {@link io.micrometer.core.instrument.Gauge} check
      */

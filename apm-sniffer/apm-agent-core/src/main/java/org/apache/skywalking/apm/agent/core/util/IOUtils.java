@@ -56,7 +56,6 @@ public class IOUtils {
         return output.toByteArray();
     }
 
-
     /**
      * Copy bytes from an <code>InputStream</code> to an
      * <code>OutputStream</code>.

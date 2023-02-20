@@ -33,7 +33,6 @@ public class ConnectionInstrumentation extends AbstractWitnessInstrumentation {
     private static final String ENHANCE_CLASS = "redis.clients.jedis.Connection";
     private static final String CONNECTION_CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jedis.v4.ConnectionConstructorInterceptor";
     private static final String CONNECTION_EXECUTE_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jedis.v4.ConnectionExecuteInterceptor";
-    private static final String CONNECTION_SEND_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jedis.v4.ConnectionSendCmdInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -70,22 +69,6 @@ public class ConnectionInstrumentation extends AbstractWitnessInstrumentation {
                     @Override
                     public String getMethodsInterceptor() {
                         return CONNECTION_EXECUTE_INTERCEPTOR;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("sendCommand").and(takesArgumentWithType(0, "redis.clients.jedis.CommandArguments"));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return CONNECTION_SEND_INTERCEPTOR;
                     }
 
                     @Override

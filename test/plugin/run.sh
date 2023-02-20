@@ -168,7 +168,7 @@ test -z "$scenario_name" && exitWithMessage "Missing value for the scenario argu
 
 if [[ ! -d ${agent_home} ]]; then
     echo "[WARN] SkyWalking Agent not exists"
-    ${mvnw} --batch-mode -f ${home}/../../pom.xml -Pagent -DskipTests clean package
+    ${mvnw} -q --batch-mode -f ${home}/../../pom.xml -Pagent -DskipTests clean package
 fi
 # if it fails last time, relevant information will be deleted
 
@@ -184,7 +184,7 @@ sed -i '' '/<\/sourceDirectories>/i\'$'\n''<sourceDirectory>scenarios\/'"$scenar
 sed -i '/<\/sourceDirectories>/i <sourceDirectory>scenarios\/'"$scenario_name"'<\/sourceDirectory>' ./pom.xml
 
 if [[ "$force_build" == "on" ]]; then
-    ${mvnw} --batch-mode \
+    ${mvnw} -q --batch-mode \
       -f ${home}/pom.xml \
       -DskipTests \
       -Dbase_image_java=${base_image_java} \
@@ -243,7 +243,7 @@ do
     cp ./config/expectedData.yaml ${case_work_base}/data
 
     # echo "build ${testcase_name}"
-    ${mvnw} --batch-mode clean package -Dtest.framework.version=${version} && \
+    ${mvnw} -q --batch-mode clean package -Dtest.framework.version=${version} && \
         mv ./target/${scenario_name}.* ${case_work_base}
 
     java -jar \

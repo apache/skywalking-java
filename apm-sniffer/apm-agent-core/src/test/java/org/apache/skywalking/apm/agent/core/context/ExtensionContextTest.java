@@ -18,19 +18,18 @@
 
 package org.apache.skywalking.apm.agent.core.context;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.NoopSpan;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ExtensionContextTest {
 
     @Test
@@ -87,9 +86,7 @@ public class ExtensionContextTest {
         context.handle(span);
         verify(span, times(0)).skipAnalysis();
 
-        PowerMockito.mockStatic(System.class);
-        PowerMockito.when(System.currentTimeMillis()).thenReturn(1602743904804L + 500);
-        span = PowerMockito.mock(NoopSpan.class);
+        span = mock(NoopSpan.class);
         context.deserialize("0-1602743904804");
         context.handle(span);
         verify(span, times(0)).tag(Tags.TRANSMISSION_LATENCY, "500");

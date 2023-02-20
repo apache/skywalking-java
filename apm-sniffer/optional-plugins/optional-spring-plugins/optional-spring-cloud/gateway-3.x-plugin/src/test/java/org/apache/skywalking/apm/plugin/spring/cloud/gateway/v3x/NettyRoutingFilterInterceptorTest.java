@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x;
 import java.security.Principal;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -42,10 +43,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-
-import java.util.List;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.http.codec.multipart.Part;
@@ -56,8 +55,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class NettyRoutingFilterInterceptorTest {
     private static class ServerWebExchangeEnhancedInstance implements ServerWebExchange, EnhancedInstance {
         private ContextSnapshot snapshot;
@@ -158,6 +156,9 @@ public class NettyRoutingFilterInterceptorTest {
     private final NettyRoutingFilterInterceptor interceptor = new NettyRoutingFilterInterceptor();
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
 

@@ -25,19 +25,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ClusterConstructorWithStateListenerArgInterceptorTest {
 
     @Mock
     private ClusterConstructorWithStateListenerArgInterceptor interceptor;
 
-    @Mock
+    @Spy
     private EnhancedInstance enhancedInstance = new EnhancedInstance() {
         private ConnectionInfo connectionInfo;
 

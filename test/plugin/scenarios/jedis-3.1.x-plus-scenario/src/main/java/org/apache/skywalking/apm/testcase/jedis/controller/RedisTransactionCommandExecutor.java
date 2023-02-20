@@ -35,6 +35,13 @@ public class RedisTransactionCommandExecutor implements AutoCloseable {
         pipeline.exec();
     }
 
+    public void multiDiscard() {
+        Transaction pipeline = jedis.multi();
+        pipeline.set("key", "a");
+        pipeline.expire("key", 5);
+        pipeline.discard();
+    }
+
     public void close() throws Exception {
         jedis.close();
     }

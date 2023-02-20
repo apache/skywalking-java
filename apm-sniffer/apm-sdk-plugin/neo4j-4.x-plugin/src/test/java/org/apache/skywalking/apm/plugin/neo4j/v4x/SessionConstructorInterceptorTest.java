@@ -21,29 +21,35 @@ package org.apache.skywalking.apm.plugin.neo4j.v4x;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import java.util.Optional;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.MockContextSnapshot;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoRule;
 import org.neo4j.driver.internal.DatabaseName;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ContextManager.class})
+@RunWith(MockitoJUnitRunner.class)
 public class SessionConstructorInterceptorTest {
 
     private SessionConstructorInterceptor interceptor;
     private EnhancedInstance enhancedInstance;
+
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+
     @Mock
     private DatabaseName databaseName;
+
+    private MockedStatic<ContextManager> mockedContextManager;
 
     @Before
     public void setUp() throws Exception {
@@ -61,9 +67,13 @@ public class SessionConstructorInterceptorTest {
                 this.value = value;
             }
         };
-        when(databaseName.databaseName()).thenReturn(Optional.of("neo4j"));
-        mockStatic(ContextManager.class);
-        when(ContextManager.capture()).thenReturn(MockContextSnapshot.INSTANCE.mockContextSnapshot());
+        mockedContextManager = Mockito.mockStatic(ContextManager.class);
+        mockedContextManager.when(ContextManager::capture).thenReturn(MockContextSnapshot.INSTANCE.mockContextSnapshot());
+    }
+
+    @After
+    public void tearDown() {
+        mockedContextManager.close();
     }
 
     @Test

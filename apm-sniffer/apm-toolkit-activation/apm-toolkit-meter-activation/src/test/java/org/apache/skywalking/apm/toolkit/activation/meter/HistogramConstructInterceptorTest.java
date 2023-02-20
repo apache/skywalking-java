@@ -27,12 +27,12 @@ import org.apache.skywalking.apm.agent.core.meter.MeterService;
 import org.apache.skywalking.apm.agent.core.meter.MeterTag;
 import org.apache.skywalking.apm.agent.core.meter.MeterType;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.test.helper.FieldGetter;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.toolkit.meter.MeterId;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 public class HistogramConstructInterceptorTest {
 
@@ -43,15 +43,14 @@ public class HistogramConstructInterceptorTest {
     private EnhancedInstance enhancedInstance = new HistogramEnhance();
 
     @Test
-    public void testConstruct() {
+    public void testConstruct() throws IllegalAccessException, NoSuchFieldException {
         histogramConstructInterceptor.onConstruct(enhancedInstance, new Object[] {
             new MeterId("test", MeterId.MeterType.HISTOGRAM, Arrays.asList(new MeterId.Tag("k1", "v1"))),
             Arrays.asList(1d, 5d, 10d)
         });
 
         final MeterService service = ServiceManager.INSTANCE.findService(MeterService.class);
-        final Map<MeterId, BaseMeter> meterMap = (Map<MeterId, BaseMeter>) Whitebox.getInternalState(
-            service, "meterMap");
+        final Map<MeterId, BaseMeter> meterMap = FieldGetter.getValue(service, "meterMap");
         Assert.assertEquals(1, meterMap.size());
 
         final Object field = meterMap.values().iterator().next();

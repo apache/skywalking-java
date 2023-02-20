@@ -18,8 +18,13 @@
 
 package org.apache.skywalking.apm.plugin.jsonrpc4j;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.googlecode.jsonrpc4j.JsonRpcBasicServer;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.context.util.TagValuePair;
@@ -35,21 +40,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.googlecode.jsonrpc4j.JsonRpcBasicServer;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class JsonRpcServerTests {
 
     @SegmentStoragePoint
@@ -57,6 +53,8 @@ public class JsonRpcServerTests {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     private MockJsonRpcBasicServer mockJsonRpcBasicServer;
 

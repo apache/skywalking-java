@@ -104,7 +104,9 @@
 - spring-mvc-annotation-3.x
 - spring-mvc-annotation-4.x
 - spring-mvc-annotation-5.x
+- spring-mvc-annotation-6.x
 - spring-resttemplate-4.x
+- spring-resttemplate-6.x
 - spring-scheduled-annotation
 - spring-tx
 - spring-webflux-5.x
@@ -125,6 +127,7 @@
 - toolkit-tag
 - toolkit-trace
 - toolkit-exception
+- toolkit-tracer
 - toolkit-webflux
 - undertow-2.x-plugin
 - vertx-core-3.x
@@ -137,7 +140,8 @@
 - jsonrpc4j
 - spring-cloud-gateway-3.x
 - neo4j-4.x
-- clickhouse-0.3.x
+- clickhouse-0.3.1
+- clickhouse-0.3.2.x
 - kylin-jdbc-2.6.x-3.x-4.x
 - okhttp-2.x
 - pulsar-2.8.x

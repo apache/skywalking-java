@@ -18,28 +18,25 @@
 
 package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.plugin.elasticsearch.v6.TransportClientEnhanceInfo;
 import org.elasticsearch.common.settings.Settings;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
-@PrepareForTest(value = {
-        Settings.class
-})
+@RunWith(TracingSegmentRunner.class)
 public class TransportServiceConInterceptorTest {
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private Settings settings;

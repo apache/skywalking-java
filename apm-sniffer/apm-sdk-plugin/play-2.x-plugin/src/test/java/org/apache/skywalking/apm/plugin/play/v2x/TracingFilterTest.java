@@ -18,7 +18,19 @@
 
 package org.apache.skywalking.apm.plugin.play.v2x;
 
-import akka.stream.Materializer;
+import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static play.mvc.Results.badRequest;
+import static play.mvc.Results.ok;
+import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
@@ -34,8 +46,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import akka.stream.Materializer;
 import play.api.http.MediaRange;
 import play.api.mvc.RequestHeader;
 import play.api.routing.HandlerDef;
@@ -46,29 +59,15 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.routing.Router;
 
-import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-
-import static org.apache.skywalking.apm.agent.test.tools.SpanAssert.assertComponent;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static play.mvc.Results.badRequest;
-import static play.mvc.Results.ok;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class TracingFilterTest {
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private Materializer materializer;

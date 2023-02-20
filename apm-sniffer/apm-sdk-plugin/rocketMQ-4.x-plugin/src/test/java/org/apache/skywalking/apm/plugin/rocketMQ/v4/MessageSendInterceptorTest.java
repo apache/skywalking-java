@@ -18,49 +18,45 @@
 
 package org.apache.skywalking.apm.plugin.rocketMQ.v4;
 
+import static org.apache.rocketmq.common.message.MessageDecoder.NAME_VALUE_SEPARATOR;
+import static org.apache.rocketmq.common.message.MessageDecoder.PROPERTY_SEPARATOR;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.rocketmq.client.impl.CommunicationMode;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageDecoder;
 import org.apache.rocketmq.common.protocol.header.SendMessageRequestHeader;
 import org.apache.skywalking.apm.agent.core.context.SW8ExtensionCarrierItem;
-import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
+import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.when;
-
-import static org.apache.rocketmq.common.message.MessageDecoder.NAME_VALUE_SEPARATOR;
-import static org.apache.rocketmq.common.message.MessageDecoder.PROPERTY_SEPARATOR;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class MessageSendInterceptorTest {
 
     private MessageSendInterceptor messageSendInterceptor;
@@ -70,6 +66,8 @@ public class MessageSendInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     private Object[] arguments;
 
@@ -145,7 +143,7 @@ public class MessageSendInterceptorTest {
         SpanAssert.assertLayer(mqSpan, SpanLayer.MQ);
         SpanAssert.assertComponent(mqSpan, ComponentsDefine.ROCKET_MQ_PRODUCER);
         SpanAssert.assertTag(mqSpan, 0, "127.0.0.1");
-        verify(callBack).setSkyWalkingDynamicField(Matchers.any());
+        verify(callBack).setSkyWalkingDynamicField(any());
     }
 
     @Test

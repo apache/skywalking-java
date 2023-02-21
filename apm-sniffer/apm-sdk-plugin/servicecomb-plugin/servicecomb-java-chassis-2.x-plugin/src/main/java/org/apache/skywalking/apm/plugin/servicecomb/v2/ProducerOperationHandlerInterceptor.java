@@ -19,10 +19,11 @@
 package org.apache.skywalking.apm.plugin.servicecomb.v2;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.apache.servicecomb.core.Invocation;
-import org.apache.skywalking.apm.agent.core.context.*;
+import org.apache.skywalking.apm.agent.core.context.CarrierItem;
+import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
+import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -39,13 +40,13 @@ public class ProducerOperationHandlerInterceptor implements InstanceMethodsAroun
         Invocation invocation = (Invocation) allArguments[0];
         ContextCarrier contextCarrier = new ContextCarrier();
         CarrierItem next = contextCarrier.items();
-        boolean inContext = isInContext(invocation);
         while (next.hasNext()) {
             next = next.next();
-            if (inContext) {
-                next.setHeadValue(invocation.getContext().get(next.getHeadKey()));
-            }else {
-                next.setHeadValue(invocation.getRequestEx().getHeader(next.getHeadKey()));
+            String headKey = next.getHeadKey();
+            if (invocation.getContext().containsKey(headKey)) {
+                next.setHeadValue(invocation.getContext().get(headKey));
+            } else {
+                next.setHeadValue(invocation.getRequestEx().getHeader(headKey));
             }
         }
         String operationName = invocation.getMicroserviceQualifiedName();
@@ -54,13 +55,6 @@ public class ProducerOperationHandlerInterceptor implements InstanceMethodsAroun
         Tags.URL.set(span, url);
         span.setComponent(ComponentsDefine.SERVICECOMB);
         SpanLayer.asRPCFramework(span);
-    }
-
-    private boolean isInContext(Invocation invocation) {
-        Map<String, String> context = invocation.getContext();
-        return context.containsKey(SW8CarrierItem.HEADER_NAME) ||
-                context.containsKey(SW8CorrelationCarrierItem.HEADER_NAME) ||
-                context.containsKey(SW8ExtensionCarrierItem.HEADER_NAME);
     }
 
     @Override

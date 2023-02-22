@@ -26,10 +26,11 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch.byMultiClassMatch;
 
 public class StatementInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    private static final String MARIADB_STATEMENT_CLASS_NAME = "org.mariadb.jdbc.MariaDbStatement";
+    private static final String MARIADB_STATEMENT_CLASS_NAME_2_0_X = "org.mariadb.jdbc.MariaDbStatement";
+    private static final String MARIADB_STATEMENT_CLASS_NAME_3_0_X = "org.mariadb.jdbc.Statement";
     private static final String STATEMENT_EXECUTE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jdbc.mariadb.v2.StatementExecuteMethodsInterceptor";
 
     @Override
@@ -66,6 +67,6 @@ public class StatementInstrumentation extends ClassInstanceMethodsEnhancePluginD
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(MARIADB_STATEMENT_CLASS_NAME);
+        return byMultiClassMatch(MARIADB_STATEMENT_CLASS_NAME_2_0_X, MARIADB_STATEMENT_CLASS_NAME_3_0_X);
     }
 }

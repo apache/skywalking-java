@@ -27,11 +27,12 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.plugin.jdbc.define.Constants;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch.byMultiClassMatch;
 
 public class ConnectionInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.mariadb.jdbc.MariaDbConnection";
+    private static final String ENHANCE_CLASS_2_0_X = "org.mariadb.jdbc.MariaDbConnection";
+    private static final String ENHANCE_CLASS_3_0_X = "org.mariadb.jdbc.Connection";
     private static final String CREATE_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.mariadb.v2.CreateStatementInterceptor";
     private static final String CREATE_PREPARED_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.mariadb.v2.CreatePreparedStatementInterceptor";
     private static final String CREATE_CALLABLE_STATEMENT_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.mariadb.v2.CreateCallableStatementInterceptor";
@@ -39,7 +40,7 @@ public class ConnectionInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+        return byMultiClassMatch(ENHANCE_CLASS_2_0_X, ENHANCE_CLASS_3_0_X);
     }
 
     @Override

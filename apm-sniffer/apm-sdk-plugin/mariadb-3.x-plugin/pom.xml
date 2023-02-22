@@ -24,15 +24,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-mariadb-2.x-plugin</artifactId>
+    <artifactId>apm-mariadb-3.x-plugin</artifactId>
     <packaging>jar</packaging>
 
-    <name>mariadb-2.x-plugin</name>
+    <name>mariadb-3.x-plugin</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mariadb-java-client.version>2.6.0</mariadb-java-client.version>
+        <mariadb-java-client.version>3.0.9</mariadb-java-client.version>
     </properties>
 
     <dependencies>

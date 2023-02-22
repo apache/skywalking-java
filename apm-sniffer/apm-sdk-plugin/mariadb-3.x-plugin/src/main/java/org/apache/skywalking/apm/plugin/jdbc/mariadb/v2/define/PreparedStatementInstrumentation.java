@@ -32,17 +32,21 @@ public class PreparedStatementInstrumentation extends ClassInstanceMethodsEnhanc
 
     private static final String CLIENT_SIDE_PREPARED_STATEMENT_CLASS_2_0_X = "org.mariadb.jdbc.MariaDbPreparedStatementClient";
     private static final String CLIENT_SIDE_PREPARED_STATEMENT_CLASS_2_4_X = "org.mariadb.jdbc.ClientSidePreparedStatement";
+    private static final String CLIENT_SIDE_PREPARED_STATEMENT_CLASS_3_0_X = "org.mariadb.jdbc.ClientPreparedStatement";
     private static final String SERVER_SIDE_PREPARED_STATEMENT_CLASS_2_0_X = "org.mariadb.jdbc.MariaDbPreparedStatementServer";
     private static final String SERVER_SIDE_PREPARED_STATEMENT_CLASS_2_4_X = "org.mariadb.jdbc.ServerSidePreparedStatement";
+    private static final String SERVER_SIDE_PREPARED_STATEMENT_CLASS_3_0_X = "org.mariadb.jdbc.ServerPreparedStatement";
     private static final String PREPARED_STATEMENT_EXECUTE_METHODS_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jdbc.mariadb.v2.PreparedStatementExecuteMethodsInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
         return byMultiClassMatch(
-                CLIENT_SIDE_PREPARED_STATEMENT_CLASS_2_0_X,
-                CLIENT_SIDE_PREPARED_STATEMENT_CLASS_2_4_X,
-                SERVER_SIDE_PREPARED_STATEMENT_CLASS_2_0_X,
-                SERVER_SIDE_PREPARED_STATEMENT_CLASS_2_4_X
+            CLIENT_SIDE_PREPARED_STATEMENT_CLASS_2_0_X,
+            CLIENT_SIDE_PREPARED_STATEMENT_CLASS_2_4_X,
+            CLIENT_SIDE_PREPARED_STATEMENT_CLASS_3_0_X,
+            SERVER_SIDE_PREPARED_STATEMENT_CLASS_2_0_X,
+            SERVER_SIDE_PREPARED_STATEMENT_CLASS_2_4_X,
+            SERVER_SIDE_PREPARED_STATEMENT_CLASS_3_0_X
         );
     }
 

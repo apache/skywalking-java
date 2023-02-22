@@ -44,7 +44,7 @@ metrics based on the tracing data.
   * H2 Driver 1.3.x -> 1.4.x
   * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0
   * PostgreSQL Driver 8.x, 9.x, 42.x
-  * Mariadb Driver 2.x, 1.8
+  * Mariadb Driver 1.8, 2.x -> 3.0.9 
   * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17
   * [Mssql-Jtds](https://github.com/milesibastos/jTDS) 1.x
   * [Mssql-jdbc](https://github.com/microsoft/mssql-jdbc) 6.x -> 8.x

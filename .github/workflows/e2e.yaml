@@ -58,8 +58,8 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.16'
+          go-version: '1.18'
       - name: Run E2E Tests
-        uses: apache/skywalking-infra-e2e@main
+        uses: apache/skywalking-infra-e2e@c1558dba921a36320f9fdc3d774b66592243589d
         with:
           e2e-file: ${{ matrix.case.path }}

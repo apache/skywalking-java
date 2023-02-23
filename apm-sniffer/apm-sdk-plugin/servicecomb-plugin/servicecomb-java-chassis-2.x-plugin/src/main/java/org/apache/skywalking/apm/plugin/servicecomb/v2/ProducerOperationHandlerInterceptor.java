@@ -42,7 +42,14 @@ public class ProducerOperationHandlerInterceptor implements InstanceMethodsAroun
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {
             next = next.next();
-            next.setHeadValue(invocation.getContext().get(next.getHeadKey()));
+            String headKey = next.getHeadKey();
+            if (invocation.getContext().containsKey(headKey)) {
+                // cse invoke scenario
+                next.setHeadValue(invocation.getContext().get(headKey));
+            } else {
+                // not cse invoke scenario
+                next.setHeadValue(invocation.getRequestEx().getHeader(headKey));
+            }
         }
         String operationName = invocation.getMicroserviceQualifiedName();
         AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);

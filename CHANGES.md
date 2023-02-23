@@ -16,6 +16,7 @@ Release Notes.
 * Refactor kotlin coroutine plugin with CoroutineContext.
 * Fix OracleURLParser ignoring actual port when :SID is absent.
 * Change gRPC instrumentation point to fix plugin not working for server side.
+* Fix servicecomb plugin trace break.
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

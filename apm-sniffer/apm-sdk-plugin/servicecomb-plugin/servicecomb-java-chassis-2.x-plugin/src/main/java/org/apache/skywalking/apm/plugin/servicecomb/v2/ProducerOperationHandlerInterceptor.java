@@ -44,8 +44,10 @@ public class ProducerOperationHandlerInterceptor implements InstanceMethodsAroun
             next = next.next();
             String headKey = next.getHeadKey();
             if (invocation.getContext().containsKey(headKey)) {
+                // cse invoke scenario
                 next.setHeadValue(invocation.getContext().get(headKey));
             } else {
+                // not cse invoke scenario
                 next.setHeadValue(invocation.getRequestEx().getHeader(headKey));
             }
         }

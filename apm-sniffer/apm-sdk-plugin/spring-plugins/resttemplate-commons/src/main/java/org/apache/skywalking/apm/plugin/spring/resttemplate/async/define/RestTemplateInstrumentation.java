@@ -39,7 +39,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  * <code>org.springframework.web.client.AsyncRestTemplate$ResponseExtractorFuture</code> for propagate trace context
  * after execute <code>doExecute</code> .
  */
-public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public abstract class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.web.client.AsyncRestTemplate";
     private static final String DO_EXECUTE_METHOD_NAME = "doExecute";
@@ -93,12 +93,5 @@ public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePlug
     @Override
     protected ClassMatch enhanceClass() {
         return NameMatch.byName(ENHANCE_CLASS);
-    }
-
-    @Override
-    protected String[] witnessClasses() {
-        return new String[] {
-            "org.springframework.web.context.support.ServletContextAttributeFactoryBean"
-        };
     }
 }

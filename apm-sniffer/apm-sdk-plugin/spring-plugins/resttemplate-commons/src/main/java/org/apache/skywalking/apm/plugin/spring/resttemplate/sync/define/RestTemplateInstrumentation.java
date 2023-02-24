@@ -38,7 +38,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
  * <code>RestResponseInterceptor</code> set context to  header for
  * propagate trace context after execute <code>createRequest</code>.
  */
-public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public abstract class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.web.client.RestTemplate";
     private static final String DO_EXECUTE_METHOD_NAME = "doExecute";
@@ -110,12 +110,5 @@ public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePlug
     @Override
     protected ClassMatch enhanceClass() {
         return byName(ENHANCE_CLASS);
-    }
-
-    @Override
-    protected String[] witnessClasses() {
-        return new String[] {
-            "org.springframework.web.context.support.ServletContextAttributeFactoryBean"
-        };
     }
 }

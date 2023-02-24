@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
@@ -59,7 +60,9 @@ public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePlug
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(DO_EXECUTE_METHOD_NAME);
+                    return named(DO_EXECUTE_METHOD_NAME)
+                            .and(takesArgument(0, named("java.net.URI")))
+                            .and(takesArgument(2, named("org.springframework.http.HttpMethod")));
                 }
 
                 @Override
@@ -115,7 +118,7 @@ public class RestTemplateInstrumentation extends ClassInstanceMethodsEnhancePlug
     @Override
     protected String[] witnessClasses() {
         return new String[] {
-            "org.springframework.web.client.ClientHttpResponseDecorator"
+            "org.springframework.http.client.reactive.JdkClientHttpConnector"
         };
     }
 }

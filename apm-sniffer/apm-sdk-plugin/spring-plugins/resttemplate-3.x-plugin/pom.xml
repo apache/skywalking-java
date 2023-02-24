@@ -24,14 +24,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>apm-resttemplate-4.3.x-plugin</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>apm-resttemplate-3.x-plugin</artifactId>
 
-    <name>resttemplate-4.3.x-plugin</name>
-    <url>http://maven.apache.org</url>
+    <name>resttemplate-3.x-plugin</name>
 
     <properties>
-        <spring-web.version>4.3.10.RELEASE</spring-web.version>
+        <spring-web.version>3.2.18.RELEASE</spring-web.version>
     </properties>
 
     <dependencies>

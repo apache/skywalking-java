@@ -41,7 +41,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  * {@link ResponseCallBackInterceptor} set the {@link URI} and {@link ContextSnapshot} to inherited
  * <code>org.springframework.util.concurrent.SuccessCallback</code> and <code>org.springframework.util.concurrent.FailureCallback</code>
  */
-public class ResponseExtractorFutureInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public abstract class ResponseExtractorFutureInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ADD_CALLBACK_METHOD_NAME = "addCallback";
     private static final String ADD_CALLBACK_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.resttemplate.async.ResponseCallBackInterceptor";
@@ -96,12 +96,5 @@ public class ResponseExtractorFutureInstrumentation extends ClassInstanceMethods
     @Override
     protected ClassMatch enhanceClass() {
         return NameMatch.byName(ENHANCE_CLASS);
-    }
-
-    @Override
-    protected String[] witnessClasses() {
-        return new String[] {
-            "org.springframework.web.context.support.ServletContextAttributeFactoryBean"
-        };
     }
 }

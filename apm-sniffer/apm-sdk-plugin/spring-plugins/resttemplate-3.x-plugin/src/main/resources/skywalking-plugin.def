@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-spring-resttemplate-4.x=org.apache.skywalking.apm.plugin.spring.resttemplate.sync.define.RestTemplateInstrumentation4x
-spring-resttemplate-4.x=org.apache.skywalking.apm.plugin.spring.resttemplate.async.define.ResponseExtractorFutureInstrumentation4x
-spring-resttemplate-4.x=org.apache.skywalking.apm.plugin.spring.resttemplate.async.define.RestTemplateInstrumentation4x
+spring-resttemplate-3.x=org.apache.skywalking.apm.plugin.spring.resttemplate.sync.define.RestTemplateInstrumentation3x
+spring-resttemplate-3.x=org.apache.skywalking.apm.plugin.spring.resttemplate.async.define.ResponseExtractorFutureInstrumentation3x
+spring-resttemplate-3.x=org.apache.skywalking.apm.plugin.spring.resttemplate.async.define.RestTemplateInstrumentation3x

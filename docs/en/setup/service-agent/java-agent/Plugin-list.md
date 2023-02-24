@@ -106,6 +106,7 @@
 - spring-mvc-annotation-4.x
 - spring-mvc-annotation-5.x
 - spring-mvc-annotation-6.x
+- spring-resttemplate-3.x
 - spring-resttemplate-4.x
 - spring-resttemplate-6.x
 - spring-scheduled-annotation

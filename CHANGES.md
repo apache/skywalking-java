@@ -17,6 +17,7 @@ Release Notes.
 * Fix OracleURLParser ignoring actual port when :SID is absent.
 * Change gRPC instrumentation point to fix plugin not working for server side.
 * Fix servicecomb plugin trace break.
+* Adapt Armeria's plugins to the latest version 1.22.x
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

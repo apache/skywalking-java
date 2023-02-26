@@ -17,8 +17,10 @@
 
 package org.apache.skywalking.apm.plugin.armeria;
 
-import com.linecorp.armeria.common.HttpHeaders;
+import com.linecorp.armeria.client.Clients;
+import com.linecorp.armeria.common.HttpMethod;
 import com.linecorp.armeria.common.HttpRequest;
+import com.linecorp.armeria.common.util.SafeCloseable;
 import io.netty.util.AsciiString;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
@@ -32,35 +34,53 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 
-@SuppressWarnings("unused") // actually used
-public class Armeria085ServerInterceptor implements InstanceMethodsAroundInterceptor {
+public abstract class AbstractArmeriaClientInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final String KEY_SAFE_CLOSEABLE = "SAFE_CLOSEABLE";
+
+    protected abstract URI getUri(EnhancedInstance objInst);
+
+    protected abstract HttpMethod getHttpMethod(Object[] allArguments);
+
+    protected abstract String getPath(Object[] allArguments);
+
+    protected abstract HttpRequest getHttpRequest(Object[] allArguments);
+
     @Override
-    public void beforeMethod(final EnhancedInstance objInst, final Method method, final Object[] allArguments,
-                             final Class<?>[] argumentsTypes, final MethodInterceptResult result) {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
+        URI uri = getUri(objInst);
+        HttpMethod httpMethod = getHttpMethod(allArguments);
+        String path = getPath(allArguments);
 
-        HttpRequest httpRequest = (HttpRequest) allArguments[1];
-        HttpHeaders headers = httpRequest.headers();
+        final ContextCarrier contextCarrier = new ContextCarrier();
+        final String remotePeer = uri.getPort() > 0 ? uri.getHost() + ":" + uri.getPort() : uri.getHost();
 
-        ContextCarrier carrier = new ContextCarrier();
-        for (CarrierItem item = carrier.items(); item.hasNext(); ) {
-            item = item.next();
-            item.setHeadValue(headers.get(AsciiString.of(item.getHeadKey())));
-        }
+        final AbstractSpan exitSpan = ContextManager.createExitSpan(path, contextCarrier, remotePeer);
 
-        AbstractSpan entrySpan = ContextManager.createEntrySpan(httpRequest.path(), carrier);
-        entrySpan.setComponent(ComponentsDefine.ARMERIA);
-        entrySpan.setLayer(SpanLayer.HTTP);
-        entrySpan.setPeer(httpRequest.authority());
-        Tags.URL.set(entrySpan, httpRequest.path());
-        Tags.HTTP.METHOD.set(entrySpan, httpRequest.method().name());
+        exitSpan.setComponent(ComponentsDefine.ARMERIA);
+        exitSpan.setLayer(SpanLayer.HTTP);
+        Tags.HTTP.METHOD.set(exitSpan, httpMethod.name());
+
+        ContextManager.getRuntimeContext().put(KEY_SAFE_CLOSEABLE, Clients.withHeaders(builder -> {
+            for (CarrierItem item = contextCarrier.items(); item.hasNext(); ) {
+                item = item.next();
+                builder.add(AsciiString.of(item.getHeadKey()), item.getHeadValue());
+            }
+        }));
     }
 
     @Override
     public Object afterMethod(final EnhancedInstance objInst, final Method method, final Object[] allArguments,
                               final Class<?>[] argumentsTypes, final Object ret) {
-        if (ContextManager.isActive()) {
+        HttpRequest req = getHttpRequest(allArguments);
+        if (req != null && ContextManager.isActive()) {
             ContextManager.stopSpan();
+        }
+
+        SafeCloseable safeCloseable = ContextManager.getRuntimeContext().get(KEY_SAFE_CLOSEABLE, SafeCloseable.class);
+        if (safeCloseable != null) {
+            safeCloseable.close();
         }
         return ret;
     }

@@ -24,7 +24,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 
 import java.net.URI;
 
-public class Armeria099ClientInterceptor extends AbstractArmeriaClientInterceptor {
+public class Armeria100ClientInterceptor extends AbstractArmeriaClientInterceptor {
 
     @Override
     protected URI getUri(EnhancedInstance objInst) {
@@ -34,7 +34,7 @@ public class Armeria099ClientInterceptor extends AbstractArmeriaClientIntercepto
 
     @Override
     protected HttpMethod getHttpMethod(Object[] allArguments) {
-        return  (HttpMethod) allArguments[2];
+        return (HttpMethod) allArguments[2];
     }
 
     @Override

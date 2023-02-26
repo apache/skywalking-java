@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.linecorp.armeria</groupId>
             <artifactId>armeria</artifactId>
-            <version>1.22.0</version>
+            <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

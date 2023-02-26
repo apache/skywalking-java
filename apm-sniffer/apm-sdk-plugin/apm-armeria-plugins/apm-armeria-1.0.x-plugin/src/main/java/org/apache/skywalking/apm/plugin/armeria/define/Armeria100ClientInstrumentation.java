@@ -31,10 +31,10 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 /**
  * Instruments Armeria client 0.99.x
  */
-public class Armeria099ClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class Armeria100ClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "com.linecorp.armeria.client.UserClient";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.armeria.Armeria099ClientInterceptor";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.armeria.Armeria100ClientInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {

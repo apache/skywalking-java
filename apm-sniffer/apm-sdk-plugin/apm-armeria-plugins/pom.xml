@@ -28,6 +28,8 @@
     <name>apm-armeria-plugins</name>
 
     <modules>
+        <module>apm-armeria-0.84.x-plugin</module>
+        <module>apm-armeria-0.85.x-plugin</module>
         <module>apm-armeria-1.0.x-plugin</module>
     </modules>
 

@@ -29,7 +29,7 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
- * Instruments Armeria client 0.99.x
+ * Instruments Armeria client 1.0.x
  */
 public class Armeria100ClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 

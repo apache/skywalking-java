@@ -62,7 +62,7 @@ public abstract class AbstractArmeriaClientInterceptor implements InstanceMethod
         exitSpan.setLayer(SpanLayer.HTTP);
         Tags.HTTP.METHOD.set(exitSpan, httpMethod.name());
 
-        ContextManager.getRuntimeContext().put(KEY_SAFE_CLOSEABLE, Clients.withHttpHeaders(builder -> {
+        ContextManager.getRuntimeContext().put(KEY_SAFE_CLOSEABLE, Clients.withHeaders(builder -> {
             for (CarrierItem item = contextCarrier.items(); item.hasNext(); ) {
                 item = item.next();
                 builder.add(AsciiString.of(item.getHeadKey()), item.getHeadValue());

@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.testcase.tomcat9x;
 
-
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;

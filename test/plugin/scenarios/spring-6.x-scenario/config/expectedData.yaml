@@ -104,7 +104,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/create/'}
       - {key: http.method, value: POST}
-      - {key: http.status_code, value: '200'}
+      - {key: http.status_code, value: '201'}
       refs:
       - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
         parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -167,7 +167,7 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/delete/1'}
       - {key: http.method, value: DELETE}
-      - {key: http.status_code, value: '200'}
+      - {key: http.status_code, value: '204'}
       refs:
       - {parentEndpoint:  GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
         parentSpanId: 5, parentTraceSegmentId: not null, parentServiceInstance: not

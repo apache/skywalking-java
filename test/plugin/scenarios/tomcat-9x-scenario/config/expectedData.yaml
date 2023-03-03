@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: tomcat-10x-scenario
+- serviceName: tomcat-9x-scenario
   segmentSize: ge 2
   segments:
   - segmentId: not null
     spans:
-    - operationName: POST:/tomcat-10x-scenario/case/tomcat-10x-scenario
+    - operationName: POST:/tomcat-9x-scenario/case/tomcat-9x-scenario
       operationId: 0
       parentSpanId: -1
       spanId: 0
@@ -32,17 +32,17 @@ segmentItems:
       peer: ''
       skipAnalysis: false
       tags:
-      - {key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario'}
+      - {key: url, value: 'http://localhost:8080/tomcat-9x-scenario/case/tomcat-9x-scenario'}
       - {key: http.method, value: POST}
       - {key: http.status_code, value: "200"}
       refs:
-      - {parentEndpoint: 'GET:/tomcat-10x-scenario/case/tomcat-10x-scenario', networkAddress: 'localhost:8080',
+      - {parentEndpoint: 'GET:/tomcat-9x-scenario/case/tomcat-9x-scenario', networkAddress: 'localhost:8080',
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
-        parentServiceInstance: not null, parentService: tomcat-10x-scenario,
+        parentServiceInstance: not null, parentService: tomcat-9x-scenario,
         traceId: not null}
   - segmentId: not null
     spans:
-    - operationName: /tomcat-10x-scenario/case/tomcat-10x-scenario
+    - operationName: /tomcat-9x-scenario/case/tomcat-9x-scenario
       operationId: 0
       parentSpanId: 0
       spanId: 1
@@ -55,10 +55,10 @@ segmentItems:
       peer: localhost:8080
       skipAnalysis: false
       tags:
-      - {key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario'}
+      - {key: url, value: 'http://localhost:8080/tomcat-9x-scenario/case/tomcat-9x-scenario'}
       - {key: http.method, value: POST}
       - {key: http.status_code, value: "200"}
-    - operationName: GET:/tomcat-10x-scenario/case/tomcat-10x-scenario
+    - operationName: GET:/tomcat-9x-scenario/case/tomcat-9x-scenario
       operationId: 0
       parentSpanId: -1
       spanId: 0
@@ -71,6 +71,6 @@ segmentItems:
       peer: ''
       skipAnalysis: false
       tags:
-      - {key: url, value: 'http://localhost:8080/tomcat-10x-scenario/case/tomcat-10x-scenario'}
+      - {key: url, value: 'http://localhost:8080/tomcat-9x-scenario/case/tomcat-9x-scenario'}
       - {key: http.method, value: GET}
       - {key: http.status_code, value: "200"}

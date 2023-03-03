@@ -273,7 +273,7 @@ public class SWClickHousePreparedStatement implements PreparedStatement {
 
     @Override
     public int[] executeBatch() throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeBatch", "", new PreparedStatementTracing.Executable<int[]>() {
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeBatch", sql, new PreparedStatementTracing.Executable<int[]>() {
             @Override
             public int[] exe(PreparedStatement realStatement, String sql) throws SQLException {
                 return realStatement.executeBatch();

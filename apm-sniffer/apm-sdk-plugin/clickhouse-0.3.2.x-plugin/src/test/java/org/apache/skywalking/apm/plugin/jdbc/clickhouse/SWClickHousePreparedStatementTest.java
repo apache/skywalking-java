@@ -502,7 +502,7 @@ public class SWClickHousePreparedStatementTest extends AbstractStatementTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
-        assertDBSpan(spans.get(0), "ClickHouse/JDBC/PreparedStatement/executeBatch", "");
+        assertDBSpan(spans.get(0), "ClickHouse/JDBC/PreparedStatement/executeBatch", "UPDATE test SET a = ? WHERE b = ?");
 
     }
 

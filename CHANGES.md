@@ -18,6 +18,7 @@ Release Notes.
 * Change gRPC instrumentation point to fix plugin not working for server side.
 * Fix servicecomb plugin trace break.
 * Adapt Armeria's plugins to the latest version 1.22.x
+* Fix tomcat-10x-plugin and add test case to support tomcat7.x-8.x-9.x.
 * Fix thrift plugin generate duplicate traceid when `sendBase` error occurs
 
 #### Documentation

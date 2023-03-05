@@ -30,7 +30,7 @@ public interface IServer {
     final class AsyncHandler implements GreeterService.AsyncIface {
 
         @Override
-        public void echo(String message, AsyncMethodCallback resultHandler) throws TException {
+        public void echo(final String message, final AsyncMethodCallback<String> resultHandler) throws TException {
             resultHandler.onComplete("echo async: " + message);
         }
     }

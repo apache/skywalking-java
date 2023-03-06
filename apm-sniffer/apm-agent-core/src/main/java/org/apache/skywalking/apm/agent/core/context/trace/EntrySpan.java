@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.agent.core.context.trace;
 
 import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.agent.core.context.TracingContext;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.network.trace.component.Component;
 
 /**
@@ -57,6 +58,14 @@ public class EntrySpan extends StackBasedTracingSpan {
     public EntrySpan tag(String key, String value) {
         if (stackDepth == currentMaxDepth || isInAsyncMode) {
             super.tag(key, value);
+        }
+        return this;
+    }
+
+    @Override
+    public AbstractTracingSpan tag(AbstractTag<?> tag, String value) {
+        if (stackDepth == currentMaxDepth || tag.isCanOverwrite() || isInAsyncMode) {
+            super.tag(tag, value);
         }
         return this;
     }

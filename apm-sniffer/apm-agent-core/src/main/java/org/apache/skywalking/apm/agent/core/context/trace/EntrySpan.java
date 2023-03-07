@@ -64,7 +64,7 @@ public class EntrySpan extends StackBasedTracingSpan {
 
     @Override
     public AbstractTracingSpan tag(AbstractTag<?> tag, String value) {
-        if (stackDepth == currentMaxDepth || tag.isCanOverwrite() || isInAsyncMode) {
+        if (stackDepth == currentMaxDepth || isInAsyncMode) {
             super.tag(tag, value);
         }
         return this;

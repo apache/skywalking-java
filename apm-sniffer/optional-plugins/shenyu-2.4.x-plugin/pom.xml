@@ -31,7 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-webflux.version>5.0.0.RELEASE</spring-webflux.version>
-        <apache-dubbo.version>2.7.0</apache-dubbo.version>
+        <apache-dubbo.version>2.7.21</apache-dubbo.version>
     </properties>
 
 

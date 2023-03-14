@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.agent.core.context;
 
 import org.apache.skywalking.apm.agent.core.context.ids.NewDistributedTraceId;
+import org.apache.skywalking.apm.agent.core.profile.ProfileStatusContext;
 
 public enum MockContextSnapshot {
     INSTANCE;
@@ -32,7 +33,8 @@ public enum MockContextSnapshot {
             new NewDistributedTraceId(),
             "/for-test-entryOperationName",
             new CorrelationContext(),
-            new ExtensionContext()
+            new ExtensionContext(),
+            ProfileStatusContext.createWithNone()
         );
     }
 

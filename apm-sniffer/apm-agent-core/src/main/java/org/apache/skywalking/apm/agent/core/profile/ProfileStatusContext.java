@@ -18,34 +18,43 @@
 
 package org.apache.skywalking.apm.agent.core.profile;
 
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.TracingContext;
+
 /**
  * Wrapper {@link ProfileStatus}, make sure {@link org.apache.skywalking.apm.agent.core.context.TracingContext} with {@link ThreadProfiler} have same reference with {@link ProfileStatus},
  * And only the profile module could change the status
  */
-public class ProfileStatusReference {
+public class ProfileStatusContext {
 
     private volatile ProfileStatus status;
+    private volatile long firstSegmentCreateTime;
 
-    private ProfileStatusReference(ProfileStatus status) {
+    private ProfileStatusContext(ProfileStatus status, long firstSegmentCreateTime) {
         this.status = status;
+        this.firstSegmentCreateTime = firstSegmentCreateTime;
     }
 
     /**
      * Create with not watching
      */
-    public static ProfileStatusReference createWithNone() {
-        return new ProfileStatusReference(ProfileStatus.NONE);
+    public static ProfileStatusContext createWithNone() {
+        return new ProfileStatusContext(ProfileStatus.NONE, 0);
     }
 
     /**
      * Create with pending to profile
      */
-    public static ProfileStatusReference createWithPending() {
-        return new ProfileStatusReference(ProfileStatus.PENDING);
+    public static ProfileStatusContext createWithPending(long firstSegmentCreateTime) {
+        return new ProfileStatusContext(ProfileStatus.PENDING, firstSegmentCreateTime);
     }
 
     public ProfileStatus get() {
         return this.status;
+    }
+
+    public long firstSegmentCreateTime() {
+        return this.firstSegmentCreateTime;
     }
 
     /**
@@ -59,11 +68,33 @@ public class ProfileStatusReference {
         return this.status == ProfileStatus.PROFILING;
     }
 
+    public ProfileStatusContext clone() {
+        return new ProfileStatusContext(this.status, this.firstSegmentCreateTime);
+    }
+
+    /**
+     * Continued profile status context
+     * @return is needs to keep profile
+     */
+    public boolean continued(ContextSnapshot snapshot) {
+        this.status = snapshot.getProfileStatusContext().get();
+        this.firstSegmentCreateTime = snapshot.getProfileStatusContext().firstSegmentCreateTime();
+        return this.isBeingWatched();
+    }
+
     /**
      * Update status, only access with profile module
      */
-    void updateStatus(ProfileStatus status) {
+    void updateStatus(ProfileStatus status, TracingContext tracingContext) {
         this.status = status;
+        if (this.firstSegmentCreateTime == 0 && tracingContext != null) {
+            this.firstSegmentCreateTime = tracingContext.createTime();
+        }
+    }
+
+    void updateStatus(ProfileStatusContext statusContext) {
+        this.status = statusContext.get();
+        this.firstSegmentCreateTime = statusContext.firstSegmentCreateTime();
     }
 
 }

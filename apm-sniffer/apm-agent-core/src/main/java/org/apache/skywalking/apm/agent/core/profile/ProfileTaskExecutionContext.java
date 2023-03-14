@@ -72,39 +72,57 @@ public class ProfileTaskExecutionContext {
      *
      * @return is add profile success
      */
-    public ProfileStatusReference attemptProfiling(TracingContext tracingContext,
-                                                   String traceSegmentId,
-                                                   String firstSpanOPName) {
+    public ProfileStatusContext attemptProfiling(TracingContext tracingContext,
+                                                 String traceSegmentId,
+                                                 String firstSpanOPName) {
         // check has available slot
         final int usingSlotCount = currentProfilingCount.get();
         if (usingSlotCount >= Config.Profile.MAX_PARALLEL) {
-            return ProfileStatusReference.createWithNone();
+            return ProfileStatusContext.createWithNone();
         }
 
         // check first operation name matches
         if (!Objects.equals(task.getFirstSpanOPName(), firstSpanOPName)) {
-            return ProfileStatusReference.createWithNone();
+            return ProfileStatusContext.createWithNone();
         }
 
         // if out limit started profiling count then stop add profiling
         if (totalStartedProfilingCount.get() > task.getMaxSamplingCount()) {
-            return ProfileStatusReference.createWithNone();
+            return ProfileStatusContext.createWithNone();
         }
 
         // try to occupy slot
         if (!currentProfilingCount.compareAndSet(usingSlotCount, usingSlotCount + 1)) {
-            return ProfileStatusReference.createWithNone();
+            return ProfileStatusContext.createWithNone();
         }
 
+        ThreadProfiler profiler;
+        if ((profiler = addProfilingThread(tracingContext, traceSegmentId)) != null) {
+            return profiler.profilingStatus();
+        }
+        return ProfileStatusContext.createWithNone();
+    }
+
+    public boolean continueProfiling(TracingContext tracingContext, String traceSegmentId) {
+        // must smaller than max parallels monitoring count
+        if (currentProfilingCount.addAndGet(1) >= Config.Profile.MAX_PARALLEL) {
+            currentProfilingCount.addAndGet(-1);
+            return false;
+        }
+
+        return addProfilingThread(tracingContext, traceSegmentId) != null;
+    }
+
+    private ThreadProfiler addProfilingThread(TracingContext tracingContext, String traceSegmentId) {
         final ThreadProfiler threadProfiler = new ThreadProfiler(
             tracingContext, traceSegmentId, Thread.currentThread(), this);
         int slotLength = profilingSegmentSlots.length();
         for (int slot = 0; slot < slotLength; slot++) {
             if (profilingSegmentSlots.compareAndSet(slot, null, threadProfiler)) {
-                return threadProfiler.profilingStatus();
+                return threadProfiler;
             }
         }
-        return ProfileStatusReference.createWithNone();
+        return null;
     }
 
     /**
@@ -118,7 +136,7 @@ public class ProfileTaskExecutionContext {
 
         // update profiling status
         tracingContext.profileStatus()
-                      .updateStatus(attemptProfiling(tracingContext, traceSegmentId, firstSpanOPName).get());
+                      .updateStatus(attemptProfiling(tracingContext, traceSegmentId, firstSpanOPName));
     }
 
     /**

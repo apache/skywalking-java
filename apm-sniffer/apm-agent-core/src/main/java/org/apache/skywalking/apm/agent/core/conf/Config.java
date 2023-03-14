@@ -246,7 +246,7 @@ public class Config {
         public static int MAX_PARALLEL = 5;
 
         /**
-         * Max monitoring sub-tasks count of one endpoint
+         * Max monitoring sub-tasks count of one single endpoint access
          */
         public static int MAX_ACCEPT_SUB_PARALLEL = 5;
 

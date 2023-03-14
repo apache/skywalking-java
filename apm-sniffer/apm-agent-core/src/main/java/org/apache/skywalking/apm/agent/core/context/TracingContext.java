@@ -41,7 +41,7 @@ import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegmentRef;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.profile.ProfileStatusReference;
+import org.apache.skywalking.apm.agent.core.profile.ProfileStatusContext;
 import org.apache.skywalking.apm.agent.core.profile.ProfileTaskExecutionService;
 import org.apache.skywalking.apm.util.StringUtil;
 
@@ -106,7 +106,7 @@ public class TracingContext implements AbstractTracerContext {
     /**
      * profile status
      */
-    private final ProfileStatusReference profileStatus;
+    private final ProfileStatusContext profileStatus;
     @Getter(AccessLevel.PACKAGE)
     private final CorrelationContext correlationContext;
     @Getter(AccessLevel.PACKAGE)
@@ -213,7 +213,8 @@ public class TracingContext implements AbstractTracerContext {
             getPrimaryTraceId(),
             primaryEndpoint.getName(),
             this.correlationContext,
-            this.extensionContext
+            this.extensionContext,
+            this.profileStatus
         );
 
         return snapshot;
@@ -234,6 +235,9 @@ public class TracingContext implements AbstractTracerContext {
             this.correlationContext.continued(snapshot);
             this.extensionContext.continued(snapshot);
             this.extensionContext.handle(this.activeSpan());
+            if (this.profileStatus.continued(snapshot)) {
+                PROFILE_TASK_EXECUTION_SERVICE.continueProfiling(this, this.segment.getTraceSegmentId());
+            }
         }
     }
 
@@ -571,7 +575,7 @@ public class TracingContext implements AbstractTracerContext {
         return this.createTime;
     }
 
-    public ProfileStatusReference profileStatus() {
+    public ProfileStatusContext profileStatus() {
         return this.profileStatus;
     }
 

@@ -18,8 +18,11 @@
 
 package org.apache.skywalking.apm.agent.core.profile;
 
+import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.TracingContext;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Wrapper {@link ProfileStatus}, make sure {@link org.apache.skywalking.apm.agent.core.context.TracingContext} with {@link ThreadProfiler} have same reference with {@link ProfileStatus},
@@ -29,24 +32,26 @@ public class ProfileStatusContext {
 
     private volatile ProfileStatus status;
     private volatile long firstSegmentCreateTime;
+    private volatile AtomicInteger subThreadProfilingCount;
 
-    private ProfileStatusContext(ProfileStatus status, long firstSegmentCreateTime) {
+    private ProfileStatusContext(ProfileStatus status, long firstSegmentCreateTime, AtomicInteger subThreadProfilingCount) {
         this.status = status;
         this.firstSegmentCreateTime = firstSegmentCreateTime;
+        this.subThreadProfilingCount = subThreadProfilingCount;
     }
 
     /**
      * Create with not watching
      */
     public static ProfileStatusContext createWithNone() {
-        return new ProfileStatusContext(ProfileStatus.NONE, 0);
+        return new ProfileStatusContext(ProfileStatus.NONE, 0, null);
     }
 
     /**
      * Create with pending to profile
      */
     public static ProfileStatusContext createWithPending(long firstSegmentCreateTime) {
-        return new ProfileStatusContext(ProfileStatus.PENDING, firstSegmentCreateTime);
+        return new ProfileStatusContext(ProfileStatus.PENDING, firstSegmentCreateTime, new AtomicInteger(0));
     }
 
     public ProfileStatus get() {
@@ -69,7 +74,7 @@ public class ProfileStatusContext {
     }
 
     public ProfileStatusContext clone() {
-        return new ProfileStatusContext(this.status, this.firstSegmentCreateTime);
+        return new ProfileStatusContext(this.status, this.firstSegmentCreateTime, this.subThreadProfilingCount);
     }
 
     /**
@@ -79,7 +84,11 @@ public class ProfileStatusContext {
     public boolean continued(ContextSnapshot snapshot) {
         this.status = snapshot.getProfileStatusContext().get();
         this.firstSegmentCreateTime = snapshot.getProfileStatusContext().firstSegmentCreateTime();
-        return this.isBeingWatched();
+        this.subThreadProfilingCount = snapshot.getProfileStatusContext().subThreadProfilingCount;
+        return this.isBeingWatched() &&
+            // validate is reach the count of sub-thread
+            this.subThreadProfilingCount != null &&
+            this.subThreadProfilingCount.incrementAndGet() <= Config.Profile.MAX_ACCEPT_SUB_PARALLEL;
     }
 
     /**
@@ -95,6 +104,7 @@ public class ProfileStatusContext {
     void updateStatus(ProfileStatusContext statusContext) {
         this.status = statusContext.get();
         this.firstSegmentCreateTime = statusContext.firstSegmentCreateTime();
+        this.subThreadProfilingCount = statusContext.subThreadProfilingCount;
     }
 
 }

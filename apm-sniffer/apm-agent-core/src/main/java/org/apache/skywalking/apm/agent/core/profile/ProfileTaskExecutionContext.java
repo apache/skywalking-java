@@ -34,8 +34,8 @@ public class ProfileTaskExecutionContext {
     // task data
     private final ProfileTask task;
 
-    // record current profiling count, use this to check has available profile slot
-    private final AtomicInteger currentProfilingCount = new AtomicInteger(0);
+    // record current first endpoint profiling count, use this to check has available profile slot
+    private final AtomicInteger currentEndpointProfilingCount = new AtomicInteger(0);
 
     // profiling segment slot
     private volatile AtomicReferenceArray<ThreadProfiler> profilingSegmentSlots;
@@ -48,7 +48,7 @@ public class ProfileTaskExecutionContext {
 
     public ProfileTaskExecutionContext(ProfileTask task) {
         this.task = task;
-        profilingSegmentSlots = new AtomicReferenceArray<>(Config.Profile.MAX_PARALLEL);
+        profilingSegmentSlots = new AtomicReferenceArray<>(Config.Profile.MAX_PARALLEL * (Config.Profile.MAX_ACCEPT_SUB_PARALLEL + 1));
     }
 
     /**
@@ -75,9 +75,9 @@ public class ProfileTaskExecutionContext {
     public ProfileStatusContext attemptProfiling(TracingContext tracingContext,
                                                  String traceSegmentId,
                                                  String firstSpanOPName) {
-        // check has available slot
-        final int usingSlotCount = currentProfilingCount.get();
-        if (usingSlotCount >= Config.Profile.MAX_PARALLEL) {
+        // check has limited the max parallel profiling count
+        final int profilingEndpointCount = currentEndpointProfilingCount.get();
+        if (profilingEndpointCount >= Config.Profile.MAX_PARALLEL) {
             return ProfileStatusContext.createWithNone();
         }
 
@@ -92,7 +92,7 @@ public class ProfileTaskExecutionContext {
         }
 
         // try to occupy slot
-        if (!currentProfilingCount.compareAndSet(usingSlotCount, usingSlotCount + 1)) {
+        if (!currentEndpointProfilingCount.compareAndSet(profilingEndpointCount, profilingEndpointCount + 1)) {
             return ProfileStatusContext.createWithNone();
         }
 
@@ -104,12 +104,6 @@ public class ProfileTaskExecutionContext {
     }
 
     public boolean continueProfiling(TracingContext tracingContext, String traceSegmentId) {
-        // must smaller than max parallels monitoring count
-        if (currentProfilingCount.addAndGet(1) >= Config.Profile.MAX_PARALLEL) {
-            currentProfilingCount.addAndGet(-1);
-            return false;
-        }
-
         return addProfilingThread(tracingContext, traceSegmentId) != null;
     }
 
@@ -122,6 +116,7 @@ public class ProfileTaskExecutionContext {
                 return threadProfiler;
             }
         }
+        // add profiling thread failure, so ignore it
         return null;
     }
 
@@ -152,7 +147,7 @@ public class ProfileTaskExecutionContext {
 
                 // setting stop running
                 currentProfiler.stopProfiling();
-                currentProfilingCount.addAndGet(-1);
+                currentEndpointProfilingCount.addAndGet(-1);
                 break;
             }
         }

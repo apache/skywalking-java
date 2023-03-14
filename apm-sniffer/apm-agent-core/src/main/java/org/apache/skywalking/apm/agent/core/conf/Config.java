@@ -241,9 +241,14 @@ public class Config {
         public static boolean ACTIVE = true;
 
         /**
-         * Parallel monitor segment count
+         * Parallel monitor endpoint thread count
          */
         public static int MAX_PARALLEL = 5;
+
+        /**
+         * Max monitoring sub-tasks count of one endpoint
+         */
+        public static int MAX_ACCEPT_SUB_PARALLEL = 5;
 
         /**
          * Max monitor segment time(minutes), if current segment monitor time out of limit, then stop it.

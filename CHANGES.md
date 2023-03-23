@@ -21,6 +21,7 @@ Release Notes.
 * Fix tomcat-10x-plugin and add test case to support tomcat7.x-8.x-9.x.
 * Fix thrift plugin generate duplicate traceid when `sendBase` error occurs
 * Support keep trace profiling when cross-thread.
+* Fix unexpected whitespace of the command catalogs in several Redis plugins.
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

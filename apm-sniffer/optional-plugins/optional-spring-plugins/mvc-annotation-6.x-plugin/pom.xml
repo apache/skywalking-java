@@ -30,7 +30,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <spring-core.version>6.0.0</spring-core.version>
+        <spring-core.version>6.0.7</spring-core.version>
         <spring-webmvc.version>6.0.0</spring-webmvc.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
         <spring-webflux.version>6.0.0</spring-webflux.version>

@@ -30,3 +30,4 @@ dependencies:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=test
+      - SW_JDBC_TRACE_SQL_PARAMETERS=true

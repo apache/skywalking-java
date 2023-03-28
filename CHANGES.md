@@ -23,7 +23,7 @@ Release Notes.
 * Support keep trace profiling when cross-thread.
 * Fix unexpected whitespace of the command catalogs in several Redis plugins.
 * Fix a thread leak in `SamplingService` when updated sampling policy in the runtime.
-* Support MySQL plugin trace sql parameters when useServerPrepStmts 
+* Support MySQL plugin tracing SQL parameters when useServerPrepStmts 
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

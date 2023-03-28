@@ -44,6 +44,7 @@ segmentItems:
       - {key: db.type, value: Mysql}
       - {key: db.instance, value: test}
       - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
+      - {key: db.sql.parameters, value: '[1,1]'}
       logs: []
       startTime: nq 0
       endTime: nq 0
@@ -107,6 +108,7 @@ segmentItems:
         - {key: db.type, value: Mysql}
         - {key: db.instance, value: test}
         - {key: db.statement, value: "call testProcedure( ? )"}
+        - {key: db.sql.parameters, value: '[nihao]'}
       logs: []
       startTime: nq 0
       endTime: nq 0

@@ -51,6 +51,7 @@ public class SamplingService implements BootService {
     private volatile ScheduledFuture<?> scheduledFuture;
 
     private SamplingRateWatcher samplingRateWatcher;
+    private ScheduledExecutorService service;
 
     @Override
     public void prepare() {
@@ -58,6 +59,8 @@ public class SamplingService implements BootService {
 
     @Override
     public void boot() {
+        service = Executors.newSingleThreadScheduledExecutor(
+                new DefaultNamedThreadFactory("SamplingService"));
         samplingRateWatcher = new SamplingRateWatcher("agent.sample_n_per_3_secs", this);
         ServiceManager.INSTANCE.findService(ConfigurationDiscoveryService.class)
                                .registerAgentConfigChangeWatcher(samplingRateWatcher);
@@ -118,8 +121,6 @@ public class SamplingService implements BootService {
             if (!on) {
                 on = true;
                 this.resetSamplingFactor();
-                ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor(
-                    new DefaultNamedThreadFactory("SamplingService"));
                 scheduledFuture = service.scheduleAtFixedRate(new RunnableWithExceptionProtection(
                     this::resetSamplingFactor, t -> LOGGER.error("unexpected exception.", t)), 0, 3, TimeUnit.SECONDS);
                 LOGGER.debug(

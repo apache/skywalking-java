@@ -131,7 +131,7 @@ public class ProfileTaskExecutionContext {
 
         // update profiling status
         tracingContext.profileStatus()
-                      .updateStatus(attemptProfiling(tracingContext, traceSegmentId, firstSpanOPName));
+            .updateStatus(attemptProfiling(tracingContext, traceSegmentId, firstSpanOPName));
     }
 
     /**
@@ -147,7 +147,9 @@ public class ProfileTaskExecutionContext {
 
                 // setting stop running
                 currentProfiler.stopProfiling();
-                currentEndpointProfilingCount.addAndGet(-1);
+                if (currentProfiler.profilingStatus().isFromFirstSegment()) {
+                    currentEndpointProfilingCount.addAndGet(-1);
+                }
                 break;
             }
         }

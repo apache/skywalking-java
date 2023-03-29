@@ -20,6 +20,9 @@
     },
     {
       "pattern": "https://kotlinlang.org.*"
+    },
+    {
+      "pattern": "^https://mvnrepository.com/"
     }
   ],
   "timeout": "10s",

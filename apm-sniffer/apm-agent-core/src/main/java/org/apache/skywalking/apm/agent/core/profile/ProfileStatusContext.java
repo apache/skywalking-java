@@ -31,11 +31,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ProfileStatusContext {
 
     private volatile ProfileStatus status;
+    private volatile boolean fromFirstSegment;
     private volatile long firstSegmentCreateTime;
     private volatile AtomicInteger subThreadProfilingCount;
 
     private ProfileStatusContext(ProfileStatus status, long firstSegmentCreateTime, AtomicInteger subThreadProfilingCount) {
         this.status = status;
+        this.fromFirstSegment = true;
         this.firstSegmentCreateTime = firstSegmentCreateTime;
         this.subThreadProfilingCount = subThreadProfilingCount;
     }
@@ -62,6 +64,10 @@ public class ProfileStatusContext {
         return this.firstSegmentCreateTime;
     }
 
+    public boolean isFromFirstSegment() {
+        return fromFirstSegment;
+    }
+
     /**
      * The profile monitoring is watching, wait for some profile conditions.
      */
@@ -83,6 +89,7 @@ public class ProfileStatusContext {
      */
     public boolean continued(ContextSnapshot snapshot) {
         this.status = snapshot.getProfileStatusContext().get();
+        this.fromFirstSegment = false;
         this.firstSegmentCreateTime = snapshot.getProfileStatusContext().firstSegmentCreateTime();
         this.subThreadProfilingCount = snapshot.getProfileStatusContext().subThreadProfilingCount;
         return this.isBeingWatched() &&

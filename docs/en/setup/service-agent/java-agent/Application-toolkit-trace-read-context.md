@@ -1,3 +1,8 @@
+# Reading Context
+
+All following APIs provide **readonly** features for the tracing context from tracing system.
+The values are only available when the current thread is traced.
+
 * Use `TraceContext.traceId()` API to obtain traceId.
 ```java
 import org.apache.skywalking.apm.toolkit.trace.TraceContext;

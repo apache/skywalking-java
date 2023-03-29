@@ -1,6 +1,8 @@
-# trace cross thread
-There are some other ways to trace cross thread except the methods in `Tracer`.
-* usage 1.
+# Trace Cross Thread
+These APIs provide ways to continuous tracing in the cross thread scenario with minimal code changes.
+All following are sample codes only to demonstrate how to adopt cross thread cases easier.
+
+* Case 1.
 ```java
     @TraceCrossThread
     public static class MyCallable<String> implements Callable<String> {
@@ -13,7 +15,7 @@ There are some other ways to trace cross thread except the methods in `Tracer`.
     ExecutorService executorService = Executors.newFixedThreadPool(1);
     executorService.submit(new MyCallable());
 ```
-* usage 2.
+* Case 2.
 ```java
     ExecutorService executorService = Executors.newFixedThreadPool(1);
     executorService.submit(CallableWrapper.of(new Callable<String>() {
@@ -31,7 +33,7 @@ or
         }
     }));
 ```
-* usage 3.
+* Case 3.
 ```java
     @TraceCrossThread
     public class MySupplier<String> implements Supplier<String> {
@@ -49,7 +51,7 @@ or
             return "SupplierWrapper";
     })).thenAccept(System.out::println);
 ```
-* usage 4.
+* Case 4.
 ```java
     CompletableFuture.supplyAsync(SupplierWrapper.of(() -> {
         return "SupplierWrapper";
@@ -67,7 +69,6 @@ or
         return "FunctionWrapper";
     }));
 ```
-_Sample codes only_
 
 
 

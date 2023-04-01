@@ -59,7 +59,7 @@ public class TracingHandler implements HttpHandler {
         } else {
             operationName = template;
         }
-        final AbstractSpan span = ContextManager.createEntrySpan(operationName, carrier);
+        final AbstractSpan span = ContextManager.createEntrySpan(exchange.getRequestMethod() + ":" + operationName, carrier);
         Tags.URL.set(span, exchange.getRequestURL());
         Tags.HTTP.METHOD.set(span, exchange.getRequestMethod().toString());
         span.setComponent(ComponentsDefine.UNDERTOW);

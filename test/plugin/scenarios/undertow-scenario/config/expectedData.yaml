@@ -19,7 +19,7 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: /undertow-scenario/case/undertow
+    - operationName: GET:/undertow-scenario/case/undertow
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -36,7 +36,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: /undertow-routing-scenario/case/{context}
+    - operationName: GET:/undertow-routing-scenario/case/{context}
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -57,7 +57,7 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: /undertow-scenario/case/undertow1
+    - operationName: GET:/undertow-scenario/case/undertow1
       parentSpanId: -1
       spanId: 0
       spanLayer: Http
@@ -104,7 +104,7 @@ segmentItems:
       spanType: Local
       peer: ''
       refs:
-      - {parentEndpoint: /undertow-scenario/case/undertow, networkAddress: '', refType: CrossThread,
+      - {parentEndpoint: GET:/undertow-scenario/case/undertow, networkAddress: '', refType: CrossThread,
         parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
@@ -136,7 +136,7 @@ segmentItems:
       spanType: Local
       peer: ''
       refs:
-      - {parentEndpoint: '/undertow-routing-scenario/case/{context}', networkAddress: '',
+      - {parentEndpoint: 'GET:/undertow-routing-scenario/case/{context}', networkAddress: '',
         refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: undertow-scenario, traceId: not null}
       skipAnalysis: 'false'

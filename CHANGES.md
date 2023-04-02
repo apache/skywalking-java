@@ -24,6 +24,7 @@ Release Notes.
 * Fix unexpected whitespace of the command catalogs in several Redis plugins.
 * Fix a thread leak in `SamplingService` when updated sampling policy in the runtime.
 * Support MySQL plugin tracing SQL parameters when useServerPrepStmts 
+* Update the endpoint name of `Undertow` plugin to `Method:Path`.
 
 #### Documentation
 * Update docs of Tracing APIs, reorganize the API docs into six parts.

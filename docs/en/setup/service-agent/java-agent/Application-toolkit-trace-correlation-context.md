@@ -1,3 +1,7 @@
+# Trace Correlation Context
+Trace correlation context APIs provide a way to put custom data in tracing context. All the data in
+the context will be propagated with the in-wire process automatically.
+
 * Use `TraceContext.putCorrelation()` API to put custom data in tracing context. 
 ```java
 Optional<String> previous = TraceContext.putCorrelation("customKey", "customValue");

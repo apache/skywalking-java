@@ -23,9 +23,9 @@ import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
  * {@link PreparedStatementInstrumentation} define that the mysql-6.x plugin intercepts the following methods in the
@@ -36,6 +36,7 @@ public class PreparedStatementInstrumentation extends AbstractMysqlInstrumentati
 
     private static final String SERVICE_METHOD_INTERCEPTOR = org.apache.skywalking.apm.plugin.jdbc.mysql.Constants.PREPARED_STATEMENT_EXECUTE_METHODS_INTERCEPTOR;
     public static final String MYSQL6_PREPARED_STATEMENT_CLASS_NAME = "com.mysql.cj.jdbc.PreparedStatement";
+    public static final String MYSQL6_SERVER_PREPARED_STATEMENT_CLASS_NAME = "com.mysql.cj.jdbc.ServerPreparedStatement";
 
     @Override
     public final ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -68,7 +69,7 @@ public class PreparedStatementInstrumentation extends AbstractMysqlInstrumentati
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(MYSQL6_PREPARED_STATEMENT_CLASS_NAME);
+        return MultiClassNameMatch.byMultiClassMatch(MYSQL6_PREPARED_STATEMENT_CLASS_NAME, MYSQL6_SERVER_PREPARED_STATEMENT_CLASS_NAME);
     }
 
 }

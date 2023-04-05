@@ -50,7 +50,7 @@ catalog:
                 path: "/en/setup/service-agent/java-agent/application-toolkit-trace-correlation-context"
               - name: "Across Thread Solution"
                 path: "/en/setup/service-agent/java-agent/application-toolkit-trace-cross-thread"
-          - name: "OpenTracing Tracer"
+          - name: "OpenTracing (Deprecated)"
             path: "/en/setup/service-agent/java-agent/opentracing"
           - name: "Meter APIs"
             path: "/en/setup/service-agent/java-agent/application-toolkit-meter"

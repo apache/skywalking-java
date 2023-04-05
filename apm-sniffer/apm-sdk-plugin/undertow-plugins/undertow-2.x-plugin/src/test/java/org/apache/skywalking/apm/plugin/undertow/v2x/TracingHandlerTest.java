@@ -68,6 +68,7 @@ public class TracingHandlerTest {
 
     private String template = "/projects/{projectId}/users";
     private String uri = "/projects/{projectId}/users";
+    private String endpoint = "GET:/projects/{projectId}/users";
 
     @Test
     public void testStatusCodeIsOk() throws Throwable {
@@ -125,7 +126,7 @@ public class TracingHandlerTest {
     }
 
     private void assertHttpSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is(template));
+        assertThat(span.getOperationName(), is(endpoint));
         assertComponent(span, ComponentsDefine.UNDERTOW);
         SpanAssert.assertTag(span, 0, "http://localhost:8080" + uri);
         assertThat(span.isEntry(), is(true));

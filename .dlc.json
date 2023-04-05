@@ -10,6 +10,9 @@
       "pattern": "^https://github.com/apache/skywalking-java/blob/master/changes/changes-x.y.z.md$"
     },
     {
+      "pattern": "^http://pgp.mit.edu:11371"
+    },
+    {
       "pattern": "^https://dist.apache.org/repos/dist/dev/skywalking/java-agent/x.y.z$"
     },
     {
@@ -17,6 +20,9 @@
     },
     {
       "pattern": "https://kotlinlang.org.*"
+    },
+    {
+      "pattern": "^https://mvnrepository.com/"
     }
   ],
   "timeout": "10s",

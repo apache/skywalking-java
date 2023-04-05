@@ -20,9 +20,10 @@ package org.apache.skywalking.apm.testcase.armeria;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
-import java.util.concurrent.CompletableFuture;
-import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class ServerApplication {
@@ -30,7 +31,7 @@ public class ServerApplication {
 
     @PostConstruct
     public void init() {
-        ServerBuilder sb = new ServerBuilder().http(8085)
+        ServerBuilder sb = Server.builder().http(8085)
                                               .service("/healthCheck", (ctx, res) -> HttpResponse.of(SUCCESS))
                                               .service("/greet/{name}", (ctx, res) -> HttpResponse.of("Hello %s~", ctx.pathParam("name")));
 

@@ -5,6 +5,7 @@ Release Notes.
 8.16.0
 ------------------
 
+* Exclude `synthetic` methods for the WitnessMethod mechanism
 
 #### Documentation
 

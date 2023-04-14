@@ -13,15 +13,73 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-registryItems:
-  services:
-    - {jdk-forkjoinpool-scenario: 2}
-  instances:
-    - {jdk-forkjoinpool-scenario: 1}
-  operationNames:
-    - jdk-forkjoinpool-scenario: []
-  heartbeat: []
 segmentItems:
-  - serviceName: jdk-forkjoinpool-scenario
-    segmentSize:
-    segments:
+- serviceName: jdk-forkjoinpool-scenario
+  segmentSize: ge 3
+  segments:
+  - segmentId: not null
+    spans:
+    - operationName: '/apache/skywalking'
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 13
+      isError: false
+      spanType: Exit
+      peer: 'github.com:443'
+      tags:
+      - {key: url, value: 'https://github.com/apache/skywalking'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: 'ForkJoinPool/java.util.concurrent.ForkJoinPool$WorkQueue/runTask'
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 80
+      isError: false
+      spanType: Local
+      peer: ''
+      refs:
+      - {parentEndpoint: 'GET:/jdk-forkjoinpool-scenario/case/jdk-forkjoinpool-scenario', networkAddress: '', refType: CrossThread,
+        parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: jdk-forkjoinpool-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: '/apache/skywalking'
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 13
+      isError: false
+      spanType: Exit
+      peer: 'github.com:443'
+      tags:
+      - {key: url, value: 'https://github.com/apache/skywalking'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: 'GET:/jdk-forkjoinpool-scenario/case/jdk-forkjoinpool-scenario'
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 1
+      isError: false
+      spanType: Entry
+      tags:
+      - {key: url, value: 'http://localhost:8080/jdk-forkjoinpool-scenario/case/jdk-forkjoinpool-scenario'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      peer: ''
+      skipAnalysis: 'false'
+
+

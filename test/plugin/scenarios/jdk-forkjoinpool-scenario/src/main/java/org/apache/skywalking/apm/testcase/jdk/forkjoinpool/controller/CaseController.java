@@ -18,14 +18,10 @@
 
 package org.apache.skywalking.apm.testcase.jdk.forkjoinpool.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,13 +48,7 @@ public class CaseController {
     public String testcase() {
         // your codes
         IntStream.range(1, 3).parallel()
-                .forEach(num -> restTemplate.getForEntity("http://localhost:8080/greet/" + num, String.class));
-
-        List<Integer> list = new ArrayList<>();
-        list.add(3, 4);
-        list.parallelStream()
-                .forEach(num -> restTemplate.getForEntity("http://localhost:8080/greet/" + num, String.class));
-
+                .forEach(num -> restTemplate.getForEntity("https://github.com/apache/skywalking", String.class));
         return SUCCESS;
     }
 
@@ -68,11 +58,5 @@ public class CaseController {
         // your codes
         return SUCCESS;
     }
-
-    @GetMapping("/greet/{number}")
-    public String greetCase(@PathVariable final String number) {
-        return number;
-    }
-
 
 }

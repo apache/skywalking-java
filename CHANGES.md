@@ -4,7 +4,7 @@ Release Notes.
 
 8.16.0
 ------------------
-
+* Support ForkJoinPool trace
 
 #### Documentation
 

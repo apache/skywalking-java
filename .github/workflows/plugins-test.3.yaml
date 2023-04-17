@@ -101,6 +101,7 @@ jobs:
           - guava-eventbus-scenario
           - shenyu-2.4.x-scenario
           - jdk-threadpool-scenario
+          - jdk-forkjoinpool-scenario
           - shenyu-2.4.x-dubbo-scenario
           - grpc-generic-call-scenario
           - shenyu-2.4.x-grpc-scenario

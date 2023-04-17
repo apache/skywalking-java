@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Exclude `synthetic` methods for the WitnessMethod mechanism
+* Support ForkJoinPool trace
 
 #### Documentation
 

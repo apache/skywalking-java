@@ -127,6 +127,7 @@ metrics based on the tracing data.
   * [Spring @Async](https://github.com/spring-projects/spring-framework) 4.x and 5.x
   * [Quasar](https://github.com/puniverse/quasar) 0.7.x
   * JRE Callable and Runnable (Optional²)
+  * JRE ForkJoinPool (Optional²)
 * Cache
   * [Ehcache](https://www.ehcache.org/) 2.x
   * [GuavaCache](https://github.com/google/guava) 18.x -> 23.x (Optional²)

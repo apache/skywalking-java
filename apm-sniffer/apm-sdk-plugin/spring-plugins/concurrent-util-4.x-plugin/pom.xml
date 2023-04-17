@@ -31,7 +31,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <spring-core.version>4.3.10.RELEASE</spring-core.version>
+        <spring-core.version>6.0.8</spring-core.version>
     </properties>
 
     <dependencies>

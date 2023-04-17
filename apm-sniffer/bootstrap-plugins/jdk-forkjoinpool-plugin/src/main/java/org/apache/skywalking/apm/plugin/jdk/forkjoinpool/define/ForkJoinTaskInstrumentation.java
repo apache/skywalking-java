@@ -29,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnha
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
 
-public class ForkJoinTaskInstrumentation extends ClassEnhancePluginDefine {
+public class ForkJoinTaskInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String FORK_JOIN_TASK_CLASS = "java.util.concurrent.ForkJoinTask";
     private static final String FORK_JOIN_TASK_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jdk.forkjoinpool.ForkJoinTaskConstructorInterceptor";
@@ -59,11 +59,6 @@ public class ForkJoinTaskInstrumentation extends ClassEnhancePluginDefine {
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[0];
-    }
-
-    @Override
-    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[0];
     }
 
     @Override

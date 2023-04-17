@@ -18,17 +18,19 @@
 
 package org.apache.skywalking.apm.agent.core.plugin;
 
+import com.google.common.base.Preconditions;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+
+import static net.bytebuddy.matcher.ElementMatchers.isSynthetic;
+import static net.bytebuddy.matcher.ElementMatchers.not;
 
 /**
  * Witness Method for plugin activation
  */
 @ToString
-@RequiredArgsConstructor
 public class WitnessMethod {
 
     /**
@@ -42,4 +44,8 @@ public class WitnessMethod {
     @Getter
     private final ElementMatcher<? super MethodDescription.InDefinedShape> elementMatcher;
 
+    public WitnessMethod(String declaringClassName, ElementMatcher.Junction<? super MethodDescription.InDefinedShape> elementMatcher) {
+        this.declaringClassName = declaringClassName;
+        this.elementMatcher = Preconditions.checkNotNull(elementMatcher).and(not(isSynthetic()));
+    }
 }

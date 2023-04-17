@@ -40,7 +40,6 @@ public class CaseController {
         return new RestTemplate();
     }
 
-
     private static final String SUCCESS = "Success";
 
     @RequestMapping("/jdk-forkjoinpool-scenario")

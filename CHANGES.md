@@ -7,6 +7,7 @@ Release Notes.
 
 * Exclude `synthetic` methods for the WitnessMethod mechanism
 * Support ForkJoinPool trace
+* Add `ContextManagerThreadLocalFactory` to support custom `ThreadLocal` for `ContextManager` 
 
 #### Documentation
 

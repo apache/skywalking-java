@@ -19,12 +19,15 @@
 package org.apache.skywalking.apm.agent.core.context;
 
 import java.util.Objects;
+import java.util.ServiceLoader;
+
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
 import org.apache.skywalking.apm.util.StringUtil;
 
@@ -44,6 +47,19 @@ public class ContextManager implements BootService {
     private static ThreadLocal<AbstractTracerContext> CONTEXT = new ThreadLocal<AbstractTracerContext>();
     private static ThreadLocal<RuntimeContext> RUNTIME_CONTEXT = new ThreadLocal<RuntimeContext>();
     private static ContextManagerExtendService EXTEND_SERVICE;
+
+    static {
+        // try to load ContextManagerThreadLocalFactory
+        ServiceLoader<ContextManagerThreadLocalFactory> contextManagerThreadLocalFactories =
+                ServiceLoader.load(ContextManagerThreadLocalFactory.class, AgentClassLoader.getDefault());
+
+        // only use first ContextManagerThreadLocalFactory
+        if (contextManagerThreadLocalFactories.iterator().hasNext()) {
+            ContextManagerThreadLocalFactory threadLocalFactory = contextManagerThreadLocalFactories.iterator().next();
+            CONTEXT = threadLocalFactory.create();
+            RUNTIME_CONTEXT = threadLocalFactory.create();
+        }
+    }
 
     private static AbstractTracerContext getOrCreate(String operationName, boolean forceSampling) {
         AbstractTracerContext context = CONTEXT.get();

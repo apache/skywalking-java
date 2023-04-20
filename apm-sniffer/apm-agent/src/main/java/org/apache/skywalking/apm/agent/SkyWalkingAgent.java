@@ -102,9 +102,15 @@ public class SkyWalkingAgent {
                 .with(new NamingStrategy.Suffixing("sw_bytebuddy"))
                 .with(new Implementation.Context.Default.Factory.WithFixedSuffix("sw_synthetic"));
 
-        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy)
-                //.enableNativeMethodPrefix("_sw_origin$")
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+        //.enableNativeMethodPrefix("_sw_origin$")
+        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
+        try {
+            NativeMethodStrategySupport.inject(agentBuilder, AgentBuilder.Default.class, "_sw_origin$");
+        } catch (Exception e) {
+            LOGGER.error(e, "SkyWalking agent inject NativeMethodStrategy failure.");
+        }
+
+        agentBuilder = agentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
                 .ignore(nameStartsWith("net.bytebuddy.")
                         .or(nameStartsWith("org.slf4j."))
                         .or(nameStartsWith("org.groovy."))
@@ -114,12 +120,6 @@ public class SkyWalkingAgent {
                         .or(nameStartsWith("sun.reflect"))
                         .or(allSkyWalkingAgentExcludeToolkit())
                         .or(ElementMatchers.isSynthetic()));
-
-        try {
-            NativeMethodStrategySupport.inject(agentBuilder, AgentBuilder.Default.class, "_sw_origin$");
-        } catch (Exception e) {
-            LOGGER.error(e, "SkyWalking agent inject NativeMethodStrategy failure.");
-        }
 
         JDK9ModuleExporter.EdgeClasses edgeClasses = new JDK9ModuleExporter.EdgeClasses();
         try {

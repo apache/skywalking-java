@@ -24,11 +24,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.NamingStrategy;
 import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.agent.builder.MyAsmVisitorWrapper;
+import net.bytebuddy.agent.builder.NativeMethodStrategySupport;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
+import net.bytebuddy.implementation.Implementation;
+import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
@@ -91,18 +96,30 @@ public class SkyWalkingAgent {
             return;
         }
 
-        final ByteBuddy byteBuddy = new ByteBuddy().with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS));
+        final ByteBuddy byteBuddy = new ByteBuddy()
+                .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
+                .with(new AuxiliaryType.NamingStrategy.Suffixing("sw_auxiliary"))
+                .with(new NamingStrategy.Suffixing("sw_bytebuddy"))
+                .with(new Implementation.Context.Default.Factory.WithFixedSuffix("sw_synthetic"));
 
-        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy).ignore(
-            nameStartsWith("net.bytebuddy.")
-                .or(nameStartsWith("org.slf4j."))
-                .or(nameStartsWith("org.groovy."))
-                .or(nameContains("javassist"))
-                .or(nameContains(".asm."))
-                .or(nameContains(".reflectasm."))
-                .or(nameStartsWith("sun.reflect"))
-                .or(allSkyWalkingAgentExcludeToolkit())
-                .or(ElementMatchers.isSynthetic()));
+        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy)
+                //.enableNativeMethodPrefix("_sw_origin$")
+                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+                .ignore(nameStartsWith("net.bytebuddy.")
+                        .or(nameStartsWith("org.slf4j."))
+                        .or(nameStartsWith("org.groovy."))
+                        .or(nameContains("javassist"))
+                        .or(nameContains(".asm."))
+                        .or(nameContains(".reflectasm."))
+                        .or(nameStartsWith("sun.reflect"))
+                        .or(allSkyWalkingAgentExcludeToolkit())
+                        .or(ElementMatchers.isSynthetic()));
+
+        try {
+            NativeMethodStrategySupport.inject(agentBuilder, AgentBuilder.Default.class, "_sw_origin$");
+        } catch (Exception e) {
+            LOGGER.error(e, "SkyWalking agent inject NativeMethodStrategy failure.");
+        }
 
         JDK9ModuleExporter.EdgeClasses edgeClasses = new JDK9ModuleExporter.EdgeClasses();
         try {
@@ -163,7 +180,7 @@ public class SkyWalkingAgent {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
-                DynamicType.Builder<?> newBuilder = builder;
+                DynamicType.Builder<?> newBuilder = builder.visit(new MyAsmVisitorWrapper());
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
                     DynamicType.Builder<?> possibleNewBuilder = define.define(

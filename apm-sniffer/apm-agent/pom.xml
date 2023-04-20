@@ -47,6 +47,11 @@
             <artifactId>apm-agent-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>bytebuddy-patch</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
     <build>

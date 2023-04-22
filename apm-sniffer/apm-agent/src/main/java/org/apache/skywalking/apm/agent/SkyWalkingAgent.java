@@ -18,11 +18,6 @@
 
 package org.apache.skywalking.apm.agent;
 
-import java.lang.instrument.Instrumentation;
-import java.security.ProtectionDomain;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.NamingStrategy;
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -32,7 +27,7 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
-import net.bytebuddy.implementation.Implementation;
+import net.bytebuddy.implementation.ImplementationContextFactory;
 import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -45,6 +40,7 @@ import org.apache.skywalking.apm.agent.core.jvm.LoadedLibraryCollector;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.EnhanceContext;
 import org.apache.skywalking.apm.agent.core.plugin.InstrumentDebuggingClass;
 import org.apache.skywalking.apm.agent.core.plugin.PluginBootstrap;
@@ -53,6 +49,12 @@ import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
 import org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapInstrumentBoost;
 import org.apache.skywalking.apm.agent.core.plugin.bytebuddy.CacheableTransformerDecorator;
 import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter;
+
+import java.lang.instrument.Instrumentation;
+import java.security.ProtectionDomain;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameContains;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
@@ -100,7 +102,7 @@ public class SkyWalkingAgent {
                 .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
                 .with(new AuxiliaryType.NamingStrategy.Suffixing("sw_auxiliary"))
                 .with(new NamingStrategy.Suffixing("sw_bytebuddy"))
-                .with(new Implementation.Context.Default.Factory.WithFixedSuffix("sw_synthetic"));
+                .with(new ImplementationContextFactory());
 
         //.enableNativeMethodPrefix("_sw_origin$")
         AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
@@ -154,6 +156,8 @@ public class SkyWalkingAgent {
 
         PluginFinder.pluginInitCompleted();
 
+        LOGGER.info("Skywalking agent transformer installed");
+
         try {
             ServiceManager.INSTANCE.boot();
         } catch (Exception e) {
@@ -178,6 +182,7 @@ public class SkyWalkingAgent {
                                                 final JavaModule javaModule,
                                                 final ProtectionDomain protectionDomain) {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
+            DelegateNamingResolver.reset();
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
                 DynamicType.Builder<?> newBuilder = builder.visit(new MyAsmVisitorWrapper());

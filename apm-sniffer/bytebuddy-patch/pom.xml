@@ -32,7 +32,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <bytebuddy.version>1.14.4</bytebuddy.version>
+<!--        <bytebuddy.version>1.14.4</bytebuddy.version>-->
     </properties>
 
     <dependencies>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>${bytebuddy.version}</version>
+<!--            <version>${bytebuddy.version}</version>-->
         </dependency>
     </dependencies>
 

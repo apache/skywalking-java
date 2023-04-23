@@ -35,11 +35,13 @@ public class MessageConcurrentlyConsumeInterceptor extends AbstractMessageConsum
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
-        ConsumeConcurrentlyStatus status = (ConsumeConcurrentlyStatus) ret;
-        if (status == ConsumeConcurrentlyStatus.RECONSUME_LATER) {
-            AbstractSpan activeSpan = ContextManager.activeSpan();
-            activeSpan.errorOccurred();
-            Tags.MQ_STATUS.set(activeSpan, status.name());
+        if (ret instanceof ConsumeConcurrentlyStatus) {
+            ConsumeConcurrentlyStatus status = (ConsumeConcurrentlyStatus) ret;
+            if (status == ConsumeConcurrentlyStatus.RECONSUME_LATER) {
+                AbstractSpan activeSpan = ContextManager.activeSpan();
+                activeSpan.errorOccurred();
+                Tags.MQ_STATUS.set(activeSpan, status.name());
+            }
         }
         ContextManager.stopSpan();
         return ret;

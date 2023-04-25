@@ -75,7 +75,7 @@ public class SWClickHousePreparedStatement implements PreparedStatement {
         this.realStatement = realStatement;
         this.connectInfo = connectInfo;
         this.sql = sql;
-        this.statementEnhanceInfos = new StatementEnhanceInfos();
+        this.statementEnhanceInfos = new StatementEnhanceInfos(connectInfo, sql, "PreparedStatement");
     }
 
     @Override

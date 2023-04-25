@@ -7,6 +7,7 @@ Release Notes.
 
 * Exclude `synthetic` methods for the WitnessMethod mechanism
 * Support ForkJoinPool trace
+* Support clickhouse-jdbc-plugin trace sql parameters
 
 #### Documentation
 

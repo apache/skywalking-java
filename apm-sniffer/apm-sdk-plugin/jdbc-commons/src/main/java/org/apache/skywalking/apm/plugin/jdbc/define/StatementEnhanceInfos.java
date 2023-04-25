@@ -38,6 +38,9 @@ public class StatementEnhanceInfos {
         this.statementName = statementName;
     }
 
+    public StatementEnhanceInfos() {
+    }
+
     public ConnectionInfo getConnectionInfo() {
         return connectionInfo;
     }

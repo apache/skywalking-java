@@ -15,15 +15,14 @@
  *  limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.shardingsphere.v500.define;
+package org.apache.skywalking.apm.plugin.shardingsphere.v532.define;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 
-public abstract class AbstractShardingSphereV500Instrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public abstract class AbstractShardingSphereV532Instrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     
     @Override
     protected final String[] witnessClasses() {
-        return new String[]{"org.apache.shardingsphere.infra.context.kernel.KernelProcessor", 
-        "org.apache.shardingsphere.infra.executor.kernel.model.ExecutorDataMap"};
+        return new String[]{"org.apache.shardingsphere.infra.context.kernel.KernelProcessor"};
     }
 }

@@ -32,6 +32,7 @@
         <module>sharding-sphere-4.0.x-plugin</module>
         <module>sharding-sphere-4.1.0-plugin</module>
         <module>sharding-sphere-5.0.0-plugin</module>
+        <module>sharding-sphere-5.3.2-plugin</module>
     </modules>
   
     <properties>

@@ -42,7 +42,7 @@ metrics based on the tracing data.
   * Mysql Driver 5.x, 6.x, 8.x
   * Oracle Driver (Optional¹)
   * H2 Driver 1.3.x -> 1.4.x
-  * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0, 5.1.0, 5.1.1, 5.1.2, 5.2.0, 5.2.1, 5.3.0, 5.3.1, 5.3.2
+  * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0, 5.3.2
   * PostgreSQL Driver 8.x, 9.x, 42.x
   * Mariadb Driver 2.x, 1.8
   * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17

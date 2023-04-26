@@ -32,16 +32,18 @@ public class ExecuteInterceptor implements InstanceMethodsAroundInterceptor {
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) {
         ContextManager.createLocalSpan("/ShardingSphere/executeSQL/").setComponent(ComponentsDefine.SHARDING_SPHERE);
-        ContextManager.continued(RootSpanContext.get());
+        if (null != RootSpanContext.get()) {
+            ContextManager.continued(RootSpanContext.get());
+        }
     }
-
+    
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) {
         ContextManager.stopSpan();
         return ret;
     }
-
+    
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {

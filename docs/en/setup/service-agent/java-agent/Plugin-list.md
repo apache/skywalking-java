@@ -89,6 +89,7 @@
 - sharding-sphere-4.0.0
 - sharding-sphere-4.1.0
 - sharding-sphere-5.0.0
+- sharding-sphere-5.3.2
 - sofarpc
 - solrj-7.x
 - spring-annotation

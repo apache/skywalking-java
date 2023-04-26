@@ -23,6 +23,7 @@ public abstract class AbstractShardingSphereV532Instrumentation extends ClassIns
     
     @Override
     protected final String[] witnessClasses() {
-        return new String[]{"org.apache.shardingsphere.infra.context.kernel.KernelProcessor"};
+        return new String[]{"org.apache.shardingsphere.infra.context.kernel.KernelProcessor",
+        "org.apache.shardingsphere.infra.executor.sql.process.ExecuteIDContext"};
     }
 }

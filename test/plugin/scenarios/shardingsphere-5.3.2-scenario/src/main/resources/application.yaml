@@ -1,0 +1,5 @@
+
+server:
+  port: 8080
+  servlet:
+    context-path: "/shardingsphere-5.3.2-scenario"

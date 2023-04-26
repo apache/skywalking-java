@@ -40,7 +40,7 @@ public class ParseInstrumentation extends AbstractShardingSphereV532Instrumentat
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("parse0");
+                    return named("parse");
                 }
 
                 @Override

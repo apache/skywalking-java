@@ -31,7 +31,7 @@ scenarios_home="${home}/scenarios"
 num_of_testcases=
 
 container_image_version="1.0.0"
-base_image_java="eclipse-temurin:8-jdk"
+base_image_java="eclipse-temurin:17-jdk"
 base_image_tomcat="tomcat:8.5-jdk8-openjdk"
 jacoco_version="${JACOCO_VERSION:-0.8.8}"
 

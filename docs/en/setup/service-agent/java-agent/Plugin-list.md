@@ -158,3 +158,4 @@
 - nats-client-2.14.x-2.15.x
 - impala-jdbc-2.6.x
 - jdk-forkjoinpool-plugin
+- jetty-thread-pool-plugin

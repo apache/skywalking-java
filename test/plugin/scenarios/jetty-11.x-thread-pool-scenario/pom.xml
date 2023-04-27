@@ -21,7 +21,7 @@
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>org.apache.skywalking.apm.testcase</groupId>
-    <artifactId>jetty-thread-pool-scenario</artifactId>
+    <artifactId>jetty-11.x-thread-pool-scenario</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -32,12 +32,12 @@
         <compiler.version>1.8</compiler.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 
-        <test.framework.version>10.0.15</test.framework.version>
+        <test.framework.version>11.0.15</test.framework.version>
 
         <log4j.version>2.6.2</log4j.version>
     </properties>
 
-    <name>skywalking-jetty-thread-pool-scenario</name>
+    <name>skywalking-jetty-11.x-thread-pool-scenario</name>
 
     <dependencies>
         <dependency>
@@ -54,7 +54,7 @@
 
 
     <build>
-        <finalName>jetty-thread-pool-scenario</finalName>
+        <finalName>jetty-11.x-thread-pool-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,7 +81,7 @@
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>
-                                        org.apache.skywalking.apm.testcase.jettythreadpool.Application
+                                        org.apache.skywalking.apm.testcase.jetty11xthreadpool.Application
                                     </mainClass>
                                 </transformer>
                             </transformers>

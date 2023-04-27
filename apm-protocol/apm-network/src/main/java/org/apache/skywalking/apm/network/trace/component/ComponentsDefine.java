@@ -233,4 +233,5 @@ public class ComponentsDefine {
 
     public static final OfficialComponent MICROMETER = new OfficialComponent(141, "Micrometer");
 
+    public static final OfficialComponent TENCENT_SMS = new OfficialComponent(142, "Tencent-SMS");
 }

@@ -232,8 +232,8 @@ public class ComponentsDefine {
 
     public static final OfficialComponent IMPALA_JDBC_DRIVER = new OfficialComponent(133, "Impala-jdbc-driver");
 
-    public static final OfficialComponent JERSEY = new OfficialComponent(134, "Jersey");
-
     public static final OfficialComponent MICROMETER = new OfficialComponent(141, "Micrometer");
+
+    public static final OfficialComponent JERSEY = new OfficialComponent(146, "Jersey");
 
 }

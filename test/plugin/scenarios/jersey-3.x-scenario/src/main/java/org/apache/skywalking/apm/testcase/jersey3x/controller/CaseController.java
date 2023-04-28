@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.testcase.jersey3x.controller;
 
-
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import jakarta.ws.rs.GET;
@@ -27,10 +26,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 
-
 @Path("case")
 public class CaseController {
-
 
     @Path("jersey-3.x-scenario")
     @GET

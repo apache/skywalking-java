@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.testcase.jersey3x;
 
-
 import java.io.IOException;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -46,16 +45,10 @@ public class Application {
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
-    /**
-     * Main method.
-     *
-     * @param args
-     * @throws IOException
-     */
     public static void main(String[] args) throws IOException, InterruptedException {
         final HttpServer server = startServer();
-        System.out.println(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+        System.out.printf("Jersey app started with WADL available at "
+                + "%s application.wadl\nHit enter to stop it...%n", BASE_URI);
         server.start();
     }
 }

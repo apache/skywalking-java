@@ -55,7 +55,7 @@ public class ApplicationHandlerInterceptor implements InstanceMethodsAroundInter
         final String url = request.getRequestUri().toString();
         Tags.URL.set(span, url);
         Tags.HTTP.METHOD.set(span, request.getMethod());
-        span.setComponent(ComponentsDefine.PLAY);
+        span.setComponent(ComponentsDefine.JERSEY);
         SpanLayer.asHttp(span);
     }
 

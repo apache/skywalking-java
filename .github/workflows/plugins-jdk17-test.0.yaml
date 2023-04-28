@@ -57,7 +57,7 @@ jobs:
         case:
           - jdk17-with-gson-scenario
           - resttemplate-6.x-scenario
-          - jsersey-3.x-scenario
+          - jersey-3.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

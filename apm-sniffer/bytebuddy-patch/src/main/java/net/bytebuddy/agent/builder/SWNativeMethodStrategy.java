@@ -23,10 +23,10 @@ import net.bytebuddy.dynamic.scaffold.inline.MethodNameTransformer;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 
-public class MyNativeMethodStrategy implements AgentBuilder.Default.NativeMethodStrategy {
+public class SWNativeMethodStrategy implements AgentBuilder.Default.NativeMethodStrategy {
     private String prefix;
 
-    public MyNativeMethodStrategy(String prefix) {
+    public SWNativeMethodStrategy(String prefix) {
         this.prefix = prefix;
     }
 

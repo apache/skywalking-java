@@ -32,7 +32,7 @@ import net.bytebuddy.pool.TypePool;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyAsmVisitorWrapper implements AsmVisitorWrapper {
+public class SWAsmVisitorWrapper implements AsmVisitorWrapper {
 
     @Override
     public int mergeWriter(int flags) {

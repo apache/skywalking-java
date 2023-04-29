@@ -21,14 +21,14 @@ package org.apache.skywalking.apm.agent;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.NamingStrategy;
 import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.agent.builder.MyAsmVisitorWrapper;
+import net.bytebuddy.agent.builder.SWAsmVisitorWrapper;
 import net.bytebuddy.agent.builder.NativeMethodStrategySupport;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
 import net.bytebuddy.implementation.ImplementationContextFactory;
-import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
+import net.bytebuddy.implementation.SWAuxiliaryTypeNamingStrategy;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
@@ -100,7 +100,7 @@ public class SkyWalkingAgent {
 
         final ByteBuddy byteBuddy = new ByteBuddy()
                 .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
-                .with(new AuxiliaryType.NamingStrategy.Suffixing("sw_auxiliary"))
+                .with(new SWAuxiliaryTypeNamingStrategy("sw_auxiliary"))
                 .with(new NamingStrategy.Suffixing("sw_bytebuddy"))
                 .with(new ImplementationContextFactory());
 
@@ -185,7 +185,7 @@ public class SkyWalkingAgent {
             DelegateNamingResolver.reset();
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
-                DynamicType.Builder<?> newBuilder = builder.visit(new MyAsmVisitorWrapper());
+                DynamicType.Builder<?> newBuilder = builder.visit(new SWAsmVisitorWrapper());
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
                     DynamicType.Builder<?> possibleNewBuilder = define.define(

@@ -18,53 +18,20 @@
 
 package net.bytebuddy.agent.builder;
 
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.dynamic.scaffold.inline.MethodNameTransformer;
-import net.bytebuddy.implementation.MethodDelegation;
-import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 
 public class NativeMethodStrategySupport {
 
     private static ILog LOGGER = LogManager.getLogger(NativeMethodStrategySupport.class);
 
-    public static MethodNameTransformer resolve() {
-        return new MethodNameTransformer() {
-            @Override
-            public String transform(MethodDescription methodDescription) {
-                return "_sw_origin$" + methodDescription.getInternalName();
-            }
-        };
-    }
-
-    public static void apply(Instrumentation instrumentation, ClassFileTransformer classFileTransformer) {
-    }
-
-    public static Object create(Class<?> type) throws Exception {
-        // create the impl class of protected interface
-        return new ByteBuddy().subclass(Object.class)
-                .implement(type)
-                .method(ElementMatchers.named("resolve"))
-                .intercept(MethodDelegation.to(NativeMethodStrategySupport.class))
-                .method(ElementMatchers.named("apply"))
-                .intercept(MethodDelegation.to(NativeMethodStrategySupport.class))
-                .make()
-                .load(type.getClassLoader())
-                .getLoaded()
-                .newInstance();
-    }
-
     public static void inject(AgentBuilder agentBuilder, Class clazz, String prefix) {
         try {
             Field nativeMethodStrategyField = clazz.getDeclaredField("nativeMethodStrategy");
             nativeMethodStrategyField.setAccessible(true);
-            nativeMethodStrategyField.set(agentBuilder, new MyNativeMethodStrategy(prefix));
+            nativeMethodStrategyField.set(agentBuilder, new SWNativeMethodStrategy(prefix));
         } catch (Exception e) {
             LOGGER.error(e, "SkyWalking agent inject NativeMethodStrategy failure. clazz: " + clazz.getName());
         }

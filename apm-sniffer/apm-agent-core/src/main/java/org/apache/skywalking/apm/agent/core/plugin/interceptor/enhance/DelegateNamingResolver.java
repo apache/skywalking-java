@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.core.plugin;
+package org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -25,16 +25,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Design to generate fixed delegate field name in retransform class
+ * Design to generate fixed delegate field name for MethodDelegation on retransform class
  */
 public class DelegateNamingResolver {
+    private static final String FIELD_PREFIX = "sw_delegate$";
     private static Map<String, AtomicInteger> NAME_CACHE = new ConcurrentHashMap<>();
     private final String enhanceOriginClassName;
     private final String fileNamePrefix;
 
     public DelegateNamingResolver(String enhanceOriginClassName) {
         this.enhanceOriginClassName = enhanceOriginClassName;
-        fileNamePrefix = "_sw_delegate$" + RandomString.hashOf(enhanceOriginClassName.hashCode()) + "$";
+        fileNamePrefix = FIELD_PREFIX + RandomString.hashOf(enhanceOriginClassName.hashCode()) + "$";
     }
 
     public String next() {

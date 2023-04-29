@@ -5,7 +5,7 @@ import net.bytebuddy.dynamic.scaffold.inline.MethodNameTransformer;
 import net.bytebuddy.utility.RandomString;
 
 /**
- * gongdewei 2023/4/29
+ * Generate fixed origin method name
  */
 public class SWMethodNameTransformer implements MethodNameTransformer {
 
@@ -23,7 +23,7 @@ public class SWMethodNameTransformer implements MethodNameTransformer {
 
     @Override
     public String transform(MethodDescription methodDescription) {
-        return prefix + methodDescription.getInternalName() +"$"+ RandomString.hashOf(methodDescription.toString().hashCode());
+        return prefix + methodDescription.getInternalName() + "$" + RandomString.hashOf(methodDescription.toString().hashCode());
     }
 
 }

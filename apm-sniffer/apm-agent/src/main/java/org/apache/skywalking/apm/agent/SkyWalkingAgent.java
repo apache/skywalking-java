@@ -19,16 +19,15 @@
 package org.apache.skywalking.apm.agent;
 
 import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.NamingStrategy;
 import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.agent.builder.SWAsmVisitorWrapper;
 import net.bytebuddy.agent.builder.NativeMethodStrategySupport;
+import net.bytebuddy.agent.builder.SWAsmVisitorWrapper;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
-import net.bytebuddy.implementation.ImplementationContextFactory;
 import net.bytebuddy.implementation.SWAuxiliaryTypeNamingStrategy;
+import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
@@ -40,7 +39,6 @@ import org.apache.skywalking.apm.agent.core.jvm.LoadedLibraryCollector;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.EnhanceContext;
 import org.apache.skywalking.apm.agent.core.plugin.InstrumentDebuggingClass;
 import org.apache.skywalking.apm.agent.core.plugin.PluginBootstrap;
@@ -48,6 +46,7 @@ import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
 import org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapInstrumentBoost;
 import org.apache.skywalking.apm.agent.core.plugin.bytebuddy.CacheableTransformerDecorator;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter;
 
 import java.lang.instrument.Instrumentation;
@@ -100,17 +99,11 @@ public class SkyWalkingAgent {
 
         final ByteBuddy byteBuddy = new ByteBuddy()
                 .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
-                .with(new SWAuxiliaryTypeNamingStrategy("sw_auxiliary"))
-                .with(new NamingStrategy.Suffixing("sw_bytebuddy"))
-                .with(new ImplementationContextFactory());
+                .with(new SWAuxiliaryTypeNamingStrategy())
+                .with(new SWImplementationContextFactory());
 
-        //.enableNativeMethodPrefix("_sw_origin$")
         AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
-        try {
-            NativeMethodStrategySupport.inject(agentBuilder, AgentBuilder.Default.class, "_sw_origin$");
-        } catch (Exception e) {
-            LOGGER.error(e, "SkyWalking agent inject NativeMethodStrategy failure.");
-        }
+        NativeMethodStrategySupport.inject(agentBuilder);
 
         agentBuilder = agentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
                 .ignore(nameStartsWith("net.bytebuddy.")

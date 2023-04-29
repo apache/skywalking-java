@@ -24,14 +24,22 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.Implementation.SpecialMethodInvocation;
 import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import net.bytebuddy.utility.RandomString;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 
 import java.lang.reflect.Field;
 
 /**
- * gongdewei 2023/4/29
+ * Generate fixed auxiliary type name of delegate method
  */
 public class SWAuxiliaryTypeNamingStrategy implements AuxiliaryType.NamingStrategy {
+    private static final String DEFAULT_PREFIX = "sw_auxiliary";
+    private static ILog LOGGER = LogManager.getLogger(SWAuxiliaryTypeNamingStrategy.class);
     private String suffix;
+
+    public SWAuxiliaryTypeNamingStrategy() {
+        this(DEFAULT_PREFIX);
+    }
 
     public SWAuxiliaryTypeNamingStrategy(String suffix) {
         this.suffix = suffix;
@@ -43,26 +51,29 @@ public class SWAuxiliaryTypeNamingStrategy implements AuxiliaryType.NamingStrate
         if (description != null) {
             return instrumentedType.getName() + "$" + suffix + "$" + RandomString.hashOf(description.hashCode());
         }
-        return instrumentedType.getName() + "$" + suffix + "$" + RandomString.hashOf(auxiliaryType);
+        return instrumentedType.getName() + "$" + suffix + "$" + RandomString.hashOf(auxiliaryType.hashCode());
     }
 
     private String findDescription(AuxiliaryType auxiliaryType) {
         try {
             Class<? extends AuxiliaryType> auxiliaryTypeClass = auxiliaryType.getClass();
             String auxiliaryTypeClassName = auxiliaryTypeClass.getName();
-            if (auxiliaryTypeClassName.endsWith("Morph$Binder$RedirectionProxy") || auxiliaryTypeClassName.endsWith("MethodCallProxy")) {
+            if (auxiliaryTypeClassName.endsWith("Morph$Binder$RedirectionProxy")
+                    || auxiliaryTypeClassName.endsWith("MethodCallProxy")) {
                 // get MethodDescription from field 'specialMethodInvocation.methodDescription'
                 Field specialMethodInvocationField = auxiliaryTypeClass.getDeclaredField("specialMethodInvocation");
                 specialMethodInvocationField.setAccessible(true);
                 SpecialMethodInvocation specialMethodInvocation = (SpecialMethodInvocation) specialMethodInvocationField.get(auxiliaryType);
                 MethodDescription methodDescription = specialMethodInvocation.getMethodDescription();
                 return methodDescription.toString();
+
             } else if (auxiliaryTypeClassName.endsWith("Pipe$Binder$RedirectionProxy")) {
                 // get MethodDescription from field 'sourceMethod'
                 Field sourceMethodField = auxiliaryTypeClass.getDeclaredField("sourceMethod");
                 sourceMethodField.setAccessible(true);
                 MethodDescription sourceMethod = (MethodDescription) sourceMethodField.get(auxiliaryType);
                 return sourceMethod.toString();
+
             } else if (auxiliaryTypeClassName.endsWith("FieldProxy$Binder$AccessorProxy")) {
                 // get fieldDescription
                 Field fieldDescriptionField = auxiliaryTypeClass.getDeclaredField("fieldDescription");
@@ -71,7 +82,7 @@ public class SWAuxiliaryTypeNamingStrategy implements AuxiliaryType.NamingStrate
                 return fieldDescription.toString();
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            LOGGER.error(e, "Find description of auxiliaryType failure. auxiliaryType: {}", auxiliaryType.getClass());
         }
         return null;
     }

@@ -23,15 +23,22 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 
 import java.lang.reflect.Field;
 
+/**
+ * Inject custom NativeMethodStrategy to AgentBuilder
+ */
 public class NativeMethodStrategySupport {
-
+    private static final String PREFIX = "sw_origin$";
     private static ILog LOGGER = LogManager.getLogger(NativeMethodStrategySupport.class);
 
-    public static void inject(AgentBuilder agentBuilder, Class clazz, String prefix) {
+    public static void inject(AgentBuilder agentBuilder) {
+        Class<? extends AgentBuilder> clazz = agentBuilder.getClass();
+        if (clazz != AgentBuilder.Default.class) {
+            throw new IllegalStateException("Only accept original AgentBuilder instance but not a wrapper instance: " + clazz.getName());
+        }
         try {
             Field nativeMethodStrategyField = clazz.getDeclaredField("nativeMethodStrategy");
             nativeMethodStrategyField.setAccessible(true);
-            nativeMethodStrategyField.set(agentBuilder, new SWNativeMethodStrategy(prefix));
+            nativeMethodStrategyField.set(agentBuilder, new SWNativeMethodStrategy(PREFIX));
         } catch (Exception e) {
             LOGGER.error(e, "SkyWalking agent inject NativeMethodStrategy failure. clazz: " + clazz.getName());
         }

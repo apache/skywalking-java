@@ -23,6 +23,9 @@ import net.bytebuddy.dynamic.scaffold.inline.MethodNameTransformer;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 
+/**
+ * Use custom MethodNameTransformer to generate origin method name
+ */
 public class SWNativeMethodStrategy implements AgentBuilder.Default.NativeMethodStrategy {
     private String prefix;
 
@@ -32,7 +35,7 @@ public class SWNativeMethodStrategy implements AgentBuilder.Default.NativeMethod
 
     @Override
     public MethodNameTransformer resolve() {
-        return new MethodNameTransformer.Prefixing(prefix);
+        return new SWMethodNameTransformer(prefix);
     }
 
     @Override

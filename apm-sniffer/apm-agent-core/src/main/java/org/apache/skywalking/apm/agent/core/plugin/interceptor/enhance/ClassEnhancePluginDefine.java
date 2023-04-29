@@ -30,7 +30,6 @@ import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.EnhanceContext;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapInstrumentBoost;

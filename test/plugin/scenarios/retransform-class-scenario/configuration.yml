@@ -20,3 +20,5 @@ healthCheck: http://localhost:8080/case/healthCheck
 startScript: ./bin/startup.sh
 environment:
 dependencies:
+withPlugins: apm-spring-annotation-plugin-*.jar, apm-jdk-*.jar
+

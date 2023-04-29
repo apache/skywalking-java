@@ -15,16 +15,9 @@
 # limitations under the License.
 
 type: jvm
-entryService: http://localhost:8080/clickhouse-scenario/case/clickhouse-scenario
-healthCheck: http://localhost:8080/clickhouse-scenario/case/healthCheck
+entryService: http://localhost:8080/jdk-forkjoinpool-scenario/case/jdk-forkjoinpool-scenario
+healthCheck: http://localhost:8080/jdk-forkjoinpool-scenario/case/healthCheck
+runningMode: with_bootstrap
+withPlugins: apm-jdk-forkjoinpool-plugin-*.jar
 startScript: ./bin/startup.sh
-environment:
-  - SW_JDBC_TRACE_SQL_PARAMETERS=true
-depends_on:
-  - clickhouse-server
-dependencies:
-  clickhouse-server:
-    image: yandex/clickhouse-server:22.1.2.2
-    hostname: clickhouse-server
-    expose:
-      - 8123
+

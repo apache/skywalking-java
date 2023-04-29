@@ -101,6 +101,39 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: ''}
+          - operationName: ClickHouse/JDBC/PreparedStatement/executeQuery
+            operationId: 0
+            parentSpanId: 0
+            spanId: 5
+            spanLayer: Database
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 119
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: ClickHouse}
+              - {key: db.instance, value: system}
+              - {key: db.statement, value: 'SELECT * FROM clusters WHERE cluster = ?'}
+              - {key: db.sql.parameters, value: '[1]'}
+          - operationName: ClickHouse/JDBC/Connection/close
+            operationId: 0
+            parentSpanId: 0
+            spanId: 6
+            spanLayer: Database
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 119
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: ClickHouse}
+              - {key: db.instance, value: system}
+              - {key: db.statement, value: ''}
           - operationName: GET:/clickhouse-scenario/case/clickhouse-scenario
             operationId: 0
             parentSpanId: -1

@@ -14,17 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-type: jvm
-entryService: http://localhost:8080/clickhouse-scenario/case/clickhouse-scenario
-healthCheck: http://localhost:8080/clickhouse-scenario/case/healthCheck
-startScript: ./bin/startup.sh
-environment:
-  - SW_JDBC_TRACE_SQL_PARAMETERS=true
-depends_on:
-  - clickhouse-server
-dependencies:
-  clickhouse-server:
-    image: yandex/clickhouse-server:22.1.2.2
-    hostname: clickhouse-server
-    expose:
-      - 8123
+jdk-forkjoinpool-plugin=org.apache.skywalking.apm.plugin.jdk.forkjoinpool.define.ForkJoinTaskInstrumentation
+jdk-forkjoinpool-plugin=org.apache.skywalking.apm.plugin.jdk.forkjoinpool.define.ForkJoinWorkerQueueInstrumentation
+

@@ -5,6 +5,8 @@ Release Notes.
 8.16.0
 ------------------
 
+* support MutableLogEvent in plugin log4j2
+
 
 #### Documentation
 

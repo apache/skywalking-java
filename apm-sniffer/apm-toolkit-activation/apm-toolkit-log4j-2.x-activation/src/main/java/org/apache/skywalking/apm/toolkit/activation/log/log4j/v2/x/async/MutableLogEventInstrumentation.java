@@ -28,10 +28,17 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class RingBufferLogEventInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.log.log4j.v2.x.async.LogEventMethodInterceptor";
-    private static final String ENHANCE_CLASS = "org.apache.logging.log4j.core.async.RingBufferLogEvent";
-    private static final String ENHANCE_METHOD = "setMessage";
+/**
+ * Instrument to intercept MutableLogEvent. method initFrom: initialize MutableLogEvent from another event. method
+ * setLoggerName: ReusableLogEventFactory#createEvent.
+ */
+
+public class MutableLogEventInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+    private static final String INTERCEPT_CLASS_INIT_FROM = "org.apache.skywalking.apm.toolkit.activation.log.log4j.v2.x.async.MutableLogEventMethodInitFromInterceptor";
+    private static final String INTERCEPT_CLASS_SET_LOGGER_NAME = "org.apache.skywalking.apm.toolkit.activation.log.log4j.v2.x.async.LogEventMethodInterceptor";
+    private static final String ENHANCE_CLASS = "org.apache.logging.log4j.core.async.MutableLogEvent";
+    private static final String ENHANCE_METHOD_INIT_FROM = "initFrom";
+    private static final String ENHANCE_METHOD_SET_LOGGER_NAME = "setLoggerName";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -44,12 +51,28 @@ public class RingBufferLogEventInstrumentation extends ClassInstanceMethodsEnhan
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_METHOD);
+                    return named(ENHANCE_METHOD_INIT_FROM);
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return INTERCEPT_CLASS;
+                    return INTERCEPT_CLASS_INIT_FROM;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(INTERCEPT_CLASS_SET_LOGGER_NAME);
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return ENHANCE_METHOD_SET_LOGGER_NAME;
                 }
 
                 @Override

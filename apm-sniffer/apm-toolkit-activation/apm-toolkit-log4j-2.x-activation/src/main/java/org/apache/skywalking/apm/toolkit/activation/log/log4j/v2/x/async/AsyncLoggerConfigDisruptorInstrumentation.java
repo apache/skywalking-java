@@ -28,10 +28,14 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class RingBufferLogEventInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.log.log4j.v2.x.async.LogEventMethodInterceptor";
-    private static final String ENHANCE_CLASS = "org.apache.logging.log4j.core.async.RingBufferLogEvent";
-    private static final String ENHANCE_METHOD = "setMessage";
+/**
+ * Instrument to intercept AsyncLoggerConfigDisruptor of log4j2.
+ */
+
+public class AsyncLoggerConfigDisruptorInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.log.log4j.v2.x.async.AsyncLoggerConfigDisruptorInterceptor";
+    private static final String ENHANCE_CLASS = "org.apache.logging.log4j.core.async.AsyncLoggerConfigDisruptor";
+    private static final String ENHANCE_METHOD = "prepareEvent";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {

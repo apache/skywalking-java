@@ -159,3 +159,5 @@
 - impala-jdbc-2.6.x
 - jdk-forkjoinpool-plugin
 - jetty-thread-pool
+- jersey-2.x
+- jersey-3.x

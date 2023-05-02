@@ -64,6 +64,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-bom</artifactId>
+                <version>1.28.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.shenyu</groupId>
                 <artifactId>shenyu-spring-boot-starter-gateway</artifactId>
                 <version>${test.framework.version}</version>
@@ -102,7 +109,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
     <build>
         <finalName>shenyu-2.4.x-sofarpc-scenario</finalName>

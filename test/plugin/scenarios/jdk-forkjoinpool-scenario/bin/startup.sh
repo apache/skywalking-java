@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,17 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-type: jvm
-entryService: http://localhost:8080/clickhouse-scenario/case/clickhouse-scenario
-healthCheck: http://localhost:8080/clickhouse-scenario/case/healthCheck
-startScript: ./bin/startup.sh
-environment:
-  - SW_JDBC_TRACE_SQL_PARAMETERS=true
-depends_on:
-  - clickhouse-server
-dependencies:
-  clickhouse-server:
-    image: yandex/clickhouse-server:22.1.2.2
-    hostname: clickhouse-server
-    expose:
-      - 8123
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} ${home}/../libs/jdk-forkjoinpool-scenario.jar &

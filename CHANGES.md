@@ -5,8 +5,10 @@ Release Notes.
 8.16.0
 ------------------
 
+* Exclude `synthetic` methods for the WitnessMethod mechanism
+* Support ForkJoinPool trace
+* Support clickhouse-jdbc-plugin trace sql parameters
 * support MutableLogEvent in plugin log4j2
-
 
 #### Documentation
 

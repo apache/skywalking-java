@@ -126,6 +126,7 @@
         <module>jedis-plugins</module>
         <module>impala-jdbc-2.6.x-plugin</module>
         <module>apm-armeria-plugins</module>
+        <module>jetty-thread-pool-plugin</module>
         <module>jersey-2.x-plugin</module>
         <module>jersey-3.x-plugin</module>
     </modules>

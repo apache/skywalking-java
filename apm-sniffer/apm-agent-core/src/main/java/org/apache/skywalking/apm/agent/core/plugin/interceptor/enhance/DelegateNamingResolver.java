@@ -30,27 +30,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DelegateNamingResolver {
     private static final String FIELD_PREFIX = "sw_delegate$";
     private static Map<String, AtomicInteger> NAME_CACHE = new ConcurrentHashMap<>();
-    private final String enhanceOriginClassName;
+    private final String className;
     private final String fileNamePrefix;
 
-    public DelegateNamingResolver(String enhanceOriginClassName) {
-        this.enhanceOriginClassName = enhanceOriginClassName;
-        fileNamePrefix = FIELD_PREFIX + RandomString.hashOf(enhanceOriginClassName.hashCode()) + "$";
+    public DelegateNamingResolver(String className) {
+        this.className = className;
+        fileNamePrefix = FIELD_PREFIX + RandomString.hashOf(className.hashCode()) + "$";
     }
 
     public String next() {
-        AtomicInteger index = NAME_CACHE.computeIfAbsent(enhanceOriginClassName, key -> new AtomicInteger(0));
+        AtomicInteger index = NAME_CACHE.computeIfAbsent(className, key -> new AtomicInteger(0));
         return fileNamePrefix + index.incrementAndGet();
     }
 
-    public static DelegateNamingResolver get(String enhanceOriginClassName) {
-        return new DelegateNamingResolver(enhanceOriginClassName);
+    public static DelegateNamingResolver get(String className) {
+        return new DelegateNamingResolver(className);
     }
 
     /**
-     * do reset before global retransform
+     * do reset before retransform
      */
-    public static void reset() {
-        NAME_CACHE.clear();
+    public static void reset(String className) {
+        NAME_CACHE.remove(className);
     }
 }

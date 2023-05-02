@@ -175,7 +175,7 @@ public class SkyWalkingAgent {
                                                 final JavaModule javaModule,
                                                 final ProtectionDomain protectionDomain) {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
-            DelegateNamingResolver.reset();
+            DelegateNamingResolver.reset(typeDescription.getTypeName());
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
                 DynamicType.Builder<?> newBuilder = builder.visit(new SWAsmVisitorWrapper());

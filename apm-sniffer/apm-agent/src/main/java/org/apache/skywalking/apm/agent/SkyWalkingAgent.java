@@ -54,6 +54,7 @@ import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameContains;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
@@ -97,13 +98,17 @@ public class SkyWalkingAgent {
             return;
         }
 
+        // Generate random name trait
+        String nameTrait = generateNameTrait();
+        DelegateNamingResolver.setNameTrait(nameTrait);
+
         final ByteBuddy byteBuddy = new ByteBuddy()
                 .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
-                .with(new SWAuxiliaryTypeNamingStrategy())
-                .with(new SWImplementationContextFactory());
+                .with(new SWAuxiliaryTypeNamingStrategy(nameTrait))
+                .with(new SWImplementationContextFactory(nameTrait));
 
         AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
-        NativeMethodStrategySupport.inject(agentBuilder);
+        NativeMethodStrategySupport.inject(agentBuilder, nameTrait);
 
         agentBuilder = agentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
                 .ignore(nameStartsWith("net.bytebuddy.")
@@ -159,6 +164,15 @@ public class SkyWalkingAgent {
 
         Runtime.getRuntime()
                .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
+    }
+
+    private static String generateNameTrait() {
+        String str = "sw";
+        Random random = new Random();
+        for (int i = 0; i < 4; i++) {
+            str += random.nextInt(10);
+        }
+        return str;
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

@@ -33,16 +33,12 @@ import java.lang.reflect.Field;
  * Generate fixed auxiliary type name of delegate method
  */
 public class SWAuxiliaryTypeNamingStrategy implements AuxiliaryType.NamingStrategy {
-    private static final String DEFAULT_PREFIX = "sw_auxiliary";
+    private static final String DEFAULT_SUFFIX = "auxiliary";
     private static ILog LOGGER = LogManager.getLogger(SWAuxiliaryTypeNamingStrategy.class);
     private String suffix;
 
-    public SWAuxiliaryTypeNamingStrategy() {
-        this(DEFAULT_PREFIX);
-    }
-
-    public SWAuxiliaryTypeNamingStrategy(String suffix) {
-        this.suffix = suffix;
+    public SWAuxiliaryTypeNamingStrategy(String nameTrait) {
+        this.suffix = nameTrait + "_" + DEFAULT_SUFFIX;
     }
 
     @Override

@@ -28,14 +28,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Design to generate fixed delegate field name for MethodDelegation on retransform class
  */
 public class DelegateNamingResolver {
-    private static final String FIELD_PREFIX = "sw_delegate$";
+    private static final String PREFIX = "delegate$";
+    private static String NAME_TRAIT = "sw";
     private static Map<String, AtomicInteger> NAME_CACHE = new ConcurrentHashMap<>();
     private final String className;
     private final String fileNamePrefix;
 
+    public static void setNameTrait(String nameTrait) {
+        DelegateNamingResolver.NAME_TRAIT = nameTrait;
+    }
+
     public DelegateNamingResolver(String className) {
         this.className = className;
-        fileNamePrefix = FIELD_PREFIX + RandomString.hashOf(className.hashCode()) + "$";
+        fileNamePrefix = NAME_TRAIT + "_" + PREFIX + RandomString.hashOf(className.hashCode()) + "$";
     }
 
     public String next() {

@@ -28,6 +28,13 @@ import net.bytebuddy.utility.RandomString;
  * Design to generate fixed name for CacheValueField (cache delegating Method)
  */
 public class SWImplementationContextFactory implements Implementation.Context.Factory {
+
+    private String suffix;
+
+    public SWImplementationContextFactory(String suffix) {
+        this.suffix = suffix;
+    }
+
     @Override
     public Implementation.Context.ExtractableView make(TypeDescription instrumentedType,
                                                        AuxiliaryType.NamingStrategy auxiliaryTypeNamingStrategy,
@@ -47,6 +54,6 @@ public class SWImplementationContextFactory implements Implementation.Context.Fa
                                                        Implementation.Context.FrameGeneration frameGeneration) {
         return new Implementation.Context.Default(instrumentedType, classFileVersion, auxiliaryTypeNamingStrategy,
                 typeInitializer, auxiliaryClassFileVersion, frameGeneration,
-                RandomString.hashOf(instrumentedType.getName().hashCode()));
+                suffix + "_" + RandomString.hashOf(instrumentedType.getName().hashCode()));
     }
 }

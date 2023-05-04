@@ -24,13 +24,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class JDBCPreparedStatementSetterInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public final void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         final StatementEnhanceInfos statementEnhanceInfos = (StatementEnhanceInfos) objInst.getSkyWalkingDynamicField();
-        if (statementEnhanceInfos != null) {
+        if (statementEnhanceInfos != null && Modifier.isPublic(method.getModifiers())) {
           final int index = (Integer) allArguments[0];
           final Object parameter = allArguments[1];
           statementEnhanceInfos.setParameter(index, parameter);

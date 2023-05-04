@@ -22,6 +22,7 @@ metrics based on the tracing data.
   * [Light4J Microservices Framework](https://doc.networknt.com/) 1.6.x -> 2.x
   * [Netty SocketIO](https://github.com/mrniko/netty-socketio) 1.x
   * [Micronaut HTTP Server](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
+  * [Jersey REST framework](https://github.com/eclipse-ee4j/jersey) 2.x -> 3.x
 * HTTP Client
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
@@ -155,6 +156,7 @@ The meter plugin provides the advanced metrics collections, which are not a part
   * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
   * [Tomcat](https://github.com/apache/tomcat) 7.0.x -> 10.0.x
   * [Dubbo](https://github.com/apache/dubbo) 2.5.x -> 2.7.x
+  * [Jetty](https://github.com/eclipse/jetty.project) 9.1.x -> 11.x
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository,
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

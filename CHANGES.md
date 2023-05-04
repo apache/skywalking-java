@@ -8,6 +8,8 @@ Release Notes.
 * Exclude `synthetic` methods for the WitnessMethod mechanism
 * Support ForkJoinPool trace
 * Support clickhouse-jdbc-plugin trace sql parameters
+* Support monitor jetty server work thread pool metric
+* Support Jersey REST framework
 
 #### Documentation
 

@@ -10,7 +10,7 @@ Release Notes.
 * Support clickhouse-jdbc-plugin trace sql parameters
 * Support monitor jetty server work thread pool metric
 * Support Jersey REST framework
-* Fix ClassCastException when SQLServer inserting data (#10741)
+* Fix ClassCastException when SQLServer inserts data 
 
 #### Documentation
 

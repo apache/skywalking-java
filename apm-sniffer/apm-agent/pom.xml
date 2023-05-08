@@ -83,6 +83,7 @@
                                     <exclude>com.google.*:*</exclude>
                                     <exclude>com.google.guava:guava</exclude>
                                     <exclude>org.checkerframework:checker-compat-qual</exclude>
+                                    <exclude>org.checkerframework:checker-qual</exclude>
                                     <exclude>org.codehaus.mojo:animal-sniffer-annotations</exclude>
                                     <exclude>io.perfmark:*</exclude>
                                     <exclude>org.slf4j:*</exclude>
@@ -99,6 +100,12 @@
                                     <artifact>net.bytebuddy:byte-buddy</artifact>
                                     <excludes>
                                         <exclude>META-INF/versions/9/module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>**/*.proto</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

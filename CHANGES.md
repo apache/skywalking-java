@@ -11,6 +11,8 @@ Release Notes.
 * Support monitor jetty server work thread pool metric
 * Support Jersey REST framework
 * Fix ClassCastException when SQLServer inserts data 
+* [Chore] Exclude org.checkerframework:checker-qual and com.google.j2objc:j2objc-annotations
+* [Chore] Exclude proto files in the generated jar
 
 #### Documentation
 

@@ -24,12 +24,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.plugin.jedis.v3.RedisMethodMatch;
 
+import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class JedisInstrumentation extends AbstractWitnessInstrumentation {
 
     private static final String ENHANCE_CLASS = "redis.clients.jedis.Jedis";
-    private static final String JEDIS_METHOD_INTERCET_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
+    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
+    private static final String JEDIS_CONSTRUCTOR_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisConstructorInterceptor";
 
     @Override
     public ClassMatch enhanceClass() {
@@ -38,7 +40,19 @@ public class JedisInstrumentation extends AbstractWitnessInstrumentation {
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[] {
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return any();
+                    }
+
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return JEDIS_CONSTRUCTOR_INTERCEPT_CLASS;
+                    }
+                }
+        };
     }
 
     @Override
@@ -52,7 +66,7 @@ public class JedisInstrumentation extends AbstractWitnessInstrumentation {
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return JEDIS_METHOD_INTERCET_CLASS;
+                        return JEDIS_METHOD_INTERCEPT_CLASS;
                     }
 
                     @Override

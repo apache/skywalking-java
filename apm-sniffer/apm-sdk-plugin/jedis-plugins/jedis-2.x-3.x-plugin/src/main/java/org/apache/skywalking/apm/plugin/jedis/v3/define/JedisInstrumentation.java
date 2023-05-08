@@ -43,12 +43,13 @@ public class JedisInstrumentation extends AbstractWitnessInstrumentation {
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
+        return new InstanceMethodsInterceptPoint[] {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return RedisMethodMatch.INSTANCE.getJedisMethodMatcher();
                     }
+
                     @Override
                     public String getMethodsInterceptor() {
                         return JEDIS_METHOD_INTERCET_CLASS;

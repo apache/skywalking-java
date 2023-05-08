@@ -214,6 +214,7 @@
                                     <exclude>com.google.android:annotations:jar:</exclude>
                                     <exclude>com.google.api.grpc:proto-google-common-protos:jar:</exclude>
                                     <exclude>org.checkerframework:checker-compat-qual:jar:</exclude>
+                                    <exclude>org.checkerframework:checker-qual:jar:</exclude>
                                     <exclude>org.codehaus.mojo:animal-sniffer-annotations:jar:</exclude>
                                 </excludes>
                             </artifactSet>

@@ -11,6 +11,7 @@ Release Notes.
 * Support monitor jetty server work thread pool metric
 * Support Jersey REST framework
 * Fix ClassCastException when SQLServer inserts data 
+* [Chore] Fix org.checkerframework exclusion in maven-shade-plugin
 
 #### Documentation
 

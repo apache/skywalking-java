@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements.  See the NOTICE file distributed with
@@ -18,29 +17,35 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>java-agent</artifactId>
-        <groupId>org.apache.skywalking</groupId>
-        <version>8.16.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>java-agent-sniffer</artifactId>
-    <packaging>pom</packaging>
+    <parent>
+        <groupId>org.apache.skywalking</groupId>
+        <artifactId>java-agent-sniffer</artifactId>
+        <version>8.16.0-SNAPSHOT</version>
+    </parent>
 
-    <modules>
-        <module>apm-agent</module>
-        <module>apm-agent-test</module>
-        <module>apm-agent-core</module>
-        <module>apm-sdk-plugin</module>
-        <module>apm-toolkit-activation</module>
-        <module>apm-test-tools</module>
-        <module>bootstrap-plugins</module>
-        <module>optional-plugins</module>
-        <module>optional-reporter-plugins</module>
-    </modules>
+    <artifactId>apm-agent-test</artifactId>
+    <packaging>jar</packaging>
 
-    <properties>
-        <shade.package>org.apache.skywalking.apm.dependencies</shade.package>
-    </properties>
+    <name>apm-agent-test</name>
+    <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>java-agent-network</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>java-agent-util</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+
 </project>

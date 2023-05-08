@@ -24,22 +24,14 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.plugin.jedis.v3.RedisMethodMatch;
 
-import java.net.URI;
-
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
-import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
+import static net.bytebuddy.matcher.ElementMatchers.any;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class JedisInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String HOST_AND_PORT_ARG_TYPE_NAME = "redis.clients.jedis.HostAndPort";
-    private static final String JEDIS_SHARD_INFO_ARG_TYPE_NAME = "redis.clients.jedis.JedisShardInfo";
     private static final String ENHANCE_CLASS = "redis.clients.jedis.Jedis";
-    private static final String CONSTRUCTOR_WITH_STRING_ARG_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisConstructorWithStringArgInterceptor";
-    private static final String CONSTRUCTOR_WITH_SHARD_INFO_ARG_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisConstructorWithShardInfoArgInterceptor";
-    private static final String CONSTRUCTOR_WITH_HOST_AND_PORT_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisClusterConstructorWithHostAndPortArgInterceptor";
-    private static final String CONSTRUCTOR_WITH_URI_ARG_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisConstructorWithUriArgInterceptor";
-    private static final String JEDIS_METHOD_INTERCET_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
+    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
+    private static final String JEDIS_CONSTRUCTOR_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisConstructorInterceptor";
 
     @Override
     public ClassMatch enhanceClass() {
@@ -52,45 +44,12 @@ public class JedisInstrumentation extends AbstractWitnessInstrumentation {
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgument(0, String.class);
+                        return any();
                     }
 
                     @Override
                     public String getConstructorInterceptor() {
-                        return CONSTRUCTOR_WITH_STRING_ARG_INTERCEPT_CLASS;
-                    }
-                },
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgumentWithType(0, HOST_AND_PORT_ARG_TYPE_NAME);
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return CONSTRUCTOR_WITH_HOST_AND_PORT_INTERCEPT_CLASS;
-                    }
-                },
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgumentWithType(0, JEDIS_SHARD_INFO_ARG_TYPE_NAME);
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return CONSTRUCTOR_WITH_SHARD_INFO_ARG_INTERCEPT_CLASS;
-                    }
-                },
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgument(0, URI.class);
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return CONSTRUCTOR_WITH_URI_ARG_INTERCEPT_CLASS;
+                        return JEDIS_CONSTRUCTOR_INTERCEPT_CLASS;
                     }
                 }
         };
@@ -107,7 +66,7 @@ public class JedisInstrumentation extends AbstractWitnessInstrumentation {
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return JEDIS_METHOD_INTERCET_CLASS;
+                        return JEDIS_METHOD_INTERCEPT_CLASS;
                     }
 
                     @Override

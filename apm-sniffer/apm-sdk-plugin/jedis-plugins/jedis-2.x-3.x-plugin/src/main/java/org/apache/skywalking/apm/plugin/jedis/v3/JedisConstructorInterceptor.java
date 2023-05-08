@@ -19,17 +19,14 @@ package org.apache.skywalking.apm.plugin.jedis.v3;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import redis.clients.jedis.Client;
+import redis.clients.jedis.Jedis;
 
-public class JedisConstructorWithStringArgInterceptor implements InstanceConstructorInterceptor {
-
+public class JedisConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        String host = (String) allArguments[0];
-        String port = "6379";
-        if (allArguments.length > 1) {
-            port = String.valueOf(allArguments[1]);
-        }
-
-        objInst.setSkyWalkingDynamicField(host + ":" + port);
+    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
+        Client client = ((Jedis) objInst).getClient();
+        objInst.setSkyWalkingDynamicField(client.getHost() + ":" + client.getPort());
     }
+
 }

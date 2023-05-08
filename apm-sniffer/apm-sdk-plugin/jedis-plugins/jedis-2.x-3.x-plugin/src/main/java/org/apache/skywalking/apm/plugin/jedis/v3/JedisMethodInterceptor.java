@@ -26,6 +26,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
+import redis.clients.jedis.Client;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
 
@@ -37,7 +39,13 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
+        String peer;
+        if (objInst instanceof Jedis) {
+            Client client = ((Jedis) objInst).getClient();
+            peer = client.getHost() + ":" + client.getPort();
+        } else {
+            peer = String.valueOf(objInst.getSkyWalkingDynamicField());
+        }
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + method.getName(), peer);
         span.setComponent(ComponentsDefine.JEDIS);
         SpanLayer.asCache(span);

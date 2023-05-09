@@ -49,7 +49,7 @@ public class AgentPackagePath {
     private static File findPath() throws AgentPackageNotFoundException {
         String classResourcePath = AgentPackagePath.class.getName().replaceAll("\\.", "/") + ".class";
 
-        URL resource = ClassLoader.getSystemClassLoader().getResource(classResourcePath);
+        URL resource = AgentPackagePath.class.getClassLoader().getResource(classResourcePath);
         if (resource != null) {
             String urlString = resource.toString();
 

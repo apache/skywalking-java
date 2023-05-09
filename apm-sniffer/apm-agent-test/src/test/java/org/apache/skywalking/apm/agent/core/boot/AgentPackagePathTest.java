@@ -37,20 +37,19 @@ public class AgentPackagePathTest {
 
     @Test
     public void testGetPathNotNull() throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, IOException {
-        Properties properties = System.getProperties();
-        String classpath = properties.getProperty("java.class.path");
+        String classpath = System.getProperties().getProperty("java.class.path");
         //to find the location of apm-agent-test java compiled path
-        String[] classpathArray = classpath.split(";");
+        String[] classpathArray = classpath.split(File.pathSeparator);
         String currentClassPath = null;
         for (String path : classpathArray) {
-            if (path.contains("apm-agent-test\\target\\test-classes")) {
+            if (path.contains("apm-agent-test" + File.separator + "target" + File.separator + "test-classes")) {
                 currentClassPath = path;
                 break;
             }
         }
         // it must exist
         if (currentClassPath == null) {
-            throw new RuntimeException("apm-agent-test path not found");
+            throw new RuntimeException("apm-agent-test path not found,current classpath: "+classpath);
         }
         //base on currentClassPath, find apm-agent-core java compiled path
         String apmAgentCoreClassPath = currentClassPath

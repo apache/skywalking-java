@@ -16,15 +16,14 @@
  *
  */
 
-package test.org.apache.skywalking.apm.testcase.grizzly;
-
+package test.apache.skywalking.apm.testcase.grizzly;
 
 import java.io.IOException;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
-import test.org.apache.skywalking.apm.testcase.grizzly.controller.CaseHandler;
-import test.org.apache.skywalking.apm.testcase.grizzly.controller.HealCheckHandler;
-import test.org.apache.skywalking.apm.testcase.grizzly.controller.ReceiveContextHandler;
+import test.apache.skywalking.apm.testcase.grizzly.controller.CaseHandler;
+import test.apache.skywalking.apm.testcase.grizzly.controller.HealCheckHandler;
+import test.apache.skywalking.apm.testcase.grizzly.controller.ReceiveContextHandler;
 
 public class Application {
 
@@ -36,7 +35,8 @@ public class Application {
         server.getServerConfiguration().addHttpHandler(new CaseHandler(),
                 "/grizzly-2.3.x-4.x-scenario/case/grizzly-2.3.x-4.x-scenario");
         server.getServerConfiguration()
-                .addHttpHandler(new HealCheckHandler(), "/grizzly-2.3.x-4.x-scenario/case/healthCheck");
+                .addHttpHandler(new HealCheckHandler(),
+                        "/grizzly-2.3.x-4.x-scenario/case/healthCheck");
         server.getServerConfiguration().addHttpHandler(new ReceiveContextHandler(),
                 "/grizzly-2.3.x-4.x-scenario/case/receive-context");
         server.start();

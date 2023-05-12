@@ -66,6 +66,7 @@ jobs:
           - jedis-2.x-scenario
           - jedis-3.1.x-plus-scenario
           - jedis-4.x-scenario
+          - jedis-3.3.x-plus-scenario
           - jetty-scenario
           - kafka-scenario
           - kotlin-coroutine-scenario

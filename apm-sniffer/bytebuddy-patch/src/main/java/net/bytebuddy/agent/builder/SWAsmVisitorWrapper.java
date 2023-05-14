@@ -26,16 +26,25 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.Implementation;
 import net.bytebuddy.jar.asm.ClassVisitor;
 import net.bytebuddy.jar.asm.FieldVisitor;
+import net.bytebuddy.jar.asm.MethodVisitor;
 import net.bytebuddy.jar.asm.Opcodes;
 import net.bytebuddy.pool.TypePool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Remove duplicated fields of instrumentedType
  */
 public class SWAsmVisitorWrapper implements AsmVisitorWrapper {
+
+    private String nameTrait;
+
+    public SWAsmVisitorWrapper(String nameTrait) {
+        this.nameTrait = nameTrait;
+    }
 
     @Override
     public int mergeWriter(int flags) {
@@ -51,27 +60,62 @@ public class SWAsmVisitorWrapper implements AsmVisitorWrapper {
     public ClassVisitor wrap(TypeDescription instrumentedType, ClassVisitor classVisitor, Implementation.Context implementationContext,
                              TypePool typePool, FieldList<FieldDescription.InDefinedShape> fields, MethodList<?> methods,
                              int writerFlags, int readerFlags) {
-        if (classVisitor instanceof RemoveDuplicatedFieldsClassVisitor) {
+        if (classVisitor instanceof RemoveDuplicatedElementsVisitor) {
             return classVisitor;
         }
-        return new RemoveDuplicatedFieldsClassVisitor(Opcodes.ASM8, classVisitor);
+        return new RemoveDuplicatedElementsVisitor(Opcodes.ASM8, classVisitor);
     }
 
-    static class RemoveDuplicatedFieldsClassVisitor extends ClassVisitor {
+    class RemoveDuplicatedElementsVisitor extends ClassVisitor {
 
-        private List<String> fieldNames = new ArrayList<>();
+        private Map<String, Map<String, String>> fieldCache = new ConcurrentHashMap<>();
+        private Map<String, Map<String, List<String>>> methodCache = new ConcurrentHashMap<>();
+        private String className;
 
-        public RemoveDuplicatedFieldsClassVisitor(int api, ClassVisitor classVisitor) {
+        public RemoveDuplicatedElementsVisitor(int api, ClassVisitor classVisitor) {
             super(api, classVisitor);
         }
 
         @Override
+        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+            super.visit(version, access, name, signature, superName, interfaces);
+            this.className = name;
+        }
+
+        @Override
         public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-            if (fieldNames.contains(name)) {
-                return null;
+            if (name.indexOf('$') > 0 && name.contains(nameTrait)) {
+                Map<String, String> data = getFieldData(className);
+                String prev = data.get(name);
+                if (prev != null && prev.equals(descriptor)) {
+                    // ignore duplicated field of class
+                    return null;
+                }
+                data.put(name, descriptor);
             }
-            fieldNames.add(name);
             return super.visitField(access, name, descriptor, signature, value);
+        }
+
+        @Override
+        public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
+            if (name.equals("<init>") || name.indexOf('$') > 0 && name.contains(nameTrait)) {
+                Map<String, List<String>> data = getMethodData(className);
+                List<String> descriptorList = data.computeIfAbsent(name, k -> new ArrayList<>());
+                if (descriptorList.contains(descriptor)) {
+                    // ignore duplicated method of class
+                    return null;
+                }
+                descriptorList.add(descriptor);
+            }
+            return super.visitMethod(access, name, descriptor, signature, exceptions);
+        }
+
+        private Map<String, String> getFieldData(String className) {
+            return fieldCache.computeIfAbsent(className, k -> new ConcurrentHashMap<>());
+        }
+
+        private Map<String, List<String>> getMethodData(String className) {
+            return methodCache.computeIfAbsent(className, k -> new ConcurrentHashMap<>());
         }
     }
 }

@@ -21,7 +21,6 @@ package org.apache.skywalking.apm.agent;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.NativeMethodStrategySupport;
-import net.bytebuddy.agent.builder.SWAsmVisitorWrapper;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -31,6 +30,7 @@ import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
+import org.apache.skywalking.apm.agent.bytebuddy.SWClassFileLocator;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackageNotFoundException;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
@@ -102,24 +102,16 @@ public class SkyWalkingAgent {
         String nameTrait = generateNameTrait();
         DelegateNamingResolver.setNameTrait(nameTrait);
 
-        final ByteBuddy byteBuddy = new ByteBuddy()
-                .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
-                .with(new SWAuxiliaryTypeNamingStrategy(nameTrait))
-                .with(new SWImplementationContextFactory(nameTrait));
-
-        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
-        NativeMethodStrategySupport.inject(agentBuilder, nameTrait);
-
-        agentBuilder = agentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
-                .ignore(nameStartsWith("net.bytebuddy.")
-                        .or(nameStartsWith("org.slf4j."))
-                        .or(nameStartsWith("org.groovy."))
-                        .or(nameContains("javassist"))
-                        .or(nameContains(".asm."))
-                        .or(nameContains(".reflectasm."))
-                        .or(nameStartsWith("sun.reflect"))
-                        .or(allSkyWalkingAgentExcludeToolkit())
-                        .or(ElementMatchers.isSynthetic()));
+        AgentBuilder agentBuilder = newAgentBuilder(instrumentation, nameTrait).ignore(
+            nameStartsWith("net.bytebuddy.")
+                .or(nameStartsWith("org.slf4j."))
+                .or(nameStartsWith("org.groovy."))
+                .or(nameContains("javassist"))
+                .or(nameContains(".asm."))
+                .or(nameContains(".reflectasm."))
+                .or(nameStartsWith("sun.reflect"))
+                .or(allSkyWalkingAgentExcludeToolkit())
+                .or(ElementMatchers.isSynthetic()));
 
         JDK9ModuleExporter.EdgeClasses edgeClasses = new JDK9ModuleExporter.EdgeClasses();
         try {
@@ -154,7 +146,7 @@ public class SkyWalkingAgent {
 
         PluginFinder.pluginInitCompleted();
 
-        LOGGER.info("Skywalking agent transformer installed");
+        LOGGER.info("Skywalking agent transformer has installed.");
 
         try {
             ServiceManager.INSTANCE.boot();
@@ -164,6 +156,20 @@ public class SkyWalkingAgent {
 
         Runtime.getRuntime()
                .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
+    }
+
+    private static AgentBuilder newAgentBuilder(Instrumentation instrumentation, String nameTrait) {
+        final ByteBuddy byteBuddy = new ByteBuddy()
+                .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
+                .with(new SWAuxiliaryTypeNamingStrategy(nameTrait))
+                .with(new SWImplementationContextFactory(nameTrait));
+
+        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
+        NativeMethodStrategySupport.inject(agentBuilder, nameTrait);
+
+        agentBuilder = agentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+                .with(new SWClassFileLocator(instrumentation, SkyWalkingAgent.class.getClassLoader(), "auxiliary$"));
+        return agentBuilder;
     }
 
     private static String generateNameTrait() {
@@ -192,7 +198,7 @@ public class SkyWalkingAgent {
             DelegateNamingResolver.reset(typeDescription.getTypeName());
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
-                DynamicType.Builder<?> newBuilder = builder.visit(new SWAsmVisitorWrapper());
+                DynamicType.Builder<?> newBuilder = builder;
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
                     DynamicType.Builder<?> possibleNewBuilder = define.define(

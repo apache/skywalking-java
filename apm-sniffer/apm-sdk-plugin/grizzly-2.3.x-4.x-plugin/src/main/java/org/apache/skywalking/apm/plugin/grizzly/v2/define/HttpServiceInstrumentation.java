@@ -21,7 +21,7 @@ package org.apache.skywalking.apm.plugin.grizzly.v2.define;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.InstanceMethodsInterceptV2Point;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
@@ -42,17 +42,16 @@ public class HttpServiceInstrumentation extends AbstractWitnessInstrumentation {
     }
 
     @Override
-
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
-                new InstanceMethodsInterceptPoint() {
+    public InstanceMethodsInterceptV2Point[] getInstanceMethodsInterceptV2Points() {
+        return new InstanceMethodsInterceptV2Point[]{
+                new InstanceMethodsInterceptV2Point() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named("service");
                     }
 
                     @Override
-                    public String getMethodsInterceptor() {
+                    public String getMethodsInterceptorV2() {
                         return SERVICE_METHOD_INTERCEPTOR;
                     }
 

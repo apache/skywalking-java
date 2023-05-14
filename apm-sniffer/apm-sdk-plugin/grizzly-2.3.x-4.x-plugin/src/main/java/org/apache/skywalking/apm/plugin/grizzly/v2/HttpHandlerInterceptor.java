@@ -26,14 +26,17 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.glassfish.grizzly.http.server.Request;
 
-public class HttpHandlerInterceptor implements InstanceMethodsAroundInterceptor {
+public class HttpHandlerInterceptor implements InstanceMethodsAroundInterceptorV2 {
+
+    public static final String GRIZZLY_CONTEXT = "SW_GRIZZLY_CONTEXT";
+
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInvocationContext context) throws Throwable {
         // entry span
         Request request = (Request) allArguments[0];
         request.getHeaderNames();
@@ -49,19 +52,18 @@ public class HttpHandlerInterceptor implements InstanceMethodsAroundInterceptor 
         span.setComponent(ComponentsDefine.GRIZZLY);
         SpanLayer.asHttp(span);
         span.prepareForAsync();
-        Object[] context = new Object[]{span, ContextManager.capture()};
-        objInst.setSkyWalkingDynamicField(context);
+        Object[] grizzlyContext = new Object[]{span, ContextManager.capture()};
+        request.setAttribute(GRIZZLY_CONTEXT, grizzlyContext);
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret, MethodInvocationContext context) throws Throwable {
         ContextManager.stopSpan();
         return ret;
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
+        ContextManager.activeSpan().log(t);
     }
-
 }

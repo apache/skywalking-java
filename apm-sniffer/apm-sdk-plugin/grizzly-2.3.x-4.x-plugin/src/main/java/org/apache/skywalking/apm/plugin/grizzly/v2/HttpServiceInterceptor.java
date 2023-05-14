@@ -24,26 +24,31 @@ import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.grizzly.http.server.Response;
 
-public class HttpServiceInterceptor implements InstanceMethodsAroundInterceptor {
+import static org.apache.skywalking.apm.plugin.grizzly.v2.HttpHandlerInterceptor.GRIZZLY_CONTEXT;
+
+public class HttpServiceInterceptor implements InstanceMethodsAroundInterceptorV2 {
+
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        Object[] context = (Object[]) objInst.getSkyWalkingDynamicField();
-        ContextSnapshot contextSnapshot = (ContextSnapshot) context[1];
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInvocationContext context) throws Throwable {
+        Request request = (Request) allArguments[0];
+        Object[] grizzlyContext = (Object[]) request.getAttribute(GRIZZLY_CONTEXT);
+        context.setContext(grizzlyContext);
+        ContextSnapshot contextSnapshot = (ContextSnapshot) grizzlyContext[1];
         AbstractSpan span = ContextManager.createLocalSpan("GrizzlyRunService");
         span.setComponent(ComponentsDefine.GRIZZLY);
         ContextManager.continued(contextSnapshot);
-
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        Object[] context = (Object[]) objInst.getSkyWalkingDynamicField();
-        AbstractSpan abstractSpan = (AbstractSpan) context[0];
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret, MethodInvocationContext context) throws Throwable {
+        Object[] grizzlyContext = (Object[]) context.getContext();
+        AbstractSpan abstractSpan = (AbstractSpan) grizzlyContext[0];
         ContextManager.stopSpan();
         Response response = (Response) allArguments[1];
         Tags.HTTP_RESPONSE_STATUS_CODE.set(abstractSpan, response.getStatus());
@@ -55,7 +60,7 @@ public class HttpServiceInterceptor implements InstanceMethodsAroundInterceptor 
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
+        ContextManager.activeSpan().log(t);
     }
 }

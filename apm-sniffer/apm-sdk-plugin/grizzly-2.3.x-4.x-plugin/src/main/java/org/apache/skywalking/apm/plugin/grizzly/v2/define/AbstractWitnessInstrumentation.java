@@ -20,11 +20,11 @@ package org.apache.skywalking.apm.plugin.grizzly.v2.define;
 import java.util.Collections;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassInstanceMethodsEnhancePluginDefineV2;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-public abstract class AbstractWitnessInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public abstract class AbstractWitnessInstrumentation extends ClassInstanceMethodsEnhancePluginDefineV2 {
 
     @Override
     protected List<WitnessMethod> witnessMethods() {

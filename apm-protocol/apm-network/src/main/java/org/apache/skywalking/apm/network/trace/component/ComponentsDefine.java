@@ -235,4 +235,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent JERSEY = new OfficialComponent(146, "Jersey");
 
+    public static final OfficialComponent GRIZZLY = new OfficialComponent(147, "Grizzly");
+
 }

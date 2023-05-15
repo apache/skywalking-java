@@ -161,3 +161,4 @@
 - jetty-thread-pool
 - jersey-2.x
 - jersey-3.x
+- grizzly-2.3.x-4.x

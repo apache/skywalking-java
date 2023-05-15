@@ -15,6 +15,7 @@ Release Notes.
 * [Chore] Exclude proto files in the generated jar
 * Fix Jedis-2.x plugin can not get host info in jedis 3.3.x+
 * Change the classloader to locate the agent path in AgentPackagePath, from `SystemClassLoader` to AgentPackagePath's loader.
+* Support Grizzly Trace
 
 #### Documentation
 

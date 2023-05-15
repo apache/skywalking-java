@@ -15,68 +15,23 @@
 # limitations under the License.
 
 segmentItems:
-  - serviceName: jersey-3.x-scenario
-    segmentSize: ge 4
+  - serviceName: grizzly-2.3.x-4.x-scenario
+    segmentSize: ge 5
     segments:
       - segmentId: not null
         spans:
-          - operationName: GET:/jersey-3.x-scenario/case/jersey-3.x-scenario
-            parentSpanId: '-1'
-            spanId: '0'
-            spanLayer: Http
-            tags:
-              - key: url
-                value: http://localhost:18080/jersey-3.x-scenario/case/jersey-3.x-scenario
-              - key: http.method
-                value: GET
-              - key: http.status_code
-                value: '200'
-            startTime: gt 0
-            endTime: gt 0
-            componentId: '147'
-            isError: 'false'
-            spanType: Entry
-            peer: ''
-            skipAnalysis: 'false'
-      - segmentId: not null
-        spans:
-          - operationName: not null
-            parentSpanId: '0'
-            spanId: '1'
-            spanLayer: Http
-            tags:
-              - key: url
-                value: http://127.0.0.1:18080/jersey-3.x-scenario/case/receiveContext
-              - key: http.method
-                value: GET
-            refs:
-              - parentEndpoint: not null
-                networkAddress: '127.0.0.1:18080'
-                refType: CrossProcess
-                parentSpanId: 2
-                parentTraceSegmentId: not null
-                parentServiceInstance: not null
-                parentService: jersey-3.x-scenario
-                traceId: not null
-            startTime: gt 0
-            endTime: gt 0
-            componentId: '146'
-            isError: 'false'
-            spanType: Entry
-            peer: ''
-            skipAnalysis: 'false'
           - operationName: GrizzlyRunService
             parentSpanId: '-1'
             spanId: '0'
             spanLayer: Unknown
             refs:
-              - parentEndpoint: 'GET:/jersey-3.x-scenario/case/receiveContext'
+              - parentEndpoint: 'GET:/grizzly-2.3.x-4.x-scenario/case/receive-context'
                 networkAddress: ''
                 refType: CrossThread
                 parentSpanId: 0
                 parentTraceSegmentId: not null
                 parentServiceInstance: not null
-                parentService: jersey-3.x-scenario
+                parentService: grizzly-2.3.x-4.x-scenario
                 traceId: not null
             startTime: gt 0
             endTime: gt 0
@@ -87,25 +42,25 @@ segmentItems:
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: 'GET:/jersey-3.x-scenario/case/receiveContext'
+          - operationName: 'GET:/grizzly-2.3.x-4.x-scenario/case/receive-context'
             parentSpanId: '-1'
             spanId: '0'
             spanLayer: Http
             tags:
               - key: url
-                value: http://127.0.0.1:18080/jersey-3.x-scenario/case/receiveContext
+                value: http://127.0.0.1:18181/grizzly-2.3.x-4.x-scenario/case/receive-context
               - key: http.method
                 value: GET
               - key: http.status_code
                 value: '200'
             refs:
-              - parentEndpoint: not null
-                networkAddress: '127.0.0.1:18080'
+              - parentEndpoint: GrizzlyRunService
+                networkAddress: '127.0.0.1:18181'
                 refType: CrossProcess
-                parentSpanId: 2
+                parentSpanId: 1
                 parentTraceSegmentId: not null
                 parentServiceInstance: not null
-                parentService: jersey-3.x-scenario
+                parentService: grizzly-2.3.x-4.x-scenario
                 traceId: not null
             startTime: gt 0
             endTime: gt 0
@@ -116,15 +71,35 @@ segmentItems:
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: /jersey-3.x-scenario/case/receiveContext
-            parentSpanId: '1'
-            spanId: '2'
+          - operationName: 'GET:/grizzly-2.3.x-4.x-scenario/case/grizzly-2.3.x-4.x-scenario'
+            parentSpanId: '-1'
+            spanId: '0'
+            spanLayer: Http
+            tags:
+              - key: url
+                value: http://localhost:18181/grizzly-2.3.x-4.x-scenario/case/grizzly-2.3.x-4.x-scenario
+              - key: http.method
+                value: GET
+              - key: http.status_code
+                value: '200'
+            startTime: gt 0
+            endTime: gt 0
+            componentId: '147'
+            isError: 'false'
+            spanType: Entry
+            peer: ''
+            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
+          - operationName: /grizzly-2.3.x-4.x-scenario/case/receive-context
+            parentSpanId: '0'
+            spanId: '1'
             spanLayer: Http
             tags:
               - key: http.method
                 value: GET
               - key: url
-                value: http://127.0.0.1:18080/jersey-3.x-scenario/case/receiveContext
+                value: http://127.0.0.1:18181/grizzly-2.3.x-4.x-scenario/case/receive-context
               - key: http.status_code
                 value: '200'
             startTime: gt 0
@@ -132,36 +107,20 @@ segmentItems:
             componentId: '12'
             isError: 'false'
             spanType: Exit
-            peer: '127.0.0.1:18080'
-            skipAnalysis: 'false'
-          - operationName: not null
-            parentSpanId: '0'
-            spanId: '1'
-            spanLayer: Http
-            tags:
-              - key: url
-                value: http://localhost:18080/jersey-3.x-scenario/case/jersey-3.x-scenario
-              - key: http.method
-                value: GET
-            startTime: gt 0
-            endTime: gt 0
-            componentId: '146'
-            isError: 'false'
-            spanType: Entry
-            peer: ''
+            peer: '127.0.0.1:18181'
             skipAnalysis: 'false'
           - operationName: GrizzlyRunService
             parentSpanId: '-1'
             spanId: '0'
             spanLayer: Unknown
             refs:
-              - parentEndpoint:  GET:/jersey-3.x-scenario/case/jersey-3.x-scenario
+              - parentEndpoint: 'GET:/grizzly-2.3.x-4.x-scenario/case/grizzly-2.3.x-4.x-scenario'
                 networkAddress: ''
                 refType: CrossThread
                 parentSpanId: 0
                 parentTraceSegmentId: not null
                 parentServiceInstance: not null
-                parentService: jersey-3.x-scenario
+                parentService: grizzly-2.3.x-4.x-scenario
                 traceId: not null
             startTime: gt 0
             endTime: gt 0

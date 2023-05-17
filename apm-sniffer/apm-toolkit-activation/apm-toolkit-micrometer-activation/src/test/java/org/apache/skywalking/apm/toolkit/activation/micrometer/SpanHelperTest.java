@@ -39,14 +39,14 @@ public class SpanHelperTest {
     public void testTryToGetPeerWhenRemoteAddressIsNull() {
         String remoteName = SpanHelper.tryToGetPeer(null, "remoteName",
             KeyValues.of(KeyValue.of("http.url", "http://localhost:8080")));
-        assertThat(remoteName, is("http://localhost:8080"));
+        assertThat(remoteName, is("localhost:8080"));
     }
 
     @Test
     public void testTryToGetPeerWhenURIWithQueryString() {
         String remoteName = SpanHelper.tryToGetPeer(null, "remoteName",
             KeyValues.of(KeyValue.of("http.url", "http://localhost:8080?a=b")));
-        assertThat(remoteName, is("http://localhost:8080"));
+        assertThat(remoteName, is("localhost:8080"));
     }
 
     @Test

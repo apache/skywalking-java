@@ -42,8 +42,8 @@ class SpanHelper {
                                .orElse("unknown");
         try {
             URI uri = URI.create(result);
-            if (uri.getScheme() != null && uri.getHost() != null) {
-                return uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort();
+            if (uri.getHost() != null) {
+                return uri.getHost() + ":" + uri.getPort();
             }
             if (!StringUtil.isEmpty(remoteName)) {
                 return remoteName;

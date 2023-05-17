@@ -20,11 +20,14 @@ package org.apache.skywalking.apm.toolkit.activation.micrometer;
 
 import io.micrometer.common.KeyValue;
 import io.micrometer.common.KeyValues;
+
 import java.net.URI;
+
+import org.apache.skywalking.apm.util.StringUtil;
 
 class SpanHelper {
 
-    static String tryToGetPeer(String remoteAddress, KeyValues allKeyValues) {
+    static String tryToGetPeer(String remoteAddress, String remoteName, KeyValues allKeyValues) {
         if (remoteAddress != null) {
             return remoteAddress;
         }
@@ -39,10 +42,16 @@ class SpanHelper {
                                .orElse("unknown");
         try {
             URI uri = URI.create(result);
-            if (uri.getHost() == null) {
-                return null;
+            if (uri.getScheme() != null && uri.getHost() != null) {
+                return uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort();
             }
-            return uri.getHost() + ":" + uri.getPort();
+            if (!StringUtil.isEmpty(remoteName)) {
+                return remoteName;
+            }
+            if (uri.getPath() != null) {
+                return uri.getPath();
+            }
+            return null;
         } catch (Exception ex) {
             return null;
         }

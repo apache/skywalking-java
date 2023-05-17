@@ -60,7 +60,8 @@ public class MicrometerReceiverTracingHandlerInterceptor implements InstanceMeth
             SpanLayer spanLayer = TaggingHelper.toLayer(context.getAllKeyValues());
             AbstractSpan abstractSpan = ContextManager.activeSpan();
             abstractSpan
-                .setPeer(SpanHelper.tryToGetPeer(context.getRemoteServiceAddress(), context.getAllKeyValues()))
+                .setPeer(SpanHelper.tryToGetPeer(context.getRemoteServiceAddress(), context.getRemoteServiceName(),
+                    context.getAllKeyValues()))
                 .setOperationName(getOperationName(context));
             context.getAllKeyValues()
                    .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));

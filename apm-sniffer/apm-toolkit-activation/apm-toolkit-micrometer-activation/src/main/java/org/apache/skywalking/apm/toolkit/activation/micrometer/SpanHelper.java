@@ -23,8 +23,6 @@ import io.micrometer.common.KeyValues;
 
 import java.net.URI;
 
-import org.apache.skywalking.apm.util.StringUtil;
-
 class SpanHelper {
 
     static String tryToGetPeer(String remoteAddress, String remoteName, KeyValues allKeyValues) {
@@ -45,15 +43,9 @@ class SpanHelper {
             if (uri.getHost() != null) {
                 return uri.getHost() + ":" + uri.getPort();
             }
-            if (!StringUtil.isEmpty(remoteName)) {
-                return remoteName;
-            }
-            if (uri.getPath() != null) {
-                return uri.getPath();
-            }
-            return null;
+            return remoteName;
         } catch (Exception ex) {
-            return null;
+            return remoteName;
         }
     }
 }

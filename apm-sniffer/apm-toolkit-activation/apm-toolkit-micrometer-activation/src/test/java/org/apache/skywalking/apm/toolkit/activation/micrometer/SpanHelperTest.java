@@ -57,10 +57,10 @@ public class SpanHelperTest {
     }
 
     @Test
-    public void testTryToGetPeerWhenLackOfURIComponentsAndRemoteName() {
-        String remoteName = SpanHelper.tryToGetPeer(null, null,
-            KeyValues.of(KeyValue.of("http.url", "/post")));
-        assertThat(remoteName, is("/post"));
+    public void testTryToGetPeerWhenURIViolatesRFC2396() {
+        String remoteName = SpanHelper.tryToGetPeer(null, "remoteName",
+            KeyValues.of(KeyValue.of("http.url", "https://www.example.com/path/with spaces")));
+        assertThat(remoteName, is("remoteName"));
     }
 
 }

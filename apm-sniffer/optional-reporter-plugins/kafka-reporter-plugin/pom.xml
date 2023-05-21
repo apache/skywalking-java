@@ -34,6 +34,11 @@
             <artifactId>kafka-clients</artifactId>
             <version>${kafka-clients.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
     </dependencies>
 
 
@@ -75,6 +80,10 @@
                                 <relocation>
                                     <pattern>org.slf4j</pattern>
                                     <shadedPattern>${shade.package}/org.slf4j</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.code.gson</pattern>
+                                    <shadedPattern>${shade.package}/com.google.code.gson</shadedPattern>
                                 </relocation>
                             </relocations>
                             <transformers>

@@ -19,20 +19,6 @@
 package org.apache.skywalking.apm.agent.core.kafka;
 
 import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -51,6 +37,12 @@ import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.util.RunnableWithExceptionProtection;
 import org.apache.skywalking.apm.util.StringUtil;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * Configuring, initializing and holding a KafkaProducer instance for reporters.
@@ -108,9 +100,9 @@ public class KafkaProducerManager implements BootService, Runnable {
         if (StringUtil.isNotEmpty(Kafka.PRODUCER_CONFIG_JSON)) {
             Gson gson = new Gson();
             Map<String, String> config = (Map<String, String>) gson.fromJson(Kafka.PRODUCER_CONFIG_JSON, Map.class);
-            config.forEach(properties::setProperty);
+            decrypt(config).forEach(properties::setProperty);
         }
-        Kafka.PRODUCER_CONFIG.forEach(properties::setProperty);
+        decrypt(Kafka.PRODUCER_CONFIG).forEach(properties::setProperty);
 
         try (AdminClient adminClient = AdminClient.create(properties)) {
             DescribeTopicsResult topicsResult = adminClient.describeTopics(topics);
@@ -150,6 +142,18 @@ public class KafkaProducerManager implements BootService, Runnable {
     private void notifyListeners(KafkaConnectionStatus status) {
         for (KafkaConnectionStatusListener listener : listeners) {
             listener.onStatusChanged(status);
+        }
+    }
+
+    private Map<String, String> decrypt(Map<String, String> config) {
+        try {
+            Class<?> decryptClazz = Class.forName(Kafka.DECRYPT_CLASS);
+            Method decryptMethod = decryptClazz.getMethod(Kafka.DECRYPT_METHOD, Map.class);
+            return (Map<String, String>) decryptMethod.invoke(decryptClazz.newInstance(), config);
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            // ignore
+            LOGGER.warn("The decrypt class {} is not exist, exception:{}.", Kafka.DECRYPT_CLASS, e);
+            return config;
         }
     }
 

@@ -17,7 +17,7 @@ Release Notes.
 * Change the classloader to locate the agent path in AgentPackagePath, from `SystemClassLoader` to AgentPackagePath's loader.
 * Support Grizzly Trace
 * Fix possible IllegalStateException when using Micrometer.
-
+* Support for kafka configuration custom decryption and fix bug  
 #### Documentation
 
 

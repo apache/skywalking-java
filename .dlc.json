@@ -23,6 +23,9 @@
     },
     {
       "pattern": "^https://mvnrepository.com/"
+    },
+    {
+      "pattern": "^https://twitter.com*"
     }
   ],
   "timeout": "10s",

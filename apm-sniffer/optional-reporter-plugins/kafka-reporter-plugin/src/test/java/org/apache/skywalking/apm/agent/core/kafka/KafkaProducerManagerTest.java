@@ -18,10 +18,16 @@
 
 package org.apache.skywalking.apm.agent.core.kafka;
 
-import static org.junit.Assert.assertEquals;
-import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
+
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.assertEquals;
 
 public class KafkaProducerManagerTest {
     @Test
@@ -54,6 +60,23 @@ public class KafkaProducerManagerTest {
         assertEquals(KafkaReporterPluginConfig.Plugin.Kafka.TOPIC_METRICS, value);
     }
 
+    @Test
+    public void testDecrypt() throws Exception {
+        KafkaReporterPluginConfig.Plugin.Kafka.DECRYPT_CLASS = "org.apache.skywalking.apm.agent.core.kafka.KafkaProducerManagerTest$DecryptTool";
+        KafkaReporterPluginConfig.Plugin.Kafka.DECRYPT_METHOD = "decrypt";
+        KafkaProducerManager kafkaProducerManager = new KafkaProducerManager();
+
+        Map<String, String> config = new HashMap<>();
+        String value = "test.99998888";
+        config.put("test.password", Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8)));
+
+        Method decryptMethod = kafkaProducerManager.getClass().getDeclaredMethod("decrypt", Map.class);
+        decryptMethod.setAccessible(true);
+        Map<String, String> encryptedConfig = (Map<String, String>) decryptMethod.invoke(kafkaProducerManager, config);
+
+        assertEquals(value, encryptedConfig.get("test.password"));
+    }
+
     static class MockListener implements KafkaConnectionStatusListener {
 
         private AtomicInteger counter;
@@ -65,6 +88,15 @@ public class KafkaProducerManagerTest {
         @Override
         public void onStatusChanged(KafkaConnectionStatus status) {
             counter.incrementAndGet();
+        }
+    }
+
+    static class DecryptTool {
+        public Map<String, String> decrypt(Map<String, String> config) {
+            if (config.containsKey("test.password")) {
+                config.put("test.password", new String(Base64.getDecoder().decode(config.get("test.password")), StandardCharsets.UTF_8));
+            }
+            return config;
         }
     }
 

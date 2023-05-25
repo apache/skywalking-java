@@ -63,6 +63,14 @@ public class KafkaReporterPluginConfig {
              * Timeout period of reading topics from the Kafka server, the unit is second.
              */
             public static int GET_TOPIC_TIMEOUT = 10;
+            /**
+             * Class name of decrypting encrypted information in kafka configuration.
+             * */
+            public static String DECRYPT_CLASS = "";
+            /**
+             * Method name in decrypt class of decrypting encrypted information in kafka configuration.
+             * */
+            public static String DECRYPT_METHOD = "";
         }
     }
 }

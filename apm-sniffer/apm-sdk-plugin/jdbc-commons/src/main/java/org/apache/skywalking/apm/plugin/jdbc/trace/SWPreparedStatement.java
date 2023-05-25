@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.jdbc.trace;
 
+import static org.apache.skywalking.apm.plugin.jdbc.define.Constants.SQL_PARAMETER_PLACEHOLDER;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -40,6 +42,7 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 
 /**
  * {@link SWPreparedStatement} wrapper the {@link PreparedStatement} created by client. and it will interceptor the
@@ -50,37 +53,43 @@ import java.util.Calendar;
  * 13. {@link #addBatch()} 14. {@link #addBatch(String)} ()}
  */
 public class SWPreparedStatement implements PreparedStatement {
+
     private Connection realConnection;
     private PreparedStatement realStatement;
     private ConnectionInfo connectInfo;
     private String sql;
 
+    private StatementEnhanceInfos statementEnhanceInfos;
+
     public SWPreparedStatement(Connection realConnection, PreparedStatement realStatement, ConnectionInfo connectInfo,
-        String sql) {
+            String sql) {
         this.realConnection = realConnection;
         this.realStatement = realStatement;
         this.connectInfo = connectInfo;
         this.sql = sql;
+        this.statementEnhanceInfos = new StatementEnhanceInfos(connectInfo, sql, "PreparedStatement");
     }
 
     @Override
     public ResultSet executeQuery(String sql) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeQuery", sql, new PreparedStatementTracing.Executable<ResultSet>() {
-            @Override
-            public ResultSet exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeQuery(sql);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeQuery", sql,
+                new PreparedStatementTracing.Executable<ResultSet>() {
+                    @Override
+                    public ResultSet exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeQuery(sql);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public int executeUpdate(String sql) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql, new PreparedStatementTracing.Executable<Integer>() {
-            @Override
-            public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeUpdate(sql);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql,
+                new PreparedStatementTracing.Executable<Integer>() {
+                    @Override
+                    public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeUpdate(sql);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
@@ -145,12 +154,13 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public boolean execute(String sql) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql, new PreparedStatementTracing.Executable<Boolean>() {
-            @Override
-            public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.execute(sql);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql,
+                new PreparedStatementTracing.Executable<Boolean>() {
+                    @Override
+                    public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.execute(sql);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
@@ -210,12 +220,13 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public int[] executeBatch() throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeBatch", "", new PreparedStatementTracing.Executable<int[]>() {
-            @Override
-            public int[] exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeBatch();
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeBatch", "",
+                new PreparedStatementTracing.Executable<int[]>() {
+                    @Override
+                    public int[] exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeBatch();
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
@@ -235,62 +246,68 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public int executeUpdate(String sql, final int autoGeneratedKeys) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql, new PreparedStatementTracing.Executable<Integer>() {
-            @Override
-            public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeUpdate(sql, autoGeneratedKeys);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql,
+                new PreparedStatementTracing.Executable<Integer>() {
+                    @Override
+                    public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeUpdate(sql, autoGeneratedKeys);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public int executeUpdate(String sql, final int[] columnIndexes) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql, new PreparedStatementTracing.Executable<Integer>() {
-            @Override
-            public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeUpdate(sql, columnIndexes);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql,
+                new PreparedStatementTracing.Executable<Integer>() {
+                    @Override
+                    public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeUpdate(sql, columnIndexes);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public int executeUpdate(String sql, final String[] columnNames) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql, new PreparedStatementTracing.Executable<Integer>() {
-            @Override
-            public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeUpdate(sql, columnNames);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql,
+                new PreparedStatementTracing.Executable<Integer>() {
+                    @Override
+                    public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeUpdate(sql, columnNames);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public boolean execute(String sql, final int autoGeneratedKeys) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql, new PreparedStatementTracing.Executable<Boolean>() {
-            @Override
-            public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.execute(sql, autoGeneratedKeys);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql,
+                new PreparedStatementTracing.Executable<Boolean>() {
+                    @Override
+                    public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.execute(sql, autoGeneratedKeys);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public boolean execute(String sql, final int[] columnIndexes) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql, new PreparedStatementTracing.Executable<Boolean>() {
-            @Override
-            public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.execute(sql, columnIndexes);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql,
+                new PreparedStatementTracing.Executable<Boolean>() {
+                    @Override
+                    public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.execute(sql, columnIndexes);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public boolean execute(String sql, final String[] columnNames) throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql, new PreparedStatementTracing.Executable<Boolean>() {
-            @Override
-            public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.execute(sql, columnNames);
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql,
+                new PreparedStatementTracing.Executable<Boolean>() {
+                    @Override
+                    public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.execute(sql, columnNames);
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
@@ -335,107 +352,126 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public ResultSet executeQuery() throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeQuery", sql, new PreparedStatementTracing.Executable<ResultSet>() {
-            @Override
-            public ResultSet exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeQuery();
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeQuery", sql,
+                new PreparedStatementTracing.Executable<ResultSet>() {
+                    @Override
+                    public ResultSet exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeQuery();
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public int executeUpdate() throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql, new PreparedStatementTracing.Executable<Integer>() {
-            @Override
-            public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.executeUpdate();
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "executeUpdate", sql,
+                new PreparedStatementTracing.Executable<Integer>() {
+                    @Override
+                    public Integer exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.executeUpdate();
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, "NULL");
         realStatement.setNull(parameterIndex, sqlType);
     }
 
     @Override
     public void setBoolean(int parameterIndex, boolean x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setBoolean(parameterIndex, x);
     }
 
     @Override
     public void setByte(int parameterIndex, byte x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setByte(parameterIndex, x);
     }
 
     @Override
     public void setShort(int parameterIndex, short x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setShort(parameterIndex, x);
     }
 
     @Override
     public void setInt(int parameterIndex, int x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setInt(parameterIndex, x);
     }
 
     @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setLong(parameterIndex, x);
     }
 
     @Override
     public void setFloat(int parameterIndex, float x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setFloat(parameterIndex, x);
     }
 
     @Override
     public void setDouble(int parameterIndex, double x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setDouble(parameterIndex, x);
     }
 
     @Override
     public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setBigDecimal(parameterIndex, x);
     }
 
     @Override
     public void setString(int parameterIndex, String x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setString(parameterIndex, x);
     }
 
     @Override
     public void setBytes(int parameterIndex, byte[] x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setBytes(parameterIndex, x);
     }
 
     @Override
     public void setDate(int parameterIndex, Date x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setDate(parameterIndex, x);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setTime(parameterIndex, x);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setTimestamp(parameterIndex, x);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setAsciiStream(parameterIndex, x, length);
     }
 
     @Override
     @Deprecated
     public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setUnicodeStream(parameterIndex, x, length);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setBinaryStream(parameterIndex, x, length);
     }
 
@@ -446,22 +482,25 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setObject(parameterIndex, x, targetSqlType);
     }
 
     @Override
     public void setObject(int parameterIndex, Object x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setObject(parameterIndex, x);
     }
 
     @Override
     public boolean execute() throws SQLException {
-        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql, new PreparedStatementTracing.Executable<Boolean>() {
-            @Override
-            public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
-                return realStatement.execute();
-            }
-        });
+        return PreparedStatementTracing.execute(realStatement, connectInfo, "execute", sql,
+                new PreparedStatementTracing.Executable<Boolean>() {
+                    @Override
+                    public Boolean exe(PreparedStatement realStatement, String sql) throws SQLException {
+                        return realStatement.execute();
+                    }
+                }, statementEnhanceInfos);
     }
 
     @Override
@@ -471,26 +510,31 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setCharacterStream(parameterIndex, reader, length);
     }
 
     @Override
     public void setRef(int parameterIndex, Ref x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setRef(parameterIndex, x);
     }
 
     @Override
     public void setBlob(int parameterIndex, Blob x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setBlob(parameterIndex, x);
     }
 
     @Override
     public void setClob(int parameterIndex, Clob x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setClob(parameterIndex, x);
     }
 
     @Override
     public void setArray(int parameterIndex, Array x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setArray(parameterIndex, x);
     }
 
@@ -501,26 +545,31 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setDate(parameterIndex, x, cal);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setTime(parameterIndex, x, cal);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setTimestamp(parameterIndex, x, cal);
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, "NULL");
         realStatement.setNull(parameterIndex, sqlType, typeName);
     }
 
     @Override
     public void setURL(int parameterIndex, URL x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setURL(parameterIndex, x);
     }
 
@@ -531,96 +580,115 @@ public class SWPreparedStatement implements PreparedStatement {
 
     @Override
     public void setRowId(int parameterIndex, RowId x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setRowId(parameterIndex, x);
     }
 
     @Override
     public void setNString(int parameterIndex, String value) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, value);
         realStatement.setNString(parameterIndex, value);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setNCharacterStream(parameterIndex, value, length);
     }
 
     @Override
     public void setNClob(int parameterIndex, NClob value) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setNClob(parameterIndex, value);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setClob(parameterIndex, reader, length);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setBlob(parameterIndex, inputStream, length);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setNClob(parameterIndex, reader, length);
     }
 
     @Override
     public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setSQLXML(parameterIndex, xmlObject);
     }
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, x);
         realStatement.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setAsciiStream(parameterIndex, x, length);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setBinaryStream(parameterIndex, x, length);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setCharacterStream(parameterIndex, reader, length);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setAsciiStream(parameterIndex, x);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setBinaryStream(parameterIndex, x);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setCharacterStream(parameterIndex, reader);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setNCharacterStream(parameterIndex, value);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader reader) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setClob(parameterIndex, reader);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setBlob(parameterIndex, inputStream);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader reader) throws SQLException {
+        statementEnhanceInfos.setParameter(parameterIndex, SQL_PARAMETER_PLACEHOLDER);
         realStatement.setNClob(parameterIndex, reader);
     }
 

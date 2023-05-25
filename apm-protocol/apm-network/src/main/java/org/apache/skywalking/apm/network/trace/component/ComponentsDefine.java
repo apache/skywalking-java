@@ -196,7 +196,7 @@ public class ComponentsDefine {
     public static final OfficialComponent DOLPHIN_SCHEDULER = new OfficialComponent(106, "dolphinscheduler");
 
     public static final OfficialComponent JSON_RPC = new OfficialComponent(107, "JsonRpc");
-  
+
     public static final OfficialComponent SEATA = new OfficialComponent(108, "Seata");
 
     public static final OfficialComponent MYBATIS = new OfficialComponent(109, "MyBatis");
@@ -204,7 +204,7 @@ public class ComponentsDefine {
     public static final OfficialComponent NEO4J = new OfficialComponent(112, "Neo4j");
 
     public static final OfficialComponent SENTINEL = new OfficialComponent(113, "Sentinel");
-  
+
     public static final OfficialComponent GUAVA_CACHE = new OfficialComponent(114, "GuavaCache");
 
     public static final OfficialComponent ALIBABA_DRUID = new OfficialComponent(115, "AlibabaDruid");
@@ -232,5 +232,9 @@ public class ComponentsDefine {
     public static final OfficialComponent IMPALA_JDBC_DRIVER = new OfficialComponent(133, "Impala-jdbc-driver");
 
     public static final OfficialComponent MICROMETER = new OfficialComponent(141, "Micrometer");
+
+    public static final OfficialComponent JERSEY = new OfficialComponent(146, "Jersey");
+
+    public static final OfficialComponent GRIZZLY = new OfficialComponent(147, "Grizzly");
 
 }

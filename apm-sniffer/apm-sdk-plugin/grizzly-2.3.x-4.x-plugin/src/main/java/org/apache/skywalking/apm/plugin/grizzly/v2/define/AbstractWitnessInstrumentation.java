@@ -15,17 +15,22 @@
  *   limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.jedis.v3;
+package org.apache.skywalking.apm.plugin.grizzly.v2.define;
 
-import java.net.URI;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import java.util.Collections;
+import java.util.List;
+import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassInstanceMethodsEnhancePluginDefineV2;
 
-public class JedisConstructorWithUriArgInterceptor implements InstanceConstructorInterceptor {
+import static net.bytebuddy.matcher.ElementMatchers.named;
+
+public abstract class AbstractWitnessInstrumentation extends ClassInstanceMethodsEnhancePluginDefineV2 {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        URI uri = (URI) allArguments[0];
-        objInst.setSkyWalkingDynamicField(uri.getHost() + ":" + uri.getPort());
+    protected List<WitnessMethod> witnessMethods() {
+        return Collections.singletonList(new WitnessMethod(
+                "org.glassfish.grizzly.http.server.HttpHandler",
+                named("runService")
+        ));
     }
 }

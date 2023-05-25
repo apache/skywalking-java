@@ -77,6 +77,8 @@ jobs:
           - cxf-scenario
           - okhttp2-scenario
           - rocketmq-scenario
+          - jersey-2.0.x-2.25.x-scenario
+          - jersey-2.26.x-2.39.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

@@ -18,13 +18,12 @@
 
 package org.apache.skywalking.apm.testcase.neo4j.controller;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import javax.annotation.Resource;
-
 import com.clickhouse.jdbc.ClickHouseConnection;
 import com.clickhouse.jdbc.ClickHouseDataSource;
 import com.clickhouse.jdbc.ClickHouseStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +34,7 @@ public class CaseController {
 
     private static final String SUCCESS = "Success";
     private static final String SQL = "SELECT * FROM clusters";
+    private static final String PREPARED_STATEMENT_SQL = "SELECT * FROM clusters WHERE cluster = ?";
     @Resource
     private ClickHouseDataSource dataSource;
 
@@ -42,14 +42,21 @@ public class CaseController {
     @ResponseBody
     public String testcase() throws Exception {
         try (ClickHouseConnection conn = dataSource.getConnection();
-             ClickHouseStatement stmt = conn.createStatement();
-             ResultSet ignored = stmt.executeQuery(SQL)) {
+                ClickHouseStatement stmt = conn.createStatement();
+                ResultSet ignored = stmt.executeQuery(SQL)) {
             conn.isValid(3);
         }
 
         try (final ClickHouseConnection connection = dataSource.getConnection();
                 final PreparedStatement preparedStatement = connection.prepareStatement(SQL);
                 final ResultSet ignored = preparedStatement.executeQuery()) {
+            connection.isValid(3);
+        }
+
+        try (final ClickHouseConnection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(PREPARED_STATEMENT_SQL)) {
+            preparedStatement.setString(1, "1");
+            ResultSet ignored = preparedStatement.executeQuery();
             connection.isValid(3);
         }
         return SUCCESS;

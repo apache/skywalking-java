@@ -34,6 +34,7 @@ public class CaseController {
 
     private static final String SUCCESS = "Success";
     private static final String SQL = "SELECT * FROM clusters";
+    private static final String PREPARED_STATEMENT_SQL = "SELECT * FROM clusters WHERE cluster = ?";
     @Resource
     private ClickHouseDataSource dataSource;
 
@@ -49,6 +50,13 @@ public class CaseController {
         try (final ClickHouseConnection connection = dataSource.getConnection();
                 final PreparedStatement preparedStatement = connection.prepareStatement(SQL);
                 final ResultSet ignored = preparedStatement.executeQuery()) {
+            connection.isValid(3);
+        }
+
+        try (final ClickHouseConnection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(PREPARED_STATEMENT_SQL)) {
+            preparedStatement.setString(1, "1");
+            ResultSet ignored = preparedStatement.executeQuery();
             connection.isValid(3);
         }
         return SUCCESS;

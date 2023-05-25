@@ -130,6 +130,7 @@
         <module>jersey-2.x-plugin</module>
         <module>jersey-3.x-plugin</module>
         <module>grizzly-2.3.x-4.x-plugin</module>
+        <module>grizzly-2.3.x-4.x-work-threadpool-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

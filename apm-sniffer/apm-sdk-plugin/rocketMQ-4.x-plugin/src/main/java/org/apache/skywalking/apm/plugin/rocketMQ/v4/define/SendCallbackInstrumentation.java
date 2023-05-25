@@ -22,14 +22,13 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 import static org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch.byHierarchyMatch;
 
-public class SendCallbackInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class SendCallbackInstrumentation extends AbstractRocketMQInstrumentation {
 
     private static final String ENHANCE_CLASS = "org.apache.rocketmq.client.producer.SendCallback";
     private static final String ON_SUCCESS_ENHANCE_METHOD = "onSuccess";

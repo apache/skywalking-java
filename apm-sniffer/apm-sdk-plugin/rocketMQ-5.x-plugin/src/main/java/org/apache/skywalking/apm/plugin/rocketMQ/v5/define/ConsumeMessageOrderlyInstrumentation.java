@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.rocketMQ.v4.define;
+package org.apache.skywalking.apm.plugin.rocketMQ.v5.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -25,13 +25,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import static org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch.byHierarchyMatch;
 
-public class DefaultMQPushConsumerInstrumentation extends AbstractRocketMQInstrumentation {
-
-    private static final String ENHANCE_CLASS = "org.apache.rocketmq.client.consumer.DefaultMQPushConsumer";
-    private static final String REGISTER_MESSAGE_LISTENER_METHOD_NAME = "registerMessageListener";
-    public static final String REGISTER_MESSAGE_LISTENER_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.rocketMQ.v4.RegisterMessageListenerInterceptor";
+public class ConsumeMessageOrderlyInstrumentation extends AbstractRocketMQInstrumentation {
+    private static final String ENHANCE_CLASS = "org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly";
+    private static final String ENHANCE_METHOD = "consumeMessage";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.rocketMQ.v5.MessageOrderlyConsumeInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -41,28 +40,27 @@ public class DefaultMQPushConsumerInstrumentation extends AbstractRocketMQInstru
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[] {
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(REGISTER_MESSAGE_LISTENER_METHOD_NAME);
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return REGISTER_MESSAGE_LISTENER_INTERCEPT_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(ENHANCE_METHOD);
                 }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return INTERCEPTOR_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            }
         };
     }
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+        return byHierarchyMatch(new String[] {ENHANCE_CLASS});
     }
-    
 }

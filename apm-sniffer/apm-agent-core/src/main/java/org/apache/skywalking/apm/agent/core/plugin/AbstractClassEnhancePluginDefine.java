@@ -101,7 +101,6 @@ public abstract class AbstractClassEnhancePluginDefine {
         return newClassBuilder;
     }
 
-
     /**
      * Begin to define how to enhance class. After invoke this method, only means definition is finished.
      *

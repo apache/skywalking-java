@@ -21,10 +21,8 @@ package org.apache.skywalking.apm.plugin.baidu.brpc3;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.when;
-
+import static org.mockito.Mockito.when;
 import java.util.List;
-
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -44,18 +42,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 import com.baidu.brpc.protocol.Request;
 import com.baidu.brpc.protocol.Response;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class ClientInterceptorTest {
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
     @Mock
@@ -63,8 +61,10 @@ public class ClientInterceptorTest {
 
     private ClientInterceptor clientInterceptor;
 
-    private Request request = PowerMockito.mock(Request.class);
-    private Response response = PowerMockito.mock(Response.class);
+    @Mock
+    private Request request;
+    @Mock
+    private Response response;
 
     @Mock
     private MethodInterceptResult methodInterceptResult;

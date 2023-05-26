@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.agent.core.plugin.witness;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.pool.TypePool;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessFinder;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
 import org.junit.Assert;
@@ -60,8 +61,27 @@ public class WitnessTest {
         Assert.assertTrue(finder.exist(witnessMethod, this.getClass().getClassLoader()));
     }
 
+    @Test
+    public void testSyntheticMethods() {
+        // public void org.apache.skywalking.apm.agent.core.plugin.witness.WitnessTest$Child.foo()
+        Assert.assertEquals(Child.class.getDeclaredMethods().length, 1);
+        // with an additional synthetic constructor
+        Assert.assertEquals(TypePool.Default.ofSystemLoader().describe(className + "$Child").resolve().getDeclaredMethods().size(), 2);
+        WitnessMethod witnessMethod = new WitnessMethod(className + "$Child", ElementMatchers.named("foo"));
+        Assert.assertTrue(finder.exist(className + "$Child", this.getClass().getClassLoader()));
+        Assert.assertFalse(finder.exist(witnessMethod, this.getClass().getClassLoader()));
+    }
+
     public List<Map<String, Object>> foo(List<Map<String, Object>> param, String s) {
         return null;
     }
 
+    public static class Child extends Base {
+
+    }
+
+    static class Base {
+        public void foo() {
+        }
+    }
 }

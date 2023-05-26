@@ -30,6 +30,7 @@ public class PipelineInstrumentation extends AbstractWitnessInstrumentation {
 
     private static final String ENHANCE_CLASS = "redis.clients.jedis.Pipeline";
     private static final String PIPELINE_SET_CLIENT_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.PipelineSetClientMethodInterceptor";
+    private static final String JEDIS_METHOD_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jedis.v3.JedisMethodInterceptor";
 
     @Override
     public ClassMatch enhanceClass() {
@@ -54,6 +55,23 @@ public class PipelineInstrumentation extends AbstractWitnessInstrumentation {
                     @Override
                     public String getMethodsInterceptor() {
                         return PIPELINE_SET_CLIENT_METHOD_INTERCEPT_CLASS;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("sync").or(named("syncAndReturnAll")).or(named("discard"));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return JEDIS_METHOD_INTERCEPT_CLASS;
                     }
 
                     @Override

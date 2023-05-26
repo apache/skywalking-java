@@ -130,6 +130,11 @@ public final class Tags {
      */
     public static final StringTag CACHE_KEY = new StringTag(18, "cache.key");
 
+    /**
+     * CACHE_INSTANCE records the cache instance
+     */
+    public static final StringTag CACHE_INSTANCE = new StringTag(20, "cache.instance");
+
     public static final String VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT = "{\"logic-span\":true}";
 
     public static final StringTag SQL_PARAMETERS = new StringTag(19, "db.sql.parameters");

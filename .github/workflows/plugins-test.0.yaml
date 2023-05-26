@@ -27,9 +27,6 @@ on:
       - 'test/plugin/**'
       - '**/pom.xml'
       - '!**.md'
-  push:
-    branches:
-      - test/ci/*
 
 concurrency:
   group: plugins-0-${{ github.event.pull_request.number || github.ref }}
@@ -57,6 +54,7 @@ jobs:
         case:
           - activemq-scenario
           - apm-toolkit-trace-scenario
+          - apm-toolkit-tracer-scenario
           - armeria-0.96minus-scenario
           - armeria-0.96plus-scenario
           - avro-scenario
@@ -94,7 +92,7 @@ jobs:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          distribution: adopt
+          distribution: temurin
           java-version: 8
       - name: Run Plugin Test
         uses: ./.github/actions/run

@@ -18,13 +18,14 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.v5;
 
-import io.lettuce.core.codec.ByteArrayCodec;
-import io.lettuce.core.output.CommandOutput;
-import io.lettuce.core.protocol.Command;
-import io.lettuce.core.protocol.CommandArgs;
-import io.lettuce.core.protocol.CommandType;
-import io.lettuce.core.protocol.ProtocolKeyword;
-import io.lettuce.core.protocol.RedisCommand;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
@@ -42,21 +43,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.powermock.reflect.Whitebox;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import io.lettuce.core.codec.ByteArrayCodec;
+import io.lettuce.core.output.CommandOutput;
+import io.lettuce.core.protocol.Command;
+import io.lettuce.core.protocol.CommandArgs;
+import io.lettuce.core.protocol.CommandType;
+import io.lettuce.core.protocol.ProtocolKeyword;
+import io.lettuce.core.protocol.RedisCommand;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class RedisChannelWriterInterceptorTest {
 
     public static final String PEER = "192.168.1.12:6379";
@@ -66,6 +63,8 @@ public class RedisChannelWriterInterceptorTest {
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private MockInstance mockRedisChannelWriterInstance;
@@ -88,14 +87,16 @@ public class RedisChannelWriterInterceptorTest {
         }
     }
 
-    private static class MockRedisCommand<K, V, T> extends Command<K, V, T> implements EnhancedInstance {
+    private static class MockRedisCommand<K, V, T> extends Command<K, V, T>
+        implements EnhancedInstance {
         private Object object;
 
         public MockRedisCommand(ProtocolKeyword type, CommandOutput<K, V, T> output) {
             super(type, output);
         }
 
-        public MockRedisCommand(ProtocolKeyword type, CommandOutput<K, V, T> output, CommandArgs<K, V> args) {
+        public MockRedisCommand(ProtocolKeyword type, CommandOutput<K, V, T> output,
+            CommandArgs<K, V> args) {
             super(type, output, args);
         }
 
@@ -121,7 +122,7 @@ public class RedisChannelWriterInterceptorTest {
 
     @Test
     public void testInterceptor() {
-        CommandArgs<?, ?> args = new CommandArgs<>(new ByteArrayCodec()).addKey("name".getBytes()).addValue("Tom".getBytes());
+        CommandArgs<?, ?> args = new CommandArgs<>(new ByteArrayCodec()).addKey("name".getBytes());
         MockRedisCommand<?, ?, ?> redisCommand = new MockRedisCommand<>(CommandType.SET, null, args);
         interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{redisCommand}, null, null);
         interceptor.afterMethod(mockRedisChannelWriterInstance, null, null, null, null);
@@ -136,7 +137,6 @@ public class RedisChannelWriterInterceptorTest {
         assertThat(SpanHelper.getComponentId(spans.get(0)), is(57));
         List<TagValuePair> tags = SpanHelper.getTags(spans.get(0));
         assertThat(tags.get(0).getValue(), is("Redis"));
-        assertThat(tags.get(1).getValue(), CoreMatchers.containsString("Tom"));
         assertThat(SpanHelper.getLayer(spans.get(0)), CoreMatchers.is(SpanLayer.CACHE));
         assertThat(SpanHelper.getPeer(spans.get(0)), is(PEER));
     }
@@ -144,19 +144,27 @@ public class RedisChannelWriterInterceptorTest {
     @Test
     public void testGetSpanCarrierCommand() throws Exception {
         Command<?, ?, ?> command = new Command<>(CommandType.SET, null, null);
-        RedisCommand<?, ?, ?> redisCommand = Whitebox.invokeMethod(interceptor, "getSpanCarrierCommand", command);
+        Method getSpanCarrierCommandMethod = interceptor.getClass()
+            .getDeclaredMethod("getSpanCarrierCommand", Object.class);
+        getSpanCarrierCommandMethod.setAccessible(true);
+
+        RedisCommand<?, ?, ?> redisCommand =
+            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, command);
         assertEquals(command, redisCommand);
         List<RedisCommand<?, ?, ?>> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             list.add(new Command<>(CommandType.SET, null, null));
         }
         list.add(command);
-        RedisCommand<?, ?, ?> last = Whitebox.invokeMethod(interceptor, "getSpanCarrierCommand", list);
+        RedisCommand<?, ?, ?> last =
+            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, list);
         assertEquals(command, last);
-        RedisCommand<?, ?, ?> nullValue1 = Whitebox.invokeMethod(interceptor, "getSpanCarrierCommand", (Object) null);
+        RedisCommand<?, ?, ?> nullValue1 =
+            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, (Object) null);
         assertNull(nullValue1);
         list.add(null);
-        RedisCommand<?, ?, ?> nullValue2 = Whitebox.invokeMethod(interceptor, "getSpanCarrierCommand", list);
+        RedisCommand<?, ?, ?> nullValue2 =
+            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, list);
         assertNull(nullValue2);
     }
 }

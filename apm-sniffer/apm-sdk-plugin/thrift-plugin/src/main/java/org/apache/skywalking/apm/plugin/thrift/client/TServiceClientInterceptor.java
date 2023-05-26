@@ -92,6 +92,7 @@ public class TServiceClientInterceptor implements InstanceConstructorInterceptor
                                       Class<?>[] argumentsTypes,
                                       Throwable t) {
         ContextManager.activeSpan().log(t);
+        ContextManager.stopSpan();
     }
 
     private String getArguments(String method, TBase base) {

@@ -49,7 +49,7 @@ public class TracingServerCall<REQUEST, RESPONSE> extends ForwardingServerCall.S
             final AbstractSpan span = ContextManager.createLocalSpan(operationPrefix + RESPONSE_ON_MESSAGE_OPERATION_NAME);
             span.setComponent(ComponentsDefine.GRPC);
             span.setLayer(SpanLayer.RPC_FRAMEWORK);
-
+            ContextManager.continued(ServerInterceptor.CONTEXT_SNAPSHOT_KEY.get());
             try {
                 super.sendMessage(message);
             } catch (Throwable t) {
@@ -68,6 +68,7 @@ public class TracingServerCall<REQUEST, RESPONSE> extends ForwardingServerCall.S
         final AbstractSpan span = ContextManager.createLocalSpan(operationPrefix + RESPONSE_ON_CLOSE_OPERATION_NAME);
         span.setComponent(ComponentsDefine.GRPC);
         span.setLayer(SpanLayer.RPC_FRAMEWORK);
+        ContextManager.continued(ServerInterceptor.CONTEXT_SNAPSHOT_KEY.get());
         switch (status.getCode()) {
             case OK:
                 break;
@@ -93,6 +94,7 @@ public class TracingServerCall<REQUEST, RESPONSE> extends ForwardingServerCall.S
                 break;
         }
         Tags.RPC_RESPONSE_STATUS_CODE.set(span, status.getCode().name());
+        ServerInterceptor.ACTIVE_SPAN_KEY.get().asyncFinish();
 
         try {
             super.close(status, trailers);

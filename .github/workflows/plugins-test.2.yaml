@@ -27,9 +27,6 @@ on:
       - 'test/plugin/**'
       - '**/pom.xml'
       - '!**.md'
-  push:
-    branches:
-      - test/ci/*
 
 concurrency:
   group: plugins-2-${{ github.event.pull_request.number || github.ref }}
@@ -80,13 +77,15 @@ jobs:
           - cxf-scenario
           - okhttp2-scenario
           - rocketmq-scenario
+          - jersey-2.0.x-2.25.x-scenario
+          - jersey-2.26.x-2.39.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
       - uses: actions/setup-java@v2
         with:
-          distribution: adopt
+          distribution: temurin
           java-version: 8
       - name: Run Plugin Test
         uses: ./.github/actions/run

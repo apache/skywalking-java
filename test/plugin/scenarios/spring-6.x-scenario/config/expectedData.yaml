@@ -1,0 +1,375 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+segmentItems:
+- serviceName: spring-6.x-scenario
+  segmentSize: ge 10
+  segments:
+  - segmentId: not null
+    spans:
+    - operationName: HEAD:/healthCheck
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/healthCheck'}
+      - {key: http.method, value: HEAD}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: test.apache.skywalking.apm.testcase.spring3.component.TestComponentBean.componentMethod
+      parentSpanId: 1
+      spanId: 2
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 93
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: 'false'
+    - operationName: test.apache.skywalking.apm.testcase.spring3.dao.TestRepositoryBean.doSomeStuff
+      parentSpanId: 1
+      spanId: 3
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 93
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: 'false'
+    - operationName: test.apache.skywalking.apm.testcase.spring3.service.TestServiceBean.doSomeBusiness
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 93
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: 'false'
+    - operationName: GET:/case/spring3
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/case/spring3'}
+      - {key: http.method, value: GET}
+      - {key: http.headers, value: 'mock_header=[mock_value]'}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: 'POST:/create/'
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/create/'}
+      - {key: http.method, value: POST}
+      - {key: http.status_code, value: '201'}
+      refs:
+      - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: 'GET:/get/{id}'
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/get/1'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 3, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: 'PUT:/update/{id}'
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/update/1'}
+      - {key: http.method, value: PUT}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 4, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: 'DELETE:/delete/{id}'
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/delete/1'}
+      - {key: http.method, value: DELETE}
+      - {key: http.status_code, value: '204'}
+      refs:
+      - {parentEndpoint:  GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 5, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: GET:/inherit/child/test
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/inherit/child/test'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 6, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: GET:/impl/requestmapping
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/impl/requestmapping'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 7, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: 'GET:/impl/restmapping'
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/impl/restmapping'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/case/resttemplate, networkAddress: 'localhost:8080', refType: CrossProcess,
+        parentSpanId: 8, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-6.x-scenario, traceId: not null}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: /spring-6.x-scenario/case/spring3
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 12
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: http.method, value: GET}
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/case/spring3'}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: /spring-6.x-scenario/create/
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 13
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/create/'}
+      - {key: http.method, value: POST}
+      - {key: http.status_code, value: '201'}
+      skipAnalysis: 'false'
+    - operationName: /spring-6.x-scenario/get/1
+      parentSpanId: 0
+      spanId: 3
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 13
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/get/1'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: /spring-6.x-scenario/update/1
+      parentSpanId: 0
+      spanId: 4
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 13
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/update/1'}
+      - {key: http.method, value: PUT}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: /spring-6.x-scenario/delete/1
+      parentSpanId: 0
+      spanId: 5
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 13
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/delete/1'}
+      - {key: http.method, value: DELETE}
+      - {key: http.status_code, value: '204'}
+      skipAnalysis: 'false'
+    - operationName: /spring-6.x-scenario/inherit/child/test
+      parentSpanId: 0
+      spanId: 6
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 12
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: http.method, value: GET}
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/inherit/child/test'}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: /spring-6.x-scenario/impl/requestmapping
+      parentSpanId: 0
+      spanId: 7
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 12
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: http.method, value: GET}
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/impl/requestmapping'}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: /spring-6.x-scenario/impl/restmapping
+      parentSpanId: 0
+      spanId: 8
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 12
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+      - {key: http.method, value: GET}
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/impl/restmapping'}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: GET:/case/resttemplate
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/case/resttemplate'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'

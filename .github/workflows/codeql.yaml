@@ -48,6 +48,11 @@ jobs:
       with:
         submodules: true
 
+    - uses: actions/setup-java@v2
+      with:
+        distribution: temurin
+        java-version: 17
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:

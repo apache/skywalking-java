@@ -178,6 +178,16 @@ public class Config {
          * Private key file. If ssl_cert_chain and ssl_key exist, will enable mTLS for gRPC channel.
          */
         public static String SSL_KEY_PATH;
+
+        /**
+         * Agent version. This is set by the agent kernel through reading MANIFEST.MF file in the skywalking-agent.jar.
+         */
+        public static String VERSION = "UNKNOWN";
+
+        /**
+         * Enable the agent kernel services and instrumentation.
+         */
+        public static boolean ENABLE = true;
     }
 
     public static class OsInfo {
@@ -231,9 +241,14 @@ public class Config {
         public static boolean ACTIVE = true;
 
         /**
-         * Parallel monitor segment count
+         * Parallel monitor endpoint thread count
          */
         public static int MAX_PARALLEL = 5;
+
+        /**
+         * Max monitoring sub-tasks count of one single endpoint access
+         */
+        public static int MAX_ACCEPT_SUB_PARALLEL = 5;
 
         /**
          * Max monitor segment time(minutes), if current segment monitor time out of limit, then stop it.

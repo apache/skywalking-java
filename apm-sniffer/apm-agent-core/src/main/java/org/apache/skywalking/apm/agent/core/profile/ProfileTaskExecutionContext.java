@@ -34,8 +34,8 @@ public class ProfileTaskExecutionContext {
     // task data
     private final ProfileTask task;
 
-    // record current profiling count, use this to check has available profile slot
-    private final AtomicInteger currentProfilingCount = new AtomicInteger(0);
+    // record current first endpoint profiling count, use this to check has available profile slot
+    private final AtomicInteger currentEndpointProfilingCount = new AtomicInteger(0);
 
     // profiling segment slot
     private volatile AtomicReferenceArray<ThreadProfiler> profilingSegmentSlots;
@@ -48,7 +48,7 @@ public class ProfileTaskExecutionContext {
 
     public ProfileTaskExecutionContext(ProfileTask task) {
         this.task = task;
-        profilingSegmentSlots = new AtomicReferenceArray<>(Config.Profile.MAX_PARALLEL);
+        profilingSegmentSlots = new AtomicReferenceArray<>(Config.Profile.MAX_PARALLEL * (Config.Profile.MAX_ACCEPT_SUB_PARALLEL + 1));
     }
 
     /**
@@ -72,39 +72,52 @@ public class ProfileTaskExecutionContext {
      *
      * @return is add profile success
      */
-    public ProfileStatusReference attemptProfiling(TracingContext tracingContext,
-                                                   String traceSegmentId,
-                                                   String firstSpanOPName) {
-        // check has available slot
-        final int usingSlotCount = currentProfilingCount.get();
-        if (usingSlotCount >= Config.Profile.MAX_PARALLEL) {
-            return ProfileStatusReference.createWithNone();
+    public ProfileStatusContext attemptProfiling(TracingContext tracingContext,
+                                                 String traceSegmentId,
+                                                 String firstSpanOPName) {
+        // check has limited the max parallel profiling count
+        final int profilingEndpointCount = currentEndpointProfilingCount.get();
+        if (profilingEndpointCount >= Config.Profile.MAX_PARALLEL) {
+            return ProfileStatusContext.createWithNone();
         }
 
         // check first operation name matches
         if (!Objects.equals(task.getFirstSpanOPName(), firstSpanOPName)) {
-            return ProfileStatusReference.createWithNone();
+            return ProfileStatusContext.createWithNone();
         }
 
         // if out limit started profiling count then stop add profiling
         if (totalStartedProfilingCount.get() > task.getMaxSamplingCount()) {
-            return ProfileStatusReference.createWithNone();
+            return ProfileStatusContext.createWithNone();
         }
 
         // try to occupy slot
-        if (!currentProfilingCount.compareAndSet(usingSlotCount, usingSlotCount + 1)) {
-            return ProfileStatusReference.createWithNone();
+        if (!currentEndpointProfilingCount.compareAndSet(profilingEndpointCount, profilingEndpointCount + 1)) {
+            return ProfileStatusContext.createWithNone();
         }
 
+        ThreadProfiler profiler;
+        if ((profiler = addProfilingThread(tracingContext, traceSegmentId)) != null) {
+            return profiler.profilingStatus();
+        }
+        return ProfileStatusContext.createWithNone();
+    }
+
+    public boolean continueProfiling(TracingContext tracingContext, String traceSegmentId) {
+        return addProfilingThread(tracingContext, traceSegmentId) != null;
+    }
+
+    private ThreadProfiler addProfilingThread(TracingContext tracingContext, String traceSegmentId) {
         final ThreadProfiler threadProfiler = new ThreadProfiler(
             tracingContext, traceSegmentId, Thread.currentThread(), this);
         int slotLength = profilingSegmentSlots.length();
         for (int slot = 0; slot < slotLength; slot++) {
             if (profilingSegmentSlots.compareAndSet(slot, null, threadProfiler)) {
-                return threadProfiler.profilingStatus();
+                return threadProfiler;
             }
         }
-        return ProfileStatusReference.createWithNone();
+        // add profiling thread failure, so ignore it
+        return null;
     }
 
     /**
@@ -118,7 +131,7 @@ public class ProfileTaskExecutionContext {
 
         // update profiling status
         tracingContext.profileStatus()
-                      .updateStatus(attemptProfiling(tracingContext, traceSegmentId, firstSpanOPName).get());
+            .updateStatus(attemptProfiling(tracingContext, traceSegmentId, firstSpanOPName));
     }
 
     /**
@@ -134,7 +147,9 @@ public class ProfileTaskExecutionContext {
 
                 // setting stop running
                 currentProfiler.stopProfiling();
-                currentProfilingCount.addAndGet(-1);
+                if (currentProfiler.profilingStatus().isFromFirstSegment()) {
+                    currentEndpointProfilingCount.addAndGet(-1);
+                }
                 break;
             }
         }

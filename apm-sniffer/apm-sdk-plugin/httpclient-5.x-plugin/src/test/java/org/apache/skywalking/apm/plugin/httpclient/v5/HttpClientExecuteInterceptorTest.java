@@ -18,6 +18,15 @@
 
 package org.apache.skywalking.apm.plugin.httpclient.v5;
 
+import static junit.framework.TestCase.assertNotNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import java.net.URI;
+import java.util.List;
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpHost;
@@ -40,25 +49,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import java.net.URI;
-import java.util.List;
-
-import static junit.framework.TestCase.assertNotNull;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
-@PrepareForTest(HttpHost.class)
+@RunWith(TracingSegmentRunner.class)
 public class HttpClientExecuteInterceptorTest {
 
     @SegmentStoragePoint
@@ -66,6 +60,8 @@ public class HttpClientExecuteInterceptorTest {
 
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
 
     private HttpClientDoExecuteInterceptor httpClientDoExecuteInterceptor;
 
@@ -88,7 +84,6 @@ public class HttpClientExecuteInterceptorTest {
         ServiceManager.INSTANCE.boot();
         httpClientDoExecuteInterceptor = new HttpClientDoExecuteInterceptor();
 
-        PowerMockito.mock(HttpHost.class);
         when(httpResponse.getCode()).thenReturn(200);
         when(httpHost.getHostName()).thenReturn("127.0.0.1");
         when(httpHost.getSchemeName()).thenReturn("http");

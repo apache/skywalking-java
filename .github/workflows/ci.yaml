@@ -20,9 +20,6 @@ on:
   pull_request:
   schedule:
     - cron: '0 18 * * *'  # TimeZone: UTC 0
-  push:
-    branches:
-      - test/ci/*
 
 concurrency:
   group: ci-it-${{ github.event.pull_request.number || github.ref }}
@@ -51,10 +48,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu, macos, windows ]
-        java-version: [ 8 ]
-        include:
-          - os: ubuntu
-            java-version: 11
+        java-version: [ 17 ]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -67,16 +61,12 @@ jobs:
           restore-keys: ${{ runner.os }}-maven-ci-
       - uses: actions/setup-java@v2
         with:
-          distribution: adopt
+          distribution: temurin
           java-version: ${{ matrix.java-version }}
       - name: Check Javaagent Plugin List
         run: tools/plugin/check-javaagent-plugin-list.sh
       - name: Install and Test
-        if: matrix.java-version == '8' && matrix.os != 'windows'
         run: ./mvnw -q --batch-mode clean verify install javadoc:javadoc
-      - name: Install and Test
-        if: matrix.java-version == '11' || matrix.os == 'windows'
-        run: ./mvnw -q --batch-mode clean verify install
 
   ci:
     name: CI

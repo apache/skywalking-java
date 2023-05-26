@@ -19,17 +19,14 @@
 package org.apache.skywalking.apm.plugin.spring.mvc.v4;
 
 import java.lang.reflect.Method;
+import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.PathMappingCache;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(TracingSegmentRunner.class)
+@RunWith(TracingSegmentRunner.class)
 public class PathMappingCacheTest {
     private PathMappingCache pathMappingCache;
 

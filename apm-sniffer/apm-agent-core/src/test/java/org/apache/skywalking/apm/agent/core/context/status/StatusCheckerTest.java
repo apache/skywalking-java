@@ -18,17 +18,16 @@
 
 package org.apache.skywalking.apm.agent.core.context.status;
 
+import static org.apache.skywalking.apm.agent.core.context.status.StatusChecker.HIERARCHY_MATCH;
+import static org.apache.skywalking.apm.agent.core.context.status.StatusChecker.OFF;
 import java.util.Set;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.context.util.FieldGetter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.api.support.membermodification.MemberModifier;
-
-import static org.apache.skywalking.apm.agent.core.context.status.StatusChecker.HIERARCHY_MATCH;
-import static org.apache.skywalking.apm.agent.core.context.status.StatusChecker.OFF;
 
 public class StatusCheckerTest {
 
@@ -40,13 +39,11 @@ public class StatusCheckerTest {
     }
 
     @After
-    public void after() throws IllegalAccessException {
-        ((Set) MemberModifier
-            .field(ExceptionCheckContext.class, "ignoredExceptions")
-            .get(ExceptionCheckContext.INSTANCE)).clear();
-        ((Set) MemberModifier
-            .field(ExceptionCheckContext.class, "errorStatusExceptions")
-            .get(ExceptionCheckContext.INSTANCE)).clear();
+    public void after() throws IllegalAccessException, NoSuchFieldException {
+        ((Set) FieldGetter.getValue(
+            ExceptionCheckContext.INSTANCE, "ignoredExceptions")).clear();
+        ((Set) FieldGetter.getValue(
+            ExceptionCheckContext.INSTANCE, "errorStatusExceptions")).clear();
     }
 
     @Test
@@ -58,18 +55,16 @@ public class StatusCheckerTest {
     }
 
     @Test
-    public void checkInheritNamedAndAnnotationMatchStatusChecker() throws IllegalAccessException {
+    public void checkInheritNamedAndAnnotationMatchStatusChecker() throws IllegalAccessException, NoSuchFieldException {
         Assert.assertTrue(HIERARCHY_MATCH.checkStatus(new Throwable()));
         Assert.assertTrue(HIERARCHY_MATCH.checkStatus(new IllegalArgumentException()));
         Assert.assertFalse(HIERARCHY_MATCH.checkStatus(new TestNamedMatchException()));
         Assert.assertFalse(HIERARCHY_MATCH.checkStatus(new TestHierarchyMatchException()));
         Assert.assertFalse(HIERARCHY_MATCH.checkStatus(new TestAnnotationMatchException()));
-        Set ignoredExceptions = (Set) MemberModifier
-            .field(ExceptionCheckContext.class, "ignoredExceptions")
-            .get(ExceptionCheckContext.INSTANCE);
-        Set errorStatusExceptions = (Set) MemberModifier
-            .field(ExceptionCheckContext.class, "errorStatusExceptions")
-            .get(ExceptionCheckContext.INSTANCE);
+        Set ignoredExceptions = FieldGetter.getValue(
+            ExceptionCheckContext.INSTANCE, "ignoredExceptions");
+        Set errorStatusExceptions = FieldGetter.getValue(
+            ExceptionCheckContext.INSTANCE, "errorStatusExceptions");
         Assert.assertTrue(ignoredExceptions.size() > 0);
         Assert.assertTrue(errorStatusExceptions.size() > 0);
     }

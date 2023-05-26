@@ -41,7 +41,6 @@ public class JedisPluginConfig {
              */
             public static int REDIS_PARAMETER_MAX_LENGTH = 128;
 
-
             /**
              * Operation represent a cache span is "write" or "read" action , and "op"(operation) is tagged with key "cache.op" usually
              * This config term define which command should be converted to write Operation .
@@ -53,22 +52,22 @@ public class JedisPluginConfig {
                     "getset",
                     "set",
                     "setbit",
-                    "setex ",
-                    "setnx ",
+                    "setex",
+                    "setnx",
                     "setrange",
-                    "strlen ",
+                    "strlen",
                     "mset",
-                    "msetnx ",
+                    "msetnx",
                     "psetex",
-                    "incr ",
-                    "incrby ",
+                    "incr",
+                    "incrby",
                     "incrbyfloat",
-                    "decr ",
-                    "decrby ",
-                    "append ",
+                    "decr",
+                    "decrby",
+                    "append",
                     "hmset",
                     "hset",
-                    "hsetnx ",
+                    "hsetnx",
                     "hincrby",
                     "hincrbyfloat",
                     "hdel",
@@ -120,7 +119,7 @@ public class JedisPluginConfig {
              */
             public static Set<String> OPERATION_MAPPING_READ = new HashSet<>(Arrays.asList("get",
                     "getrange",
-                    "getbit ",
+                    "getbit",
                     "mget",
                     "hvals",
                     "hkeys",

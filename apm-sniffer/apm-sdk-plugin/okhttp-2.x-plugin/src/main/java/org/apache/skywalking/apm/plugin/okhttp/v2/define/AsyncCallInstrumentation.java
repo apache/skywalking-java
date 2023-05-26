@@ -31,7 +31,6 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 public class AsyncCallInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-
     /**
      * Intercept class.
      */

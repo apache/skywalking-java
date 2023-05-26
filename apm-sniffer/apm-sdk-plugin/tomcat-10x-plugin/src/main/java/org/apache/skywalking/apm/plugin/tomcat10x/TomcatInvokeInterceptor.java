@@ -31,7 +31,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
-import org.apache.skywalking.apm.agent.core.util.MethodUtil;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.apache.tomcat.util.http.Parameters;
@@ -43,14 +42,8 @@ import java.util.Map;
 
 public class TomcatInvokeInterceptor implements InstanceMethodsAroundInterceptor {
 
-    private static boolean IS_SERVLET_GET_STATUS_METHOD_EXIST;
     private static final String SERVLET_RESPONSE_CLASS = "jakarta.servlet.http.HttpServletResponse";
     private static final String GET_STATUS_METHOD = "getStatus";
-
-    static {
-        IS_SERVLET_GET_STATUS_METHOD_EXIST = MethodUtil.isMethodExist(
-            TomcatInvokeInterceptor.class.getClassLoader(), SERVLET_RESPONSE_CLASS, GET_STATUS_METHOD);
-    }
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -82,9 +75,9 @@ public class TomcatInvokeInterceptor implements InstanceMethodsAroundInterceptor
         HttpServletResponse response = (HttpServletResponse) allArguments[1];
 
         AbstractSpan span = ContextManager.activeSpan();
-        if (IS_SERVLET_GET_STATUS_METHOD_EXIST && response.getStatus() >= 400) {
+        Tags.HTTP_RESPONSE_STATUS_CODE.set(span, response.getStatus());
+        if (response.getStatus() >= 400) {
             span.errorOccurred();
-            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, response.getStatus());
         }
         // Active HTTP parameter collection automatically in the profiling context.
         if (!TomcatPluginConfig.Plugin.Tomcat.COLLECT_HTTP_PARAMS && span.isProfiling()) {

@@ -17,7 +17,10 @@ Release Notes.
 * Change the classloader to locate the agent path in AgentPackagePath, from `SystemClassLoader` to AgentPackagePath's loader.
 * Support Grizzly Trace
 * Fix possible IllegalStateException when using Micrometer.
-* Support to config custom decryption methods for kafka configurations and fix bug `kafka-reporter-plugin-8.15.0 throw exception "java.lang.NoClassDefFoundError: com/google/gson/Gson"`
+* Support Grizzly Work ThreadPool Metric Monitor
+* Fix the gson dependency in the kafka-reporter-plugin.
+* Support to config custom decryption methods for kafka configurations
+
 #### Documentation
 
 

@@ -35,7 +35,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.rocketMQ.v5.define.ConsumerEnhanceInfos;
 
-
 /**
  * {@link AbstractMessageConsumeInterceptor} create entry span when the <code>consumeMessage</code> in the {@link
  * org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently} and {@link

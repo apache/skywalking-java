@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 
 /**
  */
-public class WebFluxSkyWalkingOperatorsInterceptor implements StaticMethodsAroundInterceptor {
+public class WebFluxSkyWalkingOperatorsInterceptor extends WebFluxSkyWalkingStaticMethodsAroundInterceptor {
     
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
@@ -67,14 +67,4 @@ public class WebFluxSkyWalkingOperatorsInterceptor implements StaticMethodsAroun
         ContextManager.activeSpan().log(t);
     }
 
-    private static EnhancedInstance getInstance(Object o) {
-        EnhancedInstance instance = null;
-        if (o instanceof DefaultServerWebExchange && o instanceof EnhancedInstance) {
-            instance = (EnhancedInstance) o;
-        } else if (o instanceof ServerWebExchangeDecorator) {
-            ServerWebExchange delegate = ((ServerWebExchangeDecorator) o).getDelegate();
-            return getInstance(delegate);
-        }
-        return instance;
-    }
 }

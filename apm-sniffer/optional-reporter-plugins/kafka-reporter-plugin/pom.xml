@@ -28,11 +28,20 @@
     <artifactId>kafka-reporter-plugin</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <shade.com.google.source>com.google</shade.com.google.source>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>${kafka-clients.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
         </dependency>
     </dependencies>
 
@@ -75,6 +84,10 @@
                                 <relocation>
                                     <pattern>org.slf4j</pattern>
                                     <shadedPattern>${shade.package}/org.slf4j</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.com.google.source}</pattern>
+                                    <shadedPattern>${shade.package}.${shade.com.google.source}</shadedPattern>
                                 </relocation>
                             </relocations>
                             <transformers>

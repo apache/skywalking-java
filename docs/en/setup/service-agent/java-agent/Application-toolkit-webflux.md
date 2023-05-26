@@ -46,6 +46,19 @@
 ...
 ```
 
+* usage 4.
+```java
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain){
+        // get traceId
+        String traceId = WebFluxSkyWalkingTraceContext.traceId(exchange);
+        
+        // set correlation data, it can be retrieved by downstream nodes.
+        WebFluxSkyWalkingTraceContext.putCorrelation(exchange, "key", "value");
+        return chain.filter(exchange);
+    }
+```
+
 _Sample codes only_
 
 

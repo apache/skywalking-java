@@ -76,6 +76,10 @@
                                     <pattern>org.slf4j</pattern>
                                     <shadedPattern>${shade.package}/org.slf4j</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>${shade.package}.com.google.gson</shadedPattern>
+                                </relocation>
                             </relocations>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />

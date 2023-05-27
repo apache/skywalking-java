@@ -18,6 +18,7 @@ Release Notes.
 * Support Grizzly Trace
 * Fix possible IllegalStateException when using Micrometer.
 * Support Grizzly Work ThreadPool Metric Monitor
+* Fix the gson dependency in the kafka-reporter-plugin.
 * add add Rocketm 5.x plugin
 
 #### Documentation

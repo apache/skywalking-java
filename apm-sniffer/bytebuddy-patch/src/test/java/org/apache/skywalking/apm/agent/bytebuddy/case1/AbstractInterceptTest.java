@@ -102,7 +102,7 @@ public class AbstractInterceptTest {
         newAgentBuilder(nameTrait).type(ElementMatchers.named(className))
                 .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
                             if (deleteDuplicatedFields) {
-                                builder = builder.visit(new SWAsmVisitorWrapper(nameTrait));
+                                builder = builder.visit(new SWAsmVisitorWrapper());
                             }
                             return builder
                                     .method(ElementMatchers.nameContainsIgnoreCase(methodName))
@@ -130,7 +130,7 @@ public class AbstractInterceptTest {
         agentBuilder.type(ElementMatchers.named(className))
                 .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
                             if (deleteDuplicatedFields) {
-                                builder = builder.visit(new SWAsmVisitorWrapper(nameTrait));
+                                builder = builder.visit(new SWAsmVisitorWrapper());
                             }
                             return builder
                                     .method(ElementMatchers.nameContainsIgnoreCase(methodName))
@@ -161,7 +161,7 @@ public class AbstractInterceptTest {
         agentBuilder.type(ElementMatchers.named(className))
                 .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
                             if (deleteDuplicatedFields) {
-                                builder = builder.visit(new SWAsmVisitorWrapper(nameTrait));
+                                builder = builder.visit(new SWAsmVisitorWrapper());
                             }
                             return builder
                                     .constructor(ElementMatchers.any())
@@ -190,7 +190,7 @@ public class AbstractInterceptTest {
         agentBuilder.type(ElementMatchers.named(className))
                 .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
                             if (deleteDuplicatedFields) {
-                                builder = builder.visit(new SWAsmVisitorWrapper(nameTrait));
+                                builder = builder.visit(new SWAsmVisitorWrapper());
                             }
                             return builder
                                     .constructor(ElementMatchers.any())
@@ -221,7 +221,7 @@ public class AbstractInterceptTest {
         return agentBuilder
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
-                .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader(), "auxiliary$"));
+                .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
     }
 
     private static ClassLoader getClassLoader() {

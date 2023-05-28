@@ -19,30 +19,50 @@
 package org.apache.skywalking.apm.agent.bytebuddy;
 
 import net.bytebuddy.dynamic.ClassFileLocator;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 
 import java.io.IOException;
 import java.lang.instrument.Instrumentation;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Resolve auxiliary type of first agent in the second agent
  */
 public class SWClassFileLocator implements ClassFileLocator {
+    private static ILog LOGGER = LogManager.getLogger(SWClassFileLocator.class);
 
     private final ForInstrumentation.ClassLoadingDelegate classLoadingDelegate;
     private Instrumentation instrumentation;
     private ClassLoader classLoader;
     private String typeNameTrait = "auxiliary$";
-    private ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private BlockingQueue<ResolutionFutureTask> queue = new LinkedBlockingDeque<>();
+    private Thread thread;
 
-    public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader, String typeNameTrait) {
+    public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader) {
         this.instrumentation = instrumentation;
         this.classLoader = classLoader;
-        this.typeNameTrait = typeNameTrait;
         classLoadingDelegate = ForInstrumentation.ClassLoadingDelegate.ForDelegatingClassLoader.of(classLoader);
+
+        // Use thread instead of ExecutorService here, avoiding conflicts with apm-jdk-threadpool-plugin
+        thread = new Thread(() -> {
+            try {
+                while (true) {
+                    ResolutionFutureTask task = queue.poll(5, TimeUnit.SECONDS);
+                    if (task != null) {
+                        Resolution resolution = getResolution(task.getClassName());
+                        task.getFuture().complete(resolution);
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.error(e, "Resolve bytecode of class failed");
+            }
+        }, "SWClassFileLocator");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @Override
@@ -51,11 +71,12 @@ public class SWClassFileLocator implements ClassFileLocator {
             return new Resolution.Illegal(name);
         }
         // get class binary representation in a clean thread, avoiding nest calling transformer!
-        Future<Resolution> future = executorService.submit(() -> getResolution(name));
+        ResolutionFutureTask futureTask = new ResolutionFutureTask(name);
+        queue.offer(futureTask);
         try {
-            return future.get(2, TimeUnit.SECONDS);
+            return futureTask.getFuture().get(2, TimeUnit.SECONDS);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
@@ -64,7 +85,7 @@ public class SWClassFileLocator implements ClassFileLocator {
         try {
             instrumentation.addTransformer(classFileTransformer, true);
             try {
-                instrumentation.retransformClasses(new Class[]{classLoadingDelegate.locate(name)});
+                instrumentation.retransformClasses(new Class[]{locateClass(name)});
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -77,7 +98,43 @@ public class SWClassFileLocator implements ClassFileLocator {
                 new Resolution.Illegal(name);
     }
 
+    private Class locateClass(String className) {
+        // find class in classloader
+        try {
+            return classLoadingDelegate.locate(className);
+        } catch (ClassNotFoundException e) {
+        }
+
+        // find class in instrumentation
+        Class[] allLoadedClasses = instrumentation.getAllLoadedClasses();
+        for (int i = 0; i < allLoadedClasses.length; i++) {
+            Class aClass = allLoadedClasses[i];
+            if (className.equals(aClass.getName())) {
+                return aClass;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void close() throws IOException {
+    }
+
+    private class ResolutionFutureTask {
+        private CompletableFuture<Resolution> future;
+        private String className;
+
+        public ResolutionFutureTask(String className) {
+            this.className = className;
+            future = new CompletableFuture<>();
+        }
+
+        public CompletableFuture<Resolution> getFuture() {
+            return future;
+        }
+
+        public String getClassName() {
+            return className;
+        }
     }
 }

@@ -18,9 +18,17 @@
 
 package org.apache.skywalking.apm.agent;
 
+import java.lang.instrument.Instrumentation;
+import java.security.ProtectionDomain;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.NativeMethodStrategySupport;
+import net.bytebuddy.agent.builder.SWAsmVisitorWrapper;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -48,13 +56,6 @@ import org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapInstrument
 import org.apache.skywalking.apm.agent.core.plugin.bytebuddy.CacheableTransformerDecorator;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter;
-
-import java.lang.instrument.Instrumentation;
-import java.security.ProtectionDomain;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameContains;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
@@ -168,7 +169,7 @@ public class SkyWalkingAgent {
         NativeMethodStrategySupport.inject(agentBuilder, nameTrait);
 
         agentBuilder = agentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
-                .with(new SWClassFileLocator(instrumentation, SkyWalkingAgent.class.getClassLoader(), "auxiliary$"));
+                .with(new SWClassFileLocator(instrumentation, SkyWalkingAgent.class.getClassLoader()));
         return agentBuilder;
     }
 
@@ -198,7 +199,7 @@ public class SkyWalkingAgent {
             DelegateNamingResolver.reset(typeDescription.getTypeName());
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
-                DynamicType.Builder<?> newBuilder = builder;
+                DynamicType.Builder<?> newBuilder = builder.visit(new SWAsmVisitorWrapper());
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
                     DynamicType.Builder<?> possibleNewBuilder = define.define(

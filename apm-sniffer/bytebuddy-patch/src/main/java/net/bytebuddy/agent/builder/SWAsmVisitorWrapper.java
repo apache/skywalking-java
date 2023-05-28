@@ -40,10 +40,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SWAsmVisitorWrapper implements AsmVisitorWrapper {
 
-    private String nameTrait;
+    private String nameTrait="$";
 
-    public SWAsmVisitorWrapper(String nameTrait) {
-        this.nameTrait = nameTrait;
+    public SWAsmVisitorWrapper() {
     }
 
     @Override
@@ -84,23 +83,23 @@ public class SWAsmVisitorWrapper implements AsmVisitorWrapper {
 
         @Override
         public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
-            if (name.indexOf('$') > 0 && name.contains(nameTrait)) {
-                Map<String, String> data = getFieldData(className);
-                String prev = data.get(name);
-                if (prev != null && prev.equals(descriptor)) {
+            if (name.contains(nameTrait)) {
+                Map<String, String> fieldData = getFieldData(className);
+                String prevDescriptor = fieldData.get(name);
+                if (prevDescriptor != null && prevDescriptor.equals(descriptor)) {
                     // ignore duplicated field of class
                     return null;
                 }
-                data.put(name, descriptor);
+                fieldData.put(name, descriptor);
             }
             return super.visitField(access, name, descriptor, signature, value);
         }
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-            if (name.equals("<init>") || name.indexOf('$') > 0 && name.contains(nameTrait)) {
-                Map<String, List<String>> data = getMethodData(className);
-                List<String> descriptorList = data.computeIfAbsent(name, k -> new ArrayList<>());
+            if (name.equals("<init>") || name.contains(nameTrait)) {
+                Map<String, List<String>> methodData = getMethodData(className);
+                List<String> descriptorList = methodData.computeIfAbsent(name, k -> new ArrayList<>());
                 if (descriptorList.contains(descriptor)) {
                     // ignore duplicated method of class
                     return null;

@@ -207,20 +207,21 @@ public class AbstractInterceptTest {
                 .installOn(ByteBuddyAgent.install());
     }
 
-    private String getNameTrait(int round) {
+    protected String getNameTrait(int round) {
         return nameTraits.get(round - 1);
     }
 
     protected AgentBuilder newAgentBuilder(String nameTrait) {
         ByteBuddy byteBuddy = new ByteBuddy()
                 .with(new SWAuxiliaryTypeNamingStrategy(nameTrait))
-                .with(new SWImplementationContextFactory(nameTrait));
+                .with(new SWImplementationContextFactory(nameTrait))
+                ;
 
         AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
         NativeMethodStrategySupport.inject(agentBuilder, nameTrait);
         return agentBuilder
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+                //.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
     }
 

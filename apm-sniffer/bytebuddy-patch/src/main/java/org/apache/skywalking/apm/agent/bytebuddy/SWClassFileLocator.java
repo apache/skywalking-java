@@ -50,13 +50,15 @@ public class SWClassFileLocator implements ClassFileLocator {
         // Use thread instead of ExecutorService here, avoiding conflicts with apm-jdk-threadpool-plugin
         thread = new Thread(() -> {
             try {
-                while (true) {
+                while (!Thread.interrupted()) {
                     ResolutionFutureTask task = queue.poll(5, TimeUnit.SECONDS);
                     if (task != null) {
                         Resolution resolution = getResolution(task.getClassName());
                         task.getFuture().complete(resolution);
                     }
                 }
+            } catch (InterruptedException e) {
+                // ignore interrupted error
             } catch (Exception e) {
                 LOGGER.error(e, "Resolve bytecode of class failed");
             }
@@ -118,6 +120,8 @@ public class SWClassFileLocator implements ClassFileLocator {
 
     @Override
     public void close() throws IOException {
+        queue.clear();
+        thread.interrupt();
     }
 
     private class ResolutionFutureTask {

@@ -61,20 +61,19 @@ public class KafkaProducerManagerTest {
     }
 
     @Test
-    public void testDecrypt() throws Exception {
-        KafkaReporterPluginConfig.Plugin.Kafka.DECRYPT_CLASS = "org.apache.skywalking.apm.agent.core.kafka.KafkaProducerManagerTest$DecryptTool";
-        KafkaReporterPluginConfig.Plugin.Kafka.DECRYPT_METHOD = "decrypt";
+    public void testDecode() throws Exception {
+        KafkaReporterPluginConfig.Plugin.Kafka.DECODE_CLASS = "org.apache.skywalking.apm.agent.core.kafka.KafkaProducerManagerTest$DecodeTool";
         KafkaProducerManager kafkaProducerManager = new KafkaProducerManager();
 
         Map<String, String> config = new HashMap<>();
         String value = "test.99998888";
         config.put("test.password", Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8)));
 
-        Method decryptMethod = kafkaProducerManager.getClass().getDeclaredMethod("decrypt", Map.class);
-        decryptMethod.setAccessible(true);
-        Map<String, String> encryptedConfig = (Map<String, String>) decryptMethod.invoke(kafkaProducerManager, config);
+        Method decodeMethod = kafkaProducerManager.getClass().getDeclaredMethod("decode", Map.class);
+        decodeMethod.setAccessible(true);
+        Map<String, String> decodeConfig = (Map<String, String>) decodeMethod.invoke(kafkaProducerManager, config);
 
-        assertEquals(value, encryptedConfig.get("test.password"));
+        assertEquals(value, decodeConfig.get("test.password"));
     }
 
     static class MockListener implements KafkaConnectionStatusListener {
@@ -91,8 +90,9 @@ public class KafkaProducerManagerTest {
         }
     }
 
-    static class DecryptTool {
-        public Map<String, String> decrypt(Map<String, String> config) {
+    static class DecodeTool implements KafkaConfigExtension {
+        @Override
+        public Map<String, String> decode(Map<String, String> config) {
             if (config.containsKey("test.password")) {
                 config.put("test.password", new String(Base64.getDecoder().decode(config.get("test.password")), StandardCharsets.UTF_8));
             }

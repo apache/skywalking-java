@@ -33,42 +33,50 @@ plugin.kafka.producer_config_json={"delivery.timeout.ms": 12000, "compression.ty
 
 Currently, there are 2 ways to configure advanced configurations below. Notice that, the new way, configured in JSON format, will be overridden by `plugin.kafka.producer_config[key]=value` when they have the duplication keys.
 
-Since Skywaling-java Agent 8.16.0, support to configure custom decryption methods for kafka configurations avoid to set plain password in `plugin.kafka.producer_config_json`,`plugin.kafka.producer_config` or environment variable `SW_PLUGIN_KAFKA_PRODUCER_CONFIG_JSON`.
+Since Skywaling-java Agent 8.16.0, support to implement custom decode method for kafka configurations avoid to set plain password in `plugin.kafka.producer_config_json`,`plugin.kafka.producer_config` or environment variable `SW_PLUGIN_KAFKA_PRODUCER_CONFIG_JSON`.
 
-First, you have to implement a custom decryption Class with a decryption method.For example:
+First, you have to add a dependency `KafkaConfigExtension` and implement `decode` interface.For example:
+Add the `KafkaConfigExtension` dependency to your project.
+```
+<dependency>
+    <groupId>org.apache.skywalking</groupId>
+    <artifactId>kafka-config-extension</artifactId>
+    <version>${skywalking.version}</version>
+</dependency>
+```
+Implement your custom decode method.Like this:
 ```
 package org.apache.skywalking.apm.agent.sample;
 
+import org.apache.skywalking.apm.agent.core.kafka.KafkaConfigExtension;
 import java.util.Map;
 
 /**
- * Custom decryption class
+ * Custom decode class
  */
-public class DecryptUtil {
+public class DecodeUtil implements KafkaConfigExtension {
     /**
-     * Custom decryption method.
+     * Custom decode method.
      * @param config the value of `plugin.kafka.producer_config` or `plugin.kafka.producer_config_json` in `agent.config`.
-     * @return the decrypted configuration if you implement your custom decryption code.
+     * @return the decoded configuration if you implement your custom decode logic.
      */
-    public Map<String, String> decrypt(Map<String, String> config) {
+    public Map<String, String> decode(Map<String, String> config) {
         /**
-         * implement your custom decryption code
+         * implement your custom decode logic
          * */
         return config;
     }
 }
 ```
-Second,you need to package your code into a jar and move to `agent/plugins` for decrypting.Notice,your jar package should contain all the dependencies required for your custom decryption code.
+Second,you need to package your code into a jar and move to `agent/plugins` for decoding.Notice,your jar package should contain all the dependencies required for your custom decode code.
 
-Third,configure decryption class and method in `agent.config`,like this:
+Third,configure decode class in `agent.config`,like this:
 ```
-plugin.kafka.decrypt_class="org.apache.skywalking.apm.agent.sample.DecryptUtil"
-plugin.kafka.decrypt_method="decrypt"
+plugin.kafka.decrypt_class="org.apache.skywalking.apm.agent.sample.DecodeUtil"
 ```
 or configure by environment variable
 ```
-SW_KAFKA_DECRYPT_CLASS="org.apache.skywalking.apm.agent.sample.DecryptUtil"
-SW_KAFKA_DECRYPT_METHOD="decrypt"
+SW_KAFKA_DECRYPT_CLASS="org.apache.skywalking.apm.agent.sample.DecodeUtil"
 ```
 ## 3rd party reporters
 There are other reporter implementations from out of the Apache Software Foundation.

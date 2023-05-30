@@ -41,4 +41,14 @@ public class ZGCModule extends GCModule {
     protected String getNormalGCName() {
         return "ZGC";
     }
+
+    @Override
+    protected String getCycleGcBeanName() {
+        return "ZGC Cycles";
+    }
+
+    @Override
+    protected String getPauseGcBeanName() {
+        return "ZGC Pauses";
+    }
 }

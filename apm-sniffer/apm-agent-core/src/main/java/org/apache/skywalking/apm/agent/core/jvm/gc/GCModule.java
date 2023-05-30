@@ -64,7 +64,7 @@ public abstract class GCModule implements GCMetricAccessor {
                 long time = bean.getCollectionTime();
                 gcTime = time - lastOGCCollectionTime;
                 lastOGCCollectionTime = time;
-            } else if (name.equals(getNormalGCName())) {
+            } else if (name.equals(getNormalGCName())) { // zgc before jdk17
                 phase = GCPhase.NORMAL;
                 long collectionCount = bean.getCollectionCount();
                 gcCount = collectionCount - lastNormalGCCount;
@@ -73,6 +73,16 @@ public abstract class GCModule implements GCMetricAccessor {
                 long time = bean.getCollectionTime();
                 gcTime = time - lastNormalGCTime;
                 lastNormalGCTime = time;
+            } else if (name.equals(getPauseGcBeanName())) {
+                phase = GCPhase.NORMAL;
+                long time = bean.getCollectionTime();
+                gcTime = time - lastNormalGCTime;
+                lastNormalGCTime = time;
+            } else if (name.equals(getCycleGcBeanName())) {
+                phase = GCPhase.NORMAL;
+                long collectionCount = bean.getCollectionCount();
+                gcCount = collectionCount - lastNormalGCCount;
+                lastNormalGCCount = collectionCount;
             } else {
                 continue;
             }
@@ -88,4 +98,12 @@ public abstract class GCModule implements GCMetricAccessor {
     protected abstract String getNewGCName();
 
     protected abstract String getNormalGCName();
+
+    protected String getCycleGcBeanName() {
+        return null;
+    }
+
+    protected String getPauseGcBeanName() {
+        return null;
+    }
 }

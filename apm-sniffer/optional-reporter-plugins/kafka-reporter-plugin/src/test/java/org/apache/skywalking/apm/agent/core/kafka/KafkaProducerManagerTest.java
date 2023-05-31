@@ -18,16 +18,15 @@
 
 package org.apache.skywalking.apm.agent.core.kafka;
 
-import org.junit.Test;
-
+import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Method;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.junit.Assert.assertEquals;
 
 public class KafkaProducerManagerTest {
     @Test
@@ -39,8 +38,8 @@ public class KafkaProducerManagerTest {
             kafkaProducerManager.addListener(new MockListener(counter));
         }
         Method notifyListeners = kafkaProducerManager
-            .getClass()
-            .getDeclaredMethod("notifyListeners", KafkaConnectionStatus.class);
+                .getClass()
+                .getDeclaredMethod("notifyListeners", KafkaConnectionStatus.class);
         notifyListeners.setAccessible(true);
         notifyListeners.invoke(kafkaProducerManager, KafkaConnectionStatus.CONNECTED);
 
@@ -58,6 +57,17 @@ public class KafkaProducerManagerTest {
         KafkaReporterPluginConfig.Plugin.Kafka.NAMESPACE = "";
         value = kafkaProducerManager.formatTopicNameThenRegister(KafkaReporterPluginConfig.Plugin.Kafka.TOPIC_METRICS);
         assertEquals(KafkaReporterPluginConfig.Plugin.Kafka.TOPIC_METRICS, value);
+    }
+
+    @Test
+    public void testSetPropertiesFromJsonConfig() {
+        KafkaProducerManager kafkaProducerManager = new KafkaProducerManager();
+        Properties properties = new Properties();
+
+        KafkaReporterPluginConfig.Plugin.Kafka.PRODUCER_CONFIG_JSON = "{\"batch.size\":32768}";
+        kafkaProducerManager.setPropertiesFromJsonConfig(properties);
+
+        assertEquals(properties.get("batch.size"), "32768");
     }
 
     @Test

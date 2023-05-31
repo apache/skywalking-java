@@ -18,8 +18,8 @@
 
 package org.apache.skywalking.apm.agent.core.kafka;
 
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +34,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -107,11 +106,7 @@ public class KafkaProducerManager implements BootService, Runnable {
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Kafka.BOOTSTRAP_SERVERS);
 
-        if (StringUtil.isNotEmpty(Kafka.PRODUCER_CONFIG_JSON)) {
-            Gson gson = new Gson();
-            Map<String, String> config = (Map<String, String>) gson.fromJson(Kafka.PRODUCER_CONFIG_JSON, Map.class);
-            decode(config).forEach(properties::setProperty);
-        }
+        setPropertiesFromJsonConfig(properties);
         decode(Kafka.PRODUCER_CONFIG).forEach(properties::setProperty);
 
         try (AdminClient adminClient = AdminClient.create(properties)) {
@@ -131,12 +126,12 @@ public class KafkaProducerManager implements BootService, Runnable {
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
-    
+
             if (!topics.isEmpty()) {
                 LOGGER.warn("kafka topics {} is not exist, connect to kafka cluster abort", topics);
                 return;
             }
-    
+
             try {
                 producer = new KafkaProducer<>(properties, new StringSerializer(), new BytesSerializer());
             } catch (Exception e) {
@@ -146,6 +141,15 @@ public class KafkaProducerManager implements BootService, Runnable {
             //notify listeners to send data if no exception been throw
             notifyListeners(KafkaConnectionStatus.CONNECTED);
             bootProducerFuture.cancel(true);
+        }
+    }
+
+    void setPropertiesFromJsonConfig(Properties properties) {
+        if (StringUtil.isNotEmpty(Kafka.PRODUCER_CONFIG_JSON)) {
+            Gson gson = new Gson();
+            Map<String, String> config = gson.fromJson(Kafka.PRODUCER_CONFIG_JSON,
+                    new TypeToken<Map<String, String>>() { }.getType());
+            decode(config).forEach(properties::setProperty);
         }
     }
 

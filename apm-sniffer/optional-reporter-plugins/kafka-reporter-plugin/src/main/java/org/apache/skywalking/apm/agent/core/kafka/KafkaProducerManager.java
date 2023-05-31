@@ -166,7 +166,7 @@ public class KafkaProducerManager implements BootService, Runnable {
             }
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             // ignore
-            LOGGER.warn("The decode class {} is not exist, exception:{}.", Kafka.DECODE_CLASS, e);
+            LOGGER.warn("The decode class {} does not exist, exception:{}.", Kafka.DECODE_CLASS, e);
         }
         return config;
     }

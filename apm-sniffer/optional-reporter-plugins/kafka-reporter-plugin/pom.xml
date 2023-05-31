@@ -80,6 +80,10 @@
                                     <pattern>com.google.gson</pattern>
                                     <shadedPattern>${shade.package}.com.google.gson</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>${shade.package}.com.google.common</shadedPattern>
+                                </relocation>
                             </relocations>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />

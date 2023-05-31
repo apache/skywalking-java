@@ -19,6 +19,7 @@ Release Notes.
 * Fix possible IllegalStateException when using Micrometer.
 * Support Grizzly Work ThreadPool Metric Monitor
 * Fix the gson dependency in the kafka-reporter-plugin.
+* Fix deserialization of kafka producer json config in the kafka-reporter-plugin.
 
 #### Documentation
 

@@ -20,8 +20,13 @@ package org.apache.skywalking.apm.agent.core.kafka;
 
 import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Method;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KafkaProducerManagerTest {
     @Test
@@ -33,8 +38,8 @@ public class KafkaProducerManagerTest {
             kafkaProducerManager.addListener(new MockListener(counter));
         }
         Method notifyListeners = kafkaProducerManager
-            .getClass()
-            .getDeclaredMethod("notifyListeners", KafkaConnectionStatus.class);
+                .getClass()
+                .getDeclaredMethod("notifyListeners", KafkaConnectionStatus.class);
         notifyListeners.setAccessible(true);
         notifyListeners.invoke(kafkaProducerManager, KafkaConnectionStatus.CONNECTED);
 
@@ -54,6 +59,33 @@ public class KafkaProducerManagerTest {
         assertEquals(KafkaReporterPluginConfig.Plugin.Kafka.TOPIC_METRICS, value);
     }
 
+    @Test
+    public void testSetPropertiesFromJsonConfig() {
+        KafkaProducerManager kafkaProducerManager = new KafkaProducerManager();
+        Properties properties = new Properties();
+
+        KafkaReporterPluginConfig.Plugin.Kafka.PRODUCER_CONFIG_JSON = "{\"batch.size\":32768}";
+        kafkaProducerManager.setPropertiesFromJsonConfig(properties);
+
+        assertEquals(properties.get("batch.size"), "32768");
+    }
+
+    @Test
+    public void testDecode() throws Exception {
+        KafkaReporterPluginConfig.Plugin.Kafka.DECODE_CLASS = "org.apache.skywalking.apm.agent.core.kafka.KafkaProducerManagerTest$DecodeTool";
+        KafkaProducerManager kafkaProducerManager = new KafkaProducerManager();
+
+        Map<String, String> config = new HashMap<>();
+        String value = "test.99998888";
+        config.put("test.password", Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8)));
+
+        Method decodeMethod = kafkaProducerManager.getClass().getDeclaredMethod("decode", Map.class);
+        decodeMethod.setAccessible(true);
+        Map<String, String> decodeConfig = (Map<String, String>) decodeMethod.invoke(kafkaProducerManager, config);
+
+        assertEquals(value, decodeConfig.get("test.password"));
+    }
+
     static class MockListener implements KafkaConnectionStatusListener {
 
         private AtomicInteger counter;
@@ -65,6 +97,16 @@ public class KafkaProducerManagerTest {
         @Override
         public void onStatusChanged(KafkaConnectionStatus status) {
             counter.incrementAndGet();
+        }
+    }
+
+    static class DecodeTool implements KafkaConfigExtension {
+        @Override
+        public Map<String, String> decode(Map<String, String> config) {
+            if (config.containsKey("test.password")) {
+                config.put("test.password", new String(Base64.getDecoder().decode(config.get("test.password")), StandardCharsets.UTF_8));
+            }
+            return config;
         }
     }
 

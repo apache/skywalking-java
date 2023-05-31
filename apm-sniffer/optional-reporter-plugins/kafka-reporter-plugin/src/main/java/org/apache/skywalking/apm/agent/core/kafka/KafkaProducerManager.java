@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.agent.core.kafka;
 
-import com.google.common.reflect.TypeToken;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashSet;

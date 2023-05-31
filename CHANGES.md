@@ -20,6 +20,7 @@ Release Notes.
 * Support Grizzly Work ThreadPool Metric Monitor
 * Fix the gson dependency in the kafka-reporter-plugin.
 * Fix deserialization of kafka producer json config in the kafka-reporter-plugin.
+* Support to config custom decode methods for kafka configurations
 
 #### Documentation
 

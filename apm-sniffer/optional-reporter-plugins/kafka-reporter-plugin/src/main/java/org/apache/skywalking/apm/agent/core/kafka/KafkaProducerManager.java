@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.agent.core.kafka;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -107,6 +108,7 @@ public class KafkaProducerManager implements BootService, Runnable {
 
         setPropertiesFromJsonConfig(properties);
         Kafka.PRODUCER_CONFIG.forEach(properties::setProperty);
+        decode(Kafka.PRODUCER_CONFIG).forEach(properties::setProperty);
 
         try (AdminClient adminClient = AdminClient.create(properties)) {
             DescribeTopicsResult topicsResult = adminClient.describeTopics(topics);
@@ -148,7 +150,7 @@ public class KafkaProducerManager implements BootService, Runnable {
             Gson gson = new Gson();
             Map<String, String> config = gson.fromJson(Kafka.PRODUCER_CONFIG_JSON,
                     new TypeToken<Map<String, String>>() { }.getType());
-            config.forEach(properties::setProperty);
+            decode(config).forEach(properties::setProperty);
         }
     }
 
@@ -156,6 +158,22 @@ public class KafkaProducerManager implements BootService, Runnable {
         for (KafkaConnectionStatusListener listener : listeners) {
             listener.onStatusChanged(status);
         }
+    }
+
+    private Map<String, String> decode(Map<String, String> config) {
+        if (StringUtil.isBlank(Kafka.DECODE_CLASS)) {
+            return config;
+        }
+        try {
+            Object decodeTool = Class.forName(Kafka.DECODE_CLASS).getDeclaredConstructor().newInstance();
+            if (decodeTool instanceof KafkaConfigExtension) {
+                return ((KafkaConfigExtension) decodeTool).decode(config);
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            // ignore
+            LOGGER.warn("The decode class {} does not exist, exception:{}.", Kafka.DECODE_CLASS, e);
+        }
+        return config;
     }
 
     /**

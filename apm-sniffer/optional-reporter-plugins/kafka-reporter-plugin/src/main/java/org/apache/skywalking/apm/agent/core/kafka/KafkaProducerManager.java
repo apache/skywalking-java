@@ -107,7 +107,6 @@ public class KafkaProducerManager implements BootService, Runnable {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Kafka.BOOTSTRAP_SERVERS);
 
         setPropertiesFromJsonConfig(properties);
-        Kafka.PRODUCER_CONFIG.forEach(properties::setProperty);
         decode(Kafka.PRODUCER_CONFIG).forEach(properties::setProperty);
 
         try (AdminClient adminClient = AdminClient.create(properties)) {

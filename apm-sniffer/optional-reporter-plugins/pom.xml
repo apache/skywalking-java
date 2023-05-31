@@ -30,6 +30,7 @@
 
     <modules>
         <module>kafka-reporter-plugin</module>
+        <module>kafka-config-extension</module>
     </modules>
 
     <properties>

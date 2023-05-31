@@ -81,7 +81,7 @@
                                     <shadedPattern>${shade.package}.com.google.gson</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.google.gson</pattern>
+                                    <pattern>com.google.common</pattern>
                                     <shadedPattern>${shade.package}.com.google.common</shadedPattern>
                                 </relocation>
                             </relocations>

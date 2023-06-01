@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Support Jdk17 ZGC metric collect
+* Fix Jdk17 ZGC bug
 
 #### Documentation
 

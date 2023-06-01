@@ -54,7 +54,7 @@ public class ZGCModule implements GCMetricAccessor {
                 long collectionCount = bean.getCollectionCount();
                 gcCount = collectionCount - lastNormalGCCount;
                 lastNormalGCCount = collectionCount;
-            } else if (name.equals(" ZGC Pauses")) {
+            } else if (name.equals("ZGC Pauses")) {
                 long time = bean.getCollectionTime();
                 gcTime = time - lastNormalGCTime;
                 lastNormalGCTime = time;

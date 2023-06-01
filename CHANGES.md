@@ -5,6 +5,7 @@ Release Notes.
 8.17.0
 ------------------
 
+* Support Jdk17 ZGC metric collect
 
 #### Documentation
 

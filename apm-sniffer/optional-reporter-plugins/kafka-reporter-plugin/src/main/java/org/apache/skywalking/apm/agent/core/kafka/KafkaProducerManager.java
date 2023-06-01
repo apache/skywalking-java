@@ -18,7 +18,9 @@
 
 package org.apache.skywalking.apm.agent.core.kafka;
 
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +34,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -105,12 +106,8 @@ public class KafkaProducerManager implements BootService, Runnable {
         Properties properties = new Properties();
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, Kafka.BOOTSTRAP_SERVERS);
 
-        if (StringUtil.isNotEmpty(Kafka.PRODUCER_CONFIG_JSON)) {
-            Gson gson = new Gson();
-            Map<String, String> config = (Map<String, String>) gson.fromJson(Kafka.PRODUCER_CONFIG_JSON, Map.class);
-            config.forEach(properties::setProperty);
-        }
-        Kafka.PRODUCER_CONFIG.forEach(properties::setProperty);
+        setPropertiesFromJsonConfig(properties);
+        decode(Kafka.PRODUCER_CONFIG).forEach(properties::setProperty);
 
         try (AdminClient adminClient = AdminClient.create(properties)) {
             DescribeTopicsResult topicsResult = adminClient.describeTopics(topics);
@@ -129,12 +126,12 @@ public class KafkaProducerManager implements BootService, Runnable {
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
-    
+
             if (!topics.isEmpty()) {
                 LOGGER.warn("kafka topics {} is not exist, connect to kafka cluster abort", topics);
                 return;
             }
-    
+
             try {
                 producer = new KafkaProducer<>(properties, new StringSerializer(), new BytesSerializer());
             } catch (Exception e) {
@@ -147,10 +144,35 @@ public class KafkaProducerManager implements BootService, Runnable {
         }
     }
 
+    void setPropertiesFromJsonConfig(Properties properties) {
+        if (StringUtil.isNotEmpty(Kafka.PRODUCER_CONFIG_JSON)) {
+            Gson gson = new Gson();
+            Map<String, String> config = gson.fromJson(Kafka.PRODUCER_CONFIG_JSON,
+                    new TypeToken<Map<String, String>>() { }.getType());
+            decode(config).forEach(properties::setProperty);
+        }
+    }
+
     private void notifyListeners(KafkaConnectionStatus status) {
         for (KafkaConnectionStatusListener listener : listeners) {
             listener.onStatusChanged(status);
         }
+    }
+
+    private Map<String, String> decode(Map<String, String> config) {
+        if (StringUtil.isBlank(Kafka.DECODE_CLASS)) {
+            return config;
+        }
+        try {
+            Object decodeTool = Class.forName(Kafka.DECODE_CLASS).getDeclaredConstructor().newInstance();
+            if (decodeTool instanceof KafkaConfigExtension) {
+                return ((KafkaConfigExtension) decodeTool).decode(config);
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            // ignore
+            LOGGER.warn("The decode class {} does not exist, exception:{}.", Kafka.DECODE_CLASS, e);
+        }
+        return config;
     }
 
     /**

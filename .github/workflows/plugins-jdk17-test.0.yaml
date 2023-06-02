@@ -61,6 +61,7 @@ jobs:
           - jetty-thread-pool-scenario
           - jetty-11.x-thread-pool-scenario
           - grizzly-2.3.x-4.x-scenario
+          - grizzly-2.3.x-4.x-workthreadpool-scenario
     steps:
       - uses: actions/checkout@v2
         with:

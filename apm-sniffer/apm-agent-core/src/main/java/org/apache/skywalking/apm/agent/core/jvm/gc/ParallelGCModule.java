@@ -36,9 +36,4 @@ public class ParallelGCModule extends GCModule {
         return "PS Scavenge";
     }
 
-    @Override
-    protected String getNormalGCName() {
-        return null;
-    }
-
 }

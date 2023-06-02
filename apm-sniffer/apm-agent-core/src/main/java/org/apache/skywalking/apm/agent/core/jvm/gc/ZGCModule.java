@@ -18,27 +18,52 @@
 
 package org.apache.skywalking.apm.agent.core.jvm.gc;
 
+import org.apache.skywalking.apm.network.language.agent.v3.GC;
+import org.apache.skywalking.apm.network.language.agent.v3.GCPhase;
+
 import java.lang.management.GarbageCollectorMXBean;
+import java.util.LinkedList;
 import java.util.List;
 
-public class ZGCModule extends GCModule {
+public class ZGCModule implements GCMetricAccessor {
+    private List<GarbageCollectorMXBean> beans;
+
+    private long lastNormalGCCount = 0;
+    private long lastNormalGCTime = 0;
 
     public ZGCModule(List<GarbageCollectorMXBean> beans) {
-        super(beans);
+        this.beans = beans;
     }
 
     @Override
-    protected String getOldGCName() {
-        return null;
-    }
+    public List<GC> getGCList() {
+        List<GC> gcList = new LinkedList<GC>();
+        for (GarbageCollectorMXBean bean : beans) {
+            String name = bean.getName();
+            long gcCount = 0;
+            long gcTime = 0;
+            if (name.equals("ZGC")) {
+                long collectionCount = bean.getCollectionCount();
+                gcCount = collectionCount - lastNormalGCCount;
+                lastNormalGCCount = collectionCount;
 
-    @Override
-    protected String getNewGCName() {
-        return null;
-    }
+                long time = bean.getCollectionTime();
+                gcTime = time - lastNormalGCTime;
+                lastNormalGCTime = time;
+            } else if (name.equals("ZGC Cycles")) {
+                long collectionCount = bean.getCollectionCount();
+                gcCount = collectionCount - lastNormalGCCount;
+                lastNormalGCCount = collectionCount;
+            } else if (name.equals("ZGC Pauses")) {
+                long time = bean.getCollectionTime();
+                gcTime = time - lastNormalGCTime;
+                lastNormalGCTime = time;
+            } else {
+                continue;
+            }
+            gcList.add(GC.newBuilder().setPhase(GCPhase.NORMAL).setCount(gcCount).setTime(gcTime).build());
+        }
 
-    @Override
-    protected String getNormalGCName() {
-        return "ZGC";
+        return gcList;
     }
 }

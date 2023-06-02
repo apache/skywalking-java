@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>java-agent-sniffer</artifactId>
-        <version>8.16.0-SNAPSHOT</version>
+        <version>8.17.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>apm-sdk-plugin</artifactId>
@@ -130,6 +130,7 @@
         <module>jersey-2.x-plugin</module>
         <module>jersey-3.x-plugin</module>
         <module>grizzly-2.3.x-4.x-plugin</module>
+        <module>grizzly-2.3.x-4.x-work-threadpool-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.testcase.jetty10xserver.controller;
 
-
 import org.eclipse.jetty.client.HttpClient;
 
 import javax.servlet.ServletException;

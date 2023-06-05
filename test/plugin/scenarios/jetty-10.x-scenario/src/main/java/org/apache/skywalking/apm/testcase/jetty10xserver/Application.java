@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.testcase.jetty10xserver;
 
-
 import org.apache.skywalking.apm.testcase.jetty10xserver.controller.CaseController;
 import org.apache.skywalking.apm.testcase.jetty10xserver.controller.ContextReceiveController;
 import org.apache.skywalking.apm.testcase.jetty10xserver.controller.HealCheckController;

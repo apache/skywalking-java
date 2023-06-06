@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements.  See the NOTICE file distributed with
@@ -18,29 +17,29 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
+        <artifactId>jetty-plugins</artifactId>
         <groupId>org.apache.skywalking</groupId>
-        <artifactId>apm-sdk-plugin</artifactId>
         <version>8.17.0-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jetty-plugins</artifactId>
-    <modules>
-        <module>jetty-client-9.x-plugin</module>
-        <module>jetty-server-9.x-plugin</module>
-        <module>jetty-client-9.0-plugin</module>
-        <module>jetty-server-11.x-plugin</module>
-        <module>jetty-client-11.x-plugin</module>
-    </modules>
-    <packaging>pom</packaging>
+    <artifactId>apm-jetty-server-11.x-plugin</artifactId>
+    <packaging>jar</packaging>
 
-    <name>jetty-plugin</name>
+    <name>jetty-server-11.x-plugin</name>
     <url>http://maven.apache.org</url>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sdk.plugin.related.dir>/..</sdk.plugin.related.dir>
+        <jetty-server.version>11.0.15</jetty-server.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty-server.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

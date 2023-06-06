@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Support Jdk17 ZGC metric collect
+* Support Jetty 11.x plugin
 
 #### Documentation
 

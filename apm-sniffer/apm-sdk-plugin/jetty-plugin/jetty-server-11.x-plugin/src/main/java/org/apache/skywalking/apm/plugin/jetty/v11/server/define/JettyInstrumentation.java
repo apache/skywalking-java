@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,41 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *
  */
 
-package org.apache.skywalking.apm.plugin.jetty.v9.server.define;
+package org.apache.skywalking.apm.plugin.jetty.v11.server.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class DispatcherInstrumentation extends AbstractWitnessInstrumentation {
+/**
+ * {@link JettyInstrumentation} enhance the <code>handle</code> method in <code>org.eclipse.jetty.server.handler.HandlerList</code>
+ * by <code>HandleInterceptor</code>
+ */
+public class JettyInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "org.eclipse.jetty.server.Dispatcher";
-    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jetty.v9.server.ForwardInterceptor";
+    private static final String ENHANCE_CLASS = "org.eclipse.jetty.server.HttpChannel";
+    private static final String ENHANCE_METHOD = "handle";
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.jetty.v11.server" +
+            ".HandleInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[]{
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgumentWithType(2, "java.lang.String");
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return INTERCEPT_CLASS;
-                    }
-                }
-        };
+        return new ConstructorInterceptPoint[0];
     }
 
     @Override
@@ -57,12 +49,12 @@ public class DispatcherInstrumentation extends AbstractWitnessInstrumentation {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("forward");
+                        return named(ENHANCE_METHOD);
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return INTERCEPT_CLASS;
+                        return INTERCEPTOR_CLASS;
                     }
 
                     @Override
@@ -75,6 +67,6 @@ public class DispatcherInstrumentation extends AbstractWitnessInstrumentation {
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+        return NameMatch.byName(ENHANCE_CLASS);
     }
 }

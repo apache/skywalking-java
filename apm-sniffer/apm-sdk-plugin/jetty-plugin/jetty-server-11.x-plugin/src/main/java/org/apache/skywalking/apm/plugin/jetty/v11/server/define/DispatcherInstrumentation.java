@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jetty.v9.server.define;
+package org.apache.skywalking.apm.plugin.jetty.v11.server.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -32,44 +32,44 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 public class DispatcherInstrumentation extends AbstractWitnessInstrumentation {
 
     private static final String ENHANCE_CLASS = "org.eclipse.jetty.server.Dispatcher";
-    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jetty.v9.server.ForwardInterceptor";
+    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.jetty.v11.server.ForwardInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[]{
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgumentWithType(2, "java.lang.String");
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return INTERCEPT_CLASS;
-                    }
+        return new ConstructorInterceptPoint[] {
+            new ConstructorInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                    return takesArgumentWithType(2, "java.lang.String");
                 }
+
+                @Override
+                public String getConstructorInterceptor() {
+                    return INTERCEPT_CLASS;
+                }
+            }
         };
     }
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[]{
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("forward");
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return INTERCEPT_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
+        return new InstanceMethodsInterceptPoint[] {
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named("forward");
                 }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return INTERCEPT_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            }
         };
     }
 

@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Support Jdk17 ZGC metric collect
+* Fix the scenario of using the HBase plugin with spring-data-hadoop.
 
 #### Documentation
 

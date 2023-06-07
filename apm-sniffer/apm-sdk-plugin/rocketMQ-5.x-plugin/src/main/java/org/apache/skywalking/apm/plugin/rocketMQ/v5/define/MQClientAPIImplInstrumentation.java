@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.rocketMQ.v4.define;
+package org.apache.skywalking.apm.plugin.rocketMQ.v5.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -25,12 +25,16 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch.byHierarchyMatch;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class ConsumeMessageOrderlyInstrumentation extends AbstractRocketMQInstrumentation {
-    private static final String ENHANCE_CLASS = "org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly";
-    private static final String ENHANCE_METHOD = "consumeMessage";
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.rocketMQ.v4.MessageOrderlyConsumeInterceptor";
+public class MQClientAPIImplInstrumentation extends AbstractRocketMQInstrumentation {
+
+    private static final String ENHANCE_CLASS = "org.apache.rocketmq.client.impl.MQClientAPIImpl";
+    private static final String SEND_MESSAGE_METHOD_NAME = "sendMessage";
+    private static final String ASYNC_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.rocketMQ.v5.MessageSendInterceptor";
+    public static final String UPDATE_NAME_SERVER_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.rocketMQ.v5.UpdateNameServerInterceptor";
+    public static final String UPDATE_NAME_SERVER_METHOD_NAME = "updateNameServerAddressList";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -43,12 +47,28 @@ public class ConsumeMessageOrderlyInstrumentation extends AbstractRocketMQInstru
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_METHOD);
+                    return named(SEND_MESSAGE_METHOD_NAME).and(takesArguments(12));
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return INTERCEPTOR_CLASS;
+                    return ASYNC_METHOD_INTERCEPTOR;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(UPDATE_NAME_SERVER_METHOD_NAME);
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return UPDATE_NAME_SERVER_INTERCEPT_CLASS;
                 }
 
                 @Override
@@ -61,6 +81,6 @@ public class ConsumeMessageOrderlyInstrumentation extends AbstractRocketMQInstru
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byHierarchyMatch(new String[] {ENHANCE_CLASS});
+        return byName(ENHANCE_CLASS);
     }
 }

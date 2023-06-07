@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.hbase;
 
 import java.lang.reflect.Field;
 import java.util.Properties;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.ClusterConnection;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -29,7 +30,15 @@ public class HTable100Interceptor extends HTableInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
-        Configuration configuration = ((ClusterConnection) allArguments[1]).getConfiguration();
+        Configuration configuration;
+        if (allArguments[1] instanceof ClusterConnection) {
+            configuration = ((ClusterConnection) allArguments[1]).getConfiguration();
+        } else if (allArguments[0] instanceof Configuration) {
+            configuration = (Configuration) allArguments[0];
+        } else {
+            return;
+        }
+
         Field field = configuration.getClass().getDeclaredField("overlay");
         field.setAccessible(true);
         Properties properties = (Properties) field.get(configuration);

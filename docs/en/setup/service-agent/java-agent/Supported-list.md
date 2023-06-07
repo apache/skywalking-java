@@ -14,7 +14,7 @@ metrics based on the tracing data.
   * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x
   * [Resin](https://www.caucho.com/resin-4.0/) 3 (Optional¹)
   * [Resin](https://www.caucho.com/resin-4.0/) 4 (Optional¹)
-  * [Jetty Server](http://www.eclipse.org/jetty/) 9
+  * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional¹)
   * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.0.27.Final
   * [RESTEasy](https://resteasy.github.io/)  3.1.0.Final -> 4.7.6.Final
@@ -31,7 +31,7 @@ metrics based on the tracing data.
   * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 4.x
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 6.x (Optional²)
-  * [Jetty Client](http://www.eclipse.org/jetty/) 9
+  * [Jetty Client](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
   * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
   * JRE HttpURLConnection (Optional²)

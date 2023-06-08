@@ -14,7 +14,7 @@ metrics based on the tracing data.
   * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x
   * [Resin](https://www.caucho.com/resin-4.0/) 3 (Optional¹)
   * [Resin](https://www.caucho.com/resin-4.0/) 4 (Optional¹)
-  * [Jetty Server](http://www.eclipse.org/jetty/) 9
+  * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional¹)
   * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.0.27.Final
   * [RESTEasy](https://resteasy.github.io/)  3.1.0.Final -> 4.7.6.Final
@@ -31,7 +31,7 @@ metrics based on the tracing data.
   * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 4.x
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 6.x (Optional²)
-  * [Jetty Client](http://www.eclipse.org/jetty/) 9
+  * [Jetty Client](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
   * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
   * JRE HttpURLConnection (Optional²)
@@ -69,7 +69,7 @@ metrics based on the tracing data.
   * [Apache CXF](https://github.com/apache/cxf) 3.x
   * [JSONRPC4J](https://github.com/briandilley/jsonrpc4j) 1.2.0 -> 1.6
 * MQ
-  * [RocketMQ](https://github.com/apache/rocketmq) 4.x
+  * [RocketMQ](https://github.com/apache/rocketmq) 3.x-> 5.x
   * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 3.2.3
   * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 2.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4

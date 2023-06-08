@@ -83,6 +83,7 @@
 - resteasy-server-4.x
 - rocketMQ-3.x
 - rocketMQ-4.x
+- rocketMQ-5.x
 - sentinel-1.x
 - servicecomb-2.x
 - sharding-sphere-3.x
@@ -163,3 +164,5 @@
 - jersey-3.x
 - grizzly-2.3.x-4.x
 - grizzly-2.3.x-4.x-threadpool
+- jetty-server-11.x
+- jetty-client-11.x

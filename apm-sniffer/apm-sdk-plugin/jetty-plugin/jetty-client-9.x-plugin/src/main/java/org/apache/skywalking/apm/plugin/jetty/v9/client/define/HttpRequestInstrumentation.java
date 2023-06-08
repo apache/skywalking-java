@@ -20,11 +20,15 @@ package org.apache.skywalking.apm.plugin.jetty.v9.client.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+
+import java.util.Collections;
+import java.util.List;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
@@ -77,5 +81,13 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
     @Override
     protected String[] witnessClasses() {
         return new String[] {"org.eclipse.jetty.client.AbstractHttpClientTransport"};
+    }
+
+    @Override
+    protected List<WitnessMethod> witnessMethods() {
+        return Collections.singletonList(new WitnessMethod(
+                "org.eclipse.jetty.http.HttpFields",
+                named("getQuality")
+        ));
     }
 }

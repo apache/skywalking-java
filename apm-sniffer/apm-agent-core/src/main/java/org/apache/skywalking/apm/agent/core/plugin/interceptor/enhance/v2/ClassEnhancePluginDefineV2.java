@@ -66,7 +66,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
         if (staticMethodsInterceptV2Points == null || staticMethodsInterceptV2Points.length == 0) {
             return newClassBuilder;
         }
-        DelegateNamingResolver delegateNamingResolver = DelegateNamingResolver.get(typeDescription.getTypeName());
+        DelegateNamingResolver delegateNamingResolver = DelegateNamingResolver.get(typeDescription.getTypeName(), this.hashCode());
 
         for (StaticMethodsInterceptV2Point staticMethodsInterceptV2Point : staticMethodsInterceptV2Points) {
             String interceptor = staticMethodsInterceptV2Point.getMethodsInterceptorV2();
@@ -75,31 +75,32 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                     "no StaticMethodsAroundInterceptorV2 define to enhance class " + enhanceOriginClassName);
             }
 
+            ElementMatcher.Junction<MethodDescription> junction = isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher());
             if (staticMethodsInterceptV2Point.isOverrideArgs()) {
                 if (isBootstrapInstrumentation()) {
                     newClassBuilder = newClassBuilder.method(
-                        isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
+                                    junction)
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                 .withBinders(Morph.Binder.install(OverrideCallable.class))
                                                                                 .to(BootstrapInstrumentBoost.forInternalDelegateClass(interceptor)));
                 } else {
                     newClassBuilder = newClassBuilder.method(
-                        isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
+                                    junction)
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                 .withBinders(Morph.Binder.install(OverrideCallable.class))
-                                                                                .to(new StaticMethodsInterV2WithOverrideArgs(interceptor), delegateNamingResolver.next()));
+                                                                                .to(new StaticMethodsInterV2WithOverrideArgs(interceptor), delegateNamingResolver.resolve(junction)));
                 }
             } else {
                 if (isBootstrapInstrumentation()) {
                     newClassBuilder = newClassBuilder.method(
-                        isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
+                                    junction)
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                 .to(BootstrapInstrumentBoost.forInternalDelegateClass(interceptor)));
                 } else {
                     newClassBuilder = newClassBuilder.method(
-                        isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
+                                    junction)
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
-                                                                                .to(new StaticMethodsInterV2(interceptor), delegateNamingResolver.next()));
+                                                                                .to(new StaticMethodsInterV2(interceptor), delegateNamingResolver.resolve(junction)));
                 }
             }
 
@@ -115,7 +116,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
         ConstructorInterceptPoint[] constructorInterceptPoints = getConstructorsInterceptPoints();
         InstanceMethodsInterceptV2Point[] instanceMethodsInterceptV2Points = getInstanceMethodsInterceptV2Points();
         String enhanceOriginClassName = typeDescription.getTypeName();
-        DelegateNamingResolver delegateNamingResolver = DelegateNamingResolver.get(typeDescription.getTypeName());
+        DelegateNamingResolver fieldNamingResolver = DelegateNamingResolver.get(typeDescription.getTypeName(), this.hashCode());
 
         boolean existedConstructorInterceptPoint = false;
         if (constructorInterceptPoints != null && constructorInterceptPoints.length > 0) {
@@ -142,17 +143,18 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
 
         if (existedConstructorInterceptPoint) {
             for (ConstructorInterceptPoint constructorInterceptPoint : constructorInterceptPoints) {
+                ElementMatcher<MethodDescription> matcher = constructorInterceptPoint.getConstructorMatcher();
                 if (isBootstrapInstrumentation()) {
-                    newClassBuilder = newClassBuilder.constructor(constructorInterceptPoint.getConstructorMatcher())
+                    newClassBuilder = newClassBuilder.constructor(matcher)
                                                      .intercept(SuperMethodCall.INSTANCE.andThen(MethodDelegation.withDefaultConfiguration()
                                                                                                                  .to(BootstrapInstrumentBoost
                                                                                                                          .forInternalDelegateClass(constructorInterceptPoint
                                                                                                                                                        .getConstructorInterceptor()))));
                 } else {
-                    newClassBuilder = newClassBuilder.constructor(constructorInterceptPoint.getConstructorMatcher())
+                    newClassBuilder = newClassBuilder.constructor(matcher)
                                                      .intercept(SuperMethodCall.INSTANCE.andThen(MethodDelegation.withDefaultConfiguration()
                                                                                                                  .to(new ConstructorInter(constructorInterceptPoint
-                                                                                                                                              .getConstructorInterceptor(), classLoader), delegateNamingResolver.next())));
+                                                                                                                                              .getConstructorInterceptor(), classLoader), fieldNamingResolver.resolve(matcher))));
                 }
             }
         }
@@ -179,7 +181,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                         newClassBuilder = newClassBuilder.method(junction)
                                                          .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                     .withBinders(Morph.Binder.install(OverrideCallable.class))
-                                                                                    .to(new InstMethodsInterV2WithOverrideArgs(interceptor, classLoader), delegateNamingResolver.next()));
+                                                                                    .to(new InstMethodsInterV2WithOverrideArgs(interceptor, classLoader), fieldNamingResolver.resolve(junction)));
                     }
                 } else {
                     if (isBootstrapInstrumentation()) {
@@ -189,7 +191,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                     } else {
                         newClassBuilder = newClassBuilder.method(junction)
                                                          .intercept(MethodDelegation.withDefaultConfiguration()
-                                                                                    .to(new InstMethodsInterV2(interceptor, classLoader), delegateNamingResolver.next()));
+                                                                                    .to(new InstMethodsInterV2(interceptor, classLoader), fieldNamingResolver.resolve(junction)));
                     }
                 }
             }

@@ -38,9 +38,16 @@ public class SWClassFileLocator implements ClassFileLocator {
     private final ForInstrumentation.ClassLoadingDelegate classLoadingDelegate;
     private Instrumentation instrumentation;
     private ClassLoader classLoader;
-    private String typeNameTrait = "auxiliary$";
+    private String[] typeNameTraits = {"auxiliary$", "ByteBuddy$", "$SW"};
     private BlockingQueue<ResolutionFutureTask> queue = new LinkedBlockingDeque<>();
     private Thread thread;
+    private int timeoutSeconds = 2;
+    private volatile boolean closed;
+
+    public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader, String[] typeNameTraits) {
+        this(instrumentation, classLoader);
+        this.typeNameTraits = typeNameTraits;
+    }
 
     public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader) {
         this.instrumentation = instrumentation;
@@ -49,18 +56,22 @@ public class SWClassFileLocator implements ClassFileLocator {
 
         // Use thread instead of ExecutorService here, avoiding conflicts with apm-jdk-threadpool-plugin
         thread = new Thread(() -> {
-            try {
-                while (!Thread.interrupted()) {
+            while (!closed) {
+                try {
                     ResolutionFutureTask task = queue.poll(5, TimeUnit.SECONDS);
                     if (task != null) {
-                        Resolution resolution = getResolution(task.getClassName());
-                        task.getFuture().complete(resolution);
+                        try {
+                            Resolution resolution = getResolution(task.getClassName());
+                            task.getFuture().complete(resolution);
+                        } catch (Throwable e) {
+                            task.getFuture().completeExceptionally(e);
+                        }
                     }
+                } catch (InterruptedException e) {
+                    // ignore interrupted error
+                } catch (Throwable e) {
+                    LOGGER.error(e, "Resolve bytecode of class failure");
                 }
-            } catch (InterruptedException e) {
-                // ignore interrupted error
-            } catch (Exception e) {
-                LOGGER.error(e, "Resolve bytecode of class failed");
             }
         }, "SWClassFileLocator");
         thread.setDaemon(true);
@@ -69,28 +80,42 @@ public class SWClassFileLocator implements ClassFileLocator {
 
     @Override
     public Resolution locate(String name) throws IOException {
-        if (!name.contains(typeNameTrait)) {
+        if (!match(name)) {
             return new Resolution.Illegal(name);
+        }
+        if (closed) {
+            throw new IOException("resolve class failure: closed");
         }
         // get class binary representation in a clean thread, avoiding nest calling transformer!
         ResolutionFutureTask futureTask = new ResolutionFutureTask(name);
         queue.offer(futureTask);
         try {
-            return futureTask.getFuture().get(2, TimeUnit.SECONDS);
+            return futureTask.getFuture().get(timeoutSeconds, TimeUnit.SECONDS);
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException("resolve class failure: " + name, e);
         }
     }
 
-    private Resolution getResolution(String name) {
-        ExtractionClassFileTransformer classFileTransformer = new ExtractionClassFileTransformer(classLoader, name);
+    private boolean match(String name) {
+        boolean matched = false;
+        for (String typeNameTrait : typeNameTraits) {
+            if (name.contains(typeNameTrait)) {
+                matched = true;
+                break;
+            }
+        }
+        return matched;
+    }
+
+    private Resolution getResolution(String name) throws Exception {
+        ExtractionClassFileTransformer classFileTransformer = new ExtractionClassFileTransformer(name);
         try {
             instrumentation.addTransformer(classFileTransformer, true);
-            try {
-                instrumentation.retransformClasses(new Class[]{locateClass(name)});
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            Class aClass = locateClass(name);
+            if (aClass == null) {
+                return new Resolution.Illegal(name);
             }
+            instrumentation.retransformClasses(new Class[]{aClass});
         } finally {
             instrumentation.removeTransformer(classFileTransformer);
         }
@@ -120,8 +145,17 @@ public class SWClassFileLocator implements ClassFileLocator {
 
     @Override
     public void close() throws IOException {
+        closed = true;
         queue.clear();
         thread.interrupt();
+    }
+
+    public int getTimeoutSeconds() {
+        return timeoutSeconds;
+    }
+
+    public void setTimeoutSeconds(int timeoutSeconds) {
+        this.timeoutSeconds = timeoutSeconds;
     }
 
     private class ResolutionFutureTask {

@@ -53,7 +53,6 @@ import org.apache.skywalking.apm.agent.core.plugin.PluginBootstrap;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
 import org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapInstrumentBoost;
-import org.apache.skywalking.apm.agent.core.plugin.bytebuddy.CacheableTransformerDecorator;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter;
 
@@ -99,6 +98,7 @@ public class SkyWalkingAgent {
             return;
         }
 
+        LOGGER.info("Skywalking agent begin to install transformer ...");
         // Generate random name trait
         String nameTrait = generateNameTrait();
         DelegateNamingResolver.setNameTrait(nameTrait);
@@ -127,15 +127,6 @@ public class SkyWalkingAgent {
         } catch (Exception e) {
             LOGGER.error(e, "SkyWalking agent open read edge in JDK 9+ failure. Shutting down.");
             return;
-        }
-
-        if (Config.Agent.IS_CACHE_ENHANCED_CLASS) {
-            try {
-                agentBuilder = agentBuilder.with(new CacheableTransformerDecorator(Config.Agent.CLASS_CACHE_MODE));
-                LOGGER.info("SkyWalking agent class cache [{}] activated.", Config.Agent.CLASS_CACHE_MODE);
-            } catch (Exception e) {
-                LOGGER.error(e, "SkyWalking agent can't active class cache.");
-            }
         }
 
         agentBuilder.type(pluginFinder.buildMatch())
@@ -196,7 +187,6 @@ public class SkyWalkingAgent {
                                                 final JavaModule javaModule,
                                                 final ProtectionDomain protectionDomain) {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
-            DelegateNamingResolver.reset(typeDescription.getTypeName());
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
                 DynamicType.Builder<?> newBuilder = builder.visit(new SWAsmVisitorWrapper());

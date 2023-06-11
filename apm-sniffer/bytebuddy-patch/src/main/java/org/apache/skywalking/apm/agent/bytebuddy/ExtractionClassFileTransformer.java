@@ -21,8 +21,6 @@ package org.apache.skywalking.apm.agent.bytebuddy;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
 
-import static net.bytebuddy.matcher.ElementMatchers.isChildOf;
-
 public class ExtractionClassFileTransformer implements ClassFileTransformer {
 
     /**
@@ -30,10 +28,10 @@ public class ExtractionClassFileTransformer implements ClassFileTransformer {
      */
     private static final byte[] DO_NOT_TRANSFORM = null;
 
-    /**
-     * The class loader that is expected to have loaded the looked-up a class.
-     */
-    private final ClassLoader classLoader;
+//    /**
+//     * The class loader that is expected to have loaded the looked-up a class.
+//     */
+//    private final ClassLoader classLoader;
 
     /**
      * The name of the type to look up.
@@ -48,11 +46,9 @@ public class ExtractionClassFileTransformer implements ClassFileTransformer {
     /**
      * Creates a class file transformer for the purpose of extraction.
      *
-     * @param classLoader The class loader that is expected to have loaded the looked-up a class.
-     * @param typeName    The name of the type to look up.
+     * @param typeName The name of the type to look up.
      */
-    public ExtractionClassFileTransformer(ClassLoader classLoader, String typeName) {
-        this.classLoader = classLoader;
+    public ExtractionClassFileTransformer(String typeName) {
         this.typeName = typeName;
     }
 
@@ -62,7 +58,7 @@ public class ExtractionClassFileTransformer implements ClassFileTransformer {
                             Class<?> redefinedType,
                             ProtectionDomain protectionDomain,
                             byte[] binaryRepresentation) {
-        if (internalName != null && isChildOf(this.classLoader).matches(classLoader) && typeName.equals(internalName.replace('/', '.'))) {
+        if (internalName != null && typeName.equals(internalName.replace('/', '.'))) {
             this.binaryRepresentation = binaryRepresentation.clone();
         }
         return DO_NOT_TRANSFORM;

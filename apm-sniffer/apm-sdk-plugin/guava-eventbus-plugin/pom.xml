@@ -27,7 +27,7 @@
     <artifactId>apm-guava-eventbus-plugin</artifactId>
 
     <properties>
-        <guava.version>31.0.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
     </properties>
 
     <dependencies>

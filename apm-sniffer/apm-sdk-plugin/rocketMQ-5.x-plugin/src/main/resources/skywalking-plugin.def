@@ -14,13 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# lists your version here (Contains only the last version number of each minor version.)
-
-5.1.0
-4.9.4
-4.8.0
-4.7.1
-4.6.0
-4.5.2
-4.4.0
-4.3.1
+rocketMQ-5.x=org.apache.skywalking.apm.plugin.rocketMQ.v5.define.ConsumeMessageConcurrentlyInstrumentation
+rocketMQ-5.x=org.apache.skywalking.apm.plugin.rocketMQ.v5.define.ConsumeMessageOrderlyInstrumentation
+rocketMQ-5.x=org.apache.skywalking.apm.plugin.rocketMQ.v5.define.MQClientAPIImplInstrumentation
+rocketMQ-5.x=org.apache.skywalking.apm.plugin.rocketMQ.v5.define.SendCallbackInstrumentation
+rocketMQ-5.x=org.apache.skywalking.apm.plugin.rocketMQ.v5.define.DefaultMQPushConsumerInstrumentation

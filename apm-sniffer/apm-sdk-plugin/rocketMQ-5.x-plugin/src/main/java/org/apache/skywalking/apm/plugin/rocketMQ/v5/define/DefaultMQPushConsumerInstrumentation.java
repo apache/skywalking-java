@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.rocketMQ.v4.define;
+package org.apache.skywalking.apm.plugin.rocketMQ.v5.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -31,7 +31,7 @@ public class DefaultMQPushConsumerInstrumentation extends AbstractRocketMQInstru
 
     private static final String ENHANCE_CLASS = "org.apache.rocketmq.client.consumer.DefaultMQPushConsumer";
     private static final String REGISTER_MESSAGE_LISTENER_METHOD_NAME = "registerMessageListener";
-    public static final String REGISTER_MESSAGE_LISTENER_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.rocketMQ.v4.RegisterMessageListenerInterceptor";
+    public static final String REGISTER_MESSAGE_LISTENER_INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.rocketMQ.v5.RegisterMessageListenerInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {

@@ -63,31 +63,43 @@ public class FileWriter implements IWriter {
     private FileWriter() {
         logBuffer = new ArrayBlockingQueue(1024);
         final ArrayList<String> outputLogs = new ArrayList<String>(200);
-        Executors.newSingleThreadScheduledExecutor(new DefaultNamedThreadFactory("LogFileWriter"))
-                 .scheduleAtFixedRate(new RunnableWithExceptionProtection(new Runnable() {
-                     @Override
-                     public void run() {
-                         try {
-                             logBuffer.drainTo(outputLogs);
-                             for (String log : outputLogs) {
-                                 writeToFile(log + Constants.LINE_SEPARATOR);
-                             }
-                             try {
-                                 if (fileOutputStream != null) {
-                                     fileOutputStream.flush();
-                                 }
-                             } catch (IOException e) {
-                                 e.printStackTrace();
-                             }
-                         } finally {
-                             outputLogs.clear();
-                         }
-                     }
-                 }, new RunnableWithExceptionProtection.CallbackWhenException() {
-                     @Override
-                     public void handle(Throwable t) {
-                     }
-                 }), 0, 1, TimeUnit.SECONDS);
+        Thread logFlusherThread = new Thread(new RunnableWithExceptionProtection(new Runnable() {
+
+            @Override
+            public void run() {
+                while (true) {
+                    // flush log to file
+                    try {
+                        logBuffer.drainTo(outputLogs);
+                        for (String log : outputLogs) {
+                            writeToFile(log + Constants.LINE_SEPARATOR);
+                        }
+                        try {
+                            if (fileOutputStream != null) {
+                                fileOutputStream.flush();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } finally {
+                        outputLogs.clear();
+                    }
+
+                    // flush log once per second
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                    }
+                }
+
+            }
+        }, new RunnableWithExceptionProtection.CallbackWhenException() {
+            @Override
+            public void handle(Throwable t) {
+            }
+        }), "SkywalkingAgent-LogFileWriter");
+        logFlusherThread.setDaemon(true);
+        logFlusherThread.start();
     }
 
     /**

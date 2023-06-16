@@ -9,6 +9,7 @@ Release Notes.
 * Support Jetty 11.x plugin
 * Fix the scenario of using the HBase plugin with spring-data-hadoop.
 * Add RocketMQ 5.x plugin
+* Fix the issue of apm-jdk-threadpool-plugin does not work in certain scenarios.
 
 #### Documentation
 

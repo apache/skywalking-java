@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -28,8 +29,8 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
 import org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.define.EnhanceCacheObject;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -38,13 +39,14 @@ import reactor.ipc.netty.http.client.HttpClientResponse;
 
 import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine.SPRING_CLOUD_GATEWAY;
 
-public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterceptor {
+public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterceptorV2 {
+
     @Override
     public void beforeMethod(final EnhancedInstance objInst,
                              final Method method,
                              final Object[] allArguments,
                              final Class<?>[] argumentsTypes,
-                             final MethodInterceptResult result) throws Throwable {
+                             final MethodInvocationContext context) throws Throwable {
         
         /*
           In this plug-in, the HttpClientFinalizerSendInterceptor depends on the NettyRoutingFilterInterceptor
@@ -54,13 +56,13 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
         if (!ContextManager.isActive()) {
             return;
         }
-        
+
         AbstractSpan span = ContextManager.activeSpan();
 
         URL url = new URL((String) allArguments[1]);
         ContextCarrier contextCarrier = new ContextCarrier();
         AbstractSpan abstractSpan = ContextManager.createExitSpan(
-            "SpringCloudGateway/sendRequest", contextCarrier, getPeer(url));
+                "SpringCloudGateway/sendRequest", contextCarrier, getPeer(url));
         abstractSpan.prepareForAsync();
         Tags.URL.set(abstractSpan, String.valueOf(allArguments[1]));
         abstractSpan.setLayer(SpanLayer.HTTP);
@@ -80,7 +82,7 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
             }
         };
 
-        objInst.setSkyWalkingDynamicField(new EnhanceCacheObject(span, abstractSpan));
+        context.setContext(new EnhanceCacheObject(span, abstractSpan));
     }
 
     @Override
@@ -88,28 +90,45 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
                               final Method method,
                               final Object[] allArguments,
                               final Class<?>[] argumentsTypes,
-                              final Object ret) {
-        EnhanceCacheObject enhanceCacheObject = (EnhanceCacheObject) objInst.getSkyWalkingDynamicField();
+                              final Object ret,
+                              MethodInvocationContext context) {
+        EnhanceCacheObject enhanceCacheObject = (EnhanceCacheObject) context.getContext();
         Mono<HttpClientResponse> responseMono = (Mono<HttpClientResponse>) ret;
         return responseMono.doAfterSuccessOrError(new BiConsumer<HttpClientResponse, Throwable>() {
             @Override
             public void accept(final HttpClientResponse httpClientResponse, final Throwable throwable) {
-
-                AbstractSpan abstractSpan = enhanceCacheObject.getSendSpan();
-                if (abstractSpan != null) {
-                    if (throwable != null) {
-                        abstractSpan.log(throwable);
-                    } else if (httpClientResponse.status().code() > 400) {
-                        abstractSpan.errorOccurred();
-                    }
-                    Tags.HTTP_RESPONSE_STATUS_CODE.set(abstractSpan, httpClientResponse.status().code());
-                    abstractSpan.asyncFinish();
-                }
-
-                objInst.setSkyWalkingDynamicField(null);
-                enhanceCacheObject.getFilterSpan().asyncFinish();
+                doAfterSuccessOrError(httpClientResponse, throwable, enhanceCacheObject);
             }
         });
+    }
+
+    void doAfterSuccessOrError(HttpClientResponse httpClientResponse, Throwable throwable, EnhanceCacheObject enhanceCacheObject) {
+        try {
+            //When executing the beforeMethod method, if the ContextManager is inactive, the enhanceCacheObject will be null.
+            if (enhanceCacheObject == null) {
+                return;
+            }
+
+            //The doAfterSuccessOrError method may be executed multiple times.
+            if (enhanceCacheObject.isSpanFinish()) {
+                return;
+            }
+
+            AbstractSpan abstractSpan = enhanceCacheObject.getSendSpan();
+            if (throwable != null) {
+                abstractSpan.log(throwable);
+            } else if (httpClientResponse.status().code() > 400) {
+                abstractSpan.errorOccurred();
+            }
+            Tags.HTTP_RESPONSE_STATUS_CODE.set(abstractSpan, httpClientResponse.status().code());
+
+            abstractSpan.asyncFinish();
+            enhanceCacheObject.getFilterSpan().asyncFinish();
+
+            enhanceCacheObject.setSpanFinish(true);
+        } catch (Throwable e) {
+            //Catch unknown exceptions to avoid interrupting business processes.
+        }
     }
 
     private String getPeer(URL url) {
@@ -121,7 +140,8 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
                                       final Method method,
                                       final Object[] allArguments,
                                       final Class<?>[] argumentsTypes,
-                                      final Throwable t) {
+                                      final Throwable t,
+                                      MethodInvocationContext context) {
 
     }
 }

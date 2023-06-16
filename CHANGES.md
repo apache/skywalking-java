@@ -10,6 +10,7 @@ Release Notes.
 * Fix the scenario of using the HBase plugin with spring-data-hadoop.
 * Add RocketMQ 5.x plugin
 * Fix the issue of apm-jdk-threadpool-plugin does not work in certain scenarios.
+* Fix the thread safety bug of finishing operation for the span named "SpringCloudGateway/sendRequest"
 
 #### Documentation
 

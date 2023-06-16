@@ -28,8 +28,6 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -42,8 +40,6 @@ import reactor.ipc.netty.http.client.HttpClientResponse;
 import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine.SPRING_CLOUD_GATEWAY;
 
 public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterceptor {
-
-    private static final ILog LOGGER = LogManager.getLogger(HttpClientRequestInterceptor.class);
 
     private static final ThreadLocal<EnhanceCacheObject> ENHANCE_CONTEXT = new ThreadLocal();
 
@@ -134,7 +130,6 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
             enhanceCacheObject.setSpanFinish(true);
         } catch (Throwable e) {
             //Catch unknown exceptions to avoid interrupting business processes.
-            LOGGER.error("Failed to finish the Span of reactor.ipc.netty.http.client.HttpClient.", e);
         }
     }
 

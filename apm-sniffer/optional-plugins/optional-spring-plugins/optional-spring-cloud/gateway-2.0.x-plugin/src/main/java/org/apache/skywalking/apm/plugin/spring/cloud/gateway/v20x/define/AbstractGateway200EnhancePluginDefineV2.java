@@ -17,31 +17,14 @@
 
 package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.define;
 
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassInstanceMethodsEnhancePluginDefineV2;
 
-public class EnhanceCacheObject {
-    private final AbstractSpan filterSpan;
-    private final AbstractSpan sendSpan;
-    private volatile boolean spanFinish = false;
+public abstract class AbstractGateway200EnhancePluginDefineV2 extends ClassInstanceMethodsEnhancePluginDefineV2 {
 
-    public EnhanceCacheObject(final AbstractSpan filterSpan, final AbstractSpan sendSpan) {
-        this.filterSpan = filterSpan;
-        this.sendSpan = sendSpan;
-    }
-
-    public AbstractSpan getFilterSpan() {
-        return filterSpan;
-    }
-
-    public AbstractSpan getSendSpan() {
-        return sendSpan;
-    }
-
-    public boolean isSpanFinish() {
-        return spanFinish;
-    }
-
-    public void setSpanFinish(boolean spanFinish) {
-        this.spanFinish = spanFinish;
+    @Override
+    protected String[] witnessClasses() {
+        return new String[] {
+            "org.springframework.cloud.gateway.config.GatewayAutoConfiguration$1"
+        };
     }
 }

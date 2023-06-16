@@ -29,8 +29,8 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
 import org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.define.EnhanceCacheObject;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -39,16 +39,14 @@ import reactor.ipc.netty.http.client.HttpClientResponse;
 
 import static org.apache.skywalking.apm.network.trace.component.ComponentsDefine.SPRING_CLOUD_GATEWAY;
 
-public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterceptor {
-
-    private static final ThreadLocal<EnhanceCacheObject> ENHANCE_CONTEXT = new ThreadLocal();
+public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterceptorV2 {
 
     @Override
     public void beforeMethod(final EnhancedInstance objInst,
                              final Method method,
                              final Object[] allArguments,
                              final Class<?>[] argumentsTypes,
-                             final MethodInterceptResult result) throws Throwable {
+                             final MethodInvocationContext context) throws Throwable {
         
         /*
           In this plug-in, the HttpClientFinalizerSendInterceptor depends on the NettyRoutingFilterInterceptor
@@ -84,7 +82,7 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
             }
         };
 
-        ENHANCE_CONTEXT.set(new EnhanceCacheObject(span, abstractSpan));
+        context.setContext(new EnhanceCacheObject(span, abstractSpan));
     }
 
     @Override
@@ -92,9 +90,9 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
                               final Method method,
                               final Object[] allArguments,
                               final Class<?>[] argumentsTypes,
-                              final Object ret) {
-        EnhanceCacheObject enhanceCacheObject = ENHANCE_CONTEXT.get();
-        ENHANCE_CONTEXT.remove();
+                              final Object ret,
+                              MethodInvocationContext context) {
+        EnhanceCacheObject enhanceCacheObject = (EnhanceCacheObject) context.getContext();
         Mono<HttpClientResponse> responseMono = (Mono<HttpClientResponse>) ret;
         return responseMono.doAfterSuccessOrError(new BiConsumer<HttpClientResponse, Throwable>() {
             @Override
@@ -142,7 +140,8 @@ public class HttpClientRequestInterceptor implements InstanceMethodsAroundInterc
                                       final Method method,
                                       final Object[] allArguments,
                                       final Class<?>[] argumentsTypes,
-                                      final Throwable t) {
+                                      final Throwable t,
+                                      MethodInvocationContext context) {
 
     }
 }

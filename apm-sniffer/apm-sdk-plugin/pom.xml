@@ -132,6 +132,7 @@
         <module>grizzly-2.3.x-4.x-plugin</module>
         <module>grizzly-2.3.x-4.x-work-threadpool-plugin</module>
         <module>rocketMQ-5.x-plugin</module>
+        <module>websphere-liberty-23.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -54,6 +54,7 @@ public class EventBusDispatchInterceptorTest {
         originalEventObj = new Object();
 
         mockedContextManager = Mockito.mockStatic(ContextManager.class);
+        mockedContextManager.when(ContextManager::isActive).thenReturn(true);
         mockedContextManager.when(ContextManager::capture).thenReturn(contextSnapshot);
     }
 

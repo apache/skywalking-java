@@ -15,7 +15,5 @@
 # limitations under the License.
 
 websphere-liberty-23.x=org.apache.skywalking.apm.plugin.websphereliberty.v23.define.AsyncContextInstrumentation
-websphere-liberty-23.x=org.apache.skywalking.apm.plugin.websphereliberty.v23.define.CompleteRunnableInstrumentation
-websphere-liberty-23.x=org.apache.skywalking.apm.plugin.websphereliberty.v23.define.DispatchRunnableInstrumentation
 websphere-liberty-23.x=org.apache.skywalking.apm.plugin.websphereliberty.v23.define.JavaxFilterManagerInstrumentation
 websphere-liberty-23.x=org.apache.skywalking.apm.plugin.websphereliberty.v23.define.JakartaFilterManagerInstrumentation

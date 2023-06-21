@@ -16,16 +16,13 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.websphereliberty.v23;
+package org.apache.skywalking.apm.plugin.webspheresource.com.ibm.ws.webcontainer.async;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.plugin.websphereliberty.v23.async.AsyncType;
-
-public class DispatchRunnableInterceptor implements InstanceConstructorInterceptor {
+/**
+ * fake class for compile, will be removed from final package jar
+ */
+public class DispatchRunnable implements Runnable {
     @Override
-    public void onConstruct(final EnhancedInstance objInst, final Object[] allArguments) throws Throwable {
-        // add special flag for AsyncContext to distinguish
-        objInst.setSkyWalkingDynamicField(AsyncType.DISPATCH);
+    public void run() {
     }
 }

@@ -19,6 +19,8 @@
 package org.apache.skywalking.apm.plugin.websphereliberty.v23.async;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.plugin.webspheresource.com.ibm.ws.webcontainer.async.CompleteRunnable;
+import org.apache.skywalking.apm.plugin.webspheresource.com.ibm.ws.webcontainer.async.DispatchRunnable;
 
 public enum AsyncType {
     START {
@@ -44,5 +46,15 @@ public enum AsyncType {
         }
     };
 
-    public abstract RunnableWrapper wrapper(Runnable runnable);
+    protected abstract RunnableWrapper wrapper(Runnable runnable);
+
+    public static RunnableWrapper doWrap(Runnable runnable) {
+        if (runnable instanceof CompleteRunnable) {
+            return COMPLETE.wrapper(runnable);
+        } else if (runnable instanceof DispatchRunnable) {
+            return DISPATCH.wrapper(runnable);
+        } else {
+            return START.wrapper(runnable);
+        }
+    }
 }

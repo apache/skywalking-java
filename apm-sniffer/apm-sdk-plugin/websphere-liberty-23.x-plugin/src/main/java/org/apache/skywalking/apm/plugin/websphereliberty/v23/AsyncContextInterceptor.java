@@ -37,7 +37,7 @@ public class AsyncContextInterceptor implements InstanceMethodsAroundInterceptor
             return;
         }
 
-        allArguments[0] = getRunnableWrapper(runnable);
+        allArguments[0] = AsyncType.doWrap(runnable);
     }
 
     @Override
@@ -50,16 +50,5 @@ public class AsyncContextInterceptor implements InstanceMethodsAroundInterceptor
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
-    }
-
-    private RunnableWrapper getRunnableWrapper(Runnable runnable) {
-        AsyncType asyncType;
-        if (!(runnable instanceof EnhancedInstance)) {
-            asyncType = AsyncType.START;
-        } else {
-            Object dynamicField = ((EnhancedInstance) runnable).getSkyWalkingDynamicField();
-            asyncType = (AsyncType) dynamicField;
-        }
-        return asyncType.wrapper(runnable);
     }
 }

@@ -34,7 +34,7 @@ public class EventBusDispatchInterceptor implements InstanceMethodsAroundInterce
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
         final Object event = allArguments[0];
-        if (event != null) {
+        if (event != null && ContextManager.isActive()) {
             allArguments[0] = EventWrapper.wrapEvent(event, ContextManager.capture());
         }
     }

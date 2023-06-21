@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
   - serviceName: guava-eventbus-scenario
-    segmentSize: ge 2
+    segmentSize: ge 3
     segments:
       - segmentId: not null
         spans:
@@ -66,4 +66,18 @@ segmentItems:
                   refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null,
                   parentServiceInstance: not null, parentService: guava-eventbus-scenario,
                   traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: Guava/EventBus/org.apache.skywalking.apm.testcase.guava.eventbus.service.SubscriberService/consumer
+            operationId: 0
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Unknown
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 123
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
 meterItems: []

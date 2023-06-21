@@ -37,9 +37,7 @@ public class AsyncContextInterceptor implements InstanceMethodsAroundInterceptor
             return;
         }
 
-        if (ContextManager.isActive()) {
-            allArguments[0] = getRunnableWrapper(runnable);
-        }
+        allArguments[0] = getRunnableWrapper(runnable);
     }
 
     @Override
@@ -51,9 +49,7 @@ public class AsyncContextInterceptor implements InstanceMethodsAroundInterceptor
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        if (ContextManager.isActive()) {
-            ContextManager.activeSpan().log(t);
-        }
+        ContextManager.activeSpan().log(t);
     }
 
     private RunnableWrapper getRunnableWrapper(Runnable runnable) {

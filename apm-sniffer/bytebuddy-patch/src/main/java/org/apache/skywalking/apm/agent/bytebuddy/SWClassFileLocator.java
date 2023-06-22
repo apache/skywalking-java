@@ -38,7 +38,7 @@ public class SWClassFileLocator implements ClassFileLocator {
     private final ForInstrumentation.ClassLoadingDelegate classLoadingDelegate;
     private Instrumentation instrumentation;
     private ClassLoader classLoader;
-    private String[] typeNameTraits = {"auxiliary$", "ByteBuddy$", "$SW"};
+    private String[] typeNameTraits = {"auxiliary$", "ByteBuddy$", "$sw"};
     private BlockingQueue<ResolutionFutureTask> queue = new LinkedBlockingDeque<>();
     private Thread thread;
     private int timeoutSeconds = 2;

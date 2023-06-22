@@ -43,10 +43,10 @@ public class SWAuxiliaryTypeNamingStrategy implements AuxiliaryType.NamingStrate
 
     @Override
     public String name(TypeDescription instrumentedType, AuxiliaryType auxiliaryType) {
-        String description = findDescription(auxiliaryType);
-        if (description != null) {
-            return instrumentedType.getName() + "$" + suffix + "$" + RandomString.hashOf(description.hashCode());
-        }
+//        String description = findDescription(auxiliaryType);
+//        if (description != null) {
+//            return instrumentedType.getName() + "$" + suffix + "$" + RandomString.hashOf(description.hashCode());
+//        }
         return instrumentedType.getName() + "$" + suffix + "$" + RandomString.hashOf(auxiliaryType.hashCode());
     }
 

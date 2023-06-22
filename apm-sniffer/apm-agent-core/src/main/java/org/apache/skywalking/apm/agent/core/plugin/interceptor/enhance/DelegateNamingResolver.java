@@ -18,9 +18,8 @@
 
 package org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance;
 
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.utility.RandomString;
+import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
 
 import java.util.Objects;
 
@@ -44,13 +43,13 @@ public class DelegateNamingResolver {
         this.fieldNamePrefix = NAME_TRAIT + "_" + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(identifier) + "$";
     }
 
-    public String resolve(ElementMatcher<MethodDescription> matcher) {
-        Objects.requireNonNull(matcher, "matcher cannot be null");
-        return fieldNamePrefix + RandomString.hashOf(matcher.toString().hashCode());
+    public String resolve(Object interceptPoint) {
+        Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.hashCode());
     }
 
-    public static DelegateNamingResolver get(String className, int identifier) {
-        return new DelegateNamingResolver(className, identifier);
+    public static DelegateNamingResolver get(String className, AbstractClassEnhancePluginDefine pluginDefine) {
+        return new DelegateNamingResolver(className, pluginDefine.hashCode());
     }
 
 }

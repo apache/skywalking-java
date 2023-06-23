@@ -30,7 +30,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Resolve auxiliary type of first agent in the second agent
+ * Resolve auxiliary type
  */
 public class SWClassFileLocator implements ClassFileLocator {
     private static ILog LOGGER = LogManager.getLogger(SWClassFileLocator.class);
@@ -38,7 +38,7 @@ public class SWClassFileLocator implements ClassFileLocator {
     private final ForInstrumentation.ClassLoadingDelegate classLoadingDelegate;
     private Instrumentation instrumentation;
     private ClassLoader classLoader;
-    private String[] typeNameTraits = {"auxiliary$", "ByteBuddy$", "$sw"};
+    private String[] typeNameTraits = {"auxiliary$", "ByteBuddy$", "sw$"};
     private BlockingQueue<ResolutionFutureTask> queue = new LinkedBlockingDeque<>();
     private Thread thread;
     private int timeoutSeconds = 2;
@@ -108,7 +108,7 @@ public class SWClassFileLocator implements ClassFileLocator {
     }
 
     private Resolution getResolution(String name) throws Exception {
-        ExtractionClassFileTransformer classFileTransformer = new ExtractionClassFileTransformer(name);
+        SWExtractionClassFileTransformer classFileTransformer = new SWExtractionClassFileTransformer(name);
         try {
             instrumentation.addTransformer(classFileTransformer, true);
             Class aClass = locateClass(name);

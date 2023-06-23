@@ -23,12 +23,11 @@ import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.agent.builder.NativeMethodStrategySupport;
-import net.bytebuddy.agent.builder.SWAsmVisitorWrapper;
+import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
+import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -38,7 +37,6 @@ import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
-import org.apache.skywalking.apm.agent.bytebuddy.SWClassFileLocator;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackageNotFoundException;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
@@ -76,7 +74,7 @@ public class SkyWalkingAgent {
         } catch (Exception e) {
             // try to resolve a new logger, and use the new logger to write the error log here
             LogManager.getLogger(SkyWalkingAgent.class)
-                      .error(e, "SkyWalking agent initialized failure. Shutting down.");
+                    .error(e, "SkyWalking agent initialized failure. Shutting down.");
             return;
         } finally {
             // refresh logger again after initialization finishes
@@ -99,8 +97,7 @@ public class SkyWalkingAgent {
         }
 
         LOGGER.info("Skywalking agent begin to install transformer ...");
-        // Generate random name trait
-        String nameTrait = generateNameTrait();
+        String nameTrait = getNameTrait();
         DelegateNamingResolver.setNameTrait(nameTrait);
 
         AgentBuilder agentBuilder = newAgentBuilder(instrumentation, nameTrait).ignore(
@@ -156,21 +153,15 @@ public class SkyWalkingAgent {
                 .with(new SWAuxiliaryTypeNamingStrategy(nameTrait))
                 .with(new SWImplementationContextFactory(nameTrait));
 
-        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
-        NativeMethodStrategySupport.inject(agentBuilder, nameTrait);
+        SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(nameTrait);
 
-        agentBuilder = agentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
-                .with(new SWClassFileLocator(instrumentation, SkyWalkingAgent.class.getClassLoader()));
+        AgentBuilder agentBuilder = new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
+                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST);
         return agentBuilder;
     }
 
-    private static String generateNameTrait() {
-        String str = "sw";
-        Random random = new Random();
-        for (int i = 0; i < 4; i++) {
-            str += random.nextInt(10);
-        }
-        return str;
+    private static String getNameTrait() {
+        return "sw$";
     }
 
     private static class Transformer implements AgentBuilder.Transformer {
@@ -189,7 +180,7 @@ public class SkyWalkingAgent {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
-                DynamicType.Builder<?> newBuilder = builder.visit(new SWAsmVisitorWrapper());
+                DynamicType.Builder<?> newBuilder = builder;
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
                     DynamicType.Builder<?> possibleNewBuilder = define.define(

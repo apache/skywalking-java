@@ -23,7 +23,7 @@ import net.bytebuddy.dynamic.scaffold.inline.MethodNameTransformer;
 import net.bytebuddy.utility.RandomString;
 
 /**
- * Generate fixed origin method name
+ * Generate fixed origin method name with method description hash code
  */
 public class SWMethodNameTransformer implements MethodNameTransformer {
 

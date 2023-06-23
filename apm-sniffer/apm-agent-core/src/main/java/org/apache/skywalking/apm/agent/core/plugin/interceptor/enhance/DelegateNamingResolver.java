@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 public class DelegateNamingResolver {
     private static final String PREFIX = "delegate$";
-    private static String NAME_TRAIT = "sw";
+    private static String NAME_TRAIT = "sw$";
     private final String className;
     private final int identifier;
     private final String fieldNamePrefix;
@@ -40,7 +40,7 @@ public class DelegateNamingResolver {
     public DelegateNamingResolver(String className, int identifier) {
         this.className = className;
         this.identifier = identifier;
-        this.fieldNamePrefix = NAME_TRAIT + "_" + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(identifier) + "$";
+        this.fieldNamePrefix = NAME_TRAIT + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(identifier) + "$";
     }
 
     public String resolve(Object interceptPoint) {

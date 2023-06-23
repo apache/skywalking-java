@@ -25,14 +25,14 @@ import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import net.bytebuddy.utility.RandomString;
 
 /**
- * Design to generate fixed name for CacheValueField (cache delegating Method)
+ * Support custom suffix name trait, using in cache value field name, field getter/setter delegation, accessor method and so on.
  */
 public class SWImplementationContextFactory implements Implementation.Context.Factory {
 
-    private String suffix;
+    private String suffixNameTrait;
 
-    public SWImplementationContextFactory(String suffix) {
-        this.suffix = suffix;
+    public SWImplementationContextFactory(String suffixNameTrait) {
+        this.suffixNameTrait = suffixNameTrait;
     }
 
     @Override
@@ -54,6 +54,6 @@ public class SWImplementationContextFactory implements Implementation.Context.Fa
                                                        Implementation.Context.FrameGeneration frameGeneration) {
         return new Implementation.Context.Default(instrumentedType, classFileVersion, auxiliaryTypeNamingStrategy,
                 typeInitializer, auxiliaryClassFileVersion, frameGeneration,
-                suffix + "_" + RandomString.hashOf(instrumentedType.getName().hashCode()));
+                suffixNameTrait + RandomString.hashOf(instrumentedType.getName().hashCode()));
     }
 }

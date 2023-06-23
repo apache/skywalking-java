@@ -21,7 +21,7 @@ package org.apache.skywalking.apm.agent.bytebuddy;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
 
-public class ExtractionClassFileTransformer implements ClassFileTransformer {
+public class SWExtractionClassFileTransformer implements ClassFileTransformer {
 
     /**
      * An indicator that an attempted class file transformation did not alter the handed class file.
@@ -48,7 +48,7 @@ public class ExtractionClassFileTransformer implements ClassFileTransformer {
      *
      * @param typeName The name of the type to look up.
      */
-    public ExtractionClassFileTransformer(String typeName) {
+    public SWExtractionClassFileTransformer(String typeName) {
         this.typeName = typeName;
     }
 

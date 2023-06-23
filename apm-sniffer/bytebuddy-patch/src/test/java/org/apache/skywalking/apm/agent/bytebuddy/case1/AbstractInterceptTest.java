@@ -21,8 +21,9 @@ package org.apache.skywalking.apm.agent.bytebuddy.case1;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.agent.builder.NativeMethodStrategySupport;
+import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
 import net.bytebuddy.agent.builder.SWAsmVisitorWrapper;
+import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SWAuxiliaryTypeNamingStrategy;
@@ -217,9 +218,7 @@ public class AbstractInterceptTest {
                 .with(new SWImplementationContextFactory(nameTrait))
                 ;
 
-        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy);
-        NativeMethodStrategySupport.inject(agentBuilder, nameTrait);
-        return agentBuilder
+        return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(nameTrait))
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 //.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));

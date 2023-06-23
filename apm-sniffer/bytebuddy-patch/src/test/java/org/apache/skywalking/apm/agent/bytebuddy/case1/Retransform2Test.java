@@ -36,17 +36,14 @@ public class Retransform2Test extends AbstractInterceptTest {
 
         //this.deleteDuplicatedFields = true;
 
-        // install transformer
+        // install transformer 1
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 1);
         installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
 
-        // installTraceClassTransformer("Trace class 1: ");
-
+        // install transformer 2
         installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 2);
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, "greeting", 2);
-
-        // installTraceClassTransformer("Trace class 2: ");
 
         // call target class
         try {
@@ -57,15 +54,14 @@ public class Retransform2Test extends AbstractInterceptTest {
             // check interceptors
             Log.info("-------------");
             Log.info("Check interceptors ..");
-            checkConstructorInterceptor(1);
-            checkConstructorInterceptor(2);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
             checkMethodInterceptor(SAY_HELLO_METHOD, 2);
         }
 
         // do retransform
         reTransform(instrumentation, BizFoo.class);
-//        reTransform(instrumentation, ProjectService.class);
 
         // test again
         try {
@@ -76,8 +72,8 @@ public class Retransform2Test extends AbstractInterceptTest {
             // check interceptors
             Log.info("-------------");
             Log.info("Check interceptors ..");
-            checkConstructorInterceptor(1);
-            checkConstructorInterceptor(2);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
             checkMethodInterceptor(SAY_HELLO_METHOD, 2);
         }

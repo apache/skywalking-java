@@ -31,10 +31,6 @@ public class SWMethodNameTransformer implements MethodNameTransformer {
 
     private String prefix;
 
-    public SWMethodNameTransformer() {
-        this(DEFAULT_PREFIX);
-    }
-
     public SWMethodNameTransformer(String nameTrait) {
         this.prefix = nameTrait + DEFAULT_PREFIX;
     }

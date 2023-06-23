@@ -40,7 +40,7 @@ public class Intercept4Test extends AbstractInterceptTest {
             e.printStackTrace();
         } finally {
             // check interceptors
-            checkConstructorInterceptor(1);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
         }
 

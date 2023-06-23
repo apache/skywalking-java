@@ -23,16 +23,13 @@ import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
-import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.implementation.SuperMethodCall;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
-import org.apache.skywalking.apm.agent.bytebuddy.ConstructorAdvice;
 import org.apache.skywalking.apm.agent.bytebuddy.ConstructorInter;
 import org.apache.skywalking.apm.agent.bytebuddy.EnhanceHelper;
-import org.apache.skywalking.apm.agent.bytebuddy.InstMethodAdvice;
 import org.apache.skywalking.apm.agent.bytebuddy.InstMethodsInter;
 import org.apache.skywalking.apm.agent.bytebuddy.Log;
 import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
@@ -83,9 +80,9 @@ public class AbstractInterceptTest {
         Log.info("Found interceptor: " + interceptorName);
     }
 
-    protected static void checkConstructorInterceptor(int round) {
+    protected static void checkConstructorInterceptor(String className, int round) {
         List<String> interceptors = EnhanceHelper.getInterceptors();
-        String interceptorName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + round;
+        String interceptorName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + className + "$" + round;
         Assert.assertTrue("Not found interceptor: " + interceptorName, interceptors.contains(interceptorName));
         Log.info("Found interceptor: " + interceptorName);
     }
@@ -115,32 +112,12 @@ public class AbstractInterceptTest {
                 .installOn(ByteBuddyAgent.install());
     }
 
-    protected void installMethodInterceptorWithAdvice(String className, String methodName, int round) {
-        String interceptorClassName = METHOD_INTERCEPTOR_CLASS + "$" + methodName + "$" + round;
-        String nameTrait = getNameTrait(round);
-        String fieldName = nameTrait + "_delegate$" + methodName + round;
-
-        AgentBuilder agentBuilder = newAgentBuilder(nameTrait);
-        agentBuilder.type(ElementMatchers.named(className))
-                .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
-                            if (deleteDuplicatedFields) {
-                                builder = builder.visit(new SWAsmVisitorWrapper());
-                            }
-                            return builder
-                                    .method(ElementMatchers.nameContainsIgnoreCase(methodName))
-                                    .intercept(Advice.to(InstMethodAdvice.class));
-                        }
-                )
-                .with(getListener(interceptorClassName))
-                .installOn(ByteBuddyAgent.install());
-    }
-
     protected void installConstructorInterceptor(String className, int round) {
         installConstructorInterceptorWithMethodDelegation(className, round);
     }
 
     protected void installConstructorInterceptorWithMethodDelegation(String className, int round) {
-        String interceptorClassName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + round;
+        String interceptorClassName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + className + "$" + round;
         String nameTrait = getNameTrait(round);
         String fieldName = nameTrait + "_delegate$constructor" + round;
 
@@ -156,26 +133,6 @@ public class AbstractInterceptTest {
                                             MethodDelegation.withDefaultConfiguration().to(
                                                     new ConstructorInter(interceptorClassName, classLoader), fieldName)
                                     ));
-                        }
-                )
-                .with(getListener(interceptorClassName))
-                .installOn(ByteBuddyAgent.install());
-    }
-
-    protected void installConstructorInterceptorWithAdvice(String className, int round) {
-        String interceptorClassName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + round;
-        String nameTrait = getNameTrait(round);
-        String fieldName = nameTrait + "_delegate$constructor" + round;
-
-        AgentBuilder agentBuilder = newAgentBuilder(nameTrait);
-        agentBuilder.type(ElementMatchers.named(className))
-                .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
-                            if (deleteDuplicatedFields) {
-                                builder = builder.visit(new SWAsmVisitorWrapper());
-                            }
-                            return builder
-                                    .constructor(ElementMatchers.any())
-                                    .intercept(Advice.to(ConstructorAdvice.class));
                         }
                 )
                 .with(getListener(interceptorClassName))

@@ -45,10 +45,6 @@ public class SWAgentBuilderDefault extends AgentBuilder.Default {
      */
     private static final CircularityLock DEFAULT_LOCK = new CircularityLock.Default();
 
-    public SWAgentBuilderDefault(NativeMethodStrategy nativeMethodStrategy) {
-        this(new ByteBuddy(), nativeMethodStrategy);
-    }
-
     public SWAgentBuilderDefault(ByteBuddy byteBuddy, NativeMethodStrategy nativeMethodStrategy) {
         this(byteBuddy,
                 Listener.NoOp.INSTANCE,

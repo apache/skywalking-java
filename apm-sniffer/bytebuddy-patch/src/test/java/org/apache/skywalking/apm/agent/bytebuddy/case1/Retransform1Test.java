@@ -23,6 +23,7 @@ import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectDO;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectService;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.instrument.Instrumentation;
@@ -51,14 +52,15 @@ public class Retransform1Test extends AbstractRetransformTest {
         } finally {
             // check interceptors
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkConstructorInterceptor(1);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
         }
 
         ProjectService projectService = new ProjectService();
-        projectService.add(ProjectDO.builder()
+        ProjectDO originProjectDO = ProjectDO.builder()
                 .name("test")
                 .id(1)
-                .build());
+                .build();
+        projectService.add(originProjectDO);
         ProjectDO projectDO = projectService.getById(1);
         Log.info(projectDO);
         projectService.list();
@@ -72,8 +74,17 @@ public class Retransform1Test extends AbstractRetransformTest {
         // test again
         callBizFoo(1);
 
+        // check interceptors
+        checkMethodInterceptor(SAY_HELLO_METHOD, 1);
+        checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
+
         projectDO = projectService.getById(1);
         Log.info(projectDO);
+
+        checkConstructorInterceptor(PROJECT_SERVICE_CLASS_NAME, 1);
+        checkMethodInterceptor("add", 1);
+        checkMethodInterceptor("get", 1);
+        checkMethodInterceptor("list", 1);
     }
 
 }

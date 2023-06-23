@@ -43,9 +43,9 @@ public class Intercept6Test extends AbstractInterceptTest {
         } finally {
             // check interceptors
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkConstructorInterceptor(1);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
             checkMethodInterceptor(SAY_HELLO_METHOD, 2);
-            checkConstructorInterceptor(2);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
         }
     }
 

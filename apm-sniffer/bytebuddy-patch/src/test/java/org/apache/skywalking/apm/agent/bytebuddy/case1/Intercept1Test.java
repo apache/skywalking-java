@@ -40,7 +40,7 @@ public class Intercept1Test extends AbstractInterceptTest {
         } finally {
             // check interceptors
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkConstructorInterceptor(1);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
         }
     }
 }

@@ -42,9 +42,9 @@ public class Intercept5Test extends AbstractInterceptTest {
             e.printStackTrace();
         } finally {
             // check interceptors
-            checkConstructorInterceptor(1);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkConstructorInterceptor(2);
+            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
             checkMethodInterceptor(SAY_HELLO_METHOD, 2);
         }
     }

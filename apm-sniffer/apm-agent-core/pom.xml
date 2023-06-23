@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>java-agent-sniffer</artifactId>
-        <version>8.16.0-SNAPSHOT</version>
+        <version>8.17.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>apm-agent-core</artifactId>
@@ -212,8 +212,10 @@
                                     <exclude>com.google.errorprone:error_prone_annotations:jar:</exclude>
                                     <exclude>com.google.code.findbugs:jsr305:jar:</exclude>
                                     <exclude>com.google.android:annotations:jar:</exclude>
+                                    <exclude>com.google.j2objc:j2objc-annotations:jar:</exclude>
                                     <exclude>com.google.api.grpc:proto-google-common-protos:jar:</exclude>
                                     <exclude>org.checkerframework:checker-compat-qual:jar:</exclude>
+                                    <exclude>org.checkerframework:checker-qual:jar:</exclude>
                                     <exclude>org.codehaus.mojo:animal-sniffer-annotations:jar:</exclude>
                                 </excludes>
                             </artifactSet>

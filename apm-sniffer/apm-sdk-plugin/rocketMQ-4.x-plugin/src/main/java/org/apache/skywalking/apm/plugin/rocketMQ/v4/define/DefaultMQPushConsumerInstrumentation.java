@@ -22,13 +22,12 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class DefaultMQPushConsumerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class DefaultMQPushConsumerInstrumentation extends AbstractRocketMQInstrumentation {
 
     private static final String ENHANCE_CLASS = "org.apache.rocketmq.client.consumer.DefaultMQPushConsumer";
     private static final String REGISTER_MESSAGE_LISTENER_METHOD_NAME = "registerMessageListener";

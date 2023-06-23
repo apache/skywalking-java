@@ -48,7 +48,8 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
             SenderContext<Object> context = (SenderContext<Object>) allArguments[0];
             final ContextCarrier contextCarrier = new ContextCarrier();
             AbstractSpan span = ContextManager.createExitSpan(
-                getOperationName(context), contextCarrier, SpanHelper.tryToGetPeer(context.getRemoteServiceAddress(), context.getAllKeyValues()));
+                getOperationName(context), contextCarrier, SpanHelper.tryToGetPeer(context.getRemoteServiceAddress(),
+                    context.getRemoteServiceName(), context.getAllKeyValues()));
             CarrierItem next = contextCarrier.items();
             while (next.hasNext()) {
                 next = next.next();
@@ -60,7 +61,8 @@ public class MicrometerSenderTracingHandlerInterceptor implements InstanceMethod
             SpanLayer spanLayer = TaggingHelper.toLayer(context.getAllKeyValues());
             AbstractSpan abstractSpan = ContextManager.activeSpan();
             abstractSpan
-                .setPeer(SpanHelper.tryToGetPeer(context.getRemoteServiceAddress(), context.getAllKeyValues()))
+                .setPeer(SpanHelper.tryToGetPeer(context.getRemoteServiceAddress(), context.getRemoteServiceName(),
+                    context.getAllKeyValues()))
                 .setOperationName(getOperationName(context));
             context.getAllKeyValues()
                    .forEach(keyValue -> abstractSpan.tag(Tags.ofKey(keyValue.getKey()), keyValue.getValue()));

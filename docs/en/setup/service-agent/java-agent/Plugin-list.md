@@ -83,6 +83,7 @@
 - resteasy-server-4.x
 - rocketMQ-3.x
 - rocketMQ-4.x
+- rocketMQ-5.x
 - sentinel-1.x
 - servicecomb-2.x
 - sharding-sphere-3.x
@@ -158,3 +159,10 @@
 - nats-client-2.14.x-2.15.x
 - impala-jdbc-2.6.x
 - jdk-forkjoinpool-plugin
+- jetty-thread-pool
+- jersey-2.x
+- jersey-3.x
+- grizzly-2.3.x-4.x
+- grizzly-2.3.x-4.x-threadpool
+- jetty-server-11.x
+- jetty-client-11.x

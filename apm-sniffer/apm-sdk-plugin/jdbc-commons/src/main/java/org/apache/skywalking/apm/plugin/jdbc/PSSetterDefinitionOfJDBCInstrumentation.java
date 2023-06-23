@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.plugin.jdbc.define.Constants;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.none;
+import static net.bytebuddy.matcher.ElementMatchers.isPublic;
 import static org.apache.skywalking.apm.plugin.jdbc.define.Constants.PS_IGNORABLE_SETTERS;
 import static org.apache.skywalking.apm.plugin.jdbc.define.Constants.PS_SETTERS;
 
@@ -43,7 +44,7 @@ public class PSSetterDefinitionOfJDBCInstrumentation implements InstanceMethodsI
         // remove TRACE_SQL_PARAMETERS judgement for dynamic config
         final Set<String> setters = ignorable ? PS_IGNORABLE_SETTERS : PS_SETTERS;
         for (String setter : setters) {
-            matcher = matcher.or(named(setter));
+            matcher = matcher.or(named(setter).and(isPublic()));
         }
 
         return matcher;

@@ -91,10 +91,10 @@ public class AbstractInterceptTest {
     }
 
     protected void installMethodInterceptor(String className, String methodName, int round) {
-        this.installMethodInterceptor1(className, methodName, round);
+        this.installMethodInterceptorWithMethodDelegation(className, methodName, round);
     }
 
-    protected void installMethodInterceptor1(String className, String methodName, int round) {
+    protected void installMethodInterceptorWithMethodDelegation(String className, String methodName, int round) {
         String interceptorClassName = METHOD_INTERCEPTOR_CLASS + "$" + methodName + "$" + round;
         String nameTrait = getNameTrait(round);
         String fieldName = nameTrait + "_delegate$" + methodName + round;
@@ -115,7 +115,7 @@ public class AbstractInterceptTest {
                 .installOn(ByteBuddyAgent.install());
     }
 
-    protected void installMethodInterceptor2(String className, String methodName, int round) {
+    protected void installMethodInterceptorWithAdvice(String className, String methodName, int round) {
         String interceptorClassName = METHOD_INTERCEPTOR_CLASS + "$" + methodName + "$" + round;
         String nameTrait = getNameTrait(round);
         String fieldName = nameTrait + "_delegate$" + methodName + round;
@@ -136,10 +136,10 @@ public class AbstractInterceptTest {
     }
 
     protected void installConstructorInterceptor(String className, int round) {
-        installConstructorInterceptor1(className, round);
+        installConstructorInterceptorWithMethodDelegation(className, round);
     }
 
-    protected void installConstructorInterceptor1(String className, int round) {
+    protected void installConstructorInterceptorWithMethodDelegation(String className, int round) {
         String interceptorClassName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + round;
         String nameTrait = getNameTrait(round);
         String fieldName = nameTrait + "_delegate$constructor" + round;
@@ -162,7 +162,7 @@ public class AbstractInterceptTest {
                 .installOn(ByteBuddyAgent.install());
     }
 
-    protected void installConstructorInterceptor2(String className, int round) {
+    protected void installConstructorInterceptorWithAdvice(String className, int round) {
         String interceptorClassName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + round;
         String nameTrait = getNameTrait(round);
         String fieldName = nameTrait + "_delegate$constructor" + round;

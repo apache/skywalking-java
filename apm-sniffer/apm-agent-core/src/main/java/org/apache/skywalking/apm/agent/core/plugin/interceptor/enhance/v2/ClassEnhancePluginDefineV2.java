@@ -57,18 +57,12 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  */
 public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePluginDefine {
 
-    private ConstructorInterceptPoint[] constructorInterceptPoints;
-    private InstanceMethodsInterceptV2Point[] instanceMethodsInterceptV2Points;
-    private StaticMethodsInterceptV2Point[] staticMethodsInterceptV2Points;
-
     @Override
     protected DynamicType.Builder<?> enhanceClass(TypeDescription typeDescription,
                                                   DynamicType.Builder<?> newClassBuilder,
                                                   ClassLoader classLoader) throws PluginException {
+        StaticMethodsInterceptV2Point[] staticMethodsInterceptV2Points = getStaticMethodsInterceptV2Points();
         String enhanceOriginClassName = typeDescription.getTypeName();
-        if (staticMethodsInterceptV2Points == null) {
-            staticMethodsInterceptV2Points = getStaticMethodsInterceptV2Points();
-        }
         if (staticMethodsInterceptV2Points == null || staticMethodsInterceptV2Points.length == 0) {
             return newClassBuilder;
         }
@@ -118,12 +112,8 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
     protected DynamicType.Builder<?> enhanceInstance(TypeDescription typeDescription,
                                                      DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader,
                                                      EnhanceContext context) throws PluginException {
-        if (constructorInterceptPoints == null) {
-            constructorInterceptPoints = getConstructorsInterceptPoints();
-        }
-        if (instanceMethodsInterceptV2Points == null) {
-            instanceMethodsInterceptV2Points = getInstanceMethodsInterceptV2Points();
-        }
+        ConstructorInterceptPoint[] constructorInterceptPoints = getConstructorsInterceptPoints();
+        InstanceMethodsInterceptV2Point[] instanceMethodsInterceptV2Points = getInstanceMethodsInterceptV2Points();
         String enhanceOriginClassName = typeDescription.getTypeName();
         DelegateNamingResolver fieldNamingResolver = DelegateNamingResolver.get(typeDescription.getTypeName(), this);
 

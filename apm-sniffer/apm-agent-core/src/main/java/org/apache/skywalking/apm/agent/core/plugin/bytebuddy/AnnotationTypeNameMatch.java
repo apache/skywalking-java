@@ -55,6 +55,13 @@ public class AnnotationTypeNameMatch<T extends AnnotationDescription> implements
         return target.getAnnotationType().asErasure().getName().equals(annotationTypeName);
     }
 
+    @Override
+    public String toString() {
+        return "AnnotationTypeNameMatch{" +
+                "annotationTypeName='" + annotationTypeName + '\'' +
+                '}';
+    }
+
     /**
      * The static method to create {@link AnnotationTypeNameMatch} This is a delegate method to follow byte-buddy {@link
      * ElementMatcher}'s code style.

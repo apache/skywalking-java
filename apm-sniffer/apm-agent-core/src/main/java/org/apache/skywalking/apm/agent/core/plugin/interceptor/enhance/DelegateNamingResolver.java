@@ -20,6 +20,11 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance;
 
 import net.bytebuddy.utility.RandomString;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.InstanceMethodsInterceptV2Point;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsInterceptV2Point;
 
 import java.util.Objects;
 
@@ -40,12 +45,35 @@ public class DelegateNamingResolver {
     public DelegateNamingResolver(String className, int identifier) {
         this.className = className;
         this.identifier = identifier;
+        // delegate field name pattern: <name_trait>$delegate$<class_name_hash>$<plugin_define_hash>$<intercept_point_hash>
+        // something like: InstMethodsInter sw$delegate$td03673$sib0lj0$5n874b1;
         this.fieldNamePrefix = NAME_TRAIT + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(identifier) + "$";
     }
 
     public String resolve(Object interceptPoint) {
         Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
-        return fieldNamePrefix + RandomString.hashOf(interceptPoint.hashCode());
+        return fieldNamePrefix + RandomString.hashOf(computeHashCode(interceptPoint));
+    }
+
+    private int computeHashCode(Object interceptPoint) {
+        String interceptPointClassName = interceptPoint.getClass().getName();
+        if (interceptPoint instanceof ConstructorInterceptPoint) {
+            ConstructorInterceptPoint point = (ConstructorInterceptPoint) interceptPoint;
+            return Objects.hash(interceptPointClassName, point.getConstructorMatcher().toString(), point.getConstructorInterceptor());
+        } else if (interceptPoint instanceof InstanceMethodsInterceptPoint) {
+            InstanceMethodsInterceptPoint point = (InstanceMethodsInterceptPoint) interceptPoint;
+            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptor(), point.isOverrideArgs());
+        } else if (interceptPoint instanceof InstanceMethodsInterceptV2Point) {
+            InstanceMethodsInterceptV2Point point = (InstanceMethodsInterceptV2Point) interceptPoint;
+            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptorV2(), point.isOverrideArgs());
+        } else if (interceptPoint instanceof StaticMethodsInterceptPoint) {
+            StaticMethodsInterceptPoint point = (StaticMethodsInterceptPoint) interceptPoint;
+            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptor(), point.isOverrideArgs());
+        } else if (interceptPoint instanceof StaticMethodsInterceptV2Point) {
+            StaticMethodsInterceptV2Point point = (StaticMethodsInterceptV2Point) interceptPoint;
+            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptorV2(), point.isOverrideArgs());
+        }
+        return interceptPoint.hashCode();
     }
 
     public static DelegateNamingResolver get(String className, AbstractClassEnhancePluginDefine pluginDefine) {

@@ -68,6 +68,14 @@ public class ArgumentTypeNameMatch implements ElementMatcher<MethodDescription> 
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "ArgumentTypeNameMatch{" +
+                "index=" + index +
+                ", argumentTypeName='" + argumentTypeName + '\'' +
+                '}';
+    }
+
     /**
      * The static method to create {@link ArgumentTypeNameMatch} This is a delegate method to follow byte-buddy {@link
      * ElementMatcher}'s code style.

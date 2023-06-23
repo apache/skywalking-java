@@ -55,9 +55,6 @@ import static net.bytebuddy.matcher.ElementMatchers.not;
  */
 public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePluginDefine {
     private static final ILog LOGGER = LogManager.getLogger(ClassEnhancePluginDefine.class);
-    private ConstructorInterceptPoint[] constructorInterceptPoints;
-    private InstanceMethodsInterceptPoint[] instanceMethodsInterceptPoints;
-    private StaticMethodsInterceptPoint[] staticMethodsInterceptPoints;
 
     /**
      * Enhance a class to intercept constructors and class instance methods.
@@ -70,12 +67,8 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
     protected DynamicType.Builder<?> enhanceInstance(TypeDescription typeDescription,
         DynamicType.Builder<?> newClassBuilder, ClassLoader classLoader,
         EnhanceContext context) throws PluginException {
-        if (constructorInterceptPoints == null) {
-            constructorInterceptPoints = getConstructorsInterceptPoints();
-        }
-        if (instanceMethodsInterceptPoints == null) {
-            instanceMethodsInterceptPoints = getInstanceMethodsInterceptPoints();
-        }
+        ConstructorInterceptPoint[] constructorInterceptPoints = getConstructorsInterceptPoints();
+        InstanceMethodsInterceptPoint[] instanceMethodsInterceptPoints = getInstanceMethodsInterceptPoints();
         String enhanceOriginClassName = typeDescription.getTypeName();
         boolean existedConstructorInterceptPoint = false;
         if (constructorInterceptPoints != null && constructorInterceptPoints.length > 0) {
@@ -186,10 +179,8 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
     @Override
     protected DynamicType.Builder<?> enhanceClass(TypeDescription typeDescription, DynamicType.Builder<?> newClassBuilder,
         ClassLoader classLoader) throws PluginException {
+        StaticMethodsInterceptPoint[] staticMethodsInterceptPoints = getStaticMethodsInterceptPoints();
         String enhanceOriginClassName = typeDescription.getTypeName();
-        if (staticMethodsInterceptPoints == null) {
-            staticMethodsInterceptPoints = getStaticMethodsInterceptPoints();
-        }
         if (staticMethodsInterceptPoints == null || staticMethodsInterceptPoints.length == 0) {
             return newClassBuilder;
         }

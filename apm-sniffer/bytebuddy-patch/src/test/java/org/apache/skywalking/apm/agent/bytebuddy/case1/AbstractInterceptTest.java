@@ -220,7 +220,7 @@ public class AbstractInterceptTest {
 
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(nameTrait))
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
-                //.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
     }
 

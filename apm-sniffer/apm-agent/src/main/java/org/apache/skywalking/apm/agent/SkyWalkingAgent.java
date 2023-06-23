@@ -36,6 +36,7 @@ import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
+import org.apache.skywalking.apm.agent.bytebuddy.SWMethodNameTransformer;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackageNotFoundException;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
@@ -56,6 +57,7 @@ import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter
 import static net.bytebuddy.matcher.ElementMatchers.nameContains;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.not;
+import static org.apache.skywalking.apm.agent.core.conf.Constants.NAME_TRAIT;
 
 /**
  * The main entrance of sky-walking agent, based on javaagent mechanism.
@@ -96,10 +98,8 @@ public class SkyWalkingAgent {
         }
 
         LOGGER.info("Skywalking agent begin to install transformer ...");
-        String nameTrait = getNameTrait();
-        DelegateNamingResolver.setNameTrait(nameTrait);
 
-        AgentBuilder agentBuilder = newAgentBuilder(instrumentation, nameTrait).ignore(
+        AgentBuilder agentBuilder = newAgentBuilder().ignore(
             nameStartsWith("net.bytebuddy.")
                 .or(nameStartsWith("org.slf4j."))
                 .or(nameStartsWith("org.groovy."))
@@ -146,21 +146,19 @@ public class SkyWalkingAgent {
                .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
     }
 
-    private static AgentBuilder newAgentBuilder(Instrumentation instrumentation, String nameTrait) {
+    /**
+     * Create a new agent builder through customized {@link ByteBuddy} powered by
+     * {@link SWAuxiliaryTypeNamingStrategy} {@link DelegateNamingResolver} {@link SWMethodNameTransformer} and {@link SWImplementationContextFactory}
+     */
+    private static AgentBuilder newAgentBuilder() {
         final ByteBuddy byteBuddy = new ByteBuddy()
                 .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
-                .with(new SWAuxiliaryTypeNamingStrategy(nameTrait))
-                .with(new SWImplementationContextFactory(nameTrait));
+                .with(new SWAuxiliaryTypeNamingStrategy(NAME_TRAIT))
+                .with(new SWImplementationContextFactory(NAME_TRAIT));
 
-        SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(nameTrait);
-
-        AgentBuilder agentBuilder = new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
+        SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(NAME_TRAIT);
+        return new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
                 .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST);
-        return agentBuilder;
-    }
-
-    private static String getNameTrait() {
-        return "sw$";
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

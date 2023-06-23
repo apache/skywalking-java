@@ -30,7 +30,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Resolve auxiliary type from Instrumentation.getAllLoadedClasses()
+ * Resolve auxiliary type from Instrumentation.getAllLoadedClasses().
+ * Get class bytecode from separate thread to bypass jdk limitation or bug: https://github.com/raphw/byte-buddy/issues/1434
  */
 public class SWClassFileLocator implements ClassFileLocator {
     private static ILog LOGGER = LogManager.getLogger(SWClassFileLocator.class);

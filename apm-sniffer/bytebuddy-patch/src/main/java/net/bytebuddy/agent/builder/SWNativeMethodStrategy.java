@@ -25,17 +25,16 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 
 public class SWNativeMethodStrategy implements AgentBuilder.Default.NativeMethodStrategy {
-    private static final String DEFAULT_PREFIX = "origin$";
 
-    private String prefix;
+    private String nameTrait;
 
     public SWNativeMethodStrategy(String nameTrait) {
-        this.prefix = nameTrait + DEFAULT_PREFIX;
+        this.nameTrait = nameTrait;
     }
 
     @Override
     public MethodNameTransformer resolve() {
-        return new SWMethodNameTransformer(prefix);
+        return new SWMethodNameTransformer(nameTrait);
     }
 
     @Override

@@ -45,7 +45,7 @@ public class DelegateNamingResolver {
     public DelegateNamingResolver(String className, int identifier) {
         this.className = className;
         this.identifier = identifier;
-        // delegate field name pattern: <name_trait>$delegate$<class_name_hash>$<plugin_define_hash>$<intercept_point_hash>
+        // Interceptor delegate field name pattern: <name_trait>$delegate$<class_name_hash>$<plugin_define_hash>$<intercept_point_hash>
         // something like: InstMethodsInter sw$delegate$td03673$sib0lj0$5n874b1;
         this.fieldNamePrefix = NAME_TRAIT + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(identifier) + "$";
     }

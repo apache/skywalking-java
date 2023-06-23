@@ -35,12 +35,13 @@ public class SWMethodNameTransformer implements MethodNameTransformer {
         this(DEFAULT_PREFIX);
     }
 
-    public SWMethodNameTransformer(String prefix) {
-        this.prefix = prefix;
+    public SWMethodNameTransformer(String nameTrait) {
+        this.prefix = nameTrait + DEFAULT_PREFIX;
     }
 
     @Override
     public String transform(MethodDescription methodDescription) {
+        // Origin method rename pattern: <name_trait>$original$<method_name>$<method_description_hash>
         return prefix + methodDescription.getInternalName() + "$" + RandomString.hashOf(methodDescription.toString().hashCode());
     }
 

@@ -52,6 +52,8 @@ public class SWImplementationContextFactory implements Implementation.Context.Fa
                                                        ClassFileVersion classFileVersion,
                                                        ClassFileVersion auxiliaryClassFileVersion,
                                                        Implementation.Context.FrameGeneration frameGeneration) {
+        // Method cache value field pattern: cachedValue$<name_trait>$<origin_class_name_hash>$<field_value_hash>
+        // Accessor method name pattern: <renamed_origin_method>$accessor$<name_trait>$<origin_class_name_hash>
         return new Implementation.Context.Default(instrumentedType, classFileVersion, auxiliaryTypeNamingStrategy,
                 typeInitializer, auxiliaryClassFileVersion, frameGeneration,
                 suffixNameTrait + RandomString.hashOf(instrumentedType.getName().hashCode()));

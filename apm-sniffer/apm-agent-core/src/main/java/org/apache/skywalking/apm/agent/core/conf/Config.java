@@ -25,7 +25,6 @@ import org.apache.skywalking.apm.agent.core.logging.core.LogLevel;
 import org.apache.skywalking.apm.agent.core.logging.core.LogOutput;
 import org.apache.skywalking.apm.agent.core.logging.core.ResolverType;
 import org.apache.skywalking.apm.agent.core.logging.core.WriterFactory;
-import org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ClassCacheMode;
 import org.apache.skywalking.apm.util.Length;
 
 /**

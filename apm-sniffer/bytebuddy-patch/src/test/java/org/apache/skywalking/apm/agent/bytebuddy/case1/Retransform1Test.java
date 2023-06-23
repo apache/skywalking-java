@@ -23,7 +23,6 @@ import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectDO;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectService;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.instrument.Instrumentation;

@@ -30,7 +30,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Resolve auxiliary type
+ * Resolve auxiliary type from Instrumentation.getAllLoadedClasses()
  */
 public class SWClassFileLocator implements ClassFileLocator {
     private static ILog LOGGER = LogManager.getLogger(SWClassFileLocator.class);
@@ -43,11 +43,6 @@ public class SWClassFileLocator implements ClassFileLocator {
     private Thread thread;
     private int timeoutSeconds = 2;
     private volatile boolean closed;
-
-    public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader, String[] typeNameTraits) {
-        this(instrumentation, classLoader);
-        this.typeNameTraits = typeNameTraits;
-    }
 
     public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader) {
         this.instrumentation = instrumentation;

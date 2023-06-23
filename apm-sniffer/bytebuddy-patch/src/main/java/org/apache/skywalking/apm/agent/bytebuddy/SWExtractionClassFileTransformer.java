@@ -28,11 +28,6 @@ public class SWExtractionClassFileTransformer implements ClassFileTransformer {
      */
     private static final byte[] DO_NOT_TRANSFORM = null;
 
-//    /**
-//     * The class loader that is expected to have loaded the looked-up a class.
-//     */
-//    private final ClassLoader classLoader;
-
     /**
      * The name of the type to look up.
      */

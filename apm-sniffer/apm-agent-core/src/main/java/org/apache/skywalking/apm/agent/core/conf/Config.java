@@ -111,19 +111,6 @@ public class Config {
         public static boolean IS_OPEN_DEBUGGING_CLASS = false;
 
         /**
-         * If true, SkyWalking agent will cache all instrumented classes to memory or disk files (decided by class cache
-         * mode), allow other javaagent to enhance those classes that enhanced by SkyWalking agent.
-         */
-        public static boolean IS_CACHE_ENHANCED_CLASS = false;
-
-        /**
-         * The instrumented classes cache mode: MEMORY or FILE MEMORY: cache class bytes to memory, if instrumented
-         * classes is too many or too large, it may take up more memory FILE: cache class bytes in `/class-cache`
-         * folder, automatically clean up cached class files when the application exits
-         */
-        public static ClassCacheMode CLASS_CACHE_MODE = ClassCacheMode.MEMORY;
-
-        /**
          * The identifier of the instance
          */
         @Length(50)

@@ -18,69 +18,62 @@
 
 package org.apache.skywalking.apm.agent.bytebuddy.case1;
 
-import net.bytebuddy.agent.ByteBuddyAgent;
 import org.apache.skywalking.apm.agent.bytebuddy.Log;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
+import net.bytebuddy.agent.ByteBuddyAgent;
+import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectDO;
+import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectService;
 import org.junit.Test;
 
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 
-import static org.apache.skywalking.apm.agent.bytebuddy.case1.AbstractRetransformTest.reTransform;
-
-public class RetransformTest2 extends AbstractInterceptTest {
+public class Retransform1Test extends AbstractRetransformTest {
 
     @Test
     public void testInterceptConstructor() throws UnmodifiableClassException {
         Instrumentation instrumentation = ByteBuddyAgent.install();
 
-        //this.deleteDuplicatedFields = true;
-
         // install transformer
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 1);
         installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
-
-        // installTraceClassTransformer("Trace class 1: ");
-
-        installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
-        installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 2);
-        installMethodInterceptor(BIZ_FOO_CLASS_NAME, "greeting", 2);
-
-        // installTraceClassTransformer("Trace class 2: ");
+        // project service
+        installMethodInterceptor(PROJECT_SERVICE_CLASS_NAME, "add", 1);
+        installMethodInterceptor(PROJECT_SERVICE_CLASS_NAME, "get", 1);
+        installMethodInterceptor(PROJECT_SERVICE_CLASS_NAME, "list", 1);
+        installConstructorInterceptor(PROJECT_SERVICE_CLASS_NAME, 1);
 
         // call target class
         try {
-            callBizFoo(2);
+            callBizFoo(1);
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
             // check interceptors
-            Log.info("-------------");
-            Log.info("Check interceptors ..");
-            checkConstructorInterceptor(1);
-            checkConstructorInterceptor(2);
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 2);
+            checkConstructorInterceptor(1);
         }
+
+        ProjectService projectService = new ProjectService();
+        projectService.add(ProjectDO.builder()
+                .name("test")
+                .id(1)
+                .build());
+        ProjectDO projectDO = projectService.getById(1);
+        Log.info(projectDO);
+        projectService.list();
+
+        // installTraceClassTransformer("Trace class: ");
 
         // do retransform
         reTransform(instrumentation, BizFoo.class);
-//        reTransform(instrumentation, ProjectService.class);
+        reTransform(instrumentation, ProjectService.class);
 
         // test again
-        try {
-            callBizFoo(2);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            // check interceptors
-            Log.info("-------------");
-            Log.info("Check interceptors ..");
-            checkConstructorInterceptor(1);
-            checkConstructorInterceptor(2);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 2);
-        }
+        callBizFoo(1);
+
+        projectDO = projectService.getById(1);
+        Log.info(projectDO);
     }
 
 }

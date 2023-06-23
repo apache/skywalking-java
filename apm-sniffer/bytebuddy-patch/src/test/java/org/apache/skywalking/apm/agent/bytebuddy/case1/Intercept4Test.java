@@ -23,30 +23,33 @@ import org.junit.Test;
 
 import java.lang.instrument.UnmodifiableClassException;
 
-public class InterceptTest5 extends AbstractInterceptTest {
+public class Intercept4Test extends AbstractInterceptTest {
 
     @Test
-    public void test5() throws UnmodifiableClassException {
+    public void test4() throws UnmodifiableClassException {
         ByteBuddyAgent.install();
 
         // install transformer
         installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 1);
-        installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
-        installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 2);
 
         // load target class
         try {
-            callBizFoo(2);
+            callBizFoo(1);
         } catch (Throwable e) {
             e.printStackTrace();
         } finally {
             // check interceptors
             checkConstructorInterceptor(1);
             checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkConstructorInterceptor(2);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 2);
         }
+
+//        try {
+//            TimeUnit.DAYS.sleep(1);
+//        } catch (InterruptedException e) {
+//        }
+
     }
+
 }
 

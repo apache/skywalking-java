@@ -22,11 +22,9 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
-import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
 import net.bytebuddy.asm.Advice;
 import net.bytebuddy.implementation.MethodDelegation;
-import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.implementation.SuperMethodCall;
 import net.bytebuddy.matcher.ElementMatchers;
@@ -37,6 +35,8 @@ import org.apache.skywalking.apm.agent.bytebuddy.EnhanceHelper;
 import org.apache.skywalking.apm.agent.bytebuddy.InstMethodAdvice;
 import org.apache.skywalking.apm.agent.bytebuddy.InstMethodsInter;
 import org.apache.skywalking.apm.agent.bytebuddy.Log;
+import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
+import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import org.apache.skywalking.apm.agent.bytebuddy.SWClassFileLocator;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
 import org.junit.Assert;
@@ -92,7 +92,6 @@ public class AbstractInterceptTest {
 
     protected void installMethodInterceptor(String className, String methodName, int round) {
         this.installMethodInterceptor1(className, methodName, round);
-//        this.installMethodInterceptor2(className, methodName, round);
     }
 
     protected void installMethodInterceptor1(String className, String methodName, int round) {
@@ -112,13 +111,7 @@ public class AbstractInterceptTest {
                                     ;
                         }
                 )
-                .with(new AgentBuilder.Listener.Adapter() {
-                    @Override
-                    public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
-                        System.err.println(String.format("Transform Error: interceptorClassName: %s, typeName: %s, classLoader: %s, module: %s, loaded: %s", interceptorClassName, typeName, classLoader, module, loaded));
-                        throwable.printStackTrace();
-                    }
-                })
+                .with(getListener(interceptorClassName))
                 .installOn(ByteBuddyAgent.install());
     }
 
@@ -138,19 +131,12 @@ public class AbstractInterceptTest {
                                     .intercept(Advice.to(InstMethodAdvice.class));
                         }
                 )
-                .with(new AgentBuilder.Listener.Adapter() {
-                    @Override
-                    public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
-                        System.err.println(String.format("Transform Error: interceptorClassName: %s, typeName: %s, classLoader: %s, module: %s, loaded: %s", interceptorClassName, typeName, classLoader, module, loaded));
-                        throwable.printStackTrace();
-                    }
-                })
+                .with(getListener(interceptorClassName))
                 .installOn(ByteBuddyAgent.install());
     }
 
     protected void installConstructorInterceptor(String className, int round) {
         installConstructorInterceptor1(className, round);
-//        installConstructorInterceptor2(className, round);
     }
 
     protected void installConstructorInterceptor1(String className, int round) {
@@ -172,13 +158,7 @@ public class AbstractInterceptTest {
                                     ));
                         }
                 )
-                .with(new AgentBuilder.Listener.Adapter() {
-                    @Override
-                    public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
-                        System.err.println(String.format("Transform Error: interceptorClass:%s, typeName: %s, classLoader: %s, module: %s, loaded: %s", interceptorClassName, typeName, classLoader, module, loaded));
-                        throwable.printStackTrace();
-                    }
-                })
+                .with(getListener(interceptorClassName))
                 .installOn(ByteBuddyAgent.install());
     }
 
@@ -198,13 +178,7 @@ public class AbstractInterceptTest {
                                     .intercept(Advice.to(ConstructorAdvice.class));
                         }
                 )
-                .with(new AgentBuilder.Listener.Adapter() {
-                    @Override
-                    public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
-                        System.err.println(String.format("Transform Error: interceptorClass:%s, typeName: %s, classLoader: %s, module: %s, loaded: %s", interceptorClassName, typeName, classLoader, module, loaded));
-                        throwable.printStackTrace();
-                    }
-                })
+                .with(getListener(interceptorClassName))
                 .installOn(ByteBuddyAgent.install());
     }
 
@@ -215,17 +189,12 @@ public class AbstractInterceptTest {
     protected AgentBuilder newAgentBuilder(String nameTrait) {
         ByteBuddy byteBuddy = new ByteBuddy()
                 .with(new SWAuxiliaryTypeNamingStrategy(nameTrait))
-                .with(new SWImplementationContextFactory(nameTrait))
-                ;
+                .with(new SWImplementationContextFactory(nameTrait));
 
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(nameTrait))
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
-    }
-
-    private static ClassLoader getClassLoader() {
-        return AbstractInterceptTest.class.getClassLoader();
     }
 
     protected void installTraceClassTransformer(String msg) {
@@ -243,5 +212,19 @@ public class AbstractInterceptTest {
             }
         };
         ByteBuddyAgent.install().addTransformer(classFileTransformer, true);
+    }
+
+    private static ClassLoader getClassLoader() {
+        return AbstractInterceptTest.class.getClassLoader();
+    }
+
+    private static AgentBuilder.Listener.Adapter getListener(String interceptorClassName) {
+        return new AgentBuilder.Listener.Adapter() {
+            @Override
+            public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
+                System.err.println(String.format("Transform Error: interceptorClassName: %s, typeName: %s, classLoader: %s, module: %s, loaded: %s", interceptorClassName, typeName, classLoader, module, loaded));
+                throwable.printStackTrace();
+            }
+        };
     }
 }

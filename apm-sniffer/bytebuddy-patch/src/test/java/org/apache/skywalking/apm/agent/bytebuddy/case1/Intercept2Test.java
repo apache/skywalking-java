@@ -23,7 +23,7 @@ import org.junit.Test;
 
 import java.lang.instrument.UnmodifiableClassException;
 
-public class InterceptTest2 extends AbstractInterceptTest {
+public class Intercept2Test extends AbstractInterceptTest {
 
     @Test
     public void test2() throws UnmodifiableClassException {

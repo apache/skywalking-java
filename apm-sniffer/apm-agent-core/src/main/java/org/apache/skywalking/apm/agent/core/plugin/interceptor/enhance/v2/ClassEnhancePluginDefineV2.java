@@ -66,7 +66,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
         if (staticMethodsInterceptV2Points == null || staticMethodsInterceptV2Points.length == 0) {
             return newClassBuilder;
         }
-        DelegateNamingResolver delegateNamingResolver = DelegateNamingResolver.get(typeDescription.getTypeName(), this);
+        DelegateNamingResolver delegateNamingResolver = new DelegateNamingResolver(typeDescription.getTypeName(), this);
 
         for (StaticMethodsInterceptV2Point staticMethodsInterceptV2Point : staticMethodsInterceptV2Points) {
             String interceptor = staticMethodsInterceptV2Point.getMethodsInterceptorV2();
@@ -115,7 +115,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
         ConstructorInterceptPoint[] constructorInterceptPoints = getConstructorsInterceptPoints();
         InstanceMethodsInterceptV2Point[] instanceMethodsInterceptV2Points = getInstanceMethodsInterceptV2Points();
         String enhanceOriginClassName = typeDescription.getTypeName();
-        DelegateNamingResolver fieldNamingResolver = DelegateNamingResolver.get(typeDescription.getTypeName(), this);
+        DelegateNamingResolver fieldNamingResolver = new DelegateNamingResolver(typeDescription.getTypeName(), this);
 
         boolean existedConstructorInterceptPoint = false;
         if (constructorInterceptPoints != null && constructorInterceptPoints.length > 0) {

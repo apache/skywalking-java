@@ -16,22 +16,21 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.bytebuddy.case1;
+package org.apache.skywalking.apm.agent.bytebuddy.cases;
 
-import org.apache.skywalking.apm.agent.bytebuddy.Log;
-import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
 import net.bytebuddy.agent.ByteBuddyAgent;
+import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectDO;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectService;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
 
-public class Retransform1Test extends AbstractRetransformTest {
+public class ReTransform1Test extends AbstractReTransformTest {
 
     @Test
-    public void testInterceptConstructor() throws UnmodifiableClassException {
+    public void testInterceptConstructor() throws Exception {
         Instrumentation instrumentation = ByteBuddyAgent.install();
 
         // install transformer
@@ -44,15 +43,12 @@ public class Retransform1Test extends AbstractRetransformTest {
         installConstructorInterceptor(PROJECT_SERVICE_CLASS_NAME, 1);
 
         // call target class
-        try {
-            callBizFoo(1);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            // check interceptors
-            checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
-        }
+        callBizFoo(1);
+
+        // check interceptors
+        checkMethodInterceptor(SAY_HELLO_METHOD, 1);
+        checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
+        checkErrors();
 
         ProjectService projectService = new ProjectService();
         ProjectDO originProjectDO = ProjectDO.builder()
@@ -61,7 +57,6 @@ public class Retransform1Test extends AbstractRetransformTest {
                 .build();
         projectService.add(originProjectDO);
         ProjectDO projectDO = projectService.getById(1);
-        Log.info(projectDO);
         projectService.list();
 
         // installTraceClassTransformer("Trace class: ");
@@ -78,12 +73,13 @@ public class Retransform1Test extends AbstractRetransformTest {
         checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
 
         projectDO = projectService.getById(1);
-        Log.info(projectDO);
+        Assert.assertEquals(originProjectDO, projectDO);
 
         checkConstructorInterceptor(PROJECT_SERVICE_CLASS_NAME, 1);
         checkMethodInterceptor("add", 1);
         checkMethodInterceptor("get", 1);
         checkMethodInterceptor("list", 1);
+        checkErrors();
     }
 
 }

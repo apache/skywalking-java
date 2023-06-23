@@ -16,15 +16,15 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.bytebuddy.case1;
+package org.apache.skywalking.apm.agent.bytebuddy.cases;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
-import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
 import org.apache.skywalking.apm.agent.bytebuddy.InstMethodsInter;
+import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
 import org.apache.skywalking.apm.agent.core.util.FileUtils;
 import org.junit.Test;
 
@@ -85,16 +85,11 @@ public class MultipleInterceptorTest extends AbstractInterceptTest {
                 })
                 .installOn(ByteBuddyAgent.install());
 
-        try {
-            callBizFoo(1);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            // check interceptors
-//            checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-//            checkMethodInterceptor(SAY_HELLO_METHOD, 2);
-            //checkConstructorInterceptor(1);
-        }
+        callBizFoo(1);
+        // check interceptors
+        // checkMethodInterceptor(SAY_HELLO_METHOD, 1);
+        checkMethodInterceptor(SAY_HELLO_METHOD, 2);
+        checkErrors();
     }
 
     private void enableClassDump() {

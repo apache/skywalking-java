@@ -24,11 +24,11 @@ import java.util.Map;
 
 public class EnhanceHelper {
 
-    private static List<String> INTERCEPTORS = new ArrayList<>();
-    private static List<Map.Entry<String, Throwable>> ERRORS = new ArrayList<>();
+    private static final List<String> INTERCEPTORS = new ArrayList<>();
+    private static final List<Map.Entry<String, Throwable>> ERRORS = new ArrayList<>();
 
     public static void onError(String message, Throwable error) {
-        ERRORS.add(new MapEntry(message, error));
+        ERRORS.add(new MapEntry<>(message, error));
     }
 
     public static void addInterceptor(String interceptor) {
@@ -49,7 +49,7 @@ public class EnhanceHelper {
     }
 
     private static class MapEntry<T, P> implements Map.Entry<T, P> {
-        private T key;
+        private final T key;
         private P value;
 
         public MapEntry(T key, P value) {

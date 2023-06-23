@@ -16,37 +16,30 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.bytebuddy.case1;
+package org.apache.skywalking.apm.agent.bytebuddy.cases;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.junit.Test;
 
-import java.lang.instrument.UnmodifiableClassException;
-
-public class Intercept5Test extends AbstractInterceptTest {
+public class Intercept2Test extends AbstractInterceptTest {
 
     @Test
-    public void test5() throws UnmodifiableClassException {
+    public void test2() {
         ByteBuddyAgent.install();
 
         // install transformer
-        installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 1);
-        installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 2);
+        installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
 
         // load target class
-        try {
-            callBizFoo(2);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            // check interceptors
-            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 2);
-        }
+        callBizFoo(2);
+
+        // check interceptors
+        checkMethodInterceptor(SAY_HELLO_METHOD, 1);
+        checkMethodInterceptor(SAY_HELLO_METHOD, 2);
+        checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
+        checkErrors();
     }
 }
 

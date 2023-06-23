@@ -34,16 +34,12 @@ import java.util.Objects;
  */
 public class DelegateNamingResolver {
     private static final String PREFIX = "delegate$";
-    private final String className;
-    private final int identifier;
     private final String fieldNamePrefix;
 
-    public DelegateNamingResolver(String className, int identifier) {
-        this.className = className;
-        this.identifier = identifier;
+    public DelegateNamingResolver(String className, AbstractClassEnhancePluginDefine pluginDefine) {
         // Interceptor delegate field name pattern: <name_trait>$delegate$<class_name_hash>$<plugin_define_hash>$<intercept_point_hash>
         // something like: InstMethodsInter sw$delegate$td03673$sib0lj0$5n874b1;
-        this.fieldNamePrefix = Constants.NAME_TRAIT + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(identifier) + "$";
+        this.fieldNamePrefix = Constants.NAME_TRAIT + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(pluginDefine.hashCode()) + "$";
     }
 
     public String resolve(Object interceptPoint) {
@@ -70,10 +66,6 @@ public class DelegateNamingResolver {
             return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptorV2(), point.isOverrideArgs());
         }
         return interceptPoint.hashCode();
-    }
-
-    public static DelegateNamingResolver get(String className, AbstractClassEnhancePluginDefine pluginDefine) {
-        return new DelegateNamingResolver(className, pluginDefine.hashCode());
     }
 
 }

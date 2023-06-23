@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.bytebuddy.case1;
+package org.apache.skywalking.apm.agent.bytebuddy.cases;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.apache.skywalking.apm.agent.bytebuddy.Log;
@@ -24,14 +24,11 @@ import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
 import org.junit.Test;
 
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
 
-import static org.apache.skywalking.apm.agent.bytebuddy.case1.AbstractRetransformTest.reTransform;
-
-public class Retransform2Test extends AbstractInterceptTest {
+public class ReTransform2Test extends AbstractReTransformTest {
 
     @Test
-    public void testInterceptConstructor() throws UnmodifiableClassException {
+    public void testInterceptConstructor() throws Exception {
         Instrumentation instrumentation = ByteBuddyAgent.install();
 
         //this.deleteDuplicatedFields = true;
@@ -46,37 +43,29 @@ public class Retransform2Test extends AbstractInterceptTest {
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, "greeting", 2);
 
         // call target class
-        try {
-            callBizFoo(2);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            // check interceptors
-            Log.info("-------------");
-            Log.info("Check interceptors ..");
-            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
-            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 2);
-        }
+        callBizFoo(2);
+
+        // check interceptors
+        Log.info("-------------");
+        Log.info("Check interceptors ..");
+        checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
+        checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
+        checkMethodInterceptor(SAY_HELLO_METHOD, 1);
+        checkMethodInterceptor(SAY_HELLO_METHOD, 2);
 
         // do retransform
         reTransform(instrumentation, BizFoo.class);
 
         // test again
-        try {
-            callBizFoo(2);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        } finally {
-            // check interceptors
-            Log.info("-------------");
-            Log.info("Check interceptors ..");
-            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
-            checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 1);
-            checkMethodInterceptor(SAY_HELLO_METHOD, 2);
-        }
+        callBizFoo(2);
+        // check interceptors
+        Log.info("-------------");
+        Log.info("Check interceptors ..");
+        checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
+        checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 2);
+        checkMethodInterceptor(SAY_HELLO_METHOD, 1);
+        checkMethodInterceptor(SAY_HELLO_METHOD, 2);
+        checkErrors();
     }
 
 }

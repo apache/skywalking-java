@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.bytebuddy.case1;
+package org.apache.skywalking.apm.agent.bytebuddy.cases;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
@@ -37,6 +37,10 @@ import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import org.apache.skywalking.apm.agent.bytebuddy.SWClassFileLocator;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
 import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.util.TraceClassVisitor;
 
@@ -59,12 +63,27 @@ public class AbstractInterceptTest {
     protected List<String> nameTraits = Arrays.asList("sw2023", "sw2024");
     protected boolean deleteDuplicatedFields = false;
 
+    @BeforeClass
+    public static void setUp() {
+        EnhanceHelper.clear();
+        Log.clear();
+    }
+
+    @Rule
+    public TestWatcher watcher = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            Log.error("Test failure: {}.{}(), error: {}", description.getTestClass(), description.getMethodName(), e);
+            Log.printToConsole();
+        }
+    };
+
     protected static void callBizFoo(int round) {
         Log.info("-------------");
         Log.info("callBizFoo: " + round);
         // load target class
         int intResult = new BizFoo().sayHello(BASE_INT_VALUE);
-        Log.info(intResult);
+        Log.info("result: " + intResult);
 
         String result = new BizFoo("Smith").sayHello("Joe");
         Log.info(result);
@@ -85,6 +104,10 @@ public class AbstractInterceptTest {
         String interceptorName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + className + "$" + round;
         Assert.assertTrue("Not found interceptor: " + interceptorName, interceptors.contains(interceptorName));
         Log.info("Found interceptor: " + interceptorName);
+    }
+
+    protected static void checkErrors() {
+        Assert.assertEquals("Error occurred in transform", 0, EnhanceHelper.getErrors().size());
     }
 
     protected void installMethodInterceptor(String className, String methodName, int round) {
@@ -179,7 +202,9 @@ public class AbstractInterceptTest {
         return new AgentBuilder.Listener.Adapter() {
             @Override
             public void onError(String typeName, ClassLoader classLoader, JavaModule module, boolean loaded, Throwable throwable) {
-                System.err.println(String.format("Transform Error: interceptorClassName: %s, typeName: %s, classLoader: %s, module: %s, loaded: %s", interceptorClassName, typeName, classLoader, module, loaded));
+                String msg = String.format("Transform Error: interceptorClassName: %s, typeName: %s, classLoader: %s, module: %s, loaded: %s", interceptorClassName, typeName, classLoader, module, loaded);
+                EnhanceHelper.onError(msg, throwable);
+                System.err.println(msg);
                 throwable.printStackTrace();
             }
         };

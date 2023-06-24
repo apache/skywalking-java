@@ -34,20 +34,26 @@ import java.util.concurrent.TimeUnit;
  * Get class bytecode from separate thread to bypass jdk limitation or bug: https://github.com/raphw/byte-buddy/issues/1434
  */
 public class SWClassFileLocator implements ClassFileLocator {
-    private static ILog LOGGER = LogManager.getLogger(SWClassFileLocator.class);
+    private static final ILog LOGGER = LogManager.getLogger(SWClassFileLocator.class);
+    private static final String[] TYPE_NAME_TRAITS = {"auxiliary$", "ByteBuddy$", "sw$"};
+    private static final int DEFAULT_TIMEOUT_SECONDS = 2;
 
     private final ForInstrumentation.ClassLoadingDelegate classLoadingDelegate;
-    private Instrumentation instrumentation;
-    private ClassLoader classLoader;
-    private String[] typeNameTraits = {"auxiliary$", "ByteBuddy$", "sw$"};
-    private BlockingQueue<ResolutionFutureTask> queue = new LinkedBlockingDeque<>();
-    private Thread thread;
-    private int timeoutSeconds = 2;
+    private final Instrumentation instrumentation;
+    private final ClassLoader classLoader;
+    private final BlockingQueue<ResolutionFutureTask> queue = new LinkedBlockingDeque<>();
+    private final Thread thread;
+    private final int timeoutSeconds;
     private volatile boolean closed;
 
     public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader) {
+        this(instrumentation, classLoader, DEFAULT_TIMEOUT_SECONDS);
+    }
+
+    public SWClassFileLocator(Instrumentation instrumentation, ClassLoader classLoader, int resolveTimeoutSeconds) {
         this.instrumentation = instrumentation;
         this.classLoader = classLoader;
+        this.timeoutSeconds = resolveTimeoutSeconds;
         classLoadingDelegate = ForInstrumentation.ClassLoadingDelegate.ForDelegatingClassLoader.of(classLoader);
 
         // Use thread instead of ExecutorService here, avoiding conflicts with apm-jdk-threadpool-plugin
@@ -94,7 +100,7 @@ public class SWClassFileLocator implements ClassFileLocator {
 
     private boolean match(String name) {
         boolean matched = false;
-        for (String typeNameTrait : typeNameTraits) {
+        for (String typeNameTrait : TYPE_NAME_TRAITS) {
             if (name.contains(typeNameTrait)) {
                 matched = true;
                 break;
@@ -145,10 +151,6 @@ public class SWClassFileLocator implements ClassFileLocator {
         closed = true;
         queue.clear();
         thread.interrupt();
-    }
-
-    public void setTimeoutSeconds(int timeoutSeconds) {
-        this.timeoutSeconds = timeoutSeconds;
     }
 
     private class ResolutionFutureTask {

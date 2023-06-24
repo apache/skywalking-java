@@ -25,13 +25,18 @@ import java.util.List;
 import java.util.Map;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
+import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
+import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
+import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
+import org.apache.skywalking.apm.agent.bytebuddy.SWMethodNameTransformer;
 import org.apache.skywalking.apm.agent.core.boot.AgentPackageNotFoundException;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
@@ -46,12 +51,13 @@ import org.apache.skywalking.apm.agent.core.plugin.PluginBootstrap;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
 import org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapInstrumentBoost;
-import org.apache.skywalking.apm.agent.core.plugin.bytebuddy.CacheableTransformerDecorator;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.jdk9module.JDK9ModuleExporter;
 
 import static net.bytebuddy.matcher.ElementMatchers.nameContains;
 import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 import static net.bytebuddy.matcher.ElementMatchers.not;
+import static org.apache.skywalking.apm.agent.core.conf.Constants.NAME_TRAIT;
 
 /**
  * The main entrance of sky-walking agent, based on javaagent mechanism.
@@ -69,7 +75,7 @@ public class SkyWalkingAgent {
         } catch (Exception e) {
             // try to resolve a new logger, and use the new logger to write the error log here
             LogManager.getLogger(SkyWalkingAgent.class)
-                      .error(e, "SkyWalking agent initialized failure. Shutting down.");
+                    .error(e, "SkyWalking agent initialized failure. Shutting down.");
             return;
         } finally {
             // refresh logger again after initialization finishes
@@ -91,9 +97,9 @@ public class SkyWalkingAgent {
             return;
         }
 
-        final ByteBuddy byteBuddy = new ByteBuddy().with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS));
+        LOGGER.info("Skywalking agent begin to install transformer ...");
 
-        AgentBuilder agentBuilder = new AgentBuilder.Default(byteBuddy).ignore(
+        AgentBuilder agentBuilder = newAgentBuilder().ignore(
             nameStartsWith("net.bytebuddy.")
                 .or(nameStartsWith("org.slf4j."))
                 .or(nameStartsWith("org.groovy."))
@@ -119,15 +125,6 @@ public class SkyWalkingAgent {
             return;
         }
 
-        if (Config.Agent.IS_CACHE_ENHANCED_CLASS) {
-            try {
-                agentBuilder = agentBuilder.with(new CacheableTransformerDecorator(Config.Agent.CLASS_CACHE_MODE));
-                LOGGER.info("SkyWalking agent class cache [{}] activated.", Config.Agent.CLASS_CACHE_MODE);
-            } catch (Exception e) {
-                LOGGER.error(e, "SkyWalking agent can't active class cache.");
-            }
-        }
-
         agentBuilder.type(pluginFinder.buildMatch())
                     .transform(new Transformer(pluginFinder))
                     .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
@@ -137,6 +134,8 @@ public class SkyWalkingAgent {
 
         PluginFinder.pluginInitCompleted();
 
+        LOGGER.info("Skywalking agent transformer has installed.");
+
         try {
             ServiceManager.INSTANCE.boot();
         } catch (Exception e) {
@@ -145,6 +144,21 @@ public class SkyWalkingAgent {
 
         Runtime.getRuntime()
                .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
+    }
+
+    /**
+     * Create a new agent builder through customized {@link ByteBuddy} powered by
+     * {@link SWAuxiliaryTypeNamingStrategy} {@link DelegateNamingResolver} {@link SWMethodNameTransformer} and {@link SWImplementationContextFactory}
+     */
+    private static AgentBuilder newAgentBuilder() {
+        final ByteBuddy byteBuddy = new ByteBuddy()
+                .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
+                .with(new SWAuxiliaryTypeNamingStrategy(NAME_TRAIT))
+                .with(new SWImplementationContextFactory(NAME_TRAIT));
+
+        SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(NAME_TRAIT);
+        return new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
+                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST);
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

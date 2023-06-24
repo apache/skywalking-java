@@ -111,6 +111,7 @@ public class SWClassFileLocator implements ClassFileLocator {
             if (aClass == null) {
                 return new Resolution.Illegal(name);
             }
+            // trigger re-transforming the target class, and receive bytecode in SWExtractionClassFileTransformer
             instrumentation.retransformClasses(new Class[]{aClass});
         } finally {
             instrumentation.removeTransformer(classFileTransformer);
@@ -140,14 +141,10 @@ public class SWClassFileLocator implements ClassFileLocator {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         closed = true;
         queue.clear();
         thread.interrupt();
-    }
-
-    public int getTimeoutSeconds() {
-        return timeoutSeconds;
     }
 
     public void setTimeoutSeconds(int timeoutSeconds) {

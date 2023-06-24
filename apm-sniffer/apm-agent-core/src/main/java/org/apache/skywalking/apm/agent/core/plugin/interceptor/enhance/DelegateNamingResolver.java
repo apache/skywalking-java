@@ -22,6 +22,7 @@ import net.bytebuddy.utility.RandomString;
 import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InterceptPoint;
+import org.apache.skywalking.apm.agent.core.util.InterceptPointUtil;
 
 import java.util.Objects;
 
@@ -40,6 +41,6 @@ public class DelegateNamingResolver {
 
     public String resolve(InterceptPoint interceptPoint) {
         Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
-        return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
+        return fieldNamePrefix + RandomString.hashOf(InterceptPointUtil.computeHashCode(interceptPoint));
     }
 }

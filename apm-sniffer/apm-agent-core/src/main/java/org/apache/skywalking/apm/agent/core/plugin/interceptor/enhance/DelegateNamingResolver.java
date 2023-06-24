@@ -40,6 +40,6 @@ public class DelegateNamingResolver {
 
     public String resolve(InterceptPoint interceptPoint) {
         Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
-        return fieldNamePrefix + RandomString.hashOf(interceptPoint.hashcode());
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
     }
 }

@@ -38,7 +38,7 @@ public interface ConstructorInterceptV2Point extends InterceptPoint {
      */
     String getConstructorInterceptorV2();
 
-    default int hashcode() {
+    default int computeHashCode() {
         return Objects.hash(this.getClass().getName(), this.getConstructorMatcher().toString(), this.getConstructorInterceptorV2());
     }
 

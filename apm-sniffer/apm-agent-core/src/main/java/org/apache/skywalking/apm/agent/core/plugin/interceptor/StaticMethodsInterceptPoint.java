@@ -45,7 +45,7 @@ public interface StaticMethodsInterceptPoint extends InterceptPoint {
 
     boolean isOverrideArgs();
 
-    default int hashcode() {
+    default int computeHashCode() {
         return Objects.hash(this.getClass().getName(), this.getMethodsMatcher().toString(), this.getMethodsInterceptor(), this.isOverrideArgs());
     }
 }

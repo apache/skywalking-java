@@ -12,6 +12,7 @@ Release Notes.
 * Fix the conflict between the logging kernel and the JDK threadpool plugin.
 * Fix the thread safety bug of finishing operation for the span named "SpringCloudGateway/sendRequest"
 * Fix NPE in guava-eventbus-plugin.
+* Support re-transform/hot-swap classes with other java agents, and remove the obsolete cache enhanced class feature. 
 
 #### Documentation
 

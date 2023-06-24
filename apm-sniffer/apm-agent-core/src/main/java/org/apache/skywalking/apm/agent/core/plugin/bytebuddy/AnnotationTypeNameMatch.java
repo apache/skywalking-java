@@ -55,6 +55,10 @@ public class AnnotationTypeNameMatch<T extends AnnotationDescription> implements
         return target.getAnnotationType().asErasure().getName().equals(annotationTypeName);
     }
 
+    /**
+     * To ensure that the hashCode for recreating the XxxInterceptPoint instance is the same as the previous instance,
+     * each ElementMatcher implementation class needs to implement toString() method.
+     */
     @Override
     public String toString() {
         return "AnnotationTypeNameMatch{" +

@@ -53,6 +53,10 @@ public class ReturnTypeNameMatch implements ElementMatcher<MethodDescription> {
         return target.getReturnType().asErasure().getName().equals(returnTypeName);
     }
 
+    /**
+     * To ensure that the hashCode for recreating the XxxInterceptPoint instance is the same as the previous instance,
+     * each ElementMatcher implementation class needs to implement toString() method.
+     */
     @Override
     public String toString() {
         return "ReturnTypeNameMatch{" +

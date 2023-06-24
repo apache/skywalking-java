@@ -45,6 +45,11 @@ public interface StaticMethodsInterceptPoint {
 
     boolean isOverrideArgs();
 
+    /**
+     * To ensure that the hashCode for recreating the XxxInterceptPoint instance is the same as the previous instance,
+     * each ElementMatcher implementation class needs to implement toString() method.
+     * @return hashCode of this intercept point
+     */
     default int computeHashCode() {
         return Objects.hash(this.getClass().getName(), this.getMethodsMatcher().toString(), this.getMethodsInterceptor(), this.isOverrideArgs());
     }

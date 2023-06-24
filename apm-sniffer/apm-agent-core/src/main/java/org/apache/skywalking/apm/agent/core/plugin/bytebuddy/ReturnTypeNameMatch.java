@@ -54,6 +54,17 @@ public class ReturnTypeNameMatch implements ElementMatcher<MethodDescription> {
     }
 
     /**
+     * To ensure that the hashCode for recreating the XxxInterceptPoint instance is the same as the previous instance,
+     * each ElementMatcher implementation class needs to implement toString() method.
+     */
+    @Override
+    public String toString() {
+        return "ReturnTypeNameMatch{" +
+                "returnTypeName='" + returnTypeName + '\'' +
+                '}';
+    }
+
+    /**
      * The static method to create {@link ReturnTypeNameMatch} This is a delegate method to follow byte-buddy {@link
      * ElementMatcher}'s code style.
      *

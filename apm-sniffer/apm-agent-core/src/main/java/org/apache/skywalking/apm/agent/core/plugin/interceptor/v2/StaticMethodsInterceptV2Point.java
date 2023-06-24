@@ -21,7 +21,6 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.v2;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InterceptPoint;
 
 import java.util.Objects;
 
@@ -32,7 +31,7 @@ import java.util.Objects;
  * ref to two others: {@link ConstructorInterceptPoint} and {@link InstanceMethodsInterceptV2Point}
  * <p>
  */
-public interface StaticMethodsInterceptV2Point extends InterceptPoint {
+public interface StaticMethodsInterceptV2Point {
     /**
      * static methods matcher.
      *

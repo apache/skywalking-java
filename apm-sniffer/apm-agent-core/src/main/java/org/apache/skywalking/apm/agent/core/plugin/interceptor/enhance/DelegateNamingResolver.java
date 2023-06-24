@@ -21,7 +21,12 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance;
 import net.bytebuddy.utility.RandomString;
 import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.ConstructorInterceptV2Point;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.InstanceMethodsInterceptV2Point;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsInterceptV2Point;
 
 import java.util.Objects;
 
@@ -38,7 +43,32 @@ public class DelegateNamingResolver {
         this.fieldNamePrefix = Constants.NAME_TRAIT + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(pluginDefine.hashCode()) + "$";
     }
 
-    public String resolve(InterceptPoint interceptPoint) {
+    public String resolve(ConstructorInterceptPoint interceptPoint) {
+        Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
+    }
+
+    public String resolve(ConstructorInterceptV2Point interceptPoint) {
+        Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
+    }
+
+    public String resolve(InstanceMethodsInterceptPoint interceptPoint) {
+        Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
+    }
+
+    public String resolve(InstanceMethodsInterceptV2Point interceptPoint) {
+        Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
+    }
+
+    public String resolve(StaticMethodsInterceptPoint interceptPoint) {
+        Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
+    }
+
+    public String resolve(StaticMethodsInterceptV2Point interceptPoint) {
         Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
         return fieldNamePrefix + RandomString.hashOf(interceptPoint.computeHashCode());
     }

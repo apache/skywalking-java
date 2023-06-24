@@ -19,11 +19,10 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.v2;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InterceptPoint;
 
 import java.util.Objects;
 
-public interface ConstructorInterceptV2Point extends InterceptPoint {
+public interface ConstructorInterceptV2Point {
 
     /**
      * Constructor matcher

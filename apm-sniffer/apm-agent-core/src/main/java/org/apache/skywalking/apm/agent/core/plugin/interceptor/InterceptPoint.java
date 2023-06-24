@@ -19,4 +19,6 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor;
 
 public interface InterceptPoint {
 
+    int computeHashCode();
+
 }

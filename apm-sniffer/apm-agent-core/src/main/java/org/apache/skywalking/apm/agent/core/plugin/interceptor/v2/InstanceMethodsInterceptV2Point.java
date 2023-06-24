@@ -21,6 +21,9 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.v2;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InterceptPoint;
+
+import java.util.Objects;
 
 /**
  * One of the three "Intercept Point". "Intercept Point" is a definition about where and how intercept happens. In this
@@ -29,7 +32,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
  * ref to two others: {@link ConstructorInterceptPoint} and {@link StaticMethodsInterceptV2Point}
  * <p>
  */
-public interface InstanceMethodsInterceptV2Point {
+public interface InstanceMethodsInterceptV2Point extends InterceptPoint {
     /**
      * class instance methods matcher.
      *
@@ -43,4 +46,8 @@ public interface InstanceMethodsInterceptV2Point {
     String getMethodsInterceptorV2();
 
     boolean isOverrideArgs();
+
+    default int hashcode() {
+        return Objects.hash(this.getClass().getName(), this.getMethodsMatcher().toString(), this.getMethodsInterceptorV2(), this.isOverrideArgs());
+    }
 }

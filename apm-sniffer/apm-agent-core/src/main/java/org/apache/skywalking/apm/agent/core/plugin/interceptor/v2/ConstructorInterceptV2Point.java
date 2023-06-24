@@ -19,8 +19,11 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.v2;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InterceptPoint;
 
-public interface ConstructorInterceptV2Point {
+import java.util.Objects;
+
+public interface ConstructorInterceptV2Point extends InterceptPoint {
 
     /**
      * Constructor matcher
@@ -34,5 +37,9 @@ public interface ConstructorInterceptV2Point {
      * org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor}
      */
     String getConstructorInterceptorV2();
+
+    default int hashcode() {
+        return Objects.hash(this.getClass().getName(), this.getConstructorMatcher().toString(), this.getConstructorInterceptorV2());
+    }
 
 }

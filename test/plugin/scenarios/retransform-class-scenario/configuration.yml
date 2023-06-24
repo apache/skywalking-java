@@ -20,4 +20,4 @@ healthCheck: http://localhost:8080/case/healthCheck
 startScript: ./bin/startup.sh
 environment:
 dependencies:
-withPlugins: apm-*.jar
+withPlugins: apm-spring-*.jar, apm-jdk-*.jar

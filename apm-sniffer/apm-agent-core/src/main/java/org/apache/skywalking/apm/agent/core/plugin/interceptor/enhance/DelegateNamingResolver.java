@@ -21,11 +21,7 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance;
 import net.bytebuddy.utility.RandomString;
 import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.InstanceMethodsInterceptV2Point;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsInterceptV2Point;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.InterceptPoint;
 
 import java.util.Objects;
 
@@ -42,30 +38,8 @@ public class DelegateNamingResolver {
         this.fieldNamePrefix = Constants.NAME_TRAIT + PREFIX + RandomString.hashOf(className.hashCode()) + "$" + RandomString.hashOf(pluginDefine.hashCode()) + "$";
     }
 
-    public String resolve(Object interceptPoint) {
+    public String resolve(InterceptPoint interceptPoint) {
         Objects.requireNonNull(interceptPoint, "interceptPoint cannot be null");
-        return fieldNamePrefix + RandomString.hashOf(computeHashCode(interceptPoint));
+        return fieldNamePrefix + RandomString.hashOf(interceptPoint.hashcode());
     }
-
-    private int computeHashCode(Object interceptPoint) {
-        String interceptPointClassName = interceptPoint.getClass().getName();
-        if (interceptPoint instanceof ConstructorInterceptPoint) {
-            ConstructorInterceptPoint point = (ConstructorInterceptPoint) interceptPoint;
-            return Objects.hash(interceptPointClassName, point.getConstructorMatcher().toString(), point.getConstructorInterceptor());
-        } else if (interceptPoint instanceof InstanceMethodsInterceptPoint) {
-            InstanceMethodsInterceptPoint point = (InstanceMethodsInterceptPoint) interceptPoint;
-            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptor(), point.isOverrideArgs());
-        } else if (interceptPoint instanceof InstanceMethodsInterceptV2Point) {
-            InstanceMethodsInterceptV2Point point = (InstanceMethodsInterceptV2Point) interceptPoint;
-            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptorV2(), point.isOverrideArgs());
-        } else if (interceptPoint instanceof StaticMethodsInterceptPoint) {
-            StaticMethodsInterceptPoint point = (StaticMethodsInterceptPoint) interceptPoint;
-            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptor(), point.isOverrideArgs());
-        } else if (interceptPoint instanceof StaticMethodsInterceptV2Point) {
-            StaticMethodsInterceptV2Point point = (StaticMethodsInterceptV2Point) interceptPoint;
-            return Objects.hash(interceptPointClassName, point.getMethodsMatcher().toString(), point.getMethodsInterceptorV2(), point.isOverrideArgs());
-        }
-        return interceptPoint.hashCode();
-    }
-
 }

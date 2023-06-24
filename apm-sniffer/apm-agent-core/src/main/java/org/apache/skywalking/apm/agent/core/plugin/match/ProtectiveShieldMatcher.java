@@ -52,4 +52,9 @@ public class ProtectiveShieldMatcher<T> extends ElementMatcher.Junction.Abstract
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "ProtectiveShieldMatcher(" + matcher + ')';
+    }
 }

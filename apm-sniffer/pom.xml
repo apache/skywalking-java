@@ -37,6 +37,7 @@
         <module>bootstrap-plugins</module>
         <module>optional-plugins</module>
         <module>optional-reporter-plugins</module>
+        <module>bytebuddy-patch</module>
     </modules>
 
     <properties>

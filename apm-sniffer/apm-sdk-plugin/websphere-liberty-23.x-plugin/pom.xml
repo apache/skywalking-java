@@ -30,7 +30,7 @@
     <artifactId>websphere-liberty-23.x-plugin</artifactId>
 
     <properties>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
     </properties>
 
     <dependencies>

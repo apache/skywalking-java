@@ -25,18 +25,17 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import static org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch.byHierarchyMatch;
 
-public class AsyncContextInstrumentation extends AbstractWitnessInstrumentation {
+public class IResponseInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "com.ibm.ws.webcontainer.async.AsyncContextImpl";
+    private static final String ENHANCE_CLASS = "com.ibm.websphere.servlet.response.IResponse";
 
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.websphereliberty.v23.AsyncContextInterceptor";
+    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.websphereliberty.v23.IResponseInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+        return byHierarchyMatch(ENHANCE_CLASS);
     }
 
     @Override
@@ -50,8 +49,7 @@ public class AsyncContextInstrumentation extends AbstractWitnessInstrumentation 
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("startWithExecutorThread")
-                        .and(takesArguments(2));
+                    return named("setStatusCode");
                 }
 
                 @Override
@@ -61,7 +59,7 @@ public class AsyncContextInstrumentation extends AbstractWitnessInstrumentation 
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return true;
+                    return false;
                 }
             }
         };

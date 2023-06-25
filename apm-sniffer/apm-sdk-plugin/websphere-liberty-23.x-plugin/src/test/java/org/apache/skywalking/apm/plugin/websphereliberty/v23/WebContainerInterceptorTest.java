@@ -18,9 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.websphereliberty.v23;
 
+import com.ibm.websphere.servlet.request.IRequest;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
@@ -52,9 +51,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(TracingSegmentRunner.class)
-public class JavaxFilterManagerInterceptorTest {
+public class WebContainerInterceptorTest {
 
-    private JavaxFilterManagerInvokeInterceptor handleRequestInterceptor;
+    private WebContainerInterceptor handleRequestInterceptor;
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
@@ -65,9 +64,9 @@ public class JavaxFilterManagerInterceptorTest {
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private HttpServletRequest request;
+    private IRequest request;
     @Mock
-    private HttpServletResponse response;
+    private EnhancedInstance response;
     @Mock
     private MethodInterceptResult methodInterceptResult;
 
@@ -79,11 +78,15 @@ public class JavaxFilterManagerInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
-        handleRequestInterceptor = new JavaxFilterManagerInvokeInterceptor();
+        handleRequestInterceptor = new WebContainerInterceptor();
 
         when(request.getMethod()).thenReturn("GET");
+        when(request.getScheme()).thenReturn("http");
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getServerPort()).thenReturn(8080);
         when(request.getRequestURI()).thenReturn("/test/testRequestURL");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/testRequestURL"));
+
+        when(response.getSkyWalkingDynamicField()).thenReturn(200);
 
         arguments = new Object[] {
             request,
@@ -143,7 +146,7 @@ public class JavaxFilterManagerInterceptorTest {
     private void assertTraceSegmentRef(TraceSegmentRef ref) {
         assertThat(SegmentRefHelper.getParentServiceInstance(ref), is("instance"));
         assertThat(SegmentRefHelper.getSpanId(ref), is(3));
-        assertThat(SegmentRefHelper.getTraceSegmentId(ref).toString(), is("3.4.5"));
+        assertThat(SegmentRefHelper.getTraceSegmentId(ref), is("3.4.5"));
     }
 
     private void assertHttpSpan(AbstractTracingSpan span) {

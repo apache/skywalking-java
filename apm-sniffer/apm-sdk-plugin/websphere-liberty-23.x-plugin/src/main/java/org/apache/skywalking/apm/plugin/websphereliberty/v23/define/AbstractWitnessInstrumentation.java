@@ -16,13 +16,16 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.webspheresource.com.ibm.ws.webcontainer.async;
+package org.apache.skywalking.apm.plugin.websphereliberty.v23.define;
 
-/**
- * fake class for compile, will be removed from final package jar
- */
-public class DispatchRunnable implements Runnable {
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+
+public abstract class AbstractWitnessInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+
     @Override
-    public void run() {
+    protected String[] witnessClasses() {
+        return new String[] {
+            "com.ibm.ws.webcontainer.osgi.DynamicVirtualHost"
+        };
     }
 }

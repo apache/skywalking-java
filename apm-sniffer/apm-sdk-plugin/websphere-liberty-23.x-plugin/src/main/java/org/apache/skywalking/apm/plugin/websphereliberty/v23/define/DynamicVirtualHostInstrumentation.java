@@ -22,21 +22,17 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-/**
- * for websphere traditional WebAppFilterManager enhance
- */
-public class JavaxFilterManagerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class DynamicVirtualHostInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "com.ibm.ws.webcontainer.filter.WebAppFilterManager";
+    private static final String ENHANCE_CLASS = "com.ibm.ws.webcontainer.osgi.DynamicVirtualHost";
 
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.websphereliberty.v23.JavaxFilterManagerInvokeInterceptor";
+    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.websphereliberty.v23.DynamicVirtualHostInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -54,9 +50,8 @@ public class JavaxFilterManagerInstrumentation extends ClassInstanceMethodsEnhan
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("invokeFilters")
-                        .and(takesArgument(0, named("javax.servlet.ServletRequest")))
-                        .and(takesArgument(1, named("javax.servlet.ServletResponse")));
+                    return named("createRunnableHandler")
+                        .and(takesArguments(3));
                 }
 
                 @Override

@@ -22,21 +22,16 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-/**
- * for websphere liberty WebAppFilterManager enhance
- */
-public class JakartaFilterManagerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class WebContainerInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "com.ibm.ws.webcontainer.filter.WebAppFilterManager";
+    private static final String ENHANCE_CLASS = "com.ibm.ws.webcontainer.WebContainer";
 
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.websphereliberty.v23.JakartaFilterManagerInvokeInterceptor";
+    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.websphereliberty.v23.WebContainerInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -54,9 +49,7 @@ public class JakartaFilterManagerInstrumentation extends ClassInstanceMethodsEnh
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("invokeFilters")
-                        .and(takesArgument(0, named("jakarta.servlet.ServletRequest")))
-                        .and(takesArgument(1, named("jakarta.servlet.ServletResponse")));
+                    return named("handleRequest");
                 }
 
                 @Override

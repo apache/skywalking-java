@@ -16,12 +16,12 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.webspheresource.com.ibm.ws.webcontainer.async;
+package com.ibm.ws.webcontainer.async;
 
 /**
- * fake class for compile, will be removed from final package jar
+ * mock class for compile, will be removed from final package jar
  */
-public class CompleteRunnable implements Runnable {
+public class DispatchRunnable implements Runnable {
     @Override
     public void run() {
     }

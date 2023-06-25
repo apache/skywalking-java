@@ -13,23 +13,46 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.apache.skywalking.apm.plugin.websphereliberty.v23.async;
 
+import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+
 public class RunnableWrapper implements Runnable {
-    final Runnable runnable;
 
-    public RunnableWrapper(Runnable runnable) {
+    private final Runnable runnable;
+
+    private final ContextSnapshot snapshot;
+
+    private final AbstractSpan asyncSpan;
+
+    private final String operationName;
+
+    public RunnableWrapper(Runnable runnable, ContextSnapshot snapshot, AbstractSpan asyncSpan, String operationName) {
         this.runnable = runnable;
-    }
-
-    public static RunnableWrapper of(Runnable r) {
-        return new RunnableWrapper(r);
+        this.snapshot = snapshot;
+        this.asyncSpan = asyncSpan;
+        this.operationName = operationName;
     }
 
     @Override
     public void run() {
-        this.runnable.run();
+        AbstractSpan span = ContextManager.createLocalSpan(operationName);
+        span.setComponent(ComponentsDefine.JDK_THREADING);
+        SpanLayer.asHttp(span);
+
+        try {
+            ContextManager.continued(snapshot);
+            runnable.run();
+        } finally {
+            ContextManager.stopSpan();
+            asyncSpan.asyncFinish();
+        }
     }
 }

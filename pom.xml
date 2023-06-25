@@ -424,7 +424,10 @@
                         org/apache/skywalking/oap/server/configuration/service/*.java,
                         **/jmh_generated/*_jmhType*.java,
                         **/jmh_generated/*_jmhTest.java,
-                        net/bytebuddy/**
+                        net/bytebuddy/**,
+                        com/ibm/websphere/servlet/request/IRequest.java,
+                        com/ibm/ws/webcontainer/async/CompleteRunnable.java,
+                        com/ibm/ws/webcontainer/async/DispatchRunnable.java
                     </excludes>
                     <propertyExpansion>
                         import.control=${maven.multiModuleProjectDirectory}/apm-checkstyle/importControl.xml

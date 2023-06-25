@@ -18,8 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.websphereliberty.v23;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.ibm.websphere.servlet.request.IRequest;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -33,7 +32,7 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.plugin.websphereliberty.v23.async.PropagateRunnableWrapper;
+import org.apache.skywalking.apm.plugin.websphereliberty.v23.async.RunnableWrapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +52,7 @@ import static org.mockito.Mockito.when;
 public class AsyncContextInterceptorTest {
 
     private AsyncContextInterceptor asyncContextInterceptor;
-    private JakartaFilterManagerInvokeInterceptor handleRequestInterceptor;
+    private WebContainerInterceptor handleRequestInterceptor;
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
@@ -64,9 +63,9 @@ public class AsyncContextInterceptorTest {
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private HttpServletRequest request;
+    private IRequest request;
     @Mock
-    private HttpServletResponse response;
+    private EnhancedInstance response;
 
     @Mock
     private Runnable runnable;
@@ -90,11 +89,15 @@ public class AsyncContextInterceptorTest {
     @Before
     public void setUp() throws Exception {
         asyncContextInterceptor = new AsyncContextInterceptor();
-        handleRequestInterceptor = new JakartaFilterManagerInvokeInterceptor();
+        handleRequestInterceptor = new WebContainerInterceptor();
 
         when(request.getMethod()).thenReturn("GET");
+        when(request.getScheme()).thenReturn("http");
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getServerPort()).thenReturn(8080);
         when(request.getRequestURI()).thenReturn("/test/testRequestURL");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/testRequestURL"));
+
+        when(response.getSkyWalkingDynamicField()).thenReturn(200);
 
         containerArguments = new Object[] {
             request,
@@ -123,8 +126,8 @@ public class AsyncContextInterceptorTest {
             mockAsyncContext, null, asyncArguments, asyncArgumentType, asyncInterceptResult);
 
         Thread thread = new Thread(() -> {
-            PropagateRunnableWrapper propagateRunnableWrappers = (PropagateRunnableWrapper) asyncArguments[0];
-            propagateRunnableWrappers.run();
+            RunnableWrapper runnableWrappers = (RunnableWrapper) asyncArguments[0];
+            runnableWrappers.run();
         });
 
         asyncContextInterceptor.afterMethod(mockAsyncContext, null, asyncArguments, asyncArgumentType, null);

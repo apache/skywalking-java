@@ -18,8 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.websphereliberty.v23;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.ibm.websphere.servlet.request.IRequest;
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
@@ -32,12 +31,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
-public class JakartaFilterManagerInvokeInterceptor implements InstanceMethodsAroundInterceptor {
+public class WebContainerInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        HttpServletRequest request = (HttpServletRequest) allArguments[0];
+        IRequest request = (IRequest) allArguments[0];
         ContextCarrier contextCarrier = new ContextCarrier();
 
         CarrierItem next = contextCarrier.items();
@@ -49,7 +48,8 @@ public class JakartaFilterManagerInvokeInterceptor implements InstanceMethodsAro
         String operationName = String.join(":", request.getMethod(), request.getRequestURI());
         AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
 
-        String url = request.getRequestURL().toString();
+        String url = request.getScheme() + "://" +
+            request.getServerName() + ":" + request.getServerPort() + request.getRequestURI();
         Tags.URL.set(span, url);
         Tags.HTTP.METHOD.set(span, request.getMethod());
 
@@ -63,7 +63,8 @@ public class JakartaFilterManagerInvokeInterceptor implements InstanceMethodsAro
                               Object ret) throws Throwable {
         AbstractSpan span = ContextManager.activeSpan();
 
-        int statusCode = ((HttpServletResponse) allArguments[1]).getStatus();
+        EnhancedInstance response = (EnhancedInstance) allArguments[1];
+        int statusCode = (int) response.getSkyWalkingDynamicField();
         Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
 
         if (statusCode >= 400) {

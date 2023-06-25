@@ -18,20 +18,16 @@
 
 package org.apache.skywalking.apm.plugin.websphereliberty.v23;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.ibm.websphere.servlet.request.IRequest;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
-import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegmentRef;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
 import org.apache.skywalking.apm.agent.test.helper.SegmentRefHelper;
-import org.apache.skywalking.apm.agent.test.helper.SpanHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
@@ -52,9 +48,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(TracingSegmentRunner.class)
-public class JakartaFilterManagerInterceptorTest {
+public class DynamicVirtualHostInterceptorTest {
 
-    private JakartaFilterManagerInvokeInterceptor handleRequestInterceptor;
+    private DynamicVirtualHostInterceptor virtualHostInterceptor;
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
@@ -65,11 +61,9 @@ public class JakartaFilterManagerInterceptorTest {
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private HttpServletRequest request;
+    private IRequest request;
     @Mock
-    private HttpServletResponse response;
-    @Mock
-    private MethodInterceptResult methodInterceptResult;
+    private EnhancedInstance response;
 
     @Mock
     private EnhancedInstance enhancedInstance;
@@ -79,11 +73,13 @@ public class JakartaFilterManagerInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
-        handleRequestInterceptor = new JakartaFilterManagerInvokeInterceptor();
+        virtualHostInterceptor = new DynamicVirtualHostInterceptor();
 
         when(request.getMethod()).thenReturn("GET");
+        when(request.getScheme()).thenReturn("http");
+        when(request.getServerName()).thenReturn("localhost");
+        when(request.getServerPort()).thenReturn(8080);
         when(request.getRequestURI()).thenReturn("/test/testRequestURL");
-        when(request.getRequestURL()).thenReturn(new StringBuffer("http://localhost:8080/test/testRequestURL"));
 
         arguments = new Object[] {
             request,
@@ -96,24 +92,12 @@ public class JakartaFilterManagerInterceptorTest {
     }
 
     @Test
-    public void testWithoutSerializedContextData() throws Throwable {
-        handleRequestInterceptor.beforeMethod(enhancedInstance, null, arguments, argumentType, methodInterceptResult);
-        handleRequestInterceptor.afterMethod(enhancedInstance, null, arguments, argumentType, null);
-
-        assertThat(segmentStorage.getTraceSegments().size(), is(1));
-        TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
-        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
-        assertHttpSpan(spans.get(0));
-    }
-
-    @Test
-    public void testWithSerializedContextData() throws Throwable {
+    public void testContextRootNotFound() throws Throwable {
         when(request.getHeader(
             SW8CarrierItem.HEADER_NAME)).thenReturn(
             "1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA=");
 
-        handleRequestInterceptor.beforeMethod(enhancedInstance, null, arguments, argumentType, methodInterceptResult);
-        handleRequestInterceptor.afterMethod(enhancedInstance, null, arguments, argumentType, null);
+        virtualHostInterceptor.afterMethod(enhancedInstance, null, arguments, argumentType, null);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
@@ -123,33 +107,18 @@ public class JakartaFilterManagerInterceptorTest {
         assertTraceSegmentRef(traceSegment.getRef());
     }
 
-    @Test
-    public void testWithOccurException() throws Throwable {
-        handleRequestInterceptor.beforeMethod(enhancedInstance, null, arguments, argumentType, methodInterceptResult);
-        handleRequestInterceptor.handleMethodException(
-            enhancedInstance, null, arguments, argumentType, new RuntimeException());
-        handleRequestInterceptor.afterMethod(enhancedInstance, null, arguments, argumentType, null);
-
-        assertThat(segmentStorage.getTraceSegments().size(), is(1));
-        TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
-        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
-
-        assertHttpSpan(spans.get(0));
-        List<LogDataEntity> logDataEntities = SpanHelper.getLogs(spans.get(0));
-        assertThat(logDataEntities.size(), is(1));
-        SpanAssert.assertException(logDataEntities.get(0), RuntimeException.class);
-    }
-
     private void assertTraceSegmentRef(TraceSegmentRef ref) {
         assertThat(SegmentRefHelper.getParentServiceInstance(ref), is("instance"));
         assertThat(SegmentRefHelper.getSpanId(ref), is(3));
-        assertThat(SegmentRefHelper.getTraceSegmentId(ref).toString(), is("3.4.5"));
+        assertThat(SegmentRefHelper.getTraceSegmentId(ref), is("3.4.5"));
     }
 
     private void assertHttpSpan(AbstractTracingSpan span) {
         assertThat(span.getOperationName(), is("GET:/test/testRequestURL"));
         assertComponent(span, ComponentsDefine.WEBSPHERE);
         SpanAssert.assertTag(span, 0, "http://localhost:8080/test/testRequestURL");
+        SpanAssert.assertTag(span, 1, "GET");
+        SpanAssert.assertTag(span, 2, "404");
         assertThat(span.isEntry(), is(true));
         SpanAssert.assertLayer(span, SpanLayer.HTTP);
     }

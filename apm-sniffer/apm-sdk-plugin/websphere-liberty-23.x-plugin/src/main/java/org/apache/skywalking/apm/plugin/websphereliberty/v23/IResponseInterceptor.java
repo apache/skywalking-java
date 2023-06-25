@@ -19,64 +19,27 @@
 package org.apache.skywalking.apm.plugin.websphereliberty.v23;
 
 import java.lang.reflect.Method;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.skywalking.apm.agent.core.context.CarrierItem;
-import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
-public class JavaxFilterManagerInvokeInterceptor implements InstanceMethodsAroundInterceptor {
+public class IResponseInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        HttpServletRequest request = (HttpServletRequest) allArguments[0];
-        ContextCarrier contextCarrier = new ContextCarrier();
-
-        CarrierItem next = contextCarrier.items();
-        while (next.hasNext()) {
-            next = next.next();
-            next.setHeadValue(request.getHeader(next.getHeadKey()));
-        }
-
-        String operationName = String.join(":", request.getMethod(), request.getRequestURI());
-        AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
-
-        String url = request.getRequestURL().toString();
-        Tags.URL.set(span, url);
-        Tags.HTTP.METHOD.set(span, request.getMethod());
-
-        span.setComponent(ComponentsDefine.WEBSPHERE);
-
-        SpanLayer.asHttp(span);
+        // save http status code
+        objInst.setSkyWalkingDynamicField(allArguments[0]);
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
-        AbstractSpan span = ContextManager.activeSpan();
-
-        int statusCode = ((HttpServletResponse) allArguments[1]).getStatus();
-        Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
-
-        if (statusCode >= 400) {
-            span.errorOccurred();
-        }
-
-        ContextManager.stopSpan();
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
     }
 }

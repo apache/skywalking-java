@@ -22,7 +22,7 @@
 
     <groupId>org.apache.skywalking</groupId>
     <artifactId>java-agent</artifactId>
-    <version>8.17.0-SNAPSHOT</version>
+    <version>9.0.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.apache</groupId>
@@ -86,7 +86,7 @@
         <lombok.version>1.18.20</lombok.version>
 
         <!-- core lib dependency -->
-        <bytebuddy.version>1.12.19</bytebuddy.version>
+        <bytebuddy.version>1.14.4</bytebuddy.version>
         <grpc.version>1.50.0</grpc.version>
         <netty.version>4.1.86.Final</netty.version>
         <gson.version>2.8.9</gson.version>
@@ -240,9 +240,13 @@
 
             <dependency>
                 <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${bytebuddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
                 <version>${bytebuddy.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.objenesis</groupId>
@@ -419,7 +423,8 @@
                         org/apache/skywalking/oap/server/exporter/grpc/*.java,
                         org/apache/skywalking/oap/server/configuration/service/*.java,
                         **/jmh_generated/*_jmhType*.java,
-                        **/jmh_generated/*_jmhTest.java
+                        **/jmh_generated/*_jmhTest.java,
+                        net/bytebuddy/**
                     </excludes>
                     <propertyExpansion>
                         import.control=${maven.multiModuleProjectDirectory}/apm-checkstyle/importControl.xml

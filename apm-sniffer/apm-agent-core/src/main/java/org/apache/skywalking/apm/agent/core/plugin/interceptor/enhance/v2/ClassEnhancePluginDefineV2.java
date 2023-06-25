@@ -35,6 +35,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.EnhanceException;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ConstructorInter;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.DelegateNamingResolver;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.ConstructorInterceptV2Point;
@@ -65,6 +66,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
         if (staticMethodsInterceptV2Points == null || staticMethodsInterceptV2Points.length == 0) {
             return newClassBuilder;
         }
+        DelegateNamingResolver delegateNamingResolver = new DelegateNamingResolver(typeDescription.getTypeName(), this);
 
         for (StaticMethodsInterceptV2Point staticMethodsInterceptV2Point : staticMethodsInterceptV2Points) {
             String interceptor = staticMethodsInterceptV2Point.getMethodsInterceptorV2();
@@ -85,7 +87,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                         isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                 .withBinders(Morph.Binder.install(OverrideCallable.class))
-                                                                                .to(new StaticMethodsInterV2WithOverrideArgs(interceptor)));
+                                                                                .to(new StaticMethodsInterV2WithOverrideArgs(interceptor), delegateNamingResolver.resolve(staticMethodsInterceptV2Point)));
                 }
             } else {
                 if (isBootstrapInstrumentation()) {
@@ -97,7 +99,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                     newClassBuilder = newClassBuilder.method(
                         isStatic().and(staticMethodsInterceptV2Point.getMethodsMatcher()))
                                                      .intercept(MethodDelegation.withDefaultConfiguration()
-                                                                                .to(new StaticMethodsInterV2(interceptor)));
+                                                                                .to(new StaticMethodsInterV2(interceptor), delegateNamingResolver.resolve(staticMethodsInterceptV2Point)));
                 }
             }
 
@@ -113,6 +115,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
         ConstructorInterceptPoint[] constructorInterceptPoints = getConstructorsInterceptPoints();
         InstanceMethodsInterceptV2Point[] instanceMethodsInterceptV2Points = getInstanceMethodsInterceptV2Points();
         String enhanceOriginClassName = typeDescription.getTypeName();
+        DelegateNamingResolver fieldNamingResolver = new DelegateNamingResolver(typeDescription.getTypeName(), this);
 
         boolean existedConstructorInterceptPoint = false;
         if (constructorInterceptPoints != null && constructorInterceptPoints.length > 0) {
@@ -149,7 +152,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                     newClassBuilder = newClassBuilder.constructor(constructorInterceptPoint.getConstructorMatcher())
                                                      .intercept(SuperMethodCall.INSTANCE.andThen(MethodDelegation.withDefaultConfiguration()
                                                                                                                  .to(new ConstructorInter(constructorInterceptPoint
-                                                                                                                                              .getConstructorInterceptor(), classLoader))));
+                                                                                                                                              .getConstructorInterceptor(), classLoader), fieldNamingResolver.resolve(constructorInterceptPoint))));
                 }
             }
         }
@@ -176,7 +179,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                         newClassBuilder = newClassBuilder.method(junction)
                                                          .intercept(MethodDelegation.withDefaultConfiguration()
                                                                                     .withBinders(Morph.Binder.install(OverrideCallable.class))
-                                                                                    .to(new InstMethodsInterV2WithOverrideArgs(interceptor, classLoader)));
+                                                                                    .to(new InstMethodsInterV2WithOverrideArgs(interceptor, classLoader), fieldNamingResolver.resolve(instanceMethodsInterceptV2Point)));
                     }
                 } else {
                     if (isBootstrapInstrumentation()) {
@@ -186,7 +189,7 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                     } else {
                         newClassBuilder = newClassBuilder.method(junction)
                                                          .intercept(MethodDelegation.withDefaultConfiguration()
-                                                                                    .to(new InstMethodsInterV2(interceptor, classLoader)));
+                                                                                    .to(new InstMethodsInterV2(interceptor, classLoader), fieldNamingResolver.resolve(instanceMethodsInterceptV2Point)));
                     }
                 }
             }

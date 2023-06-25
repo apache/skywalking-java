@@ -22,6 +22,8 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 
+import java.util.Objects;
+
 /**
  * One of the three "Intercept Point". "Intercept Point" is a definition about where and how intercept happens. In this
  * "Intercept Point", the definition targets class's instance methods, and the interceptor.
@@ -43,4 +45,13 @@ public interface InstanceMethodsInterceptV2Point {
     String getMethodsInterceptorV2();
 
     boolean isOverrideArgs();
+
+    /**
+     * To ensure that the hashCode for recreating the XxxInterceptPoint instance is the same as the previous instance,
+     * each ElementMatcher implementation class needs to implement toString() method.
+     * @return hashCode of this intercept point
+     */
+    default int computeHashCode() {
+        return Objects.hash(this.getClass().getName(), this.getMethodsMatcher().toString(), this.getMethodsInterceptorV2(), this.isOverrideArgs());
+    }
 }

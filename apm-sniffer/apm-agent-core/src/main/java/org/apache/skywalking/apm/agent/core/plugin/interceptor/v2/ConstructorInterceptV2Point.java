@@ -20,6 +20,8 @@ package org.apache.skywalking.apm.agent.core.plugin.interceptor.v2;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
+import java.util.Objects;
+
 public interface ConstructorInterceptV2Point {
 
     /**
@@ -34,5 +36,14 @@ public interface ConstructorInterceptV2Point {
      * org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor}
      */
     String getConstructorInterceptorV2();
+
+    /**
+     * To ensure that the hashCode for recreating the XxxInterceptPoint instance is the same as the previous instance,
+     * each ElementMatcher implementation class needs to implement toString() method.
+     * @return hashCode of this intercept point
+     */
+    default int computeHashCode() {
+        return Objects.hash(this.getClass().getName(), this.getConstructorMatcher().toString(), this.getConstructorInterceptorV2());
+    }
 
 }

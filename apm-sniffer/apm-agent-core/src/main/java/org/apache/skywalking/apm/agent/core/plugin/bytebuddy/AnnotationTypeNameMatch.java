@@ -56,6 +56,17 @@ public class AnnotationTypeNameMatch<T extends AnnotationDescription> implements
     }
 
     /**
+     * To ensure that the hashCode for recreating the XxxInterceptPoint instance is the same as the previous instance,
+     * each ElementMatcher implementation class needs to implement toString() method.
+     */
+    @Override
+    public String toString() {
+        return "AnnotationTypeNameMatch{" +
+                "annotationTypeName='" + annotationTypeName + '\'' +
+                '}';
+    }
+
+    /**
      * The static method to create {@link AnnotationTypeNameMatch} This is a delegate method to follow byte-buddy {@link
      * ElementMatcher}'s code style.
      *

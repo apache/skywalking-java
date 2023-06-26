@@ -237,4 +237,5 @@ public class ComponentsDefine {
 
     public static final OfficialComponent GRIZZLY = new OfficialComponent(147, "Grizzly");
 
+    public static final OfficialComponent WEBSPHERE = new OfficialComponent(148, "WebSphere");
 }

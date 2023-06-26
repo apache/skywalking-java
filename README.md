@@ -31,8 +31,8 @@ Find the [demo](https://skywalking.apache.org/#demo) and [screenshots](https://s
 # Contact Us
 * Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
 * Send `Request to join SkyWalking slack` mail to the mail list(`dev@skywalking.apache.org`), we will invite you in.
+* For Chinese speaker, send `[CN] Request to join SkyWalking slack` mail to the mail list(`dev@skywalking.apache.org`), we will invite you in.
 * Twitter, [ASFSkyWalking](https://twitter.com/AsfSkyWalking)
-* QQ Group: 901167865(Recommended), 392443393
 * [bilibili B站 视频](https://space.bilibili.com/390683219)
 
 # License

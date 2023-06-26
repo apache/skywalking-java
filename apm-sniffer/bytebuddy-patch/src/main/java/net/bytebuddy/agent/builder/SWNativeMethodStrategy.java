@@ -16,11 +16,28 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.core.plugin.bytebuddy;
+package net.bytebuddy.agent.builder;
 
-/**
- * ByteBuddy class cache mode
- */
-public enum ClassCacheMode {
-    FILE, MEMORY
+import net.bytebuddy.dynamic.scaffold.inline.MethodNameTransformer;
+import org.apache.skywalking.apm.agent.bytebuddy.SWMethodNameTransformer;
+
+import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.Instrumentation;
+
+public class SWNativeMethodStrategy implements AgentBuilder.Default.NativeMethodStrategy {
+
+    private String nameTrait;
+
+    public SWNativeMethodStrategy(String nameTrait) {
+        this.nameTrait = nameTrait;
+    }
+
+    @Override
+    public MethodNameTransformer resolve() {
+        return new SWMethodNameTransformer(nameTrait);
+    }
+
+    @Override
+    public void apply(Instrumentation instrumentation, ClassFileTransformer classFileTransformer) {
+    }
 }

@@ -21,7 +21,7 @@
     <parent>
         <artifactId>java-agent</artifactId>
         <groupId>org.apache.skywalking</groupId>
-        <version>8.17.0-SNAPSHOT</version>
+        <version>9.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -37,6 +37,7 @@
         <module>bootstrap-plugins</module>
         <module>optional-plugins</module>
         <module>optional-reporter-plugins</module>
+        <module>bytebuddy-patch</module>
     </modules>
 
     <properties>

@@ -97,4 +97,9 @@ public class MethodInheritanceAnnotationMatcher<T extends MethodDescription> ext
         ElementMatcher<? super TypeDescription> matcher) {
         return new MethodInheritanceAnnotationMatcher(new CollectionItemMatcher<>(annotationType(matcher)));
     }
+
+    @Override
+    public String toString() {
+        return "MethodInheritanceAnnotationMatcher(" + matcher + ')';
+    }
 }

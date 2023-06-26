@@ -166,3 +166,4 @@
 - grizzly-2.3.x-4.x-threadpool
 - jetty-server-11.x
 - jetty-client-11.x
+- websphere-liberty-23.x

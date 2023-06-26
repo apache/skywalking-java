@@ -22,6 +22,7 @@ import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 public class EnhanceCacheObject {
     private final AbstractSpan filterSpan;
     private final AbstractSpan sendSpan;
+    private volatile boolean spanFinish = false;
 
     public EnhanceCacheObject(final AbstractSpan filterSpan, final AbstractSpan sendSpan) {
         this.filterSpan = filterSpan;
@@ -34,5 +35,13 @@ public class EnhanceCacheObject {
 
     public AbstractSpan getSendSpan() {
         return sendSpan;
+    }
+
+    public boolean isSpanFinish() {
+        return spanFinish;
+    }
+
+    public void setSpanFinish(boolean spanFinish) {
+        this.spanFinish = spanFinish;
     }
 }

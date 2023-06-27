@@ -32,7 +32,7 @@ segmentItems:
             peer: aerospike-server:3000
             skipAnalysis: false
             tags:
-              - { key: db.type, value: Aerospike}
+              - { key: cache.type, value: Aerospike}
           - operationName: Aerospike/exists
             parentSpanId: 0
             spanId: 2
@@ -45,7 +45,7 @@ segmentItems:
             peer: aerospike-server:3000
             skipAnalysis: false
             tags:
-              - { key: db.type, value: Aerospike }
+              - { key: cache.type, value: Aerospike }
           - operationName: Aerospike/get
             parentSpanId: 0
             spanId: 3
@@ -58,7 +58,7 @@ segmentItems:
             peer: aerospike-server:3000
             skipAnalysis: false
             tags:
-              - { key: db.type, value: Aerospike }
+              - { key: cache.type, value: Aerospike }
           - operationName: Aerospike/append
             parentSpanId: 0
             spanId: 4
@@ -71,7 +71,7 @@ segmentItems:
             peer: aerospike-server:3000
             skipAnalysis: false
             tags:
-              - { key: db.type, value: Aerospike }
+              - { key: cache.type, value: Aerospike }
           - operationName: Aerospike/operate
             parentSpanId: 0
             spanId: 5
@@ -84,7 +84,7 @@ segmentItems:
             peer: aerospike-server:3000
             skipAnalysis: false
             tags:
-              - { key: db.type, value: Aerospike }
+              - { key: cache.type, value: Aerospike }
           - operationName: Aerospike/delete
             parentSpanId: 0
             spanId: 6
@@ -97,7 +97,7 @@ segmentItems:
             peer: aerospike-server:3000
             skipAnalysis: false
             tags:
-              - { key: db.type, value: Aerospike }
+              - { key: cache.type, value: Aerospike }
           - operationName: GET:/aerospike-scenario/case/aerospike-scenario
             parentSpanId: -1
             spanId: 0

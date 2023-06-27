@@ -35,7 +35,7 @@ public class AerospikeClientMethodInterceptor implements InstanceMethodsAroundIn
         String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
         AbstractSpan span = ContextManager.createExitSpan("Aerospike/" + method.getName(), peer);
         span.setComponent(ComponentsDefine.AEROSPIKE);
-        Tags.DB_TYPE.set(span, "Aerospike");
+        Tags.CACHE_TYPE.set(span, "Aerospike");
         SpanLayer.asCache(span);
     }
 

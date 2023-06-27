@@ -18,57 +18,58 @@
 
 package org.apache.skywalking.apm.testcase.aerospike.controller;
 
-import com.aerospike.client.*;
-import com.aerospike.client.cdt.*;
-import com.aerospike.client.policy.*;
+import com.aerospike.client.AerospikeClient;
+import com.aerospike.client.Bin;
+import com.aerospike.client.Key;
+import com.aerospike.client.Operation;
+import com.aerospike.client.policy.WritePolicy;
 
 public class AerospikeCommandExecutor implements AutoCloseable {
     private final AerospikeClient client;
     private final WritePolicy defaultWritePolicy = new WritePolicy();
     private final WritePolicy defaultReadPolicy = new WritePolicy();
     private static final String VALUENAME = "DATA";
-    private static final String namespace = "test";
-    private static final String setName = "skywalking";
-
+    private static final String NAMESPACE = "test";
+    private static final String SETNAME = "skywalking";
 
     public AerospikeCommandExecutor(String host, Integer port) {
         client = new AerospikeClient(host, port);
     }
 
     public void set(String key, String value) {
-        final Key k = new Key(namespace, setName, key);
+        final Key k = new Key(NAMESPACE, SETNAME, key);
         final Bin bin = new Bin(VALUENAME, value);
 
-        client.put(defaultWritePolicy, k, bin);;
+        client.put(defaultWritePolicy, k, bin);
     }
 
     public void exists(String key) {
-        final Key k = new Key(namespace, setName, key);
+        final Key k = new Key(NAMESPACE, SETNAME, key);
 
         client.exists(null, k);
     }
 
     public void get(String key) {
-        final Key k = new Key(namespace, setName, key);
+        final Key k = new Key(NAMESPACE, SETNAME, key);
 
         client.get(defaultReadPolicy, k);
     }
 
     public void append(String key, String value) {
-        final Key k = new Key(namespace, setName, key);
+        final Key k = new Key(NAMESPACE, SETNAME, key);
         final Bin bin = new Bin(VALUENAME, value);
 
-        client.append(defaultWritePolicy, k, bin);;
+        client.append(defaultWritePolicy, k, bin);
     }
 
     public void operate(String key, long by) {
-        final Key k = new Key(namespace, setName, key);
+        final Key k = new Key(NAMESPACE, SETNAME, key);
 
         client.operate(defaultWritePolicy, k, Operation.add(new Bin(VALUENAME, by)), Operation.get(VALUENAME));
     }
 
     public void delete(String key) {
-        final Key k = new Key(namespace, setName, key);
+        final Key k = new Key(NAMESPACE, SETNAME, key);
 
         client.delete(null, k);
     }

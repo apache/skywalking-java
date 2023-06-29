@@ -138,6 +138,7 @@ Callable {
 * Fix the thread safety bug of finishing operation for the span named "SpringCloudGateway/sendRequest"
 * Fix NPE in guava-eventbus-plugin.
 * Add WebSphere Liberty 23.x plugin
+* Add Plugin to support aerospike Java client
 
 #### Documentation
 

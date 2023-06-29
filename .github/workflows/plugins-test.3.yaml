@@ -52,6 +52,7 @@ jobs:
     strategy:
       matrix:
         case:
+          - aerospike-scenario
           - mysql-scenario
           - undertow-scenario
           - webflux-scenario

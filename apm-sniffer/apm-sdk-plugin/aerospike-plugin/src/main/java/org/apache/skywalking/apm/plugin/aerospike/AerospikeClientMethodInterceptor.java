@@ -27,16 +27,55 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public class AerospikeClientMethodInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final Set<String> OPERATION_MAPPING_READ = new HashSet<>(Arrays.asList(
+            "get",
+            "prepend",
+            "exists",
+            "getHeader",
+            "scanAll",
+            "scanNode",
+            "scanPartitions",
+            "getLargeList",
+            "getLargeMap",
+            "getLargeSet",
+            "getLargeStack",
+            "query",
+            "queryNode",
+            "queryPartitions",
+            "queryAggregate",
+            "queryAggregateNode",
+            "info"
+    ));
+
+    private static final Set<String> OPERATION_MAPPING_WRITE = new HashSet<>(Arrays.asList(
+            "append",
+            "put",
+            "add",
+            "delete",
+            "touch",
+            "operate",
+            "register",
+            "registerUdfString",
+            "removeUdf",
+            "execute"
+    ));
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
         String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
-        AbstractSpan span = ContextManager.createExitSpan("Aerospike/" + method.getName(), peer);
+        String methodName = method.getName();
+        AbstractSpan span = ContextManager.createExitSpan("Aerospike/" + methodName, peer);
         span.setComponent(ComponentsDefine.AEROSPIKE);
         Tags.CACHE_TYPE.set(span, "Aerospike");
         SpanLayer.asCache(span);
+        parseOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
     }
 
     @Override
@@ -51,5 +90,15 @@ public class AerospikeClientMethodInterceptor implements InstanceMethodsAroundIn
                                       Class<?>[] argumentsTypes, Throwable t) {
         AbstractSpan span = ContextManager.activeSpan();
         span.log(t);
+    }
+
+    private Optional<String> parseOperation(String cmd) {
+        if (OPERATION_MAPPING_READ.contains(cmd)) {
+            return Optional.of("read");
+        }
+        if (OPERATION_MAPPING_WRITE.contains(cmd)) {
+            return Optional.of("write");
+        }
+        return Optional.empty();
     }
 }

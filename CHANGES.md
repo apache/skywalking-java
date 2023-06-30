@@ -8,6 +8,8 @@ Release Notes.
 * Support Jdk17 ZGC metric collect
 * Support Jetty 11.x plugin
 * Fix the scenario of using the HBase plugin with spring-data-hadoop.
+* Add RocketMQ 5.x plugin
+* Fix the thread safety bug of finishing operation for the span named "SpringCloudGateway/sendRequest"
 
 #### Documentation
 

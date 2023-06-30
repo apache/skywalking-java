@@ -24,6 +24,7 @@ metrics based on the tracing data.
   * [Micronaut HTTP Server](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
   * [Jersey REST framework](https://github.com/eclipse-ee4j/jersey) 2.x -> 3.x
   * [Grizzly](https://github.com/eclipse-ee4j/grizzly) 2.3.x -> 4.x
+  * [WebSphere Liberty](https://github.com/OpenLiberty/open-liberty) 23.x
 * HTTP Client
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
@@ -78,6 +79,7 @@ metrics based on the tracing data.
   * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.15.x
   * Aliyun ONS 1.x (Optional¹)
 * NoSQL
+  * [aerospike](https://github.com/aerospike/aerospike-client-java) 3.x -> 6.x
   * Redis
     * [Jedis](https://github.com/xetorthio/jedis) 2.x-4.x
     * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.2+

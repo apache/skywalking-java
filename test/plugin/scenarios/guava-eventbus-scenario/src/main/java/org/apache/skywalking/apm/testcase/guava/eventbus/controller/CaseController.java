@@ -46,6 +46,9 @@ public class CaseController {
         asyncEventBus.register(subscriberService);
         final TestEvent testEvent = new TestEvent();
         testEvent.setContent("test");
+        final TestEvent testEvent2 = new TestEvent();
+        testEvent2.setContent("test2");
+        new Thread(() -> asyncEventBus.post(testEvent2)).start();
         eventBus.post(testEvent);
         testEvent.setAsyncContext(request.startAsync());
         asyncEventBus.post(testEvent);

@@ -80,7 +80,7 @@ segmentItems:
       tags:
         - { key: lock_name, value: lock_a }
         - { key: cache.type, value: Redis }
-        - { key: lease_time, value: 10000ms }
+        - { key: lease_time, value: not null }
         - { key: thead_id, value: not null }
       skipAnalysis: false
     - operationName: Redisson/EVAL
@@ -112,7 +112,7 @@ segmentItems:
       tags:
         - { key: lock_name, value: lock_b }
         - { key: cache.type, value: Redis }
-        - { key: lease_time, value: 20ms }
+        - { key: lease_time, value: not null }
         - { key: thead_id, value: not null }
       skipAnalysis: false
     - operationName: GET:/case/redisson-case

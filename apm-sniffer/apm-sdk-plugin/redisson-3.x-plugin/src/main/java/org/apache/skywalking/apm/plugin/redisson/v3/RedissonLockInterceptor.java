@@ -51,11 +51,11 @@ public class RedissonLockInterceptor implements InstanceMethodsAroundInterceptor
         TimeUnit unit;
         if (allArguments[1] instanceof TimeUnit) {
             unit = (TimeUnit) allArguments[1];
-            span.tag(TAG_LEASE_TIME, unit.toMillis((Long) allArguments[0]) + "ms");
+            span.tag(TAG_LEASE_TIME, String.valueOf(unit.toMillis((Long) allArguments[0])));
             span.tag(TAG_THREAD_ID, String.valueOf(allArguments[2]));
         } else if (allArguments[2] instanceof TimeUnit) {
             unit = (TimeUnit) allArguments[2];
-            span.tag(TAG_LEASE_TIME, unit.toMillis((Long) allArguments[1]) + "ms");
+            span.tag(TAG_LEASE_TIME, String.valueOf(unit.toMillis((Long) allArguments[0])));
             span.tag(TAG_THREAD_ID, String.valueOf(allArguments[3]));
         }
     }

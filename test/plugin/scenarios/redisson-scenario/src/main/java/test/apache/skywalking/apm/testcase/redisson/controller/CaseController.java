@@ -61,10 +61,10 @@ public class CaseController {
         batch.execute();
 
         RLock lockA = client.getLock("lock_a");
-        lockA.lock(10L,TimeUnit.SECONDS);
+        lockA.lock(10L, TimeUnit.SECONDS);
         RLock lockB = client.getLock("lock_b");
         try {
-            lockB.tryLock(10L,20L,TimeUnit.MILLISECONDS);
+            lockB.tryLock(10L, 20L, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

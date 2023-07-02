@@ -23,6 +23,7 @@ import javax.annotation.PostConstruct;
 import org.redisson.Redisson;
 import org.redisson.api.RBatch;
 import org.redisson.api.RBucket;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,6 +59,16 @@ public class CaseController {
         batch.getBucket("batch_k_b").setAsync("batch_v_b");
         batch.getBucket("batch_k_b").expireAsync(20, TimeUnit.SECONDS);
         batch.execute();
+
+        RLock lockA = client.getLock("lock_a");
+        lockA.lock(10L, TimeUnit.SECONDS);
+        RLock lockB = client.getLock("lock_b");
+        try {
+            lockB.tryLock(10L, 20L, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return "Success";
     }
 

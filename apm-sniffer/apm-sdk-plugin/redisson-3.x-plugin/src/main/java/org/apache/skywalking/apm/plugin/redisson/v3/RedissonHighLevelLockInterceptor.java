@@ -19,7 +19,6 @@
 package org.apache.skywalking.apm.plugin.redisson.v3;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -34,23 +33,17 @@ import java.util.concurrent.TimeUnit;
 
 public class RedissonHighLevelLockInterceptor implements InstanceMethodsAroundInterceptor {
 
-    private static final AbstractTag<String> TAG_LOCK_NAME = Tags.ofKey("lock_name");
-
-    private static final AbstractTag<String> TAG_LEASE_TIME = Tags.ofKey("lease_time");
-
-    private static final AbstractTag<String> TAG_THREAD_ID = Tags.ofKey("thead_id");
-
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         AbstractSpan span = ContextManager.createLocalSpan("Redisson/LOCK");
         span.setComponent(ComponentsDefine.REDISSON);
         SpanLayer.asCache(span);
         RLock rLock = (RLock) objInst;
-        span.tag(TAG_LOCK_NAME, rLock.getName());
+        Tags.LOCK_NAME.set(span, rLock.getName());
         Tags.CACHE_TYPE.set(span, "Redis");
         TimeUnit unit = (TimeUnit) allArguments[2];
-        span.tag(TAG_LEASE_TIME, String.valueOf(unit.toMillis((Long) allArguments[1])));
-        span.tag(TAG_THREAD_ID, String.valueOf(allArguments[3]));
+        Tags.LEASE_TIME.set(span, String.valueOf(unit.toMillis((Long) allArguments[1])));
+        Tags.THREAD_ID.set(span, String.valueOf(allArguments[3]));
     }
 
     @Override

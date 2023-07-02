@@ -32,7 +32,7 @@ import org.redisson.api.RLock;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
-public class RedissonLockInterceptor implements InstanceMethodsAroundInterceptor {
+public class RedissonHighLevelLockInterceptor implements InstanceMethodsAroundInterceptor {
 
     private static final AbstractTag<String> TAG_LOCK_NAME = Tags.ofKey("lock_name");
 
@@ -48,9 +48,9 @@ public class RedissonLockInterceptor implements InstanceMethodsAroundInterceptor
         RLock rLock = (RLock) objInst;
         span.tag(TAG_LOCK_NAME, rLock.getName());
         Tags.CACHE_TYPE.set(span, "Redis");
-        TimeUnit unit = (TimeUnit) allArguments[1];
-        span.tag(TAG_LEASE_TIME, String.valueOf(unit.toMillis((Long) allArguments[0])));
-        span.tag(TAG_THREAD_ID, String.valueOf(allArguments[2]));
+        TimeUnit unit = (TimeUnit) allArguments[2];
+        span.tag(TAG_LEASE_TIME, String.valueOf(unit.toMillis((Long) allArguments[1])));
+        span.tag(TAG_THREAD_ID, String.valueOf(allArguments[3]));
     }
 
     @Override

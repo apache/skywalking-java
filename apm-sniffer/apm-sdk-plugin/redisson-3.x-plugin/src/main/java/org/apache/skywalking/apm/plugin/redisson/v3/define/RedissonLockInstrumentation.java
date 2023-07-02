@@ -29,6 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOperation;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
 public class RedissonLockInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
@@ -37,6 +38,8 @@ public class RedissonLockInstrumentation extends ClassInstanceMethodsEnhancePlug
     private static final String REDISSON_SPIN_LOCK_CLASS = "org.redisson.RedissonSpinLock";
 
     private static final String REDISSON_LOCK_INTERCEPTOR = "org.apache.skywalking.apm.plugin.redisson.v3.RedissonLockInterceptor";
+
+    private static final String REDISSON_HIGH_LEVEL_LOCK_INTERCEPTOR = "org.apache.skywalking.apm.plugin.redisson.v3.RedissonHighLevelLockInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -54,12 +57,28 @@ public class RedissonLockInstrumentation extends ClassInstanceMethodsEnhancePlug
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("tryLockInnerAsync");
+                        return named("tryLockInnerAsync").and(takesArgumentWithType(1, "java.util.concurrent.TimeUnit"));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
                         return REDISSON_LOCK_INTERCEPTOR;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("tryLockInnerAsync").and(takesArgumentWithType(2, "java.util.concurrent.TimeUnit"));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return REDISSON_HIGH_LEVEL_LOCK_INTERCEPTOR;
                     }
 
                     @Override

@@ -140,6 +140,7 @@ Callable {
 * Add WebSphere Liberty 23.x plugin
 * Add Plugin to support aerospike Java client
 * Add ClickHouse parsing to the jdbc-common plugin.
+* Support to trace redisson lock
 
 #### Documentation
 

@@ -141,6 +141,8 @@ Callable {
 * Add Plugin to support aerospike Java client
 * Add ClickHouse parsing to the jdbc-common plugin.
 * Support to trace redisson lock
+* Upgrade netty-codec-http2 to 4.1.94.Final
+* Upgrade guava to 32.0.1
 
 #### Documentation
 

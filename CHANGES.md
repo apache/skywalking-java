@@ -11,6 +11,7 @@ Release Notes.
 * Implement new naming policies for names of auxiliary type, interceptor delegate field, renamed origin method, method
   access name, method cache value field. All names are under `sw$` name trait. They are predictable and unchanged after
   re-transform.
+* Update witness class in springmvc-annotation-5.x-plugin.
 
 ```
 * SWAuxiliaryTypeNamingStrategy

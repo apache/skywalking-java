@@ -133,6 +133,7 @@ Callable {
 
 * Support Jdk17 ZGC metric collect
 * Support Jetty 11.x plugin
+* Support access the sky-walking tracer context in spring gateway filter
 * Fix the scenario of using the HBase plugin with spring-data-hadoop.
 * Add RocketMQ 5.x plugin
 * Fix the conflict between the logging kernel and the JDK threadpool plugin.

@@ -51,6 +51,70 @@ segmentItems:
       - {key: cache.instance, value: not null}
       - {key: cache.cmd, value: BATCH_EXECUTE}
       skipAnalysis: 'false'
+    - operationName: Redisson/EVAL
+      parentSpanId: 3
+      spanId: nq 0
+      spanLayer: Cache
+      startTime: not null
+      endTime: not null
+      componentId: 56
+      isError: false
+      spanType: Exit
+      peer: not null
+      tags:
+        - { key: cache.type, value: Redis }
+        - { key: cache.instance, value: not null }
+        - { key: cache.cmd, value: EVAL }
+        - { key: cache.key, value: not null }
+      skipAnalysis: 'false'
+    - operationName: Redisson/LOCK
+      parentSpanId: 0
+      spanId: nq 0
+      spanLayer: Cache
+      startTime: not null
+      endTime: not null
+      componentId: 56
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - { key: lock.name, value: lock_a }
+        - { key: cache.type, value: Redis }
+        - { key: lease.time, value: not null }
+        - { key: thread.id, value: not null }
+      skipAnalysis: false
+    - operationName: Redisson/EVAL
+      parentSpanId: 5
+      spanId: nq 0
+      spanLayer: Cache
+      startTime: not null
+      endTime: not null
+      componentId: 56
+      isError: false
+      spanType: Exit
+      peer: not null
+      tags:
+        - { key: cache.type, value: Redis }
+        - { key: cache.instance, value: not null }
+        - { key: cache.cmd, value: EVAL }
+        - { key: cache.key, value: not null }
+      skipAnalysis: 'false'
+    - operationName: Redisson/LOCK
+      parentSpanId: 0
+      spanId: nq 0
+      spanLayer: Cache
+      startTime: not null
+      endTime: not null
+      componentId: 56
+      isError: false
+      spanType: Local
+      peer: ''
+      tags:
+        - { key: lock.name, value: lock_b }
+        - { key: cache.type, value: Redis }
+        - { key: lease.time, value: not null }
+        - { key: thread.id, value: not null }
+      skipAnalysis: false
     - operationName: GET:/case/redisson-case
       parentSpanId: -1
       spanId: 0

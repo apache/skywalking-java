@@ -168,4 +168,13 @@ public class URLParserTest {
         assertThat(connectionInfo.getDatabaseName(), is("test"));
         assertThat(connectionInfo.getDatabasePeer(), is("primaryhost:3306"));
     }
+
+    @Test
+    public void testParseClickhouseJDBCURL() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:clickhouse://localhost:8123/test");
+        assertThat(connectionInfo.getDBType(), is("ClickHouse"));
+        assertThat(connectionInfo.getDatabaseName(), is("test"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:8123"));
+    }
+
 }

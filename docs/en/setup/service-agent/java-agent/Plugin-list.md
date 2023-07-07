@@ -1,4 +1,5 @@
 # Skywalking Agent List
+- aerospike
 - activemq-5.x
 - armeria-063-084
 - armeria-085

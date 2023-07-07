@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,7 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.ConnectionManagerInstrumentation
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.RedisConnectionInstrumentation
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.RedisClientInstrumentation
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.RedissonLockInstrumentation
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} -Daerospike.host=${AEROSPIKE_HOST} -Daerospike.port=${AEROSPIKE_PORT} ${home}/../libs/aerospike-scenario.jar &

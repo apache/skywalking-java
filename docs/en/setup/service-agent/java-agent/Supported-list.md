@@ -79,6 +79,7 @@ metrics based on the tracing data.
   * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.15.x
   * Aliyun ONS 1.x (Optional¹)
 * NoSQL
+  * [aerospike](https://github.com/aerospike/aerospike-client-java) 3.x -> 6.x
   * Redis
     * [Jedis](https://github.com/xetorthio/jedis) 2.x-4.x
     * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.2+

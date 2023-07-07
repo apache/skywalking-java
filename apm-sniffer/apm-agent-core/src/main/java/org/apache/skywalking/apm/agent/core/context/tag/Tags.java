@@ -140,6 +140,22 @@ public final class Tags {
     public static final StringTag SQL_PARAMETERS = new StringTag(19, "db.sql.parameters");
 
     /**
+     * LOCK_NAME records the lock name such as redisson lock name
+     */
+    public static final StringTag LOCK_NAME = new StringTag(21, "lock.name");
+
+    /**
+     * LEASE_TIME represents the maximum time to hold the lock after it's acquisition
+     * in redisson plugin,it's unit is ms
+     */
+    public static final StringTag LEASE_TIME = new StringTag(22, "lease.time");
+
+    /**
+     * THREAD_ID records the thread id
+     */
+    public static final StringTag THREAD_ID = new StringTag(23, "thread.id");
+
+    /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without
      * creating a new one.
      *

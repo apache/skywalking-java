@@ -14,7 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.ConnectionManagerInstrumentation
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.RedisConnectionInstrumentation
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.RedisClientInstrumentation
-redisson-3.x=org.apache.skywalking.apm.plugin.redisson.v3.define.RedissonLockInstrumentation
+type: jvm
+entryService: http://localhost:8080/aerospike-scenario/case/aerospike-scenario
+healthCheck: http://localhost:8080/aerospike-scenario/case/healthCheck
+startScript: ./bin/startup.sh
+environment:
+  - AEROSPIKE_HOST=aerospike-server
+  - AEROSPIKE_PORT=3000
+dependencies:
+  aerospike-server:
+    image: aerospike:ce-6.0.0.0
+    hostname: aerospike-server

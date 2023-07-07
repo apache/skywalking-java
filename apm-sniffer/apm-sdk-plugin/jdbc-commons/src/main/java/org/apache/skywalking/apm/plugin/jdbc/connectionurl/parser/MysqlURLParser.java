@@ -28,6 +28,7 @@ import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 public class MysqlURLParser extends AbstractURLParser {
 
     private static final int DEFAULT_PORT = 3306;
+    private int defaultPort = DEFAULT_PORT;
     private String dbType = "Mysql";
     private OfficialComponent component = ComponentsDefine.MYSQL_JDBC_DRIVER;
 
@@ -39,6 +40,13 @@ public class MysqlURLParser extends AbstractURLParser {
         super(url);
         this.dbType = dbType;
         this.component = component;
+    }
+
+    public MysqlURLParser(String url, String dbType, OfficialComponent component, int defaultPort) {
+        super(url);
+        this.dbType = dbType;
+        this.component = component;
+        this.defaultPort = defaultPort;
     }
 
     @Override
@@ -101,7 +109,7 @@ public class MysqlURLParser extends AbstractURLParser {
             StringBuilder sb = new StringBuilder();
             for (String host : hostSegment) {
                 if (host.split(":").length == 1) {
-                    sb.append(host).append(":").append(DEFAULT_PORT).append(",");
+                    sb.append(host).append(":").append(defaultPort).append(",");
                 } else {
                     sb.append(host).append(",");
                 }
@@ -113,7 +121,7 @@ public class MysqlURLParser extends AbstractURLParser {
                 return new ConnectionInfo(component, dbType, hostAndPort[0], Integer.valueOf(hostAndPort[1]), fetchDatabaseNameFromURL(location
                         .endIndex()));
             } else {
-                return new ConnectionInfo(component, dbType, hostAndPort[0], DEFAULT_PORT, fetchDatabaseNameFromURL(location
+                return new ConnectionInfo(component, dbType, hostAndPort[0], defaultPort, fetchDatabaseNameFromURL(location
                         .endIndex()));
             }
         }

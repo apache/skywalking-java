@@ -48,6 +48,6 @@ public class WebFluxSkyWalkingSegmentIDInterceptor extends WebFluxSkyWalkingStat
     @Override
     public void handleMethodException(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
                                       Throwable t) {
-        LOGGER.error("Failed to getDefault segment Id.", t);
+        LOGGER.error("Failed to get segment Id.", t);
     }
 }

@@ -59,6 +59,12 @@ The `WebFluxSkyWalkingOperators#continueTracing` provides manual tracing continu
         // fetch trace ID
         String traceId = WebFluxSkyWalkingTraceContext.traceId(exchange);
         
+        // fetch segment ID
+        String segmentId = WebFluxSkyWalkingTraceContext.segmentId(exchange);
+        
+        // fetch span ID
+        int spanId = WebFluxSkyWalkingTraceContext.spanId(exchange);
+        
         return chain.filter(exchange);
     }
 ```
@@ -69,7 +75,13 @@ The `WebFluxSkyWalkingOperators#continueTracing` provides manual tracing continu
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain){
         // Set correlation data can be retrieved by upstream nodes.
-        WebFluxSkyWalkingTraceContext.putCorrelation(exchange, "key", "value");
+        WebFluxSkyWalkingTraceContext.putCorrelation(exchange, "key1", "value");
+        
+        // Get correlation data
+        Optional<String> value2 = WebFluxSkyWalkingTraceContext.getCorrelation(exchange, "key2");
+        
+        // dosomething...
+        
         return chain.filter(exchange);
     }
 ```

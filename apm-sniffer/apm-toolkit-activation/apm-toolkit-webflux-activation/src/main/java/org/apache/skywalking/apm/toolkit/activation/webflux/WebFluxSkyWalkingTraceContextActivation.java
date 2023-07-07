@@ -27,8 +27,6 @@ import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-/**
- */
 public class WebFluxSkyWalkingTraceContextActivation extends ClassStaticMethodsEnhancePluginDefine {
 
     public static final String TRACE_ID_INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingTraceIDInterceptor";

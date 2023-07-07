@@ -29,7 +29,7 @@ import java.util.Optional;
 
 public abstract class WebFluxSkyWalkingStaticMethodsAroundInterceptor implements StaticMethodsAroundInterceptor {
 
-    protected static EnhancedInstance getInstance(Object o) {
+    protected EnhancedInstance getInstance(Object o) {
         EnhancedInstance instance = null;
         if (o instanceof DefaultServerWebExchange && o instanceof EnhancedInstance) {
             instance = (EnhancedInstance) o;
@@ -40,7 +40,7 @@ public abstract class WebFluxSkyWalkingStaticMethodsAroundInterceptor implements
         return instance;
     }
 
-    protected static ContextSnapshot getContextSnapshot(Object o) {
+    protected ContextSnapshot getContextSnapshot(Object o) {
         return Optional.ofNullable(getInstance(o))
                 .map(EnhancedInstance::getSkyWalkingDynamicField)
                 .filter(ContextSnapshot.class::isInstance)

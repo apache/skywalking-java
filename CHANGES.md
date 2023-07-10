@@ -12,6 +12,7 @@ Release Notes.
   access name, method cache value field. All names are under `sw$` name trait. They are predictable and unchanged after
   re-transform.
 * Fix witness class in springmvc-annotation-5.x-plugin to avoid falling into v3 use cases.
+* Fix Jedis-2.x plugin bug and add test for redis cluster scene
 
 ```
 * SWAuxiliaryTypeNamingStrategy

@@ -11,6 +11,8 @@ Release Notes.
 * Implement new naming policies for names of auxiliary type, interceptor delegate field, renamed origin method, method
   access name, method cache value field. All names are under `sw$` name trait. They are predictable and unchanged after
   re-transform.
+* Fix witness class in springmvc-annotation-5.x-plugin to avoid falling into v3 use cases.
+* Fix Jedis-2.x plugin bug and add test for redis cluster scene
 
 ```
 * SWAuxiliaryTypeNamingStrategy
@@ -132,6 +134,7 @@ Callable {
 
 * Support Jdk17 ZGC metric collect
 * Support Jetty 11.x plugin
+* Support access the sky-walking tracer context in spring gateway filter
 * Fix the scenario of using the HBase plugin with spring-data-hadoop.
 * Add RocketMQ 5.x plugin
 * Fix the conflict between the logging kernel and the JDK threadpool plugin.

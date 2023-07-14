@@ -19,11 +19,11 @@ package org.apache.skywalking.apm.agent.core.context;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.apache.skywalking.apm.agent.core.base64.Base64;
 import org.apache.skywalking.apm.agent.core.conf.Config;
@@ -49,7 +49,7 @@ public class CorrelationContext {
     }
 
     public CorrelationContext() {
-        this.data = new HashMap<>(Config.Correlation.ELEMENT_MAX_NUMBER);
+        this.data = new ConcurrentHashMap<>(Config.Correlation.ELEMENT_MAX_NUMBER);
     }
 
     /**

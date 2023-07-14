@@ -1,5 +1,8 @@
-# Mannual propagation of tracing context for Webflux
-* Dependency the toolkit, such as using maven or gradle
+# Webflux Tracing Assistant APIs
+
+These APIs provide advanced features to enhance interaction capabilities in Webflux cases.
+
+Add the toolkit to your project dependency, through Maven or Gradle
 ```xml
    <dependency>
       <groupId>org.apache.skywalking</groupId>
@@ -8,7 +11,11 @@
    </dependency>
 ```
 
-* usage 1.
+The following scenarios are supported for tracing assistance.
+
+### Continue Tracing from Client
+The `WebFluxSkyWalkingOperators#continueTracing` provides manual tracing continuous capabilities to adopt native Webflux APIs
+
 ```java
     @GetMapping("/testcase/annotation/mono/onnext") 
     public Mono<String> monoOnNext(@RequestBody(required = false) String body) {
@@ -19,7 +26,7 @@
             }));
     }
 ```
-* usage 2.
+
 ```java
     @GetMapping("/login/userFunctions")
     public Mono<Response<FunctionInfoResult>> functionInfo(ServerWebExchange exchange, @RequestParam String userId) {
@@ -34,7 +41,6 @@
     }
 ```
 
-* usage 3.
 ```java
     Mono.just("key").subscribeOn(Schedulers.boundedElastic())
         .doOnEach(WebFluxSkyWalkingOperators.continueTracing(SignalType.ON_NEXT, () -> log.info("test log with tid")))
@@ -44,6 +50,40 @@
             })
         ));
 ...
+```
+
+### Fetch trace context relative IDs 
+```java
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain){
+        // fetch trace ID
+        String traceId = WebFluxSkyWalkingTraceContext.traceId(exchange);
+        
+        // fetch segment ID
+        String segmentId = WebFluxSkyWalkingTraceContext.segmentId(exchange);
+        
+        // fetch span ID
+        int spanId = WebFluxSkyWalkingTraceContext.spanId(exchange);
+        
+        return chain.filter(exchange);
+    }
+```
+
+### Manipulate Correlation Context
+
+```java
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain){
+        // Set correlation data can be retrieved by upstream nodes.
+        WebFluxSkyWalkingTraceContext.putCorrelation(exchange, "key1", "value");
+        
+        // Get correlation data
+        Optional<String> value2 = WebFluxSkyWalkingTraceContext.getCorrelation(exchange, "key2");
+        
+        // dosomething...
+        
+        return chain.filter(exchange);
+    }
 ```
 
 _Sample codes only_

@@ -90,6 +90,7 @@ jobs:
           - dbcp-2.x-scenario
           - jsonrpc4j-1.x-scenario
           - gateway-3.x-scenario
+          - gateway-3.x-filter-context-scenario
           - neo4j-4.x-scenario
           - oracle-scenario
           - druid-1.x-scenario

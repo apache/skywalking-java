@@ -22,18 +22,15 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.ServerWebExchangeDecorator;
-import org.springframework.web.server.adapter.DefaultServerWebExchange;
 import reactor.util.context.Context;
 
 import java.lang.reflect.Method;
 
 /**
  */
-public class WebFluxSkyWalkingOperatorsInterceptor implements StaticMethodsAroundInterceptor {
+public class WebFluxSkyWalkingOperatorsInterceptor extends WebFluxSkyWalkingStaticMethodsAroundInterceptor {
     
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
@@ -67,14 +64,4 @@ public class WebFluxSkyWalkingOperatorsInterceptor implements StaticMethodsAroun
         ContextManager.activeSpan().log(t);
     }
 
-    private static EnhancedInstance getInstance(Object o) {
-        EnhancedInstance instance = null;
-        if (o instanceof DefaultServerWebExchange && o instanceof EnhancedInstance) {
-            instance = (EnhancedInstance) o;
-        } else if (o instanceof ServerWebExchangeDecorator) {
-            ServerWebExchange delegate = ((ServerWebExchangeDecorator) o).getDelegate();
-            return getInstance(delegate);
-        }
-        return instance;
-    }
 }

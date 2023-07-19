@@ -13,6 +13,7 @@ Release Notes.
   re-transform.
 * Fix witness class in springmvc-annotation-5.x-plugin to avoid falling into v3 use cases.
 * Fix Jedis-2.x plugin bug and add test for redis cluster scene
+* Merge two instrumentation classes to avoid duplicate enhancements in mysql plugins.
 
 ```
 * SWAuxiliaryTypeNamingStrategy

@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -36,6 +37,11 @@ public abstract class AbstractThreadingPoolInterceptor implements InstanceMethod
         }
 
         Object argument = allArguments[0];
+
+        // Avoid duplicate enhancement, such as the case where it has already been enhanced by RunnableWrapper or CallableWrapper with toolkit.
+        if (argument instanceof EnhancedInstance && ((EnhancedInstance) argument).getSkyWalkingDynamicField() instanceof ContextSnapshot) {
+            return;
+        }
 
         Object wrappedObject = wrap(argument);
         if (wrappedObject != null) {

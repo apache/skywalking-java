@@ -148,6 +148,7 @@ Callable {
 * Upgrade netty-codec-http2 to 4.1.94.Final
 * Upgrade guava to 32.0.1
 * Fix issue with duplicate enhancement by ThreadPoolExecutor
+* Add plugin to support for RESTeasy 6.x.
 
 #### Documentation
 

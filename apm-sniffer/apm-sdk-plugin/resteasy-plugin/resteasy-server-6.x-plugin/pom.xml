@@ -29,9 +29,9 @@
     <packaging>jar</packaging>
 
     <name>apm-resteasy-server-6.x-plugin</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
+        <compiler.version>11</compiler.version>
         <resteasy.version>6.2.4.Final</resteasy.version>
     </properties>
 

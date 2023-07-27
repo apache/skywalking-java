@@ -45,6 +45,8 @@ public class SynchronousDispatcherExceptionInterceptor implements InstanceMethod
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
+        if (ContextManager.isActive()) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 }

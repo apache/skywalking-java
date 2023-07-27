@@ -61,6 +61,9 @@ public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundIn
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
+        if (!ContextManager.isActive()) {
+            return ret;
+        }
         HttpResponse response = (HttpResponse) allArguments[1];
         AbstractSpan span = ContextManager.activeSpan();
         if (response.getStatus() >= 400) {
@@ -74,7 +77,9 @@ public class SynchronousDispatcherInterceptor implements InstanceMethodsAroundIn
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
+        if (ContextManager.isActive()) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 
     private static String toPath(String uri) {

@@ -149,6 +149,7 @@ Callable {
 * Upgrade guava to 32.0.1
 * Fix issue with duplicate enhancement by ThreadPoolExecutor
 * Add plugin to support for RESTeasy 6.x.
+* Fix the conditions for resetting uuid, avoid the same uuid causing the configuration not to be updated. 
 
 #### Documentation
 

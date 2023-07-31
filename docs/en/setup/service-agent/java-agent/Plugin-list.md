@@ -82,6 +82,7 @@
 - redisson-3.x
 - resteasy-server-3.x
 - resteasy-server-4.x
+- resteasy-server-6.x
 - rocketMQ-3.x
 - rocketMQ-4.x
 - rocketMQ-5.x

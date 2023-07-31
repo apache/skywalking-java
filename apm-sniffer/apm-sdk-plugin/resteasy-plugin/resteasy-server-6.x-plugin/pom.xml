@@ -16,28 +16,30 @@
   ~ limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <artifactId>resteasy-plugin</artifactId>
         <groupId>org.apache.skywalking</groupId>
-        <artifactId>apm-sdk-plugin</artifactId>
         <version>9.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>resteasy-plugin</artifactId>
-    <modules>
-        <module>resteasy-server-3.x-plugin</module>
-        <module>resteasy-server-4.x-plugin</module>
-        <module>resteasy-server-6.x-plugin</module>
-    </modules>
+    <artifactId>resteasy-server-6.x-plugin</artifactId>
+    <packaging>jar</packaging>
 
-    <packaging>pom</packaging>
-
-    <name>resteasy-plugin</name>
-    <url>http://maven.apache.org</url>
+    <name>apm-resteasy-server-6.x-plugin</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sdk.plugin.related.dir>/..</sdk.plugin.related.dir>
+        <resteasy.version>6.2.4.Final</resteasy.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-core</artifactId>
+            <version>${resteasy.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

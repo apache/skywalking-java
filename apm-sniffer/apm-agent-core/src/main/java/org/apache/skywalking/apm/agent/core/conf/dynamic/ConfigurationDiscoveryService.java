@@ -219,7 +219,7 @@ public class ConfigurationDiscoveryService implements BootService, GRPCChannelLi
                 builder.setService(Config.Agent.SERVICE_NAME);
 
                 // Some plugin will register watcher later.
-                final int size = register.keys().size();
+                final int size = register.getRegisterWatcherSize();
                 if (lastRegisterWatcherSize != size) {
                     // reset uuid, avoid the same uuid causing the configuration not to be updated.
                     uuid = null;
@@ -271,6 +271,12 @@ public class ConfigurationDiscoveryService implements BootService, GRPCChannelLi
 
         public Set<String> keys() {
             return register.keySet();
+        }
+
+        public int getRegisterWatcherSize() {
+            return register.values().stream()
+                    .mapToInt(List::size)
+                    .sum();
         }
 
         @Override

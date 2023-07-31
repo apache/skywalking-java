@@ -14,13 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# test all 4.x and 5.x version, with corresponding latest patch version
-5.0.7.Final
-4.7.6.Final
-4.6.2.Final
-4.5.12.Final
-4.4.3.Final
-4.3.1.Final
-4.2.0.Final
-4.1.1.Final
-4.0.0.Final
+type: tomcat
+entryService: http://localhost:8080/resteasy-6.x-scenario/case/resttemplate
+healthCheck: http://localhost:8080/resteasy-6.x-scenario/healthCheck
+environment:
+  - CATALINA_OPTS="-Dskywalking.plugin.http.include_http_headers=mock_header"

@@ -16,42 +16,37 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.mysql;
+package org.apache.skywalking.apm.plugin.resteasy.v6.server;
 
-import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
-import org.apache.skywalking.apm.agent.core.conf.dynamic.ConfigurationDiscoveryService;
+import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.plugin.jdbc.TraceSqlParametersWatcher;
-import org.apache.skywalking.apm.plugin.jdbc.connectionurl.parser.URLParser;
+import org.jboss.resteasy.spi.HttpRequest;
 
 import java.lang.reflect.Method;
 
-public class DriverConnectInterceptor implements InstanceMethodsAroundInterceptor {
+public class SynchronousDispatcherExceptionInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) throws Throwable {
-        ConnectionCache.save(URLParser.parser(allArguments[0].toString()));
-        TraceSqlParametersWatcher traceSqlParametersWatcher = new TraceSqlParametersWatcher("plugin.jdbc.trace_sql_parameters");
-        ConfigurationDiscoveryService configurationDiscoveryService = ServiceManager.INSTANCE.findService(
-                ConfigurationDiscoveryService.class);
-        configurationDiscoveryService.registerAgentConfigChangeWatcher(traceSqlParametersWatcher);
+                             MethodInterceptResult result) throws Throwable {
+        if (ContextManager.isActive() && !((HttpRequest) allArguments[0]).getAsyncContext().isSuspended()) {
+            ContextManager.activeSpan().log((Throwable) allArguments[2]);
+        }
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        Object ret) throws Throwable {
-        if (ret != null && ret instanceof EnhancedInstance) {
-            ((EnhancedInstance) ret).setSkyWalkingDynamicField(URLParser.parser((String) allArguments[0]));
-        }
+                              Object ret) throws Throwable {
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-        Class<?>[] argumentsTypes, Throwable t) {
-
+                                      Class<?>[] argumentsTypes, Throwable t) {
+        if (ContextManager.isActive()) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 }

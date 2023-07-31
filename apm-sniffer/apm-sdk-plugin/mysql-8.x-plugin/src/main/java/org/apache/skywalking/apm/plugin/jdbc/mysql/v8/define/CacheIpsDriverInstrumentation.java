@@ -28,7 +28,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch.byMultiClassMatch;
 import static org.apache.skywalking.apm.plugin.jdbc.mysql.Constants.DRIVER_CONNECT_INTERCEPTOR;
 
-public class CacheIpsInstrumentation extends AbstractMysqlInstrumentation {
+public class CacheIpsDriverInstrumentation extends AbstractMysqlInstrumentation {
 
     private static final String ENHANCE_CLASS_NON_REG = "com.mysql.cj.jdbc.NonRegisteringDriver";
 

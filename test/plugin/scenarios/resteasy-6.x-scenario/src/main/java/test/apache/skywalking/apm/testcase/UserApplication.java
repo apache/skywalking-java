@@ -16,24 +16,25 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define;
+package test.apache.skywalking.apm.testcase;
 
-import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.jdbc.define.AbstractDriverInstrumentation;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
-import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch.byMultiClassMatch;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * {@link DriverInstrumentation} presents that skywalking intercepts {@link com.mysql.jdbc.Driver}.
- */
-public class DriverInstrumentation extends AbstractDriverInstrumentation {
-    @Override
-    protected ClassMatch enhanceClass() {
-        return byMultiClassMatch("com.mysql.jdbc.Driver", "com.mysql.cj.jdbc.Driver", "com.mysql.jdbc.NonRegisteringDriver");
+@ApplicationPath("/")
+public class UserApplication extends Application {
+    private final Set<Class<?>> classes = new HashSet<>();
+
+    public UserApplication() {
+        classes.add(UserResource.class);
+        classes.add(RestTemplateController.class);
     }
 
     @Override
-    protected String[] witnessClasses() {
-        return new String[] {Constants.WITNESS_MYSQL_8X_CLASS};
+    public Set<Class<?>> getClasses() {
+        return classes;
     }
 }

@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.DriverInstrumentation
 mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.ConnectionImplCreateInstrumentation
 mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.ConnectionInstrumentation
 mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.CallableInstrumentation
@@ -23,4 +22,4 @@ mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.StatementInstrum
 mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.PreparedStatementSetterInstrumentation
 mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.PreparedStatementNullSetterInstrumentation
 mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.PreparedStatementIgnoredSetterInstrumentation
-mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.CacheIpsInstrumentation
+mysql-8.x=org.apache.skywalking.apm.plugin.jdbc.mysql.v8.define.CacheIpsDriverInstrumentation

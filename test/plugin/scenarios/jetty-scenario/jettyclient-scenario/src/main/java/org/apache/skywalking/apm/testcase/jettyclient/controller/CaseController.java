@@ -46,7 +46,7 @@ public class CaseController {
     @ResponseBody
     public String jettyClientScenario() throws Exception {
         client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0").send();
-        Response.CompleteListener listener = result -> {};
+        Response.CompleteListener listener = result -> { };
         client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0").send(listener);
         return "Success";
     }

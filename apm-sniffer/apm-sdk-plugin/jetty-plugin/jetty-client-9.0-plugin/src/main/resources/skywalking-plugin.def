@@ -15,3 +15,4 @@
 # limitations under the License.
 
 jetty-client-9.0=org.apache.skywalking.apm.plugin.jetty.v90.client.define.HttpRequestInstrumentation
+jetty-client-9.0=org.apache.skywalking.apm.plugin.jetty.v90.client.define.ResponseNotifierInstrumentation

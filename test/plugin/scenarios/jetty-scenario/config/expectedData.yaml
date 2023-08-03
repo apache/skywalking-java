@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
 - serviceName: jettyserver-scenario
-  segmentSize: 1
+  segmentSize: 2
   segments:
   - segmentId: not null
     spans:
@@ -38,6 +38,27 @@ segmentItems:
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: jettyclient-scenario, traceId: not null}
       skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: /jettyserver-case/case/receiveContext-0
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 19
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:18080/jettyserver-case/case/receiveContext-0'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      refs:
+      - {parentEndpoint: GET:/jettyclient-case/case/jettyclient-case, networkAddress: 'localhost:18080',
+        refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: jettyclient-scenario, traceId: not null}
+      skipAnalysis: 'false'
 - serviceName: jettyclient-scenario
   segmentSize: 2
   segments:
@@ -46,6 +67,19 @@ segmentItems:
     - operationName: /jettyserver-case/case/receiveContext-0
       parentSpanId: 0
       spanId: 1
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 18
+      isError: false
+      spanType: Exit
+      peer: localhost:18080
+      tags:
+      - {key: http.method, value: GET}
+      - {key: url, value: 'http://localhost:18080/jettyserver-case/case/receiveContext-0'}
+    - operationName: /jettyserver-case/case/receiveContext-0
+      parentSpanId: 0
+      spanId: 2
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0

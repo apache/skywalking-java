@@ -102,7 +102,7 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"org.eclipse.jetty.client.AbstractHttpClientTransport"};
+        return new String[] {"org.eclipse.jetty.client.AbstractHttpClientTransport"};
     }
 
     @Override

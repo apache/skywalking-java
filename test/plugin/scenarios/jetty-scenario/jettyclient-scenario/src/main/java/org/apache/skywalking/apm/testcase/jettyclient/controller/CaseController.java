@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.testcase.jettyclient.controller;
 
 import javax.annotation.PostConstruct;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -45,6 +46,8 @@ public class CaseController {
     @ResponseBody
     public String jettyClientScenario() throws Exception {
         client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0").send();
+        Response.CompleteListener listener = result -> {};
+        client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0").send(listener);
         return "Success";
     }
 

@@ -58,40 +58,40 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[] {
-                new InstanceMethodsInterceptPoint() {
-                    // sync call interceptor point
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_CLASS_NAME).and(takesArguments(0));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return SYNC_SEND_INTERCEPTOR;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    // async call interceptor point
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_CLASS_NAME).and(takesArguments(1));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return ASYNC_SEND_INTERCEPTOR;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
+            new InstanceMethodsInterceptPoint() {
+                // sync call interceptor point
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(ENHANCE_CLASS_NAME).and(takesArguments(0));
                 }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return SYNC_SEND_INTERCEPTOR;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                // async call interceptor point
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(ENHANCE_CLASS_NAME).and(takesArguments(1));
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return ASYNC_SEND_INTERCEPTOR;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            }
         };
     }
 

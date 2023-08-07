@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.testcase.jettyserver;
 
 import java.net.InetSocketAddress;
+import org.apache.skywalking.apm.testcase.jettyserver.servlet.AsyncCaseServlet;
 import org.apache.skywalking.apm.testcase.jettyserver.servlet.CaseServlet;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -31,6 +32,7 @@ public class Application {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         servletContextHandler.setContextPath(contextPath);
         servletContextHandler.addServlet(CaseServlet.class, CaseServlet.SERVLET_PATH);
+        servletContextHandler.addServlet(AsyncCaseServlet.class, AsyncCaseServlet.SERVLET_PATH);
         jettyServer.setHandler(servletContextHandler);
         jettyServer.start();
     }

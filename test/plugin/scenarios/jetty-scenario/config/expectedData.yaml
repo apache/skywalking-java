@@ -77,6 +77,16 @@ segmentItems:
       tags:
       - {key: http.method, value: GET}
       - {key: url, value: 'http://localhost:18080/jettyserver-case/case/receiveContext-0'}
+    - operationName: not null
+      parentSpanId: 2
+      spanId: 3
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 18
+      isError: false
+      spanType: Local
+      skipAnalysis: false
     - operationName: /jettyserver-case/case/receiveContext-0
       parentSpanId: 0
       spanId: 2

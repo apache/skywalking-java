@@ -89,7 +89,7 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             }
         };

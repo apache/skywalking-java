@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.jettyclient.controller;
+package org.apache.skywalking.apm.testcase.jettyclient.contr;
 
 import javax.annotation.PostConstruct;
 import org.eclipse.jetty.client.HttpClient;

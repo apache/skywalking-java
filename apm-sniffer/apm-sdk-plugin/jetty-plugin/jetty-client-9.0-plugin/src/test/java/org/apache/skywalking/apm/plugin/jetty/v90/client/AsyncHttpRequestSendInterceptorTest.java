@@ -86,7 +86,7 @@ public class AsyncHttpRequestSendInterceptorTest {
         responseNotifierEnhancedInstance = new MockResponseNotifier(httpClient);
 
         Result results = new Result(httpRequestEnhancedInstance, response);
-        allArguments = new Object[]{null, results};
+        allArguments = new Object[]{(Response.CompleteListener) result -> { }, results};
         argumentTypes = new Class[]{List.class, Result.class};
 
         asyncHttpRequestSendInterceptor = new AsyncHttpRequestSendInterceptor();

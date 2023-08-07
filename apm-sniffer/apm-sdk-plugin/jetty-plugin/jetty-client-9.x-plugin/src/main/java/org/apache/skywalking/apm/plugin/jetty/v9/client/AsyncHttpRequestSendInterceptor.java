@@ -29,6 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.eclipse.jetty.client.HttpRequest;
+import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.http.HttpFields;
 
 import java.lang.reflect.Method;
@@ -56,6 +57,8 @@ public class AsyncHttpRequestSendInterceptor implements InstanceMethodsAroundInt
 
         span.prepareForAsync();
         request.attribute(Constants.SW_JETTY_EXIT_SPAN_KEY, span);
+        Response.CompleteListener callback = (Response.CompleteListener) allArguments[0];
+        allArguments[0] = new CompleteListenerWrapper(callback, ContextManager.capture());
     }
 
     @Override

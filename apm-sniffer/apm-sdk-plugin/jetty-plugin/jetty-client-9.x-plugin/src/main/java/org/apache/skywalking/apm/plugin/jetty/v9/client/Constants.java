@@ -20,4 +20,6 @@ package org.apache.skywalking.apm.plugin.jetty.v9.client;
 
 public class Constants {
     public final static String SW_JETTY_EXIT_SPAN_KEY = "SW_JETTY_EXIT_SPAN";
+
+    public final static String PLUGIN_NAME = "JettyClient9.x";
 }

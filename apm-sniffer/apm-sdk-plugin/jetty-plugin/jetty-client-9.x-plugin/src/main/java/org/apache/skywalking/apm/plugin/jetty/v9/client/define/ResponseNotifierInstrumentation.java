@@ -31,24 +31,22 @@ import java.util.Collections;
 import java.util.List;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 /**
- * {@link HttpRequestInstrumentation} enhance the <code>send</code> method without argument in
- * <code>org.eclipse.jetty.client.HttpRequest</code> by
- * <code>org.apache.skywalking.apm.plugin.jetty.client.SyncHttpRequestSendInterceptor</code> and enhance the
- * <code>send</code> with <code>org.eclipse.jetty.client.api.Response$CompleteListener</code> parameter by
- * <code>org.apache.skywalking.apm.plugin.jetty.client.AsyncHttpRequestSendInterceptor</code>
+ * {@link ResponseNotifierInstrumentation} enhance the <code>send</code> method in
+ * <code>org.eclipse.jetty.client.ResponseNotifier</code> by
+ * <code>org.apache.skywalking.apm.plugin.jetty.v9.client.ResponseNotifierInterceptor</code>
+ * <p>
+ * It is implemented to be able to stop the asynchronous span in the attributes of the request.
  */
-public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class ResponseNotifierInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.eclipse.jetty.client.HttpRequest";
-    private static final String ENHANCE_CLASS_NAME = "send";
+    private static final String ENHANCE_CLASS = "org.eclipse.jetty.client.ResponseNotifier";
+    private static final String ENHANCE_CLASS_NAME = "notifyComplete";
     public static final String SYNC_SEND_INTERCEPTOR =
-            "org.apache.skywalking.apm.plugin.jetty.v9.client.SyncHttpRequestSendInterceptor";
-
-    public static final String ASYNC_SEND_INTERCEPTOR =
-            "org.apache.skywalking.apm.plugin.jetty.v9.client.AsyncHttpRequestSendInterceptor";
+            "org.apache.skywalking.apm.plugin.jetty.v9.client.ResponseNotifierInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -57,41 +55,23 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
-            new InstanceMethodsInterceptPoint() {
-                // sync call interceptor point
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_CLASS_NAME).and(takesArguments(0));
-                }
+        return new InstanceMethodsInterceptPoint[]{
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named(ENHANCE_CLASS_NAME).and(takesArguments(2)).and(takesArgument(0, List.class));
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return SYNC_SEND_INTERCEPTOR;
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return SYNC_SEND_INTERCEPTOR;
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
                 }
-            },
-            new InstanceMethodsInterceptPoint() {
-                // async call interceptor point
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_CLASS_NAME).and(takesArguments(1));
-                }
-
-                @Override
-                public String getMethodsInterceptor() {
-                    return ASYNC_SEND_INTERCEPTOR;
-                }
-
-                @Override
-                public boolean isOverrideArgs() {
-                    return true;
-                }
-            }
         };
     }
 
@@ -102,7 +82,7 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     @Override
     protected String[] witnessClasses() {
-        return new String[] {"org.eclipse.jetty.client.AbstractHttpClientTransport"};
+        return new String[]{"org.eclipse.jetty.client.AbstractHttpClientTransport"};
     }
 
     @Override

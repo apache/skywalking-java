@@ -16,10 +16,16 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.jettyclient.controller;
+package org.apache.skywalking.apm.testcase.jettyclient.contr;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -45,6 +51,16 @@ public class CaseController {
     @ResponseBody
     public String jettyClientScenario() throws Exception {
         client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0").send();
+        Response.CompleteListener listener = result -> {
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            HttpGet httpget = new HttpGet("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0");
+            try {
+                httpclient.execute(httpget);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        };
+        client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-1").send(listener);
         return "Success";
     }
 

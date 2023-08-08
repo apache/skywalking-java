@@ -150,6 +150,7 @@ Callable {
 * Fix witness class in springmvc-annotation-5.x-plugin to avoid falling into v3 use cases.
 * Fix Jedis-2.x plugin bug and add test for Redis cluster scene
 * Merge two instrumentation classes to avoid duplicate enhancements in MySQL plugins.
+* Support asynchronous invocation in jetty client 9.0 and 9.x plugin
 
 #### Documentation
 

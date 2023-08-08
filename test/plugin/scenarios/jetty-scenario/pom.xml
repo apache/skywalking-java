@@ -43,6 +43,8 @@
         <jettyserver.version>${test.framework.version}</jettyserver.version>
         <jettyclient.version>${test.framework.version}</jettyclient.version>
 
+        <httpclient.version>4.3.5</httpclient.version>
+
         <log4j.version>2.6.2</log4j.version>
     </properties>
 

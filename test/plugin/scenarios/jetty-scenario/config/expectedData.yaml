@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
 - serviceName: jettyserver-scenario
-  segmentSize: 3
+  segmentSize: ge 3
   segments:
   - segmentId: not null
     spans:
@@ -81,7 +81,7 @@ segmentItems:
         refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not null,
         parentService: jettyclient-scenario, traceId: not null }
 - serviceName: jettyclient-scenario
-  segmentSize: 3
+  segmentSize: ge 3
   segments:
   - segmentId: not null
     spans:

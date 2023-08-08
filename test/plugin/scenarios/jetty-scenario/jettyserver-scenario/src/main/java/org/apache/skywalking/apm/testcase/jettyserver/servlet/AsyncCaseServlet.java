@@ -31,7 +31,7 @@ public class AsyncCaseServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Thread.sleep(2000);
-        } catch (InterruptedException e) {cd ../
+        } catch (InterruptedException e) {
         }
     }
 }

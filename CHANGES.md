@@ -151,6 +151,7 @@ Callable {
 * Fix Jedis-2.x plugin bug and add test for Redis cluster scene
 * Merge two instrumentation classes to avoid duplicate enhancements in MySQL plugins.
 * Support asynchronous invocation in jetty client 9.0 and 9.x plugin
+* Add Spring Runner plugin
 
 #### Documentation
 

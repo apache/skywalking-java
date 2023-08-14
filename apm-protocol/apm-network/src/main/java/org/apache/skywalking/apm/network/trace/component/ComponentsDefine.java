@@ -241,4 +241,5 @@ public class ComponentsDefine {
 
     public static final OfficialComponent AEROSPIKE = new OfficialComponent(149, "Aerospike");
 
+    public static final OfficialComponent SPRING_RUNNER = new OfficialComponent(150, "SpringRunner");
 }

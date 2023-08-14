@@ -112,6 +112,7 @@
 - spring-resttemplate-3.x
 - spring-resttemplate-4.x
 - spring-resttemplate-6.x
+- spring-runner
 - spring-scheduled-annotation
 - spring-tx
 - spring-webflux-5.x

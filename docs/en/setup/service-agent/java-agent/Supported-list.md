@@ -110,6 +110,7 @@ metrics based on the tracing data.
   * Spring Bean annotations(@Bean, @Service, @Component, @Repository) 3.x and 4.x (Optional²)
   * Spring Core Async SuccessCallback/FailureCallback/ListenableFutureCallback 4.x
   * Spring Transaction 4.x and 5.x (Optional²)
+  * Spring Runner 2.x and 3.x
 * [Hystrix: Latency and Fault Tolerance for Distributed Systems](https://github.com/Netflix/Hystrix) 1.4.20 -> 1.5.18
 * [Sentinel: The Sentinel of Your Microservices](https://github.com/alibaba/Sentinel) 1.7.0 -> 1.8.1
 * Scheduler

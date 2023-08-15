@@ -134,7 +134,6 @@
         <module>rocketMQ-5.x-plugin</module>
         <module>websphere-liberty-23.x-plugin</module>
         <module>aerospike-plugin</module>
-        <module>nacos-client-2.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

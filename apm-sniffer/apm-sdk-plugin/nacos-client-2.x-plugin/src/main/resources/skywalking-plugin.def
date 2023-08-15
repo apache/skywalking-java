@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-nacos-2.x=org.apache.skywalking.apm.plugin.nacos.v2.define.GrpcConnectionClientIntrumentation
-nacos-2.x=org.apache.skywalking.apm.plugin.nacos.v2.define.RpcClientIntrumentation
+nacos-client-2.x=org.apache.skywalking.apm.plugin.nacos.v2.define.GrpcConnectionClientIntrumentation
+nacos-client-2.x=org.apache.skywalking.apm.plugin.nacos.v2.define.RpcClientIntrumentation
 
 

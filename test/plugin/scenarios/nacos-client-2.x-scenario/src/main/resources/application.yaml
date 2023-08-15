@@ -17,6 +17,6 @@
 #
 
 server:
-  port: 8081
+  port: 8080
   servlet:
     context-path: /nacos-client-2.x-scenario

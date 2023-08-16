@@ -39,7 +39,7 @@ public class ClientServerCheckInterceptor implements InstanceMethodsAroundInterc
         objInst.setSkyWalkingDynamicField(new RpcClient.ServerInfo(ip, port));
         AbstractSpan span = ContextManager.createExitSpan("Nacos/serverCheck", ip + ":" + port);
         SpanLayer.asRPCFramework(span);
-        span.setComponent(ComponentsDefine.NACOS);
+        span.setComponent(ComponentsDefine.NACOS_CLIENT);
     }
 
     @Override

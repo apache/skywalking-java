@@ -37,7 +37,6 @@ public class RunnerMethodInterceptor implements InstanceMethodsAroundInterceptor
                              MethodInterceptResult result) throws Throwable {
         String operationName = ComponentsDefine.SPRING_RUNNER.getName() + "/" + allArguments[0].getClass().getName();
         AbstractSpan span = ContextManager.createLocalSpan(operationName);
-        Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
         span.setComponent(ComponentsDefine.SPRING_RUNNER);
     }
 

@@ -40,7 +40,7 @@ segmentItems:
             spanLayer: Unknown
             startTime: not null
             endTime: not null
-            componentId: 150
+            componentId: 151
             isError: false
             spanType: Local
             peer: ''
@@ -89,7 +89,7 @@ segmentItems:
             spanLayer: Unknown
             startTime: not null
             endTime: not null
-            componentId: 150
+            componentId: 151
             isError: false
             spanType: Local
             peer: ''

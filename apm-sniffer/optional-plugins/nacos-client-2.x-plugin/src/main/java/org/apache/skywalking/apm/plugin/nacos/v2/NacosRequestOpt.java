@@ -122,7 +122,7 @@ public class NacosRequestOpt {
 
     private static AbstractSpan getNacosEntrySpan(String peer) {
         AbstractSpan span = ContextManager.createEntrySpan(NacosConstants.NACOS_PREFIX, null);
-        span.setComponent(ComponentsDefine.NACOS_CLIENT);
+        span.setComponent(ComponentsDefine.NACOS);
         span.setPeer(peer);
         SpanLayer.asRPCFramework(span);
         return span;
@@ -130,7 +130,7 @@ public class NacosRequestOpt {
 
     private static AbstractSpan getNacosExitSpan(String peer) {
         AbstractSpan span = ContextManager.createExitSpan(NacosConstants.NACOS_PREFIX, peer);
-        span.setComponent(ComponentsDefine.NACOS_CLIENT);
+        span.setComponent(ComponentsDefine.NACOS);
         SpanLayer.asRPCFramework(span);
         return span;
     }

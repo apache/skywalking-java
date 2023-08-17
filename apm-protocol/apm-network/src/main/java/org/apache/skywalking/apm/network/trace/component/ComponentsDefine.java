@@ -241,5 +241,5 @@ public class ComponentsDefine {
 
     public static final OfficialComponent AEROSPIKE = new OfficialComponent(149, "Aerospike");
 
-    public static final OfficialComponent NACOS_CLIENT = new OfficialComponent(150, "Nacos-client");
+    public static final OfficialComponent NACOS = new OfficialComponent(150, "Nacos");
 }

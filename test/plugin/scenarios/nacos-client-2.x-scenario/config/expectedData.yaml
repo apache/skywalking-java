@@ -1,0 +1,120 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+segmentItems:
+- serviceName: nacos-client-2.x-scenario
+  segmentSize: gt 0
+  segments:
+  - segmentId: not null
+    spans:
+    - operationName: Nacos/serverCheck
+      parentSpanId: 0
+      spanId: ge 0
+      spanLayer: RPCFramework
+      startTime: not null
+      endTime: not null
+      componentId: 150
+      isError: false
+      spanType: Exit
+      peer: nacos-server:9848
+      skipAnalysis: 'false'
+    - operationName: Nacos/registerInstance
+      parentSpanId: 0
+      spanId: nq 0
+      spanLayer: RPCFramework
+      startTime: not null
+      endTime: not null
+      componentId: 150
+      isError: false
+      spanType: Exit
+      peer: nacos-server:9848
+      tags:
+      - {key: namespace, value: public}
+      - {key: group, value: DEFAULT_GROUP}
+      - {key: serviceName, value: nacos-scenario}
+      skipAnalysis: 'false'
+    - operationName: Nacos/subscribeService
+      parentSpanId: 0
+      spanId: nq 0
+      spanLayer: RPCFramework
+      startTime: not null
+      endTime: not null
+      componentId: 150
+      isError: false
+      spanType: Exit
+      peer: nacos-server:9848
+      skipAnalysis: false
+      tags:
+        - { key: namespace, value: public }
+        - { key: group, value: DEFAULT_GROUP }
+        - { key: serviceName, value: nacos-scenario }
+    - operationName: Nacos/serverCheck
+      parentSpanId: 0
+      spanId: nq 0
+      spanLayer: RPCFramework
+      startTime: not null
+      endTime: not null
+      componentId: 150
+      isError: false
+      spanType: Exit
+      peer: nacos-server:9848
+      skipAnalysis: 'false'
+    - operationName: Nacos/publishConfig
+      parentSpanId: 0
+      spanId: nq 0
+      spanLayer: RPCFramework
+      startTime: not null
+      endTime: not null
+      componentId: 150
+      isError: false
+      spanType: Exit
+      peer: nacos-server:9848
+      skipAnalysis: false
+      tags:
+        - { key: dataId, value: dataId }
+        - { key: group, value: DEFAULT_GROUP }
+        - { key: tenant, value: null }
+    - operationName: GET:/case/nacos-client-2.x-case
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: not null
+      endTime: not null
+      componentId: 14
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: not null}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: Nacos/notifySubscribeChange
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: RPCFramework
+      startTime: not null
+      endTime: not null
+      componentId: 150
+      isError: false
+      spanType: Entry
+      peer: nacos-server:9848
+      skipAnalysis: 'false'
+      tags:
+        - { key: group, value: DEFAULT_GROUP }
+        - { key: serviceName, value: nacos-scenario }
+

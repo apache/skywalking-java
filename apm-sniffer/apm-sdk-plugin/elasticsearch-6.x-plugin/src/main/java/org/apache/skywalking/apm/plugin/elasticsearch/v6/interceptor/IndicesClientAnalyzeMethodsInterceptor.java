@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -36,6 +37,8 @@ import static org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Cons
 
 public class IndicesClientAnalyzeMethodsInterceptor implements InstanceMethodsAroundInterceptor {
 
+    private static final AbstractTag<String> ANALYZER_TAG = Tags.ofKey("analyzer");
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
@@ -47,7 +50,7 @@ public class IndicesClientAnalyzeMethodsInterceptor implements InstanceMethodsAr
             span.setComponent(ComponentsDefine.REST_HIGH_LEVEL_CLIENT);
 
             Tags.DB_TYPE.set(span, DB_TYPE);
-            span.tag(Tags.ofKey("analyzer"), analyzeRequest.analyzer());
+            span.tag(ANALYZER_TAG, analyzeRequest.analyzer());
             if (TRACE_DSL) {
                 Tags.DB_STATEMENT.set(span, analyzeRequest.text()[0]);
             }

@@ -40,6 +40,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.grpc.v1.Constants;
 import org.apache.skywalking.apm.plugin.grpc.v1.OperationNameFormatUtil;
 import org.apache.skywalking.apm.util.StringUtil;
 
@@ -87,7 +88,7 @@ public class ClientCallImplGenericCallInterceptor
         AbstractSpan span = ContextManager.createExitSpan(serviceName, contextCarrier, remotePeer);
         span.setComponent(ComponentsDefine.GRPC);
         span.setLayer(SpanLayer.RPC_FRAMEWORK);
-        span.tag(Tags.ofKey(GENERIC_CALL_METHOD), asyncCallMethod);
+        span.tag(Constants.GENERIC_CALL_METHOD_TAG, asyncCallMethod);
 
         CarrierItem contextItem = contextCarrier.items();
         while (contextItem.hasNext()) {

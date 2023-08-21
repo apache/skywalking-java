@@ -18,6 +18,9 @@
 
 package org.apache.skywalking.apm.plugin.nacos.v2.constant;
 
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
+
 public class NacosConstants {
 
     public static final String NACOS_PREFIX = "Nacos/";
@@ -40,13 +43,13 @@ public class NacosConstants {
 
     public static final String NOTIFY_CONFIG_CHANGE = "notifyConfigChange";
 
-    public static final String NAMESPACE = "namespace";
+    public static final AbstractTag<String> NAME_SPACE_TAG = Tags.ofKey("namespace");
 
-    public static final String GROUP = "group";
+    public static final AbstractTag<String> GROUP_TAG = Tags.ofKey("group");
 
-    public static final String SERVICE_NAME = "serviceName";
+    public static final AbstractTag<String> SERVICE_NAME_TAG = Tags.ofKey("serviceName");
 
-    public static final String DATA_ID = "dataId";
+    public static final AbstractTag<String> DATA_ID_TAG = Tags.ofKey("dataId");
 
-    public static final String TENANT = "tenant";
+    public static final AbstractTag<String> TENANT_TAG = Tags.ofKey("tenant");
 }

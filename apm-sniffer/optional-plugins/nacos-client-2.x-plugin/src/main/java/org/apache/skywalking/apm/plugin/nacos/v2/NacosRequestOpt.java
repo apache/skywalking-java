@@ -30,7 +30,6 @@ import com.alibaba.nacos.api.naming.remote.request.ServiceQueryRequest;
 import com.alibaba.nacos.api.naming.remote.request.SubscribeServiceRequest;
 import com.alibaba.nacos.api.remote.request.Request;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
@@ -49,74 +48,74 @@ public class NacosRequestOpt {
         OPTS.put(InstanceRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosExitSpan(peer);
             span.setOperationName(span.getOperationName() + ((InstanceRequest) request).getType());
-            span.tag(Tags.ofKey(NacosConstants.NAMESPACE), ((InstanceRequest) request).getNamespace());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((InstanceRequest) request).getGroupName());
-            span.tag(Tags.ofKey(NacosConstants.SERVICE_NAME), ((InstanceRequest) request).getServiceName());
+            span.tag(NacosConstants.NAME_SPACE_TAG, ((InstanceRequest) request).getNamespace());
+            span.tag(NacosConstants.GROUP_TAG, ((InstanceRequest) request).getGroupName());
+            span.tag(NacosConstants.SERVICE_NAME_TAG, ((InstanceRequest) request).getServiceName());
         });
 
         OPTS.put(ServiceQueryRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosExitSpan(peer);
             span.setOperationName(span.getOperationName() + NacosConstants.QUERY_SERVICE);
-            span.tag(Tags.ofKey(NacosConstants.NAMESPACE), ((ServiceQueryRequest) request).getNamespace());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((ServiceQueryRequest) request).getGroupName());
-            span.tag(Tags.ofKey(NacosConstants.SERVICE_NAME), ((ServiceQueryRequest) request).getServiceName());
+            span.tag(NacosConstants.NAME_SPACE_TAG, ((ServiceQueryRequest) request).getNamespace());
+            span.tag(NacosConstants.GROUP_TAG, ((ServiceQueryRequest) request).getGroupName());
+            span.tag(NacosConstants.SERVICE_NAME_TAG, ((ServiceQueryRequest) request).getServiceName());
         });
 
         OPTS.put(SubscribeServiceRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosExitSpan(peer);
             span.setOperationName(span.getOperationName() + (((SubscribeServiceRequest) request).isSubscribe() ?
                     NacosConstants.SUBSCRIBE_SERVICE : NacosConstants.UNSUBSCRIBE_SERVICE));
-            span.tag(Tags.ofKey(NacosConstants.NAMESPACE), ((SubscribeServiceRequest) request).getNamespace());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((SubscribeServiceRequest) request).getGroupName());
-            span.tag(Tags.ofKey(NacosConstants.SERVICE_NAME), ((SubscribeServiceRequest) request).getServiceName());
+            span.tag(NacosConstants.NAME_SPACE_TAG, ((SubscribeServiceRequest) request).getNamespace());
+            span.tag(NacosConstants.GROUP_TAG, ((SubscribeServiceRequest) request).getGroupName());
+            span.tag(NacosConstants.SERVICE_NAME_TAG, ((SubscribeServiceRequest) request).getServiceName());
         });
 
         OPTS.put(ServiceListRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosExitSpan(peer);
             span.setOperationName(span.getOperationName() + NacosConstants.GET_SERVICE_LIST);
-            span.tag(Tags.ofKey(NacosConstants.NAMESPACE), ((ServiceListRequest) request).getNamespace());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((ServiceListRequest) request).getGroupName());
-            span.tag(Tags.ofKey(NacosConstants.SERVICE_NAME), ((ServiceListRequest) request).getServiceName());
+            span.tag(NacosConstants.NAME_SPACE_TAG, ((ServiceListRequest) request).getNamespace());
+            span.tag(NacosConstants.GROUP_TAG, ((ServiceListRequest) request).getGroupName());
+            span.tag(NacosConstants.SERVICE_NAME_TAG, ((ServiceListRequest) request).getServiceName());
         });
 
         OPTS.put(ConfigQueryRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosExitSpan(peer);
             span.setOperationName(span.getOperationName() + NacosConstants.QUERY_CONFIG);
-            span.tag(Tags.ofKey(NacosConstants.DATA_ID), ((ConfigQueryRequest) request).getDataId());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((ConfigQueryRequest) request).getGroup());
-            span.tag(Tags.ofKey(NacosConstants.TENANT), ((ConfigQueryRequest) request).getTenant());
+            span.tag(NacosConstants.DATA_ID_TAG, ((ConfigQueryRequest) request).getDataId());
+            span.tag(NacosConstants.GROUP_TAG, ((ConfigQueryRequest) request).getGroup());
+            span.tag(NacosConstants.TENANT_TAG, ((ConfigQueryRequest) request).getTenant());
         });
 
         OPTS.put(ConfigPublishRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosExitSpan(peer);
             span.setOperationName(span.getOperationName() + NacosConstants.PUBLISH_CONFIG);
-            span.tag(Tags.ofKey(NacosConstants.DATA_ID), ((ConfigPublishRequest) request).getDataId());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((ConfigPublishRequest) request).getGroup());
-            span.tag(Tags.ofKey(NacosConstants.TENANT), ((ConfigPublishRequest) request).getTenant());
+            span.tag(NacosConstants.DATA_ID_TAG, ((ConfigPublishRequest) request).getDataId());
+            span.tag(NacosConstants.GROUP_TAG, ((ConfigPublishRequest) request).getGroup());
+            span.tag(NacosConstants.TENANT_TAG, ((ConfigPublishRequest) request).getTenant());
         });
 
         OPTS.put(ConfigRemoveRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosExitSpan(peer);
             span.setOperationName(span.getOperationName() + NacosConstants.REMOVE_CONFIG);
-            span.tag(Tags.ofKey(NacosConstants.DATA_ID), ((ConfigRemoveRequest) request).getDataId());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((ConfigRemoveRequest) request).getGroup());
-            span.tag(Tags.ofKey(NacosConstants.TENANT), ((ConfigRemoveRequest) request).getTenant());
+            span.tag(NacosConstants.DATA_ID_TAG, ((ConfigRemoveRequest) request).getDataId());
+            span.tag(NacosConstants.GROUP_TAG, ((ConfigRemoveRequest) request).getGroup());
+            span.tag(NacosConstants.TENANT_TAG, ((ConfigRemoveRequest) request).getTenant());
         });
 
         OPTS.put(NotifySubscriberRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosEntrySpan(peer);
             span.setOperationName(span.getOperationName() + NacosConstants.NOTIFY_SUBSCRIBE_CHANGE);
             ServiceInfo serviceInfo = ((NotifySubscriberRequest) request).getServiceInfo();
-            span.tag(Tags.ofKey(NacosConstants.GROUP), serviceInfo.getGroupName());
-            span.tag(Tags.ofKey(NacosConstants.SERVICE_NAME), serviceInfo.getName());
+            span.tag(NacosConstants.GROUP_TAG, serviceInfo.getGroupName());
+            span.tag(NacosConstants.SERVICE_NAME_TAG, serviceInfo.getName());
         });
 
         OPTS.put(ConfigChangeNotifyRequest.class, (request, peer) -> {
             AbstractSpan span = getNacosEntrySpan(peer);
             span.setOperationName(span.getOperationName() + NacosConstants.NOTIFY_CONFIG_CHANGE);
-            span.tag(Tags.ofKey(NacosConstants.DATA_ID), ((ConfigChangeNotifyRequest) request).getDataId());
-            span.tag(Tags.ofKey(NacosConstants.GROUP), ((ConfigChangeNotifyRequest) request).getGroup());
-            span.tag(Tags.ofKey(NacosConstants.TENANT), ((ConfigChangeNotifyRequest) request).getTenant());
+            span.tag(NacosConstants.DATA_ID_TAG, ((ConfigChangeNotifyRequest) request).getDataId());
+            span.tag(NacosConstants.GROUP_TAG, ((ConfigChangeNotifyRequest) request).getGroup());
+            span.tag(NacosConstants.TENANT_TAG, ((ConfigChangeNotifyRequest) request).getTenant());
         });
     }
 

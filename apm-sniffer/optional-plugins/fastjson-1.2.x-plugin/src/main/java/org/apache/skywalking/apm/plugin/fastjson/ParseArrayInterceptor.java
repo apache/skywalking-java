@@ -19,18 +19,17 @@
 package org.apache.skywalking.apm.plugin.fastjson;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.fastjson.common.Constants;
 
 import java.lang.reflect.Method;
 
 public class ParseArrayInterceptor implements StaticMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_FROM_JSON = "Fastjson/";
-    public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
@@ -39,7 +38,7 @@ public class ParseArrayInterceptor implements StaticMethodsAroundInterceptor {
         span.setComponent(ComponentsDefine.FASTJSON);
 
         if (allArguments[0] instanceof String) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((String) allArguments[0]).length()));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(((String) allArguments[0]).length()));
         }
     }
 

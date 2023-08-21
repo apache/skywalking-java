@@ -19,12 +19,12 @@
 package org.apache.skywalking.apm.plugin.jackson;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.jackson.comm.Constants;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -32,7 +32,6 @@ import java.lang.reflect.Method;
 public class ReadValueInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_JACKSON = "Jackson/";
-    public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
@@ -43,11 +42,11 @@ public class ReadValueInterceptor implements InstanceMethodsAroundInterceptor {
         span.setComponent(ComponentsDefine.JACKSON);
 
         if (allArguments[0] instanceof String) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((String) allArguments[0]).length()));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(((String) allArguments[0]).length()));
         } else if (allArguments[0] instanceof byte[]) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((byte[]) allArguments[0]).length));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(((byte[]) allArguments[0]).length));
         } else if (allArguments[0] instanceof File) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Long.toString(((File) allArguments[0]).length()));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Long.toString(((File) allArguments[0]).length()));
         }
     }
 

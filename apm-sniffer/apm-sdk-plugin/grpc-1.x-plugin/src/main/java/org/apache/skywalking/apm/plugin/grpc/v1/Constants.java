@@ -18,6 +18,9 @@
 
 package org.apache.skywalking.apm.plugin.grpc.v1;
 
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
+
 /**
  * Constant variables
  */
@@ -78,4 +81,6 @@ public class Constants {
     public static final String GENERIC_CALL_METHOD = "GENERIC_CALL_METHOD";
 
     public static final String CLIENT_STREAM_PEER = "CLIENT_STREAM_PEER";
+
+    public static final AbstractTag<String> GENERIC_CALL_METHOD_TAG = Tags.ofKey("GENERIC_CALL_METHOD");
 }

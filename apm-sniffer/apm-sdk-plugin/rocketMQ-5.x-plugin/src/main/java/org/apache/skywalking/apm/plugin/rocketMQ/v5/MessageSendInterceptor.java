@@ -53,6 +53,8 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
 
     private static final AbstractTag<String> MQ_MESSAGE_KEYS_TAG = Tags.ofKey("mq.message.keys");
 
+    private static final AbstractTag<String> MQ_MESSAGE_TAGS_TAG = Tags.ofKey("mq.message.tags");
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
@@ -69,7 +71,7 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         }
         String tags = message.getTags();
         if (StringUtil.isNotBlank(tags)) {
-            span.tag(MQ_MESSAGE_KEYS_TAG, tags);
+            span.tag(MQ_MESSAGE_TAGS_TAG, tags);
         }
 
         contextCarrier.extensionInjector().injectSendingTimestamp();

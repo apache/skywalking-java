@@ -31,8 +31,6 @@ public class ToJavaObjectInterceptor implements StaticMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_TO_JSON = "Fastjson/";
 
-
-
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
 

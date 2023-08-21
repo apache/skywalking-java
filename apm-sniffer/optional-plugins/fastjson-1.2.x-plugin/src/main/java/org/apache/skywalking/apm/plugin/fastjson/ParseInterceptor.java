@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 public class ParseInterceptor implements StaticMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_FROM_JSON = "Fastjson/";
+
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
 

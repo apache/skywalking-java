@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.fastjson.common;
+package org.apache.skywalking.apm.plugin.jackson.comm;
 
 import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
@@ -24,6 +24,4 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 public class Constants {
 
     public static final AbstractTag<String> SPAN_TAG_KEY_LENGTH = Tags.ofKey("length");
-
-    public static final AbstractTag<String> SPAN_TAG_KEY_OBJECT = Tags.ofKey("object");
 }

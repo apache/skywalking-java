@@ -38,6 +38,7 @@ public class CanalInterceptor implements InstanceMethodsAroundInterceptor {
     private static final AbstractTag<String> BATCH_SIZE_TAG = Tags.ofKey("batchSize");
 
     private static final AbstractTag<String> DESTINATION_TAG = Tags.ofKey("destination");
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {

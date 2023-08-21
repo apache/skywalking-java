@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.plugin.canal;
 import com.alibaba.otter.canal.client.impl.SimpleCanalConnector;
 import java.util.Objects;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -33,6 +34,11 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 public class CanalInterceptor implements InstanceMethodsAroundInterceptor {
+
+    private static final AbstractTag<String> BATCH_SIZE_TAG = Tags.ofKey("batchSize");
+
+    private static final AbstractTag<String> DESTINATION_TAG = Tags.ofKey("destination");
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
@@ -62,8 +68,8 @@ public class CanalInterceptor implements InstanceMethodsAroundInterceptor {
         AbstractSpan activeSpan = ContextManager.createExitSpan("Canal/" + destination, url)
                                                 .start(System.currentTimeMillis());
         activeSpan.setComponent(ComponentsDefine.CANAL);
-        activeSpan.tag(Tags.ofKey("batchSize"), batchSize);
-        activeSpan.tag(Tags.ofKey("destination"), destination);
+        activeSpan.tag(BATCH_SIZE_TAG, batchSize);
+        activeSpan.tag(DESTINATION_TAG, destination);
 
     }
 

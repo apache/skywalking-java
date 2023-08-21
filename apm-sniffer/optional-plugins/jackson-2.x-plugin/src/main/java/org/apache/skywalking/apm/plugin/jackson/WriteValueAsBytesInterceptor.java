@@ -19,19 +19,18 @@
 package org.apache.skywalking.apm.plugin.jackson;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.jackson.comm.Constants;
 
 import java.lang.reflect.Method;
 
 public class WriteValueAsBytesInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_JACKSON = "Jackson/";
-    public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
@@ -50,7 +49,7 @@ public class WriteValueAsBytesInterceptor implements InstanceMethodsAroundInterc
             return ret;
         }
         if (ret instanceof byte[]) {
-            ContextManager.activeSpan().tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((byte[]) ret).length));
+            ContextManager.activeSpan().tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(((byte[]) ret).length));
         }
         ContextManager.stopSpan();
         return ret;

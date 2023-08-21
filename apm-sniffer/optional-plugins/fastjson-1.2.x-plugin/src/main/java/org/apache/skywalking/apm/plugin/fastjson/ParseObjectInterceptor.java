@@ -19,11 +19,11 @@
 package org.apache.skywalking.apm.plugin.fastjson;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.fastjson.common.Constants;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -31,7 +31,6 @@ import java.lang.reflect.Method;
 public class ParseObjectInterceptor implements StaticMethodsAroundInterceptor {
 
     public static final String OPERATION_NAME_FROM_JSON = "Fastjson/";
-    public static final String SPAN_TAG_KEY_LENGTH = "length";
 
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, MethodInterceptResult result) {
@@ -40,13 +39,13 @@ public class ParseObjectInterceptor implements StaticMethodsAroundInterceptor {
         span.setComponent(ComponentsDefine.FASTJSON);
 
         if (allArguments[0] instanceof String) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((String) allArguments[0]).length()));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(((String) allArguments[0]).length()));
         } else if (allArguments[0] instanceof byte[]) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((byte[]) allArguments[0]).length));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(((byte[]) allArguments[0]).length));
         } else if (allArguments[0] instanceof char[]) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(((char[]) allArguments[0]).length));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(((char[]) allArguments[0]).length));
         } else if (allArguments[0] instanceof InputStream) {
-            span.tag(Tags.ofKey(SPAN_TAG_KEY_LENGTH), Integer.toString(inputStreamAvailable(allArguments[0])));
+            span.tag(Constants.SPAN_TAG_KEY_LENGTH, Integer.toString(inputStreamAvailable(allArguments[0])));
         }
     }
 

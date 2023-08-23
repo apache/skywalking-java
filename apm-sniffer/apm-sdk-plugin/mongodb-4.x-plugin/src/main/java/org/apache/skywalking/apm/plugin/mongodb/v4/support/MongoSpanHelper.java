@@ -23,9 +23,14 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.util.StringUtil;
 
 public class MongoSpanHelper {
+
+    private static final ILog LOGGER = LogManager.getLogger(MongoSpanHelper.class);
 
     private MongoSpanHelper() {
     }
@@ -43,8 +48,18 @@ public class MongoSpanHelper {
         Tags.DB_TYPE.set(span, MongoConstants.DB_TYPE);
         SpanLayer.asDB(span);
 
+        String databaseName = null;
+        try {
+            databaseName = MongoInfoHelper.getMongoDatabaseName(operation);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            LOGGER.warn("mongoV4 unable to obtain database name: {}",operation.getClass());
+        }
+        if(StringUtil.isNotEmpty(databaseName)){
+            Tags.DB_INSTANCE.set(span, databaseName);
+        }
+
         if (MongoPluginConfig.Plugin.MongoDB.TRACE_PARAM) {
-            Tags.DB_BIND_VARIABLES.set(span, MongoOperationHelper.getTraceParam(operation));
+            Tags.DB_BIND_VARIABLES.set(span, MongoInfoHelper.getTraceParam(operation));
         }
     }
 }

@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.mongodb.v4.support;
 
+import com.mongodb.MongoNamespace;
 import com.mongodb.internal.bulk.DeleteRequest;
 import com.mongodb.internal.bulk.InsertRequest;
 import com.mongodb.internal.bulk.UpdateRequest;
@@ -40,21 +41,26 @@ import com.mongodb.internal.operation.MixedBulkWriteOperation;
 import com.mongodb.internal.operation.UpdateOperation;
 import org.bson.BsonDocument;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 @SuppressWarnings({
-    "deprecation",
-    "Duplicates"
+        "deprecation",
+        "Duplicates"
 })
-public class MongoOperationHelper {
+public class MongoInfoHelper {
 
-    private MongoOperationHelper() {
+    private final static String DATABASE_FIELD_NAME = "databaseName";
+    private final static String NAMESPACE_FIELD_NAME = "namespace";
+
+    private MongoInfoHelper() {
 
     }
 
     /**
      * Convert ReadOperation interface or WriteOperation interface to the implementation class. Get the method name and
      * filter info.
+     *
      * @param obj operation
      * @return result
      */
@@ -68,7 +74,7 @@ public class MongoOperationHelper {
         } else if (obj instanceof FindOperation) {
             BsonDocument filter = ((FindOperation) obj).getFilter();
             return limitFilter(filter.toString());
-        }  else if (obj instanceof ListCollectionsOperation) {
+        } else if (obj instanceof ListCollectionsOperation) {
             BsonDocument filter = ((ListCollectionsOperation) obj).getFilter();
             return limitFilter(filter.toString());
         } else if (obj instanceof MapReduceWithInlineResultsOperation) {
@@ -138,6 +144,67 @@ public class MongoOperationHelper {
         } else {
             return filter;
         }
+    }
+
+    /**
+     * Get the databaseName
+     *
+     * @param obj operation
+     * @return databaseName
+     */
+    @SuppressWarnings("rawtypes")
+    public static String getMongoDatabaseName(Object obj) throws NoSuchFieldException, IllegalAccessException {
+        String databaseName = "";
+        if (obj instanceof CountOperation) {
+            Field namespace = CountOperation.class.getDeclaredField(NAMESPACE_FIELD_NAME);
+            namespace.setAccessible(true);
+            databaseName = getOrDefaultDatabaseName((MongoNamespace) namespace.get(obj));
+        } else if (obj instanceof DistinctOperation) {
+            Field namespace = DistinctOperation.class.getDeclaredField(NAMESPACE_FIELD_NAME);
+            namespace.setAccessible(true);
+            databaseName = getOrDefaultDatabaseName((MongoNamespace) namespace.get(obj));
+        } else if (obj instanceof MapReduceWithInlineResultsOperation) {
+            databaseName = getOrDefaultDatabaseName(((MapReduceWithInlineResultsOperation) obj).getNamespace());
+        } else if (obj instanceof DeleteOperation) {
+            databaseName = getOrDefaultDatabaseName(((DeleteOperation) obj).getNamespace());
+        } else if (obj instanceof InsertOperation) {
+            databaseName = getOrDefaultDatabaseName(((InsertOperation) obj).getNamespace());
+        } else if (obj instanceof UpdateOperation) {
+            databaseName = getOrDefaultDatabaseName(((UpdateOperation) obj).getNamespace());
+        } else if (obj instanceof CreateIndexesOperation) {
+            Field namespace = CreateIndexesOperation.class.getDeclaredField(NAMESPACE_FIELD_NAME);
+            namespace.setAccessible(true);
+            databaseName = getOrDefaultDatabaseName((MongoNamespace) namespace.get(obj));
+        } else if (obj instanceof FindAndDeleteOperation) {
+            databaseName = getOrDefaultDatabaseName(((FindAndDeleteOperation) obj).getNamespace());
+        } else if (obj instanceof FindAndReplaceOperation) {
+            databaseName = getOrDefaultDatabaseName(((FindAndReplaceOperation) obj).getNamespace());
+        } else if (obj instanceof FindAndUpdateOperation) {
+            databaseName = getOrDefaultDatabaseName(((FindAndUpdateOperation) obj).getNamespace());
+        } else if (obj instanceof MixedBulkWriteOperation) {
+            databaseName = getOrDefaultDatabaseName(((MixedBulkWriteOperation) obj).getNamespace());
+        } else if (obj instanceof FindOperation) {
+            databaseName = getOrDefaultDatabaseName(((FindOperation) obj).getNamespace());
+        } else if (obj instanceof CreateViewOperation) {
+            databaseName = ((CreateViewOperation) obj).getDatabaseName();
+        } else if (obj instanceof ListCollectionsOperation) {
+            Field databaseNameObj = ListCollectionsOperation.class.getDeclaredField(DATABASE_FIELD_NAME);
+            databaseNameObj.setAccessible(true);
+            databaseName = (String) databaseNameObj.get(obj);
+        } else if (obj instanceof CreateCollectionOperation) {
+            Field namespace = CreateCollectionOperation.class.getDeclaredField(DATABASE_FIELD_NAME);
+            namespace.setAccessible(true);
+            databaseName = (String) namespace.get(obj);
+        } else if (obj instanceof MapReduceToCollectionOperation) {
+            databaseName = ((MapReduceToCollectionOperation) obj).getDatabaseName();
+        } else {
+            return MongoConstants.EMPTY;
+        }
+        return databaseName;
+    }
+
+    private static String getOrDefaultDatabaseName(MongoNamespace mongoNamespace) {
+        return mongoNamespace == null ? MongoConstants.EMPTY : mongoNamespace.getDatabaseName();
     }
 
 }

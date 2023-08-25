@@ -30,6 +30,8 @@ import org.apache.rocketmq.client.apis.message.Message;
 import org.apache.rocketmq.client.apis.message.MessageView;
 import org.apache.rocketmq.client.apis.producer.Producer;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
+import org.apache.rocketmq.common.MixAll;
+import org.apache.rocketmq.tools.command.MQAdminStartup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -48,6 +50,9 @@ public class CaseController {
 
     @Value("${endpoints}")
     private String endpoints;
+
+    @Value("${nameServer}")
+    private String nameServer;
 
     static final String TOPIC = "TopicTest";
     static final String TAG = "TagA";
@@ -109,15 +114,26 @@ public class CaseController {
     @RequestMapping("/healthCheck")
     @ResponseBody
     public String healthCheck() throws Exception {
-        ClientServiceProvider provider = ClientServiceProvider.loadService();
-        ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
-                .setEndpoints(endpoints)
-                .enableSsl(false)
-                .build();
-        // start producer
-        Producer producer = provider.newProducerBuilder()
-                .setClientConfiguration(clientConfiguration)
-                .build();
+        System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
+        String[] subArgs = new String[]{
+                "updateTopic",
+                "-n",
+                nameServer,
+                "-c",
+                "DefaultCluster",
+                "-t",
+                "TopicTest"};
+        MQAdminStartup.main(subArgs);
+
+        subArgs = new String[]{
+                "updateSubGroup",
+                "-n",
+                nameServer,
+                "-c",
+                "DefaultCluster",
+                "-g",
+                "group1"};
+        MQAdminStartup.main(subArgs);
         System.out.printf("HealthCheck Provider Started.%n");
         return SUCCESS;
     }

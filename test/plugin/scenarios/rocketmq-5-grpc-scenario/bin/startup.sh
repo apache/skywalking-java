@@ -18,8 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-sh ${home}/rocketmq-5.1.1/bin/mqadmin updateTopic -n ${NAME_SERVER} -c DefaultCluster -t TopicTest
-
-sh ${home}/rocketmq-5.1.1/bin/mqadmin updateSubGroup -n ${NAME_SERVER} -c DefaultCluster -g group1
-
-java -Dendpoints=${ENDPOINTS} -jar ${agent_opts} ${home}/../libs/rocketmq-5-grpc-scenario.jar &
+java -Dendpoints=${ENDPOINTS} -DnameServer=${NAME_SERVER} -jar ${agent_opts} ${home}/../libs/rocketmq-5-grpc-scenario.jar &

@@ -49,9 +49,9 @@ public class CaseController {
     @Value("${endpoints}")
     private String endpoints;
 
-    static final String topic = "TopicTest";
-    static final String tag = "TagA";
-    static final String group = "group1";
+    static final String TOPIC = "TopicTest";
+    static final String TAG = "TagA";
+    static final String GROUP = "group1";
 
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
@@ -71,9 +71,9 @@ public class CaseController {
             // send msg
             Message message = provider.newMessageBuilder()
                     // Set topic for the current message.
-                    .setTopic(topic)
+                    .setTopic(TOPIC)
                     // Message secondary classifier of message besides topic.
-                    .setTag(tag)
+                    .setTag(TAG)
                     // Key(s) of the message, another way to mark message besides message id.
                     .setKeys("KeyA")
                     .setBody("This is a normal message for Apache RocketMQ".getBytes(StandardCharsets.UTF_8))
@@ -86,11 +86,11 @@ public class CaseController {
                 @Override
                 public void run() {
                     try {
-                        FilterExpression filterExpression = new FilterExpression(tag, FilterExpressionType.TAG);
+                        FilterExpression filterExpression = new FilterExpression(TAG, FilterExpressionType.TAG);
                         PushConsumer consumer = provider.newPushConsumerBuilder()
                                 .setClientConfiguration(clientConfiguration)
-                                .setConsumerGroup(group)
-                                .setSubscriptionExpressions(Collections.singletonMap(topic, filterExpression))
+                                .setConsumerGroup(GROUP)
+                                .setSubscriptionExpressions(Collections.singletonMap(TOPIC, filterExpression))
                                 .setMessageListener(new MyConsumer())
                                 .build();
                         System.out.printf("Consumer Started.%n");

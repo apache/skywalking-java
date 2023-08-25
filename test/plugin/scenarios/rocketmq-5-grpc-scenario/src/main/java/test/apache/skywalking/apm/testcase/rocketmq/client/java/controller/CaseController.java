@@ -100,7 +100,6 @@ public class CaseController {
                 }
             });
             thread.start();
-            // Thread.sleep(5000L);
         } catch (Exception e) {
             log.error("testcase error", e);
         }
@@ -110,7 +109,6 @@ public class CaseController {
     @RequestMapping("/healthCheck")
     @ResponseBody
     public String healthCheck() throws Exception {
-        // start producer
         ClientServiceProvider provider = ClientServiceProvider.loadService();
         ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
                 .setEndpoints(endpoints)

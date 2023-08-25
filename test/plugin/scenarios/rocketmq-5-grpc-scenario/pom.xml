@@ -21,13 +21,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>org.apache.skywalking.apm.testcase</groupId>
-    <artifactId>rocketmq-client-java-scenario</artifactId>
+    <artifactId>rocketmq-5-grpc-scenario</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <modelVersion>4.0.0</modelVersion>
 
-    <name>skywalking-rocketmq-client-java-scenario</name>
+    <name>skywalking-rocketmq-5-grpc-scenario</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -81,7 +81,7 @@
     </dependencies>
 
     <build>
-        <finalName>rocketmq-client-java-scenario</finalName>
+        <finalName>rocketmq-5-grpc-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

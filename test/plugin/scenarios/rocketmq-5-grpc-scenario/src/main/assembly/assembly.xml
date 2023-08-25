@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>${project.build.directory}/rocketmq-client-java-scenario.jar</source>
+            <source>${project.build.directory}/rocketmq-5-grpc-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>

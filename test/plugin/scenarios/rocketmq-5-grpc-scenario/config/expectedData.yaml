@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-  - serviceName: rocketmq-client-java-scenario
+  - serviceName: rocketmq-5-grpc-scenario
     segmentSize: ge 2
     segments:
       - segmentId: not null
@@ -30,7 +30,7 @@ segmentItems:
             spanType: Entry
             skipAnalysis: 'false'
             tags:
-              - { key: url, value: 'http://localhost:8080/rocketmq-client-java-scenario/case/healthCheck' }
+              - { key: url, value: 'http://localhost:8080/rocketmq-5-grpc-scenario/case/healthCheck' }
               - { key: http.method, value: HEAD }
               - { key: http.status_code, value: '200' }
       - segmentId: not null
@@ -52,7 +52,7 @@ segmentItems:
               - {key: mq.message.tags, value: TagA}
               - {key: mq.message.id, value: not null}
             skipAnalysis: 'false'
-          - operationName: GET:/case/rocketmq-client-java-scenario
+          - operationName: GET:/case/rocketmq-5-grpc-scenario
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -63,7 +63,7 @@ segmentItems:
             spanType: Entry
             peer: ''
             tags:
-              - {key: url, value: 'http://localhost:8080/rocketmq-client-java-scenario/case/rocketmq-client-java-scenario'}
+              - {key: url, value: 'http://localhost:8080/rocketmq-5-grpc-scenario/case/rocketmq-5-grpc-scenario'}
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
             skipAnalysis: 'false'

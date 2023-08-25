@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -Dendpoints=${ENDPOINTS} -jar ${agent_opts} ${home}/../libs/rocketmq-client-java-scenario.jar &
+java -Dendpoints=${ENDPOINTS} -jar ${agent_opts} ${home}/../libs/rocketmq-5-grpc-scenario.jar &

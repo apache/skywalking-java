@@ -53,7 +53,7 @@ public class CaseController {
     static final String tag="TagA";
     static final String group="group1";
 
-    @RequestMapping("/rocketmq-client-java-scenario")
+    @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
     public String testcase() {
         try {

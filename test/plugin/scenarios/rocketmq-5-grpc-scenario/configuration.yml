@@ -20,6 +20,7 @@ healthCheck: http://localhost:8080/rocketmq-5-grpc-scenario/case/healthCheck
 startScript: ./bin/startup.sh
 environment:
   - ENDPOINTS=broker:8081
+  - NAME_SERVER=namesrv:9876
 depends_on:
   - namesrv
   - broker

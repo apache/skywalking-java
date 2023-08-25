@@ -49,9 +49,9 @@ public class CaseController {
     @Value("${endpoints}")
     private String endpoints;
 
-    static final String topic="TopicTest";
-    static final String tag="TagA";
-    static final String group="group1";
+    static final String topic = "TopicTest";
+    static final String tag = "TagA";
+    static final String group = "group1";
 
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
@@ -76,7 +76,7 @@ public class CaseController {
                     .setTag(tag)
                     // Key(s) of the message, another way to mark message besides message id.
                     .setKeys("KeyA")
-                    .setBody(("This is a normal message for Apache RocketMQ").getBytes(StandardCharsets.UTF_8))
+                    .setBody("This is a normal message for Apache RocketMQ".getBytes(StandardCharsets.UTF_8))
                     .build();
             SendReceipt sendReceipt = producer.send(message);
             System.out.printf("%s send msg successfully, message: %s%n", new Date(), sendReceipt);
@@ -91,7 +91,7 @@ public class CaseController {
                                 .setClientConfiguration(clientConfiguration)
                                 .setConsumerGroup(group)
                                 .setSubscriptionExpressions(Collections.singletonMap(topic, filterExpression))
-                                .setMessageListener(new conumser())
+                                .setMessageListener(new MyConsumer())
                                 .build();
                         System.out.printf("Consumer Started.%n");
                     } catch (Exception e) {
@@ -100,7 +100,7 @@ public class CaseController {
                 }
             });
             thread.start();
-//            Thread.sleep(5000L);
+            // Thread.sleep(5000L);
         } catch (Exception e) {
             log.error("testcase error", e);
         }
@@ -124,7 +124,7 @@ public class CaseController {
         return SUCCESS;
     }
 
-    public class conumser implements MessageListener {
+    public static class MyConsumer implements MessageListener {
 
         @Override
         public ConsumeResult consume(MessageView messageView) {

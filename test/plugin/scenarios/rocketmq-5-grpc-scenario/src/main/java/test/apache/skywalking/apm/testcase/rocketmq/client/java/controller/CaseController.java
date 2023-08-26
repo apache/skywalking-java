@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.Date;
 
 @RestController
 @RequestMapping("/case")
@@ -58,6 +57,10 @@ public class CaseController {
     static final String TAG = "TagA";
     static final String GROUP = "group1";
 
+    Producer producer;
+
+    PushConsumer consumer;
+
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
     public String testcase() {
@@ -68,10 +71,11 @@ public class CaseController {
                     .enableSsl(false)
                     .build();
             // start producer
-            Producer producer = provider.newProducerBuilder()
-                    .setClientConfiguration(clientConfiguration)
-                    .build();
-            System.out.printf("Provider Started.%n");
+            if (producer == null) {
+                producer = provider.newProducerBuilder()
+                        .setClientConfiguration(clientConfiguration)
+                        .build();
+            }
 
             // send msg
             Message message = provider.newMessageBuilder()
@@ -84,7 +88,6 @@ public class CaseController {
                     .setBody("This is a normal message for Apache RocketMQ".getBytes(StandardCharsets.UTF_8))
                     .build();
             SendReceipt sendReceipt = producer.send(message);
-            System.out.printf("%s send msg successfully, message: %s%n", new Date(), sendReceipt);
 
             // start consumer
             Thread thread = new Thread(new Runnable() {
@@ -92,13 +95,14 @@ public class CaseController {
                 public void run() {
                     try {
                         FilterExpression filterExpression = new FilterExpression(TAG, FilterExpressionType.TAG);
-                        PushConsumer consumer = provider.newPushConsumerBuilder()
-                                .setClientConfiguration(clientConfiguration)
-                                .setConsumerGroup(GROUP)
-                                .setSubscriptionExpressions(Collections.singletonMap(TOPIC, filterExpression))
-                                .setMessageListener(new MyConsumer())
-                                .build();
-                        System.out.printf("Consumer Started.%n");
+                        if (consumer == null) {
+                            consumer = provider.newPushConsumerBuilder()
+                                    .setClientConfiguration(clientConfiguration)
+                                    .setConsumerGroup(GROUP)
+                                    .setSubscriptionExpressions(Collections.singletonMap(TOPIC, filterExpression))
+                                    .setMessageListener(new MyConsumer())
+                                    .build();
+                        }
                     } catch (Exception e) {
                         log.error("consumer start error", e);
                     }
@@ -134,7 +138,16 @@ public class CaseController {
                 "-g",
                 "group1"};
         MQAdminStartup.main(subArgs);
-        System.out.printf("HealthCheck Provider Started.%n");
+
+        ClientServiceProvider provider = ClientServiceProvider.loadService();
+        ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
+                .setEndpoints(endpoints)
+                .enableSsl(false)
+                .build();
+        // start producer
+        Producer producer = provider.newProducerBuilder()
+                .setClientConfiguration(clientConfiguration)
+                .build();
         return SUCCESS;
     }
 

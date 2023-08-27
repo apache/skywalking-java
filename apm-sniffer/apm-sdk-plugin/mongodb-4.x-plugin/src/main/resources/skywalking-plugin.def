@@ -17,3 +17,30 @@
 # v4.0.0~
 mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.MongoDBClientDelegateInstrumentation
 mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.MongoDBOperationExecutorInstrumentation
+# readOperation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.AggregateExplainOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.AggregateOperationImplInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.AggregateOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.ChangeStreamOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.CommandReadOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.CountOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.DistinctOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.FindOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.ListCollectionsOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.ListIndexesOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.MapReduceWithInlineResultsOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation.WrappedMapReduceReadOperationInstrumentation
+# writeOperation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.AggregateToCollectionOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.BaseFindAndModifyOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.BaseWriteOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.CommandWriteOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.CreateCollectionOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.CreateIndexesOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.CreateViewOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.DropCollectionOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.DropDatabaseOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.DropIndexOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.MapReduceToCollectionOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.MixedBulkWriteOperationInstrumentation
+mongodb-4.x=org.apache.skywalking.apm.plugin.mongodb.v4.define.writeOperation.RenameCollectionOperationInstrumentation

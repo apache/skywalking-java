@@ -154,6 +154,7 @@ Callable {
 * Add nacos-client 2.x plugin
 * Staticize the tags for preventing synchronization in JDK 8
 * Add RocketMQ-Client-Java 5.x plugin
+* Fix NullPointerException in lettuce-5.x-plugin.
 
 #### Documentation
 

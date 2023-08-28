@@ -57,7 +57,6 @@ public class MessageListenerInterceptor implements InstanceMethodsAroundIntercep
 
         span.setComponent(ComponentsDefine.ROCKET_MQ_CONSUMER);
         SpanLayer.asMQ(span);
-        ContextManager.extract(getContextCarrierFromMessage(messageView));
     }
 
     @Override

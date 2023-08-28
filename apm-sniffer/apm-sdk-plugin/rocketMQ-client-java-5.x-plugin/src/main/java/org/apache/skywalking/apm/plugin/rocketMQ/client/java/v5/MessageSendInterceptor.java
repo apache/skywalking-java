@@ -19,9 +19,11 @@
 package org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5;
 
 import org.apache.rocketmq.client.apis.message.Message;
+import org.apache.rocketmq.client.apis.message.MessageBuilder;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.apis.producer.Transaction;
 import org.apache.rocketmq.client.java.impl.ClientImpl;
+import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -37,6 +39,7 @@ import org.apache.skywalking.apm.util.StringUtil;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -71,13 +74,33 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         contextCarrier.extensionInjector().injectSendingTimestamp();
         SpanLayer.asMQ(span);
 
+        Map<String, String> properties = message.getProperties();
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {
             next = next.next();
             if (!StringUtil.isEmpty(next.getHeadValue())) {
-                message.getProperties().put(next.getHeadKey(), next.getHeadValue());
+                properties.put(next.getHeadKey(), next.getHeadValue());
             }
         }
+
+        MessageBuilder messageBuilder = new MessageBuilderImpl();
+        messageBuilder.setTopic(message.getTopic());
+        if (message.getTag().isPresent()) {
+            messageBuilder.setTag(message.getTag().get());
+        }
+        messageBuilder.setKeys(message.getKeys().toArray(new String[0]));
+        if (message.getMessageGroup().isPresent()) {
+            messageBuilder.setMessageGroup(message.getMessageGroup().get());
+        }
+
+        byte[] body = new byte[message.getBody().limit()];
+        message.getBody().get(body);
+        messageBuilder.setBody(body);
+        if (message.getDeliveryTimestamp().isPresent()) {
+            messageBuilder.setDeliveryTimestamp(message.getDeliveryTimestamp().get());
+        }
+        properties.entrySet().forEach(item -> messageBuilder.addProperty(item.getKey(), item.getValue()));
+        allArguments[0] = messageBuilder.build();
     }
 
     @Override

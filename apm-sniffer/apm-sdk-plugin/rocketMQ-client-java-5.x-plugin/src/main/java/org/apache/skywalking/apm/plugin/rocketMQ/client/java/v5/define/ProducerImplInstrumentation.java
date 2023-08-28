@@ -60,7 +60,7 @@ public class ProducerImplInstrumentation extends ClassInstanceMethodsEnhancePlug
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return false;
+                        return true;
                     }
                 }
         };

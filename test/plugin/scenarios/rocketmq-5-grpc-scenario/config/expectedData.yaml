@@ -19,22 +19,6 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: HEAD:/case/healthCheck
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Http
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 14
-            isError: false
-            spanType: Entry
-            skipAnalysis: 'false'
-            tags:
-              - { key: url, value: 'http://localhost:8080/rocketmq-5-grpc-scenario/case/healthCheck' }
-              - { key: http.method, value: HEAD }
-              - { key: http.status_code, value: '200' }
-      - segmentId: not null
-        spans:
           - operationName: RocketMQ/TopicTest/Producer
             parentSpanId: 0
             spanId: 1
@@ -46,11 +30,11 @@ segmentItems:
             spanType: Exit
             peer: not null
             tags:
-              - {key: mq.broker, value: not null}
-              - {key: mq.topic, value: TopicTest}
-              - {key: mq.message.keys, value: KeyA}
-              - {key: mq.message.tags, value: TagA}
-              - {key: mq.message.id, value: not null}
+              - { key: mq.broker, value: not null }
+              - { key: mq.topic, value: TopicTest }
+              - { key: mq.message.keys, value: KeyA }
+              - { key: mq.message.tags, value: TagA }
+              - { key: mq.message.id, value: not null }
             skipAnalysis: 'false'
           - operationName: GET:/case/rocketmq-5-grpc-scenario
             parentSpanId: -1
@@ -63,9 +47,9 @@ segmentItems:
             spanType: Entry
             peer: ''
             tags:
-              - {key: url, value: 'http://localhost:8080/rocketmq-5-grpc-scenario/case/rocketmq-5-grpc-scenario'}
-              - {key: http.method, value: GET}
-              - {key: http.status_code, value: '200'}
+              - { key: url, value: 'http://localhost:8080/rocketmq-5-grpc-scenario/case/rocketmq-5-grpc-scenario' }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
@@ -80,6 +64,11 @@ segmentItems:
             spanType: Entry
             peer: not blank
             tags:
+              - { key: transmission.latency, value: not null }
               - { key: mq.topic, value: TopicTest }
               - { key: mq.broker, value: not blank }
+            refs:
+              - { parentEndpoint: GET:/case/rocketmq-5-grpc-scenario, networkAddress: not null,
+                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
+                  parentServiceInstance: not null, parentService: not null, traceId: not null }
             skipAnalysis: 'false'

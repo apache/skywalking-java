@@ -86,7 +86,8 @@
 - resteasy-server-6.x
 - rocketMQ-3.x
 - rocketMQ-4.x
-- rocketMQ-5.x
+- rocketMQ-5.x 
+- rocketMQ-client-java-5.x
 - sentinel-1.x
 - servicecomb-2.x
 - sharding-sphere-3.x

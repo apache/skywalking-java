@@ -153,6 +153,7 @@ Callable {
 * Support asynchronous invocation in jetty client 9.0 and 9.x plugin
 * Add nacos-client 2.x plugin
 * Staticize the tags for preventing synchronization in JDK 8 
+* Fix NullPointerException in lettuce-5.x-plugin.
 
 #### Documentation
 

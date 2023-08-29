@@ -24,6 +24,7 @@ import org.apache.rocketmq.common.protocol.header.SendMessageRequestHeader;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -49,6 +50,10 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
 
     public static final String ASYNC_SEND_OPERATION_NAME_PREFIX = "RocketMQ/";
 
+    private static final AbstractTag<String> MQ_MESSAGE_KEYS_TAG = Tags.ofKey("mq.message.keys");
+
+    private static final AbstractTag<String> MQ_MESSAGE_TAGS_TAG = Tags.ofKey("mq.message.tags");
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
@@ -61,11 +66,11 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         Tags.MQ_TOPIC.set(span, message.getTopic());
         String keys = message.getKeys();
         if (StringUtil.isNotBlank(keys)) {
-            span.tag(Tags.ofKey("mq.message.keys"), keys);
+            span.tag(MQ_MESSAGE_KEYS_TAG, keys);
         }
         String tags = message.getTags();
         if (StringUtil.isNotBlank(tags)) {
-            span.tag(Tags.ofKey("mq.message.tags"), tags);
+            span.tag(MQ_MESSAGE_TAGS_TAG, tags);
         }
 
         contextCarrier.extensionInjector().injectSendingTimestamp();

@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.elasticjob;
 
 import org.apache.shardingsphere.elasticjob.infra.listener.ShardingContexts;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -30,6 +31,15 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import java.lang.reflect.Method;
 
 public class ElasticJobExecutorInterceptor implements InstanceMethodsAroundInterceptor {
+
+    private static final AbstractTag<String> ITEM_TAG = Tags.ofKey("item");
+
+    private static final AbstractTag<String> SHARDING_TOTAL_COUNT_TAG = Tags.ofKey("shardingTotalCount");
+
+    private static final AbstractTag<String> TASK_ID_TAG = Tags.ofKey("taskId");
+
+    private static final AbstractTag<String> SHARDING_ITEM_PARAMETERS_TAG = Tags.ofKey("shardingItemParameters");
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) {
@@ -39,10 +49,10 @@ public class ElasticJobExecutorInterceptor implements InstanceMethodsAroundInter
         AbstractSpan span = ContextManager.createLocalSpan(operateName);
         span.setComponent(ComponentsDefine.ELASTIC_JOB);
         Tags.LOGIC_ENDPOINT.set(span, Tags.VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT);
-        span.tag(Tags.ofKey("item"), item == null ? "" : String.valueOf(item));
-        span.tag(Tags.ofKey("shardingTotalCount"), Integer.toString(shardingContexts.getShardingTotalCount()));
-        span.tag(Tags.ofKey("taskId"), shardingContexts.getTaskId());
-        span.tag(Tags.ofKey("shardingItemParameters"), shardingContexts.getShardingItemParameters() == null ?
+        span.tag(ITEM_TAG, item == null ? "" : String.valueOf(item));
+        span.tag(SHARDING_TOTAL_COUNT_TAG, Integer.toString(shardingContexts.getShardingTotalCount()));
+        span.tag(TASK_ID_TAG, shardingContexts.getTaskId());
+        span.tag(SHARDING_ITEM_PARAMETERS_TAG, shardingContexts.getShardingItemParameters() == null ?
                 "" : shardingContexts.getShardingItemParameters().toString());
     }
     

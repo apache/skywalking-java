@@ -68,6 +68,7 @@
 - mysql-5.x
 - mysql-6.x
 - mysql-8.x
+- nacos-client-2.x  
 - netty-socketio
 - nutz-http-1.x
 - nutz-mvc-annotation-1.x
@@ -85,7 +86,8 @@
 - resteasy-server-6.x
 - rocketMQ-3.x
 - rocketMQ-4.x
-- rocketMQ-5.x
+- rocketMQ-5.x 
+- rocketMQ-client-java-5.x
 - sentinel-1.x
 - servicecomb-2.x
 - sharding-sphere-3.x

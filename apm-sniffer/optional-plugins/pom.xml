@@ -21,7 +21,7 @@
     <parent>
         <artifactId>java-agent-sniffer</artifactId>
         <groupId>org.apache.skywalking</groupId>
-        <version>9.0.0-SNAPSHOT</version>
+        <version>9.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -57,6 +57,7 @@
         <module>jackson-2.x-plugin</module>
         <module>shenyu-2.4.x-plugin</module>
         <module>trace-sampler-cpu-policy-plugin</module>
+        <module>nacos-client-2.x-plugin</module>
     </modules>
 
     <dependencies>

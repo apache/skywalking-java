@@ -80,6 +80,8 @@ jobs:
           - jersey-2.0.x-2.25.x-scenario
           - jersey-2.26.x-2.39.x-scenario
           - websphere-liberty-23.x-scenario
+          - nacos-client-2.x-scenario
+          - rocketmq-5-grpc-scenario
     steps:
       - uses: actions/checkout@v2
         with:

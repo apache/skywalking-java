@@ -5,7 +5,7 @@ Release Notes.
 9.1.0
 ------------------
 
-
+* Fix hbase onConstruct NPE in the file configuration scenario
 
 #### Documentation
 

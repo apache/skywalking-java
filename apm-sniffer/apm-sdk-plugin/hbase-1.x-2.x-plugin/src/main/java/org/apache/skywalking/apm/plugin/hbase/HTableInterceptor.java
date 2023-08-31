@@ -34,12 +34,11 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.util.StringUtil;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 public class HTableInterceptor implements InstanceMethodsAroundInterceptor, InstanceConstructorInterceptor {
@@ -107,16 +106,18 @@ public class HTableInterceptor implements InstanceMethodsAroundInterceptor, Inst
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
         Configuration connection = ((ClusterConnection) allArguments[1]).getConfiguration();
-        Field field = connection.getClass().getDeclaredField("overlay");
-        field.setAccessible(true);
-        Properties properties = (Properties) field.get(connection);
-        for (Map.Entry entry : properties.entrySet()) {
-            if ("hbase.zookeeper.quorum".equals(entry.getKey())) {
-                objInst.setSkyWalkingDynamicField(entry.getValue().toString());
-            }
+        tryGetZookeeperQuorum(objInst, connection);
+    }
+
+    protected void tryGetZookeeperQuorum(EnhancedInstance objInst, Configuration configuration) throws Exception {
+        Method method = configuration.getClass().getDeclaredMethod("getProps");
+        method.setAccessible(true);
+        Properties props = (Properties) method.invoke(configuration);
+        String value = (String) props.get("hbase.zookeeper.quorum");
+        if (StringUtil.isNotBlank(value)) {
+            objInst.setSkyWalkingDynamicField(value);
         }
     }
 }

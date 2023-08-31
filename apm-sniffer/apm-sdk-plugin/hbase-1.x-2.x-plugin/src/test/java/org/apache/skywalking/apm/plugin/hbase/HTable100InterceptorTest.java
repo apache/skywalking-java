@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.hbase;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.ClusterConnection;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.Test;
@@ -37,6 +38,15 @@ public class HTable100InterceptorTest {
 
     @Mock
     private ClusterConnection clusterConnection;
+
+    @Test
+    public void testOnConstructWithXml() throws Throwable {
+        HTable100Interceptor interceptor = new HTable100Interceptor();
+        Configuration configuration = HBaseConfiguration.create();
+        Object[] args = new Object[]{configuration, null};
+        interceptor.onConstruct(objectInstance, args);
+        verify(objectInstance).setSkyWalkingDynamicField("127.0.0.1");
+    }
 
     @Test
     public void testOnConstructWithConfiguration() throws Throwable {

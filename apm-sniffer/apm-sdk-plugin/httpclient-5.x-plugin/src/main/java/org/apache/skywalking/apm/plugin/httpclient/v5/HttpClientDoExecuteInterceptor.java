@@ -101,9 +101,14 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
         activeSpan.log(t);
     }
 
-    private String getRequestURI(String uri) throws MalformedURLException {
+    private String getRequestURI(String uri) {
         if (isUrl(uri)) {
-            String requestPath = new URL(uri).getPath();
+            String requestPath;
+            try {
+                requestPath = new URL(uri).getPath();
+            } catch (MalformedURLException e) {
+                requestPath = uri;
+            }
             return requestPath != null && requestPath.length() > 0 ? requestPath : "/";
         } else {
             return uri;

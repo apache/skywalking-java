@@ -18,13 +18,10 @@
 
 package org.apache.skywalking.apm.plugin.hbase;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Properties;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.util.StringUtil;
 
 public class HTable220Interceptor extends HTableInterceptor {
 
@@ -32,12 +29,6 @@ public class HTable220Interceptor extends HTableInterceptor {
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
         Method getConfigurationMethod = Connection.class.getMethod("getConfiguration");
         Configuration configuration = (Configuration) getConfigurationMethod.invoke(allArguments[0]);
-        Field field = configuration.getClass().getDeclaredField("overlay");
-        field.setAccessible(true);
-        Properties properties = (Properties) field.get(configuration);
-        String value = properties.getProperty("hbase.zookeeper.quorum");
-        if (StringUtil.isNotBlank(value)) {
-            objInst.setSkyWalkingDynamicField(value);
-        }
+        tryGetZookeeperQuorum(objInst, configuration);
     }
 }

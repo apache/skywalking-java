@@ -30,7 +30,7 @@
     <name>kafka-commons</name>
 
     <properties>
-        <kafka-clients.version>2.0.1</kafka-clients.version>
+        <kafka-clients.version>2.6.3</kafka-clients.version>
     </properties>
 
     <dependencies>

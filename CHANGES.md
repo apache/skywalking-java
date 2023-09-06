@@ -6,7 +6,7 @@ Release Notes.
 ------------------
 
 * Fix hbase onConstruct NPE in the file configuration scenario
-* Fix eelasticsearch-6.x-plugin IndicesClientAnalyzeMethodsInterceptor NoClassDefFoundError
+* Fix elasticsearch-6.x-plugin IndicesClientAnalyzeMethodsInterceptor NoClassDefFoundError
 
 #### Documentation
 

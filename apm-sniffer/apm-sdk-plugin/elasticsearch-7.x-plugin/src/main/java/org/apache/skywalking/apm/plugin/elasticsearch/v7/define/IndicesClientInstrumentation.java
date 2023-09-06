@@ -16,11 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.elasticsearch.v6.define;
-
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+package org.apache.skywalking.apm.plugin.elasticsearch.v7.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -29,14 +25,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Constants;
+import org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants;
 
-/**
- * {@link IndicesClientInstrumentation} enhance the <code>create createAsync delete deleteAsync</code> method without
- * argument in
- * <code>org.elasticsearch.client.IndicesClient</code> by <code>org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientCreateMethodsInterceptor
- * org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientDeleteMethodsInterceptor</code>
- */
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
+import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+
 public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
 
     public static final String ENHANCE_CLASS = "org.elasticsearch.client.IndicesClient";

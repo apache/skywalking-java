@@ -16,28 +16,27 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
+package org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor;
+
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.skywalking.apm.plugin.elasticsearch.v7.RestClientEnhanceInfo;
+import org.elasticsearch.client.Node;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.List;
 
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.plugin.elasticsearch.v6.RestClientEnhanceInfo;
-import org.elasticsearch.client.Node;
-import org.elasticsearch.client.RestClient;
-
-public class RestHighLevelClientConInterceptor implements InstanceConstructorInterceptor {
-
-    private static final ILog LOGGER = LogManager.getLogger(RestHighLevelClientConInterceptor.class);
+public class IndicesClientConInterceptor implements InstanceConstructorInterceptor {
 
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        RestClient restClient = (RestClient) allArguments[0];
+    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
+        RestHighLevelClient client = (RestHighLevelClient) allArguments[0];
+        if (client == null) {
+            return;
+        }
 
         RestClientEnhanceInfo restClientEnhanceInfo = new RestClientEnhanceInfo();
-        List<Node> nodeList = restClient.getNodes();
+        List<Node> nodeList = client.getLowLevelClient().getNodes();
         for (Node node : nodeList) {
             restClientEnhanceInfo.addHttpHost(node.getHost());
         }

@@ -23,12 +23,24 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 
 public class Constants {
 
+    public static final String INDICES_CLIENT_CON_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor.IndicesClientConInterceptor";
+    public static final String INDICES_CLIENT_CREATE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor.IndicesClientCreateMethodsInterceptor";
+    public static final String INDICES_CLIENT_DELETE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor.IndicesClientDeleteMethodsInterceptor";
+    public static final String INDICES_CLIENT_ANALYZE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor.IndicesClientAnalyzeMethodsInterceptor";
+
     //witnessClasses
     public static final String TASK_TRANSPORT_CHANNEL_WITNESS_CLASSES = "org.elasticsearch.transport.TaskTransportChannel";
     public static final String SEARCH_HITS_WITNESS_CLASSES = "org.elasticsearch.search.SearchHits";
+    public static final String CREATE_INDEX_REQUEST_WITNESS_CLASS = "org.elasticsearch.client.indices.CreateIndexRequest";
+    public static final String DELETE_INDEX_REQUEST_WITNESS_CLASS = "org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest";
+    public static final String ANALYZE_REQUEST_WITNESS_CLASS = "org.elasticsearch.client.indices.AnalyzeRequest";
     public static final String DB_TYPE = "Elasticsearch";
 
     public static final String BASE_FUTURE_METHOD = "actionGet";
+
+    public static final String CREATE_OPERATOR_NAME = "Elasticsearch/CreateRequest";
+    public static final String DELETE_OPERATOR_NAME = "Elasticsearch/DeleteRequest";
+    public static final String ANALYZE_OPERATOR_NAME = "Elasticsearch/AnalyzeRequest";
 
     //tags
     public static final AbstractTag<String> ES_TOOK_MILLIS = Tags.ofKey("es.took_millis");

@@ -13,21 +13,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.http.HttpHost;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.plugin.elasticsearch.v6.RestClientEnhanceInfo;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,26 +33,38 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
 @RunWith(TracingSegmentRunner.class)
-public class RestHighLevelClientConInterceptorTest {
+public class IndicesClientConInterceptorTest {
+
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
     private RestClient restClient;
 
+    @Mock
+    private RestHighLevelClient highLevelClient;
+
     private Object[] allArguments;
 
-    private RestHighLevelClientConInterceptor restHighLevelClientConInterceptor;
+    private IndicesClientConInterceptor indicesClientConInterceptor;
 
     @Before
     public void setUp() throws Exception {
         List<Node> nodeList = new ArrayList<Node>();
         nodeList.add(new Node(new HttpHost("127.0.0.1", 9200)));
         nodeList.add(new Node(new HttpHost("127.0.0.1", 9300)));
-        restHighLevelClientConInterceptor = new RestHighLevelClientConInterceptor();
+        indicesClientConInterceptor = new IndicesClientConInterceptor();
+        when(highLevelClient.getLowLevelClient()).thenReturn(restClient);
         when(restClient.getNodes()).thenReturn(nodeList);
-        allArguments = new Object[] {restClient};
+        allArguments = new Object[] {highLevelClient};
     }
 
     @Test
@@ -74,10 +83,10 @@ public class RestHighLevelClientConInterceptorTest {
                 this.object = value;
             }
         };
-        restHighLevelClientConInterceptor = new RestHighLevelClientConInterceptor();
-        restHighLevelClientConInterceptor.onConstruct(objInst, allArguments);
+        indicesClientConInterceptor.onConstruct(objInst, allArguments);
 
         assertThat(objInst.getSkyWalkingDynamicField() instanceof RestClientEnhanceInfo, is(true));
         assertThat(((RestClientEnhanceInfo) objInst.getSkyWalkingDynamicField()).getPeers(), is("127.0.0.1:9200,127.0.0.1:9300"));
     }
+
 }

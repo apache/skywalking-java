@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.elasticsearch.v7;
+package org.apache.skywalking.apm.plugin.elasticsearch.common;
 
 /**
  * Used for store ES connection related information, remotePeers will store the IP address and port, separated by commas

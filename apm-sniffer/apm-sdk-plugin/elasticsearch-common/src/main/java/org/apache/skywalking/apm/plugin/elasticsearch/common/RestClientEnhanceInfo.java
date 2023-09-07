@@ -16,16 +16,14 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.elasticsearch.v6;
-
-import org.apache.http.HttpHost;
+package org.apache.skywalking.apm.plugin.elasticsearch.common;
 
 public class RestClientEnhanceInfo {
 
     private RemotePeerCache remotePeerCache = new RemotePeerCache();
 
-    public void addHttpHost(HttpHost httpHost) {
-        remotePeerCache.addRemotePeer(httpHost.getHostName(), httpHost.getPort());
+    public void addHttpHost(String hostName, int port) {
+        remotePeerCache.addRemotePeer(hostName, port);
     }
 
     public String getPeers() {

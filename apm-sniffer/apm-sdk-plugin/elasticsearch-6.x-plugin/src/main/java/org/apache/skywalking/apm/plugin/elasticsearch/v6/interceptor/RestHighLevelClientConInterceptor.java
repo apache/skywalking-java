@@ -24,7 +24,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.plugin.elasticsearch.v6.RestClientEnhanceInfo;
+import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
 
@@ -39,7 +39,7 @@ public class RestHighLevelClientConInterceptor implements InstanceConstructorInt
         RestClientEnhanceInfo restClientEnhanceInfo = new RestClientEnhanceInfo();
         List<Node> nodeList = restClient.getNodes();
         for (Node node : nodeList) {
-            restClientEnhanceInfo.addHttpHost(node.getHost());
+            restClientEnhanceInfo.addHttpHost(node.getHost().getHostName(), node.getHost().getPort());
         }
         objInst.setSkyWalkingDynamicField(restClientEnhanceInfo);
     }

@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.http.HttpHost;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
-import org.apache.skywalking.apm.plugin.elasticsearch.v6.RestClientEnhanceInfo;
+import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
 import org.junit.Before;

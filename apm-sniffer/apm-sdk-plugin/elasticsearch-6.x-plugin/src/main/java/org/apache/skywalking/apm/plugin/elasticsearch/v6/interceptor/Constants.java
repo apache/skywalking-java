@@ -24,7 +24,6 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 public class Constants {
     //interceptor class
     public static final String REST_HIGH_LEVEL_CLIENT_CON_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.RestHighLevelClientConInterceptor";
-    public static final String INDICES_CLIENT_CON_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientConInterceptor";
     public static final String INDICES_CLIENT_CREATE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientCreateMethodsInterceptor";
     public static final String INDICES_CLIENT_DELETE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientDeleteMethodsInterceptor";
     public static final String INDICES_CLIENT_ANALYZE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientAnalyzeMethodsInterceptor";

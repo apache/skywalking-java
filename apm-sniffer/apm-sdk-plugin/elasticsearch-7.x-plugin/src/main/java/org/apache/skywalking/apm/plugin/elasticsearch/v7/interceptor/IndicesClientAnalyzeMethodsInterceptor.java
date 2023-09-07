@@ -23,12 +23,14 @@ import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
 import org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants;
-import org.apache.skywalking.apm.plugin.elasticsearch.v7.RestClientEnhanceInfo;
 import org.elasticsearch.client.indices.AnalyzeRequest;
 
 import java.lang.reflect.Method;
@@ -37,6 +39,7 @@ import static org.apache.skywalking.apm.plugin.elasticsearch.v7.ElasticsearchPlu
 import static org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants.DB_TYPE;
 
 public class IndicesClientAnalyzeMethodsInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final ILog LOGGER = LogManager.getLogger(IndicesClientAnalyzeMethodsInterceptor.class);
 
     private static final AbstractTag<String> ANALYZER_TAG = Tags.ofKey("analyzer");
 

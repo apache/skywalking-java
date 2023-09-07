@@ -26,8 +26,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
 import org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants;
-import org.apache.skywalking.apm.plugin.elasticsearch.v7.RestClientEnhanceInfo;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 
 import java.lang.reflect.Method;

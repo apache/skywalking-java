@@ -66,6 +66,7 @@
         <module>hystrix-1.x-plugin</module>
         <module>sofarpc-plugin</module>
         <module>activemq-5.x-plugin</module>
+        <module>elasticsearch-common</module>
         <module>elasticsearch-5.x-plugin</module>
         <module>elasticsearch-6.x-plugin</module>
         <module>elasticsearch-7.x-plugin</module>

@@ -42,19 +42,7 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgument(0, named("org.elasticsearch.client.RestHighLevelClient"));
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return Constants.INDICES_CLIENT_CON_INTERCEPTOR;
-                    }
-                }
-        };
+        return new ConstructorInterceptPoint[0];
     }
 
     @Override

@@ -43,6 +43,8 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.AnalyzeRequest;
+import org.elasticsearch.client.indices.AnalyzeResponse;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.cluster.health.ClusterHealthStatus;
@@ -111,6 +113,9 @@ public class RestHighLevelClientCase {
 
             // update
             update(indexName);
+
+            // analyze
+            analyze(indexName);
 
             // delete
             delete(indexName);
@@ -234,6 +239,16 @@ public class RestHighLevelClientCase {
         UpdateResponse updateResponse = client.update(request, RequestOptions.DEFAULT);
         if (updateResponse.getVersion() != 2) {
             String message = "elasticsearch update data fail.";
+            LOGGER.error(message);
+            throw new RuntimeException(message);
+        }
+    }
+
+    private void analyze(String indexName) throws IOException {
+        AnalyzeRequest analyzeRequest = AnalyzeRequest.withIndexAnalyzer(indexName, null, "SkyWalking");
+        AnalyzeResponse analyzeResponse = client.indices().analyze(analyzeRequest, RequestOptions.DEFAULT);
+        if (null == analyzeResponse.getTokens() || analyzeResponse.getTokens().size() < 1) {
+            String message = "elasticsearch analyze index fail.";
             LOGGER.error(message);
             throw new RuntimeException(message);
         }

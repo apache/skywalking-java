@@ -98,6 +98,23 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
                 public boolean isOverrideArgs() {
                     return false;
                 }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named("refresh").or(named("refreshAsync"))
+                            .and(takesArgument(0, named(Constants.REFRESH_REQUEST_WITNESS_CLASS)));
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return Constants.INDICES_CLIENT_REFRESH_METHODS_INTERCEPTOR;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
             }
         };
     }
@@ -112,7 +129,8 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
         return new String[] {
                 Constants.ANALYZE_REQUEST_WITNESS_CLASS,
                 Constants.CREATE_INDEX_REQUEST_WITNESS_CLASS,
-                Constants.DELETE_INDEX_REQUEST_WITNESS_CLASS
+                Constants.DELETE_INDEX_REQUEST_WITNESS_CLASS,
+                Constants.REFRESH_REQUEST_WITNESS_CLASS
         };
     }
 }

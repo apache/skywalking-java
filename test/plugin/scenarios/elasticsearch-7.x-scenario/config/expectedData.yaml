@@ -159,7 +159,7 @@ segmentItems:
             peer: not null
             tags:
               - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
+              - { key: analyzer, value: not null }
               - { key: db.statement, value: not null }
             skipAnalysis: 'false'
           - operationName: Elasticsearch/DeleteRequest

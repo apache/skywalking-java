@@ -6,7 +6,7 @@ Release Notes.
 ------------------
 
 * Fix hbase onConstruct NPE in the file configuration scenario
-* Fix elasticsearch-6.x-plugin IndicesClientAnalyzeMethodsInterceptor NoClassDefFoundError
+* Optimize ElasticSearch 6.x 7.x plugin compatibility
 
 #### Documentation
 

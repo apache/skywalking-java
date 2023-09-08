@@ -32,7 +32,6 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 
 import java.lang.reflect.Method;
 
-import static org.apache.skywalking.apm.plugin.elasticsearch.v7.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
 import static org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants.DB_TYPE;
 
 public class IndicesClientCreateMethodsInterceptor implements InstanceMethodsAroundInterceptor {
@@ -49,10 +48,6 @@ public class IndicesClientCreateMethodsInterceptor implements InstanceMethodsAro
 
             Tags.DB_TYPE.set(span, DB_TYPE);
             Tags.DB_INSTANCE.set(span, createIndexRequest.index());
-            if (TRACE_DSL) {
-                //Store es mapping parameters
-                Tags.DB_STATEMENT.set(span, createIndexRequest.mappings().utf8ToString());
-            }
             SpanLayer.asDB(span);
         }
     }

@@ -72,7 +72,6 @@ segmentItems:
             tags:
               - { key: db.type, value: Elasticsearch }
               - { key: db.instance, value: not null }
-              - { key: db.statement, value: not null }
             skipAnalysis: 'false'
           - operationName: Elasticsearch/IndexRequest
             parentSpanId: 0

@@ -28,7 +28,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnha
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Constants;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 

@@ -76,7 +76,15 @@ public class TransportActionNodeProxyExecuteMethodsInterceptor implements Instan
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        EnhancedInstance actions = (EnhancedInstance) allArguments[2];
+        EnhancedInstance actions;
+        if (allArguments.length > 2) {
+            // (Settings settings, GenericAction<Request, Response> action, TransportService transportService)
+            actions = (EnhancedInstance) allArguments[2];
+        } else {
+            // 7.11 +
+            // (ActionType<Response> action, TransportService transportService)
+            actions = (EnhancedInstance) allArguments[1];
+        }
         objInst.setSkyWalkingDynamicField(actions.getSkyWalkingDynamicField());
     }
 

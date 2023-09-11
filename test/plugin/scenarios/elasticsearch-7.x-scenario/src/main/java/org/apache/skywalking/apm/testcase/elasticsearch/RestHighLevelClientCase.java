@@ -50,7 +50,6 @@ import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -73,7 +72,7 @@ public class RestHighLevelClientCase {
 
     public String healthCheck() throws Exception {
         ClusterHealthRequest request = new ClusterHealthRequest();
-        request.timeout(TimeValue.timeValueSeconds(10));
+        request.timeout("10s");
         request.waitForStatus(ClusterHealthStatus.GREEN);
 
         ClusterHealthResponse response = client.cluster().health(request, RequestOptions.DEFAULT);

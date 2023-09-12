@@ -39,6 +39,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final String ERROR_URI = "/_blank";
 
     private static final ILog LOGGER = LogManager.getLogger(HttpClientDoExecuteInterceptor.class);
 
@@ -59,7 +60,9 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
         String requestURI = getRequestURI(uri);
         String operationName = requestURI;
         AbstractSpan span = ContextManager.createExitSpan(operationName, contextCarrier, remotePeer);
-
+        if (ERROR_URI.equals(requestURI)) {
+            span.errorOccurred();
+        }
         span.setComponent(ComponentsDefine.HTTPCLIENT);
         Tags.URL.set(span, buildURL(httpHost, uri));
         Tags.HTTP.METHOD.set(span, httpRequest.getMethod());
@@ -107,7 +110,7 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
             try {
                 requestPath = new URL(uri).getPath();
             } catch (MalformedURLException e) {
-                requestPath = uri;
+                return ERROR_URI;
             }
             return requestPath != null && requestPath.length() > 0 ? requestPath : "/";
         } else {

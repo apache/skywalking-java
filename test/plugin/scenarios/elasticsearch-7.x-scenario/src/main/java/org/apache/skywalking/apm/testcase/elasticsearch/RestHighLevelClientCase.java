@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.testcase.elasticsearch;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +51,6 @@ import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.recovery.RecoverySettings;
 import org.elasticsearch.script.Script;
@@ -169,27 +168,16 @@ public class RestHighLevelClientCase {
 
     private void createIndex(String indexName) throws IOException {
         CreateIndexRequest request = new CreateIndexRequest(indexName);
-
-        XContentBuilder builder = XContentFactory.jsonBuilder();
-        builder.startObject();
-        {
-            builder.startObject("properties");
-            {
-                builder.startObject("author");
-                {
-                    builder.field("type", "keyword");
-                }
-                builder.endObject();
-                builder.startObject("title");
-                {
-                    builder.field("type", "keyword");
-                }
-                builder.endObject();
-            }
-            builder.endObject();
-        }
-        builder.endObject();
-        request.mapping(builder);
+        Map<String, Object> mapping = new HashMap<>();
+        Map<String, Object> mappingProperties = new HashMap<>();
+        Map<String, String> mappingPropertiesAuthor = new HashMap<>();
+        mappingPropertiesAuthor.put("type", "keyword");
+        mappingProperties.put("author", mappingPropertiesAuthor);
+        Map<String, String> mappingPropertiesTitle = new HashMap<>();
+        mappingPropertiesTitle.put("type", "keyword");
+        mappingProperties.put("title", mappingPropertiesTitle);
+        mapping.put("properties", mappingProperties);
+        request.mapping(mapping);
 
         request.settings(Settings.builder().put("index.number_of_shards", 1).put("index.number_of_replicas", 0));
 
@@ -202,14 +190,10 @@ public class RestHighLevelClientCase {
     }
 
     private void index(String indexName) throws IOException {
-        XContentBuilder builder = XContentFactory.jsonBuilder();
-        builder.startObject();
-        {
-            builder.field("author", "Marker");
-            builder.field("title", "Java programing.");
-        }
-        builder.endObject();
-        IndexRequest indexRequest = new IndexRequest(indexName).id("1").source(builder);
+        Map<String, String> source = new HashMap<>();
+        source.put("author", "Marker");
+        source.put("title", "Java programing.");
+        IndexRequest indexRequest = new IndexRequest(indexName).id("1").source(source);
 
         IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
         if (indexResponse.status().getStatus() >= 400) {

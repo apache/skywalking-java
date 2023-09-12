@@ -19,12 +19,13 @@
 package org.apache.skywalking.apm.testcase.elasticsearch;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,15 +62,14 @@ public class TransportClientCase {
 
     private void index(Client client, String indexName) throws IOException {
         try {
+            Map<String, String> source = new HashMap<>();
+            source.put("name", "mysql innodb");
+            source.put("price", "0");
+            source.put("language", "chinese");
             client.prepareIndex(indexName, "test", "1")
-                .setSource(XContentFactory.jsonBuilder()
-                    .startObject()
-                    .field("name", "mysql innodb")
-                    .field("price", "0")
-                    .field("language", "chinese")
-                    .endObject())
+                .setSource(source)
                 .get();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("index document error.", e);
             throw e;
         }
@@ -82,9 +82,9 @@ public class TransportClientCase {
     private void update(Client client, String indexName) throws IOException {
         try {
             client.prepareUpdate(indexName, "test", "1")
-                .setDoc(XContentFactory.jsonBuilder().startObject().field("price", "9.9").endObject())
+                .setDoc("price", "9.9")
                 .execute();
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.error("update document error.", e);
             throw e;
         }

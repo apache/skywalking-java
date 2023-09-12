@@ -24,7 +24,6 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
@@ -41,7 +40,7 @@ import org.elasticsearch.cluster.node.DiscoveryNode;
 
 import static org.apache.skywalking.apm.plugin.elasticsearch.v6.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
 
-public class TransportActionNodeProxyExecuteMethodsInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
+public class TransportActionNodeProxyExecuteMethodsInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
@@ -72,12 +71,6 @@ public class TransportActionNodeProxyExecuteMethodsInterceptor implements Instan
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
-    }
-
-    @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        EnhancedInstance actions = (EnhancedInstance) allArguments[2];
-        objInst.setSkyWalkingDynamicField(actions.getSkyWalkingDynamicField());
     }
 
     private void parseRequestInfo(ActionRequest request, AbstractSpan span) {

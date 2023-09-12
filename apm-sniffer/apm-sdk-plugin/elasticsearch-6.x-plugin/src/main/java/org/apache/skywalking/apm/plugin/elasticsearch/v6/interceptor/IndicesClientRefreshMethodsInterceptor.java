@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
 
-import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -28,41 +27,62 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
-import org.elasticsearch.action.get.GetRequest;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 
-import static org.apache.skywalking.apm.plugin.elasticsearch.v6.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
+import java.lang.reflect.Method;
+
 import static org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Constants.DB_TYPE;
 
-public class RestHighLevelClientGetMethodsInterceptor implements InstanceMethodsAroundInterceptor {
+public class IndicesClientRefreshMethodsInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
-        GetRequest getRequest = (GetRequest) (allArguments[0]);
+        RefreshRequest request = (RefreshRequest) (allArguments[0]);
 
         RestClientEnhanceInfo restClientEnhanceInfo = (RestClientEnhanceInfo) objInst.getSkyWalkingDynamicField();
-        AbstractSpan span = ContextManager.createExitSpan(Constants.GET_OPERATOR_NAME, restClientEnhanceInfo.getPeers());
-        span.setComponent(ComponentsDefine.REST_HIGH_LEVEL_CLIENT);
+        if (restClientEnhanceInfo != null) {
+            AbstractSpan span = ContextManager.createExitSpan(Constants.REFRESH_OPERATOR_NAME, restClientEnhanceInfo.getPeers());
+            span.setComponent(ComponentsDefine.REST_HIGH_LEVEL_CLIENT);
 
-        Tags.DB_TYPE.set(span, DB_TYPE);
-        Tags.DB_INSTANCE.set(span, getRequest.index());
-        if (TRACE_DSL) {
-            Tags.DB_STATEMENT.set(span, getRequest.toString());
+            Tags.DB_TYPE.set(span, DB_TYPE);
+            Tags.DB_INSTANCE.set(span, buildIndicesString(request.indices()));
+            SpanLayer.asDB(span);
+        }
+    }
+
+    private String buildIndicesString(String[] indices) {
+        if (indices == null || indices.length == 0) {
+            return "";
         }
 
-        SpanLayer.asDB(span);
+        StringBuilder sb = new StringBuilder();
+        int n = indices.length;
+        for (int i = 0; i < n; i++) {
+            sb.append(indices[i]);
+            if (i < n - 1) {
+                sb.append(',');
+            }
+        }
+        return sb.toString();
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
-        ContextManager.stopSpan();
+        RestClientEnhanceInfo restClientEnhanceInfo = (RestClientEnhanceInfo) (objInst.getSkyWalkingDynamicField());
+        if (restClientEnhanceInfo != null) {
+            ContextManager.stopSpan();
+        }
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
+        RestClientEnhanceInfo restClientEnhanceInfo = (RestClientEnhanceInfo) (objInst.getSkyWalkingDynamicField());
+        if (restClientEnhanceInfo != null) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 }

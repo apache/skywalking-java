@@ -72,7 +72,6 @@ segmentItems:
             tags:
               - { key: db.type, value: Elasticsearch }
               - { key: db.instance, value: not null }
-              - { key: db.statement, value: not null }
             skipAnalysis: 'false'
           - operationName: Elasticsearch/IndexRequest
             parentSpanId: 0
@@ -89,7 +88,7 @@ segmentItems:
               - { key: db.instance, value: not null }
               - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/GetRequest
+          - operationName: Elasticsearch/RefreshRequest
             parentSpanId: 0
             spanId: 6
             spanLayer: Database
@@ -102,9 +101,8 @@ segmentItems:
             tags:
               - { key: db.type, value: Elasticsearch }
               - { key: db.instance, value: not null }
-              - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/SearchRequest
+          - operationName: Elasticsearch/GetRequest
             parentSpanId: 0
             spanId: 7
             spanLayer: Database
@@ -119,7 +117,7 @@ segmentItems:
               - { key: db.instance, value: not null }
               - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/UpdateRequest
+          - operationName: Elasticsearch/SearchRequest
             parentSpanId: 0
             spanId: 8
             spanLayer: Database
@@ -134,7 +132,7 @@ segmentItems:
               - { key: db.instance, value: not null }
               - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/DeleteRequest
+          - operationName: Elasticsearch/UpdateRequest
             parentSpanId: 0
             spanId: 9
             spanLayer: Database
@@ -147,38 +145,38 @@ segmentItems:
             tags:
               - { key: db.type, value: Elasticsearch }
               - { key: db.instance, value: not null }
+              - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/IndexRequest
+          - operationName: Elasticsearch/AnalyzeRequest
             parentSpanId: 0
             spanId: 10
             spanLayer: Database
             startTime: nq 0
             endTime: nq 0
-            componentId: 48
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            tags:
+              - { key: db.type, value: Elasticsearch }
+              - { key: analyzer, value: not null }
+              - { key: db.statement, value: not null }
+            skipAnalysis: 'false'
+          - operationName: Elasticsearch/DeleteRequest
+            parentSpanId: 0
+            spanId: 11
+            spanLayer: Database
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 77
             isError: false
             spanType: Exit
             peer: not null
             tags:
               - { key: db.type, value: Elasticsearch }
               - { key: db.instance, value: not null }
-              - { key: node.address, value: not null }
-              - { key: es.indices, value: not null }
-              - { key: es.types, value: not null }
-              - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/actionGet
-            parentSpanId: 0
-            spanId: 11
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Local
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/GetRequest
+          - operationName: Elasticsearch/IndexRequest
             parentSpanId: 0
             spanId: 12
             spanLayer: Database
@@ -196,9 +194,21 @@ segmentItems:
               - { key: es.types, value: not null }
               - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/SearchRequest
+          - operationName: Elasticsearch/actionGet
             parentSpanId: 0
             spanId: 13
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 48
+            isError: false
+            spanType: Local
+            tags:
+              - { key: db.type, value: Elasticsearch }
+              - { key: db.statement, value: not null }
+            skipAnalysis: 'false'
+          - operationName: Elasticsearch/GetRequest
+            parentSpanId: 0
+            spanId: 14
             spanLayer: Database
             startTime: nq 0
             endTime: nq 0
@@ -214,21 +224,7 @@ segmentItems:
               - { key: es.types, value: not null }
               - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/actionGet
-            parentSpanId: 0
-            spanId: 14
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Local
-            tags:
-              - {key: db.type, value: Elasticsearch}
-              - {key: es.took_millis, value: not null }
-              - {key: es.total_hits, value: not null }
-              - {key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/UpdateRequest
+          - operationName: Elasticsearch/SearchRequest
             parentSpanId: 0
             spanId: 15
             spanLayer: Database
@@ -246,9 +242,41 @@ segmentItems:
               - { key: es.types, value: not null }
               - { key: db.statement, value: not null }
             skipAnalysis: 'false'
-          - operationName: Elasticsearch/DeleteRequest
+          - operationName: Elasticsearch/actionGet
             parentSpanId: 0
             spanId: 16
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 48
+            isError: false
+            spanType: Local
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: es.took_millis, value: not null }
+              - {key: es.total_hits, value: not null }
+              - {key: db.statement, value: not null }
+            skipAnalysis: 'false'
+          - operationName: Elasticsearch/UpdateRequest
+            parentSpanId: 0
+            spanId: 17
+            spanLayer: Database
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 48
+            isError: false
+            spanType: Exit
+            peer: not null
+            tags:
+              - { key: db.type, value: Elasticsearch }
+              - { key: db.instance, value: not null }
+              - { key: node.address, value: not null }
+              - { key: es.indices, value: not null }
+              - { key: es.types, value: not null }
+              - { key: db.statement, value: not null }
+            skipAnalysis: 'false'
+          - operationName: Elasticsearch/DeleteRequest
+            parentSpanId: 0
+            spanId: 18
             spanLayer: Database
             startTime: nq 0
             endTime: nq 0
@@ -266,7 +294,7 @@ segmentItems:
             skipAnalysis: 'false'
           - operationName: Elasticsearch/DeleteIndexRequest
             parentSpanId: 0
-            spanId: 17
+            spanId: 19
             spanLayer: Database
             startTime: nq 0
             endTime: nq 0

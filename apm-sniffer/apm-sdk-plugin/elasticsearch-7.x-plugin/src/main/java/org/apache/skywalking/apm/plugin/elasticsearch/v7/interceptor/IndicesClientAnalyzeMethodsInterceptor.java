@@ -16,53 +16,68 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
+package org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor;
 
-import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
-import org.elasticsearch.action.get.GetRequest;
+import org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants;
+import org.elasticsearch.client.indices.AnalyzeRequest;
 
-import static org.apache.skywalking.apm.plugin.elasticsearch.v6.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
-import static org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Constants.DB_TYPE;
+import java.lang.reflect.Method;
 
-public class RestHighLevelClientGetMethodsInterceptor implements InstanceMethodsAroundInterceptor {
+import static org.apache.skywalking.apm.plugin.elasticsearch.v7.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
+import static org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants.DB_TYPE;
+
+public class IndicesClientAnalyzeMethodsInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final ILog LOGGER = LogManager.getLogger(IndicesClientAnalyzeMethodsInterceptor.class);
+
+    private static final AbstractTag<String> ANALYZER_TAG = Tags.ofKey("analyzer");
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
-        GetRequest getRequest = (GetRequest) (allArguments[0]);
+        AnalyzeRequest analyzeRequest = (AnalyzeRequest) allArguments[0];
 
         RestClientEnhanceInfo restClientEnhanceInfo = (RestClientEnhanceInfo) objInst.getSkyWalkingDynamicField();
-        AbstractSpan span = ContextManager.createExitSpan(Constants.GET_OPERATOR_NAME, restClientEnhanceInfo.getPeers());
-        span.setComponent(ComponentsDefine.REST_HIGH_LEVEL_CLIENT);
+        if (restClientEnhanceInfo != null) {
+            AbstractSpan span = ContextManager.createExitSpan(Constants.ANALYZE_OPERATOR_NAME, restClientEnhanceInfo.getPeers());
+            span.setComponent(ComponentsDefine.REST_HIGH_LEVEL_CLIENT);
 
-        Tags.DB_TYPE.set(span, DB_TYPE);
-        Tags.DB_INSTANCE.set(span, getRequest.index());
-        if (TRACE_DSL) {
-            Tags.DB_STATEMENT.set(span, getRequest.toString());
+            Tags.DB_TYPE.set(span, DB_TYPE);
+            span.tag(ANALYZER_TAG, analyzeRequest.analyzer());
+            if (TRACE_DSL) {
+                Tags.DB_STATEMENT.set(span, analyzeRequest.text()[0]);
+            }
+            SpanLayer.asDB(span);
         }
-
-        SpanLayer.asDB(span);
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
-        ContextManager.stopSpan();
+        RestClientEnhanceInfo restClientEnhanceInfo = (RestClientEnhanceInfo) objInst.getSkyWalkingDynamicField();
+        if (restClientEnhanceInfo != null) {
+            ContextManager.stopSpan();
+        }
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
-        ContextManager.activeSpan().log(t);
+        RestClientEnhanceInfo restClientEnhanceInfo = (RestClientEnhanceInfo) objInst.getSkyWalkingDynamicField();
+        if (restClientEnhanceInfo != null) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 }

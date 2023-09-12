@@ -16,19 +16,18 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.elasticsearch.v6;
+package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
 
-import org.apache.http.HttpHost;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-public class RestClientEnhanceInfo {
+public class TransportActionNodeProxyThreeArgsConstructorInterceptor implements InstanceConstructorInterceptor {
 
-    private RemotePeerCache remotePeerCache = new RemotePeerCache();
+    @Override
+    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
+        // (Settings settings, GenericAction<Request, Response> action, TransportService transportService)
+        EnhancedInstance actions = (EnhancedInstance) allArguments[2];
+        objInst.setSkyWalkingDynamicField(actions.getSkyWalkingDynamicField());
 
-    public void addHttpHost(HttpHost httpHost) {
-        remotePeerCache.addRemotePeer(httpHost.getHostName(), httpHost.getPort());
-    }
-
-    public String getPeers() {
-        return remotePeerCache.getRemotePeers();
     }
 }

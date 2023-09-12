@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Fix hbase onConstruct NPE in the file configuration scenario
+* Optimize ElasticSearch 6.x 7.x plugin compatibility
 
 #### Documentation
 

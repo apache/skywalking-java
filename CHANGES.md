@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Fix hbase onConstruct NPE in the file configuration scenario
+* Fix the issue of createSpan failure caused by invalid request URL in HttpClient 4.x/5.x plugin
 * Optimize ElasticSearch 6.x 7.x plugin compatibility
 
 #### Documentation

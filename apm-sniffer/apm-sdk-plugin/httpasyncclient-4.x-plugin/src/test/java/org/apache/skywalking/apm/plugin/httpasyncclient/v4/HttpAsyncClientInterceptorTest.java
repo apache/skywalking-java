@@ -348,6 +348,7 @@ public class HttpAsyncClientInterceptorTest {
         assertThat(tags.get(0).getValue(), is("http://localhost:8081/original/test"));
         assertThat(tags.get(1).getValue(), is("GET"));
         assertThat(tags.get(2).getValue(), is("a=1&b=test"));
+        assertThat(span.transform().getIsError(), is(false));
         assertThat(span.isExit(), is(true));
     }
 

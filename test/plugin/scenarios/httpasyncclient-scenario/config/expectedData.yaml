@@ -60,7 +60,7 @@ segmentItems:
       startTime: nq 0
       endTime: nq 0
       componentId: 26
-      isError: true
+      isError: false
       spanType: Exit
       peer: 127.0.0.1:8080
       tags:

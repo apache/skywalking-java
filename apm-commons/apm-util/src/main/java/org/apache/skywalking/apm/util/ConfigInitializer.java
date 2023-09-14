@@ -89,7 +89,7 @@ public class ConfigInitializer {
                             int lengthLimited = lengthDefine.value();
                             String lengthKey = String.format("%s#length", configKey);
                             if (properties.containsKey(lengthKey)) {
-                                lengthLimited = Math.max(lengthLimited, Integer.valueOf(properties.getProperty(lengthKey, "0")));
+                                lengthLimited = Integer.valueOf(properties.getProperty(lengthKey, "0"));
                             }
                             if (propertyValue.length() > lengthLimited) {
                                 StringUtil.cut(propertyValue, lengthLimited);

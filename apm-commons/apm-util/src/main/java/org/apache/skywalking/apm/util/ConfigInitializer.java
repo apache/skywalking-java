@@ -89,7 +89,11 @@ public class ConfigInitializer {
                             int lengthLimited = lengthDefine.value();
                             String lengthKey = String.format("%s#length", configKey);
                             if (properties.containsKey(lengthKey)) {
-                                lengthLimited = Integer.valueOf(properties.getProperty(lengthKey, "0"));
+                                try {
+                                    lengthLimited = Integer.valueOf(properties.getProperty(lengthKey));
+                                } catch (NumberFormatException ex) {
+                                    System.err.printf("The length config (%s=%s) is invalid. The value can not be cast to number.", lengthKey, properties.getProperty(lengthKey));
+                                }
                             }
                             if (propertyValue.length() > lengthLimited) {
                                 StringUtil.cut(propertyValue, lengthLimited);

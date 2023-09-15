@@ -9,6 +9,7 @@ Release Notes.
 * Fix the issue of createSpan failure caused by invalid request URL in HttpClient 4.x/5.x plugin
 * Optimize ElasticSearch 6.x 7.x plugin compatibility
 * Fix an issue with the httpasyncclient component where the isError state is incorrect.
+* Optimize spring-cloud-gateway 2.1.x, 3.x witness class.
 
 #### Documentation
 

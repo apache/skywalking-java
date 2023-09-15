@@ -20,13 +20,13 @@ package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define;
 
 /**
  * This class is used for enable {@link org.apache.skywalking.apm.plugin.spring.webflux.v5.define.ServerWebExchangeInstrumentation}
- * when {@link org.springframework.cloud.gateway.config.GatewayEnvironmentPostProcessor} class is exist.
+ * when {@link org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties} class is exist.
  */
 public class ServerWebExchangeInstrumentation extends
         org.apache.skywalking.apm.plugin.spring.webflux.v5.define.ServerWebExchangeInstrumentation {
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"org.springframework.cloud.gateway.config.GatewayEnvironmentPostProcessor"};
+        return new String[]{"org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties"};
     }
 }

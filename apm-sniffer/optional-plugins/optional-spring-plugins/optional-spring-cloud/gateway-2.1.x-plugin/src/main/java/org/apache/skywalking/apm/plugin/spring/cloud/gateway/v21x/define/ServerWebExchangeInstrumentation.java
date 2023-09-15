@@ -23,6 +23,7 @@ public class ServerWebExchangeInstrumentation extends org.apache.skywalking.apm.
     @Override
     protected String[] witnessClasses() {
         return new String[] {
+            "org.springframework.cloud.gateway.filter.LoadBalancerClientFilter",
             "org.springframework.cloud.gateway.config.GatewayEnvironmentPostProcessor"
         };
     }

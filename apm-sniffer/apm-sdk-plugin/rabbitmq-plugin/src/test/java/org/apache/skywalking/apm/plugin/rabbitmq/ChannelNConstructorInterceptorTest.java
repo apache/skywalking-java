@@ -60,10 +60,16 @@ public class ChannelNConstructorInterceptorTest {
 
     public class TestConnection implements Connection {
 
+        String address;
+
+        public TestConnection(String address) {
+            this.address = address;
+        }
+
         @Override
         public InetAddress getAddress() {
             try {
-                return InetAddress.getByName("127.0.0.1");
+                return InetAddress.getByName(address);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
                 return null;
@@ -217,18 +223,23 @@ public class ChannelNConstructorInterceptorTest {
         }
     }
 
-    private Connection testConnection;
+    private Connection testConnection1;
+    private Connection testConnection2;
 
     @Before
     public void setUp() throws Exception {
-        testConnection = new TestConnection();
-
+        testConnection1 = new TestConnection("127.0.0.1");
+        testConnection2 = new TestConnection("localhost");
     }
 
     @Test
     public void TestRabbitMQConsumerAndProducerConstructorInterceptor() {
         channelNConstructorInterceptor = new ChannelNConstructorInterceptor();
-        channelNConstructorInterceptor.onConstruct(enhancedInstance, new Object[] {testConnection});
+        channelNConstructorInterceptor.onConstruct(enhancedInstance, new Object[] {testConnection1});
         assertThat((String) enhancedInstance.getSkyWalkingDynamicField(), is("127.0.0.1:5672"));
+
+        channelNConstructorInterceptor = new ChannelNConstructorInterceptor();
+        channelNConstructorInterceptor.onConstruct(enhancedInstance, new Object[] {testConnection2});
+        assertThat((String) enhancedInstance.getSkyWalkingDynamicField(), is("localhost:5672"));
     }
 }

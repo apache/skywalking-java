@@ -21,12 +21,24 @@ package org.apache.skywalking.apm.plugin.rabbitmq;
 import com.rabbitmq.client.Connection;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.skywalking.apm.util.StringUtil;
 
 public class ChannelNConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         Connection connection = (Connection) allArguments[0];
-        String url = connection.getAddress().toString().replace("/", "") + ":" + connection.getPort();
+
+        String[] segments = connection.getAddress().toString().split("/");
+        String address;
+        if (StringUtil.isNotEmpty(segments[0])) {
+            address = segments[0];
+        } else if (segments.length >= 2 && StringUtil.isNotEmpty(segments[1])) {
+            address = segments[1];
+        } else {
+            address = "";
+        }
+        String url = address + ":" + connection.getPort();
+
         objInst.setSkyWalkingDynamicField(url);
     }
 }

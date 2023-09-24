@@ -12,6 +12,7 @@ Release Notes.
 * Support customization for the length limitation of string configurations
 * Add max length configurations in `agent.config` file for service_name and instance_name
 * Optimize spring-cloud-gateway 2.1.x, 3.x witness class.
+* Fix peer when configured as domain for rabbitmq plugin.
 
 #### Documentation
 

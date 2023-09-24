@@ -28,12 +28,12 @@ public class ChannelNConstructorInterceptor implements InstanceConstructorInterc
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         Connection connection = (Connection) allArguments[0];
 
-        String[] segments = connection.getAddress().toString().split("/");
+        String[] parts = connection.getAddress().toString().split("/");
         String address;
-        if (StringUtil.isNotEmpty(segments[0])) {
-            address = segments[0];
-        } else if (segments.length >= 2 && StringUtil.isNotEmpty(segments[1])) {
-            address = segments[1];
+        if (StringUtil.isNotEmpty(parts[0])) {
+            address = parts[0];
+        } else if (parts.length >= 2 && StringUtil.isNotEmpty(parts[1])) {
+            address = parts[1];
         } else {
             address = "";
         }

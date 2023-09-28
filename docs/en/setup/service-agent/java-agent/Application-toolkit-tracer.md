@@ -76,12 +76,12 @@ while (next.hasNext()) {
 
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();
 CarrierItemRef next = contextCarrierRef.items();
-for (Map.Entry<String, String> entry : map.entrySet()) {
-    if (next.hasNext()) {
-        next = next.next();
-        if (entry.getKey().equals(next.getHeadKey()))
-            next.setHeadValue(entry.getValue());
-    }
+while ((next.hasNext())) {
+	next = next.next();
+	String value = map.get(next.getHeadKey());
+	if (value != null){
+		next.setHeadValue(value);
+	}
 }
 Tracer.extract(contextCarrierRef);
 ```
@@ -106,12 +106,12 @@ while (next.hasNext()) {
 
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();
 CarrierItemRef next = contextCarrierRef.items();
-for (Map.Entry<String, String> entry : map.entrySet()) {
-    if (next.hasNext()) {
-        next = next.next();
-        if (entry.getKey().equals(next.getHeadKey()))
-            next.setHeadValue(entry.getValue());
-    }
+while ((next.hasNext())) {
+	next = next.next();
+	String value = map.get(next.getHeadKey());
+	if (value != null){
+		next.setHeadValue(value);
+	}
 }
 SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
 ```

@@ -27,6 +27,7 @@ public class Constants {
     public static final String INDICES_CLIENT_CREATE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientCreateMethodsInterceptor";
     public static final String INDICES_CLIENT_DELETE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientDeleteMethodsInterceptor";
     public static final String INDICES_CLIENT_ANALYZE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientAnalyzeMethodsInterceptor";
+    public static final String INDICES_CLIENT_REFRESH_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.IndicesClientRefreshMethodsInterceptor";
     public static final String REST_HIGH_LEVEL_CLIENT_SEARCH_SCROLL_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.RestHighLevelClientSearchScrollMethodsInterceptor";
     public static final String REST_HIGH_LEVEL_CLIENT_SEARCH_TEMPLATE_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.RestHighLevelClientSearchTemplateMethodsInterceptor";
     public static final String REST_HIGH_LEVEL_CLIENT_CLEAR_SCROLL_METHODS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.RestHighLevelClientClearScrollMethodsInterceptor";
@@ -45,11 +46,16 @@ public class Constants {
     public static final String TASK_TRANSPORT_CHANNEL_WITNESS_CLASSES = "org.elasticsearch.transport.TaskTransportChannel";
     public static final String SEARCH_HITS_WITNESS_CLASSES = "org.elasticsearch.search.SearchHits";
     public static final String CREATE_INDEX_RESPONSE_WITNESS_CLASSES = "org.elasticsearch.client.indices.CreateIndexResponse";
+    public static final String CREATE_INDEX_REQUEST_WITNESS_CLASS = "org.elasticsearch.client.indices.CreateIndexRequest";
+    public static final String DELETE_INDEX_REQUEST_WITNESS_CLASS = "org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest";
+    public static final String ANALYZE_REQUEST_WITNESS_CLASS = "org.elasticsearch.action.admin.indices.analyze.AnalyzeRequest";
+    public static final String REFRESH_REQUEST_WITNESS_CLASS = "org.elasticsearch.action.admin.indices.refresh.RefreshRequest";
 
     //es operator name
     public static final String CREATE_OPERATOR_NAME = "Elasticsearch/CreateRequest";
     public static final String DELETE_OPERATOR_NAME = "Elasticsearch/DeleteRequest";
     public static final String ANALYZE_OPERATOR_NAME = "Elasticsearch/AnalyzeRequest";
+    public static final String REFRESH_OPERATOR_NAME = "Elasticsearch/RefreshRequest";
     public static final String GET_OPERATOR_NAME = "Elasticsearch/GetRequest";
     public static final String INDEX_OPERATOR_NAME = "Elasticsearch/IndexRequest";
     public static final String SEARCH_OPERATOR_NAME = "Elasticsearch/SearchRequest";

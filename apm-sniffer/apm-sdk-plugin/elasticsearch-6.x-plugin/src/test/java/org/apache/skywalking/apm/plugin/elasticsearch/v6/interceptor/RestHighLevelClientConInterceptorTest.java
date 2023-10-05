@@ -25,10 +25,9 @@ import java.util.List;
 import org.apache.http.HttpHost;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
-import org.apache.skywalking.apm.plugin.elasticsearch.v6.RestClientEnhanceInfo;
+import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,9 +42,6 @@ public class RestHighLevelClientConInterceptorTest {
     public MockitoRule rule = MockitoJUnit.rule();
 
     @Mock
-    private RestClientBuilder restClientBuilder;
-
-    @Mock
     private RestClient restClient;
 
     private Object[] allArguments;
@@ -58,9 +54,8 @@ public class RestHighLevelClientConInterceptorTest {
         nodeList.add(new Node(new HttpHost("127.0.0.1", 9200)));
         nodeList.add(new Node(new HttpHost("127.0.0.1", 9300)));
         restHighLevelClientConInterceptor = new RestHighLevelClientConInterceptor();
-        when(restClientBuilder.build()).thenReturn(restClient);
         when(restClient.getNodes()).thenReturn(nodeList);
-        allArguments = new Object[] {restClientBuilder};
+        allArguments = new Object[] {restClient};
     }
 
     @Test

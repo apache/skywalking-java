@@ -96,6 +96,7 @@ public class RestHighLevelClientCase {
             // index
             index(client, indexName);
 
+            // refresh
             client.indices().refresh(new RefreshRequest(indexName), RequestOptions.DEFAULT);
 
             //get

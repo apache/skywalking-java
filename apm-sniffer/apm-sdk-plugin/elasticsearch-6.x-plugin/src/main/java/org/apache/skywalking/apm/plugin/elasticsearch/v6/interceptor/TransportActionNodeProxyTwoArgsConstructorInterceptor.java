@@ -16,27 +16,18 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.elasticsearch.v6;
+package org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor;
 
-/**
- * Used for store ES connection related information, remotePeers will store the IP address and port, separated by commas
- * when multiple connections are made.
- */
-public class RemotePeerCache {
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-    private String remotePeers = "";
+public class TransportActionNodeProxyTwoArgsConstructorInterceptor implements InstanceConstructorInterceptor {
 
-    public void addRemotePeer(String host, int port) {
-        String hostPort = host + ":" + String.valueOf(port);
-
-        if (remotePeers.isEmpty()) {
-            remotePeers = hostPort;
-        } else {
-            remotePeers = remotePeers + "," + hostPort;
-        }
-    }
-
-    public String getRemotePeers() {
-        return remotePeers;
+    @Override
+    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
+        // after 7.11 version
+        // (ActionType<Response> action, TransportService transportService)
+        EnhancedInstance actions = (EnhancedInstance) allArguments[1];
+        objInst.setSkyWalkingDynamicField(actions.getSkyWalkingDynamicField());
     }
 }

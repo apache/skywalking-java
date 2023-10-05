@@ -21,6 +21,8 @@ package org.apache.skywalking.apm.plugin.elasticsearch.v7.interceptor;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -35,12 +37,17 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import static org.apache.skywalking.apm.plugin.elasticsearch.v7.ElasticsearchPluginConfig.Plugin.Elasticsearch.ELASTICSEARCH_DSL_LENGTH_THRESHOLD;
 import static org.apache.skywalking.apm.plugin.elasticsearch.v7.ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL;
 
 public class AdapterActionFutureActionGetMethodsInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final ILog LOGGER = LogManager.getLogger(AdapterActionFutureActionGetMethodsInterceptor.class);
+
+    private static final Field SEARCH_RESPONSE_TOOK_FIELD = getTookField(SearchResponse.class);
+    private static final Field BULK_RESPONSE_TOOK_FIELD = getTookField(BulkResponse.class);
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
@@ -111,7 +118,7 @@ public class AdapterActionFutureActionGetMethodsInterceptor implements InstanceM
     }
 
     private void parseSearchResponse(SearchResponse searchResponse, AbstractSpan span) {
-        span.tag(Constants.ES_TOOK_MILLIS, Long.toString(searchResponse.getTook().getMillis()));
+        tagEsTookMillis(SEARCH_RESPONSE_TOOK_FIELD, searchResponse, span);
         span.tag(Constants.ES_TOTAL_HITS, Long.toString(searchResponse.getHits().getTotalHits().value));
         if (TRACE_DSL) {
             String tagValue = searchResponse.toString();
@@ -121,12 +128,23 @@ public class AdapterActionFutureActionGetMethodsInterceptor implements InstanceM
     }
 
     private void parseBulkResponse(BulkResponse bulkResponse, AbstractSpan span) {
-        span.tag(Constants.ES_TOOK_MILLIS, Long.toString(bulkResponse.getTook().getMillis()));
+        tagEsTookMillis(BULK_RESPONSE_TOOK_FIELD, bulkResponse, span);
         span.tag(Constants.ES_INGEST_TOOK_MILLIS, Long.toString(bulkResponse.getIngestTookInMillis()));
         if (TRACE_DSL) {
             String tagValue = bulkResponse.toString();
             tagValue = ELASTICSEARCH_DSL_LENGTH_THRESHOLD > 0 ? StringUtil.cut(tagValue, ELASTICSEARCH_DSL_LENGTH_THRESHOLD) : tagValue;
             Tags.DB_STATEMENT.set(span, tagValue);
+        }
+    }
+
+    private void tagEsTookMillis(Field field, Object obj, AbstractSpan span) {
+        if (field == null) {
+            return;
+        }
+        try {
+            span.tag(Constants.ES_TOOK_MILLIS, Long.toString(field.getLong(obj)));
+        } catch (Throwable t) {
+            LOGGER.error("get tookInMillis", t);
         }
     }
 
@@ -159,6 +177,17 @@ public class AdapterActionFutureActionGetMethodsInterceptor implements InstanceM
             String tagValue = deleteResponse.toString();
             tagValue = ELASTICSEARCH_DSL_LENGTH_THRESHOLD > 0 ? StringUtil.cut(tagValue, ELASTICSEARCH_DSL_LENGTH_THRESHOLD) : tagValue;
             Tags.DB_STATEMENT.set(span, tagValue);
+        }
+    }
+
+    private static Field getTookField(Class<?> clazz) {
+        try {
+            Field field = clazz.getDeclaredField("tookInMillis");
+            field.setAccessible(true);
+            return field;
+        } catch (Throwable t) {
+            LOGGER.error("get tookInMillis field failed", t);
+            return null;
         }
     }
 }

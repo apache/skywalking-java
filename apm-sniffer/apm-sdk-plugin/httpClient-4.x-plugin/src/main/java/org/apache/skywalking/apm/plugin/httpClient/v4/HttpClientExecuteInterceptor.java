@@ -42,6 +42,7 @@ import org.apache.skywalking.apm.plugin.httpclient.HttpClientPluginConfig;
 import org.apache.skywalking.apm.util.StringUtil;
 
 public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final String ERROR_URI = "/_blank";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -60,7 +61,9 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         String requestURI = getRequestURI(uri);
         String operationName = requestURI;
         AbstractSpan span = ContextManager.createExitSpan(operationName, contextCarrier, remotePeer);
-
+        if (ERROR_URI.equals(requestURI)) {
+            span.errorOccurred();
+        }
         span.setComponent(ComponentsDefine.HTTPCLIENT);
         Tags.URL.set(span, buildSpanValue(httpHost, uri));
         Tags.HTTP.METHOD.set(span, httpRequest.getRequestLine().getMethod());
@@ -112,9 +115,14 @@ public class HttpClientExecuteInterceptor implements InstanceMethodsAroundInterc
         activeSpan.log(t);
     }
 
-    private String getRequestURI(String uri) throws MalformedURLException {
+    private String getRequestURI(String uri) {
         if (isUrl(uri)) {
-            String requestPath = new URL(uri).getPath();
+            String requestPath;
+            try {
+                requestPath = new URL(uri).getPath();
+            } catch (MalformedURLException e) {
+                return ERROR_URI;
+            }
             return requestPath != null && requestPath.length() > 0 ? requestPath : "/";
         } else {
             return uri;

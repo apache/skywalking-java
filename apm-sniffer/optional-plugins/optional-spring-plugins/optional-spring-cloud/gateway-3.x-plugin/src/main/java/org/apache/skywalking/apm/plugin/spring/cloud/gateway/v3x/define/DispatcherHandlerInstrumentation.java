@@ -20,13 +20,13 @@ package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define;
 
 /**
  * This class is used for enable {@link org.apache.skywalking.apm.plugin.spring.webflux.v5.define.DispatcherHandlerInstrumentation}
- * class when {@link org.springframework.cloud.gateway.config.GatewayEnvironmentPostProcessor} class is exist
+ * class when {@link org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties} class is exist
  */
 public class DispatcherHandlerInstrumentation extends
         org.apache.skywalking.apm.plugin.spring.webflux.v5.define.DispatcherHandlerInstrumentation {
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"org.springframework.cloud.gateway.config.GatewayEnvironmentPostProcessor"};
+        return new String[]{"org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties"};
     }
 }

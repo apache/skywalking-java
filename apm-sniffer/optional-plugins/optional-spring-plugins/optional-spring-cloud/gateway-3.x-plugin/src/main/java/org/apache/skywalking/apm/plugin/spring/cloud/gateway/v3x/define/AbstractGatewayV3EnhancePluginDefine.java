@@ -27,6 +27,6 @@ public abstract class AbstractGatewayV3EnhancePluginDefine extends ClassInstance
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"org.springframework.cloud.gateway.config.GatewayEnvironmentPostProcessor"};
+        return new String[]{"org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties"};
     }
 }

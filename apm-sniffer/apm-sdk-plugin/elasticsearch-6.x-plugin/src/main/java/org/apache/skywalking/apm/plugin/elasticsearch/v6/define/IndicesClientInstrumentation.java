@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.elasticsearch.v6.define;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 import net.bytebuddy.description.method.MethodDescription;
@@ -56,7 +57,8 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("create").or(named("createAsync"));
+                    return named("create").or(named("createAsync"))
+                            .and(takesArgument(0, named(Constants.CREATE_INDEX_REQUEST_WITNESS_CLASS)));
                 }
 
                 @Override
@@ -72,7 +74,8 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("delete").or(named("deleteAsync"));
+                    return named("delete").or(named("deleteAsync"))
+                            .and(takesArgument(0, named(Constants.DELETE_INDEX_REQUEST_WITNESS_CLASS)));
                 }
 
                 @Override
@@ -88,7 +91,8 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("analyze").or(named("analyzeAsync"));
+                    return named("analyze").or(named("analyzeAsync"))
+                            .and(takesArgument(0, named(Constants.ANALYZE_REQUEST_WITNESS_CLASS)));
                 }
 
                 @Override
@@ -100,12 +104,39 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
                 public boolean isOverrideArgs() {
                     return false;
                 }
-            }
+            },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("refresh").or(named("refreshAsync"))
+                                .and(takesArgument(0, named(Constants.REFRESH_REQUEST_WITNESS_CLASS)));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return Constants.INDICES_CLIENT_REFRESH_METHODS_INTERCEPTOR;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                }
         };
     }
 
     @Override
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return new StaticMethodsInterceptPoint[0];
+    }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[] {
+                Constants.ANALYZE_REQUEST_WITNESS_CLASS,
+                Constants.CREATE_INDEX_REQUEST_WITNESS_CLASS,
+                Constants.DELETE_INDEX_REQUEST_WITNESS_CLASS,
+                Constants.REFRESH_REQUEST_WITNESS_CLASS
+        };
     }
 }

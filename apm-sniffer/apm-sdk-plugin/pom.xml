@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>java-agent-sniffer</artifactId>
-        <version>9.0.0-SNAPSHOT</version>
+        <version>9.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>apm-sdk-plugin</artifactId>
@@ -66,6 +66,7 @@
         <module>hystrix-1.x-plugin</module>
         <module>sofarpc-plugin</module>
         <module>activemq-5.x-plugin</module>
+        <module>elasticsearch-common</module>
         <module>elasticsearch-5.x-plugin</module>
         <module>elasticsearch-6.x-plugin</module>
         <module>elasticsearch-7.x-plugin</module>

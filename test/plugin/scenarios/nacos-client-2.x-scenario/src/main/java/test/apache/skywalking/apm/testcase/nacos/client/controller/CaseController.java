@@ -16,7 +16,7 @@
  *
  */
 
-package test.apache.skywalking.apm.testcase.nacos.client.controller;
+package test.apache.skywalking.apm.testcase.netty.client.controller;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;

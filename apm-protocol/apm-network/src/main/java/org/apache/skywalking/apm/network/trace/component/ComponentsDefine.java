@@ -243,5 +243,5 @@ public class ComponentsDefine {
 
     public static final OfficialComponent NACOS = new OfficialComponent(150, "Nacos");
 
-    public static final OfficialComponent NETTY_CLIENT = new OfficialComponent(150, "Netty-client");
+    public static final OfficialComponent NETTY = new OfficialComponent(151, "Netty");
 }

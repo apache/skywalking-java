@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestEncoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseDecoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestDecoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseEncoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelPipelineInstrumentation
+type: jvm
+entryService: http://localhost:8080/netty-4.1.x-scenario/case/netty-4.1.x-case
+healthCheck: http://localhost:8080/netty-4.1.x-scenario/case/healthCheck
+startScript: ./bin/startup.sh

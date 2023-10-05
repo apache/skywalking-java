@@ -16,28 +16,30 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.netty.define;
+package org.apache.skywalking.apm.plugin.netty.http.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOperation;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class NettyBootstrapInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class HttpRequestEncoderInstrumentation extends AbstractNettyInstrumentation {
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName("io.netty.bootstrap.Bootstrap");
+        return LogicalMatchOperation.or(HierarchyMatch.byHierarchyMatch("io.netty.handler.codec.http.HttpRequestEncoder"), MultiClassNameMatch.byMultiClassMatch("io.netty.handler.codec.http.HttpRequestEncoder"));
     }
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[]{};
+        return new ConstructorInterceptPoint[0];
     }
 
     @Override
@@ -46,25 +48,24 @@ public class NettyBootstrapInstrumentation extends ClassInstanceMethodsEnhancePl
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("doResolveAndConnect0");
+                        return named("handlerAdded");
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return "org.apache.skywalking.apm.plugin.netty.NettyBootstrapInterceptor";
+                        return "org.apache.skywalking.apm.plugin.netty.http.AddHttpRequestEncoderInterceptor";
                     }
 
                     @Override
                     public boolean isOverrideArgs() {
                         return false;
                     }
-
                 }
         };
     }
 
     @Override
-    protected String[] witnessClasses() {
-        return new String[]{"io.netty.handler.codec.http.CombinedHttpHeaders"};
+    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
+        return new StaticMethodsInterceptPoint[0];
     }
 }

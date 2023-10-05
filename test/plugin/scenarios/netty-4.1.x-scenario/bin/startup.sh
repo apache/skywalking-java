@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,8 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestEncoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseDecoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestDecoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseEncoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelPipelineInstrumentation
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -Dskywalking.plugin.netty.http_collect_request_body=true -jar ${agent_opts} ${home}/../libs/netty-4.1.x-scenario.jar &

@@ -16,15 +16,22 @@
  *
  */
 
-package test.apache.skywalking.apm.testcase.netty.client;
+package test.apache.skywalking.apm.testcase.netty.handler;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.FullHttpResponse;
 
-@SpringBootApplication
-public class Application {
+import java.nio.charset.StandardCharsets;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+public class UserClientHandler extends ChannelInboundHandlerAdapter {
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
+        if (msg instanceof FullHttpResponse) {
+            FullHttpResponse response = (FullHttpResponse) msg;
+            System.out.println("接收服务端相应:" + response.content().toString(StandardCharsets.UTF_8));
+        }
     }
 }

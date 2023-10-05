@@ -16,15 +16,18 @@
  *
  */
 
-package test.apache.skywalking.apm.testcase.netty.client;
+package org.apache.skywalking.apm.plugin.netty.constant;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.netty.util.AttributeKey;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
-@SpringBootApplication
-public class Application {
+public class NettyConstants {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+    public static final AttributeKey<AbstractSpan> HTTP_CLIENT_SPAN = AttributeKey.valueOf("sw8_http_client_span");
+
+    public static final AttributeKey<AbstractSpan> HTTP_SERVER_SPAN = AttributeKey.valueOf("sw8_http_server_span");
+
+    public static final String HTTP_PROTOCOL_PREFIX = "http://";
+
+    public static final String HANDLER_PACKAGE_NAME = "org.apache.skywalking.apm.plugin.netty.http.handler";
 }

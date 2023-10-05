@@ -35,13 +35,12 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
 import test.apache.skywalking.apm.testcase.netty.handler.UserClientHandler;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 public class Client {
-    public static void start() throws IOException, InterruptedException {
+    public static void start() {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ChannelFuture channelFuture = new Bootstrap()
@@ -59,7 +58,7 @@ public class Client {
             Channel channel = channelFuture.channel();
 
             URI uri = new URI("/user");
-            String jsonBody = "{\"name\":\"张三\",\"age\":30}";
+            String jsonBody = "{\"name\":\"david\",\"age\":30}";
 
             FullHttpRequest request = new DefaultFullHttpRequest(
                     HttpVersion.HTTP_1_1,

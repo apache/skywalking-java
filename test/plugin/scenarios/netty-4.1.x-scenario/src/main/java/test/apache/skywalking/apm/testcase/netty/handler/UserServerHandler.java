@@ -18,7 +18,6 @@
 
 package test.apache.skywalking.apm.testcase.netty.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -32,7 +31,6 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.nio.charset.StandardCharsets;
-
 
 public class UserServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 

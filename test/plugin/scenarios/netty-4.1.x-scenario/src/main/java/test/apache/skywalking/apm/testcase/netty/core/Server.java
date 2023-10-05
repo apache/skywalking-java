@@ -29,10 +29,10 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import test.apache.skywalking.apm.testcase.netty.handler.UserServerHandler;
 
 public class Server {
+
     public static void start() {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
-        // 启动器
         try {
             ChannelFuture future = new ServerBootstrap()
                     .group(workerGroup, bossGroup)

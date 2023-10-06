@@ -14,107 +14,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 segmentItems:
-- serviceName: nacos-client-2.x-scenario
-  segmentSize: gt 0
-  segments:
-  - segmentId: not null
-    spans:
-    - operationName: Nacos/serverCheck
-      parentSpanId: 0
-      spanId: ge 0
-      spanLayer: RPCFramework
-      startTime: not null
-      endTime: not null
-      componentId: 150
-      isError: false
-      spanType: Exit
-      peer: nacos-server:9848
-      skipAnalysis: 'false'
-    - operationName: Nacos/registerInstance
-      parentSpanId: 0
-      spanId: nq 0
-      spanLayer: RPCFramework
-      startTime: not null
-      endTime: not null
-      componentId: 150
-      isError: false
-      spanType: Exit
-      peer: nacos-server:9848
-      tags:
-      - {key: namespace, value: public}
-      - {key: group, value: DEFAULT_GROUP}
-      - {key: serviceName, value: nacos-scenario}
-      skipAnalysis: 'false'
-    - operationName: Nacos/subscribeService
-      parentSpanId: 0
-      spanId: nq 0
-      spanLayer: RPCFramework
-      startTime: not null
-      endTime: not null
-      componentId: 150
-      isError: false
-      spanType: Exit
-      peer: nacos-server:9848
-      skipAnalysis: false
-      tags:
-        - { key: namespace, value: public }
-        - { key: group, value: DEFAULT_GROUP }
-        - { key: serviceName, value: nacos-scenario }
-    - operationName: Nacos/serverCheck
-      parentSpanId: 0
-      spanId: nq 0
-      spanLayer: RPCFramework
-      startTime: not null
-      endTime: not null
-      componentId: 150
-      isError: false
-      spanType: Exit
-      peer: nacos-server:9848
-      skipAnalysis: 'false'
-    - operationName: Nacos/publishConfig
-      parentSpanId: 0
-      spanId: nq 0
-      spanLayer: RPCFramework
-      startTime: not null
-      endTime: not null
-      componentId: 150
-      isError: false
-      spanType: Exit
-      peer: nacos-server:9848
-      skipAnalysis: false
-      tags:
-        - { key: dataId, value: dataId }
-        - { key: group, value: DEFAULT_GROUP }
-        - { key: tenant, value: null }
-    - operationName: GET:/case/nacos-client-2.x-case
+  - serviceName: netty-4.1.x-scenario
+    segmentSize: ge 2
+    segments:
+    - operationName: POST:/user
       parentSpanId: -1
-      spanId: 0
+      spanId: nq 0
       spanLayer: Http
       startTime: not null
       endTime: not null
-      componentId: 14
+      componentId: 151
       isError: false
       spanType: Entry
       peer: ''
+      skipAnalysis: false
       tags:
-      - {key: url, value: not null}
-      - {key: http.method, value: GET}
-      - {key: http.status_code, value: '200'}
-      skipAnalysis: 'false'
-  - segmentId: not null
-    spans:
-    - operationName: Nacos/notifySubscribeChange
+        - { key: http.method, value: POST }
+        - { key: url, value: 'http://127.0.0.1:8070/user' }
+        - { key: http.status_code, value: '200' }
+      refs:
+        - {parentEndpoint: POST:/user, networkAddress: '',
+           refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+            null, parentService: netty-4.1.x-scenario, traceId: not null}
+    - operationName: POST:/user
       parentSpanId: -1
-      spanId: 0
-      spanLayer: RPCFramework
+      spanId: nq 0
+      spanLayer: Http
       startTime: not null
       endTime: not null
-      componentId: 150
+      componentId: 151
       isError: false
-      spanType: Entry
-      peer: nacos-server:9848
-      skipAnalysis: 'false'
+      spanType: Exit
+      peer: ''
+      skipAnalysis: false
       tags:
-        - { key: group, value: DEFAULT_GROUP }
-        - { key: serviceName, value: nacos-scenario }
+        - { key: url, value: 'http://localhost:8070/user' }
+        - { key: http.method, value: POST }
+        - { key: http.body, value: '{"name":"david","age":30}' }
+        - { key: http.status_code, value: '200' }
 

@@ -38,7 +38,7 @@ public class ChannelPipelineRemoveLastInterceptor implements InstanceMethodsArou
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
         // if the removed handler is a enhanced handler by skywalking, we call the method again to remove and return the user handler
         if (((ChannelHandler) ret).getClass().getName().startsWith(NettyConstants.HANDLER_PACKAGE_NAME)) {
-            return ((ChannelPipeline) objInst).removeFirst();
+            return ((ChannelPipeline) objInst).removeLast();
         }
         return ret;
     }

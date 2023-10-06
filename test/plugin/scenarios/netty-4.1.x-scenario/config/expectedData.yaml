@@ -19,7 +19,7 @@ segmentItems:
     segments:
     - operationName: POST:/user
       parentSpanId: -1
-      spanId: nq 0
+      spanId: 0
       spanLayer: Http
       startTime: not null
       endTime: not null
@@ -30,7 +30,7 @@ segmentItems:
       skipAnalysis: false
       tags:
         - { key: http.method, value: POST }
-        - { key: url, value: 'http://127.0.0.1:8070/user' }
+        - { key: url, value: not null }
         - { key: http.status_code, value: '200' }
       refs:
         - {parentEndpoint: POST:/user, networkAddress: '',
@@ -38,18 +38,18 @@ segmentItems:
             null, parentService: netty-4.1.x-scenario, traceId: not null}
     - operationName: POST:/user
       parentSpanId: -1
-      spanId: nq 0
+      spanId: 0
       spanLayer: Http
       startTime: not null
       endTime: not null
       componentId: 151
       isError: false
       spanType: Exit
-      peer: ''
+      peer: not null
       skipAnalysis: false
       tags:
-        - { key: url, value: 'http://localhost:8070/user' }
+        - { key: url, value: not null }
         - { key: http.method, value: POST }
-        - { key: http.body, value: '{"name":"david","age":30}' }
+        - { key: http.body, value: not null }
         - { key: http.status_code, value: '200' }
 

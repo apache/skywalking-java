@@ -18,14 +18,17 @@
 
 package org.apache.skywalking.apm.plugin.netty.http;
 
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
 import org.apache.skywalking.apm.plugin.netty.http.handler.NettyHttpResponseDecoderTracingHandler;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 public class AddHttpResponseDecoderInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -44,6 +47,9 @@ public class AddHttpResponseDecoderInterceptor implements InstanceMethodsAroundI
             pipeline.remove(name);
         }
         pipeline.addAfter(ctx.name(), name, NettyHttpResponseDecoderTracingHandler.getInstance());
+
+        Map<ChannelHandler, ChannelHandler> map = AttributeKeys.getOrCreateHandlerMap(ctx.channel());
+        map.put((ChannelHandler) objInst, NettyHttpResponseDecoderTracingHandler.getInstance());
         return ret;
     }
 

@@ -32,7 +32,8 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.plugin.netty.constant.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
+import org.apache.skywalking.apm.plugin.netty.common.NettyConstants;
 import org.apache.skywalking.apm.plugin.netty.utils.TypeUtils;
 
 import java.net.InetSocketAddress;
@@ -65,7 +66,7 @@ public class NettyHttpRequestDecoderTracingHandler extends ChannelInboundHandler
 
             HttpRequest request = (HttpRequest) msg;
 
-            AbstractSpan lastSpan = ctx.channel().attr(NettyConstants.HTTP_SERVER_SPAN).getAndSet(null);
+            AbstractSpan lastSpan = ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).getAndSet(null);
             if (null != lastSpan) {
                 ContextManager.stopSpan(lastSpan);
             }
@@ -89,7 +90,7 @@ public class NettyHttpRequestDecoderTracingHandler extends ChannelInboundHandler
             span.setComponent(ComponentsDefine.NETTY);
             Tags.HTTP.METHOD.set(span, method);
             Tags.URL.set(span, NettyConstants.HTTP_PROTOCOL_PREFIX + url);
-            ctx.channel().attr(NettyConstants.HTTP_SERVER_SPAN).set(span);
+            ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).set(span);
         } catch (Exception e) {
             LOGGER.error("Fail to trace netty http request", e);
         } finally {

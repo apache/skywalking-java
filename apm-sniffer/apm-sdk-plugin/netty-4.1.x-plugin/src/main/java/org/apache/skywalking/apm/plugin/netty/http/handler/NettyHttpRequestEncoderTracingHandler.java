@@ -37,13 +37,14 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.plugin.netty.constant.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
+import org.apache.skywalking.apm.plugin.netty.common.NettyConstants;
 import org.apache.skywalking.apm.plugin.netty.config.NettyPluginConfig;
+import org.apache.skywalking.apm.plugin.netty.utils.HttpDataCollectUtils;
 import org.apache.skywalking.apm.plugin.netty.utils.TypeUtils;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 
 @ChannelHandler.Sharable
 public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandlerAdapter {
@@ -67,7 +68,7 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
 
         AbstractSpan span = null;
         try {
-            AbstractSpan lastSpan = ctx.channel().attr(NettyConstants.HTTP_CLIENT_SPAN).getAndSet(null);
+            AbstractSpan lastSpan = ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
             if (null != lastSpan) {
                 ContextManager.stopSpan(lastSpan);
             }
@@ -98,21 +99,25 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             Tags.HTTP.METHOD.set(span, request.method().name());
 
             if (NettyPluginConfig.Plugin.Netty.HTTP_COLLECT_REQUEST_BODY) {
-                String contentTypeValue = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
-                boolean needCollectHttpBody = false;
-                for (String contentType : NettyPluginConfig.Plugin.Netty.HTTP_SUPPORTED_CONTENT_TYPES_PREFIX.split(",")) {
-                    if (contentTypeValue.startsWith(contentType)) {
-                        needCollectHttpBody = true;
-                        break;
+                try {
+                    String contentTypeValue = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
+                    boolean needCollectHttpBody = false;
+                    for (String contentType : NettyPluginConfig.Plugin.Netty.HTTP_SUPPORTED_CONTENT_TYPES_PREFIX.split(",")) {
+                        if (contentTypeValue.startsWith(contentType)) {
+                            needCollectHttpBody = true;
+                            break;
+                        }
                     }
-                }
 
-                if (needCollectHttpBody && request instanceof FullHttpRequest) {
-                    collectHttpBody((FullHttpRequest) request, span);
+                    if (needCollectHttpBody && request instanceof FullHttpRequest) {
+                        collectHttpBody((FullHttpRequest) request, span);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Fail to collect netty http request", e);
                 }
             }
 
-            ctx.channel().attr(NettyConstants.HTTP_CLIENT_SPAN).set(span);
+            ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).set(span);
         } catch (Exception e) {
             LOGGER.error("Fail to trace netty http request", e);
         } finally {
@@ -131,9 +136,9 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
     }
 
     private void collectHttpBody(FullHttpRequest request, AbstractSpan span) {
-        String charset = "utf-8";
         DefaultFullHttpRequest defaultFullHttpRequest = (DefaultFullHttpRequest) request;
-        String bodyStr = defaultFullHttpRequest.content().toString(Charset.forName(charset));
+        String bodyStr = defaultFullHttpRequest.content().toString(HttpDataCollectUtils.getCharsetFromContentType(
+                request.headers().get(HttpHeaderNames.CONTENT_TYPE)));
         bodyStr = NettyPluginConfig.Plugin.Netty.HTTP_FILTER_LENGTH_LIMIT > 0 ?
                 StringUtil.cut(bodyStr, NettyPluginConfig.Plugin.Netty.HTTP_FILTER_LENGTH_LIMIT) : bodyStr;
         Tags.HTTP.BODY.set(span, bodyStr);

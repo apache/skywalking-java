@@ -18,9 +18,15 @@
 
 package org.apache.skywalking.apm.plugin.netty.http.define;
 
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
 
 public abstract class AbstractNettyInstrumentation extends ClassEnhancePluginDefine {
+
+    @Override
+    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
+        return new StaticMethodsInterceptPoint[0];
+    }
 
     @Override
     protected String[] witnessClasses() {

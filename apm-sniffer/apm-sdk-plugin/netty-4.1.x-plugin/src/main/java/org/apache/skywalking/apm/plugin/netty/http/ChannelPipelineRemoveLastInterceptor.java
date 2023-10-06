@@ -23,7 +23,7 @@ import io.netty.channel.ChannelPipeline;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.plugin.netty.constant.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.common.NettyConstants;
 
 import java.lang.reflect.Method;
 

@@ -30,7 +30,7 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.plugin.netty.constant.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
 import org.apache.skywalking.apm.plugin.netty.utils.TypeUtils;
 
 @ChannelHandler.Sharable
@@ -65,7 +65,7 @@ public class NettyHttpResponseEncoderTracingHandler extends ChannelOutboundHandl
             }
 
             Channel channel = ctx.channel();
-            span = channel.attr(NettyConstants.HTTP_SERVER_SPAN).getAndSet(null);
+            span = channel.attr(AttributeKeys.HTTP_SERVER_SPAN).getAndSet(null);
             if (span == null) {
                 return;
             }

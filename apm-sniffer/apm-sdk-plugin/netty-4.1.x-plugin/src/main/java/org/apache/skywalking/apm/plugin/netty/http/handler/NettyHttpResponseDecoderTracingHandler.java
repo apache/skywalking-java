@@ -29,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.plugin.netty.constant.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
 import org.apache.skywalking.apm.plugin.netty.utils.TypeUtils;
 
 @ChannelHandler.Sharable
@@ -65,7 +65,7 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
             }
 
             Channel channel = ctx.channel();
-            span = channel.attr(NettyConstants.HTTP_CLIENT_SPAN).getAndSet(null);
+            span = channel.attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
             if (span == null) {
                 return;
             }
@@ -85,7 +85,7 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         // to close span in some case there is no response.
-        AbstractSpan span = ctx.channel().attr(NettyConstants.HTTP_CLIENT_SPAN).getAndSet(null);
+        AbstractSpan span = ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
         if (span != null) {
             ContextManager.stopSpan(span);
         }
@@ -94,7 +94,7 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        AbstractSpan span = ctx.channel().attr(NettyConstants.HTTP_CLIENT_SPAN).getAndSet(null);
+        AbstractSpan span = ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
         if (span != null) {
             span.errorOccurred().log(cause);
             Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);

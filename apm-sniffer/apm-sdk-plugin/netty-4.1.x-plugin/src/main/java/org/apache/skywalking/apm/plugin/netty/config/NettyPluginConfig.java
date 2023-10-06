@@ -23,6 +23,7 @@ import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
 public class NettyPluginConfig {
 
     public static class Plugin {
+
         @PluginConfig(root = NettyPluginConfig.class)
         public static class Netty {
 

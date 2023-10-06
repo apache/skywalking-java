@@ -22,7 +22,6 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
@@ -60,28 +59,7 @@ public class HttpResponseEncoderInstrumentation extends AbstractNettyInstrumenta
                     public boolean isOverrideArgs() {
                         return false;
                     }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("handlerRemoved");
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return "org.apache.skywalking.apm.plugin.netty.http.RemoveHttpResponseEncoderInterceptor";
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
                 }
         };
-    }
-
-    @Override
-    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[0];
     }
 }

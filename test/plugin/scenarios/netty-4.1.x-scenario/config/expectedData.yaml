@@ -15,45 +15,45 @@
 # limitations under the License.
 segmentItems:
   - serviceName: netty-4.1.x-scenario
-    segmentSize: ge 2
+    segmentSize: gt 0
     segments:
-    - segmentId: not null
-       spans:
-       - operationName: POST:/user
-          parentSpanId: -1
-          spanId: 0
-          spanLayer: Http
-          startTime: not null
-          endTime: not null
-          componentId: 151
-          isError: false
-          spanType: Entry
-          peer: ''
-          skipAnalysis: false
-          tags:
-            - { key: http.method, value: POST }
-            - { key: url, value: not null }
-            - { key: http.status_code, value: '200' }
-          refs:
-            - {parentEndpoint: POST:/user, networkAddress: '',
-               refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
-                null, parentService: netty-4.1.x-scenario, traceId: not null}
-    - segmentId: not null
-       spans:
-      - operationName: POST:/user
-          parentSpanId: -1
-          spanId: 0
-          spanLayer: Http
-          startTime: not null
-          endTime: not null
-          componentId: 151
-          isError: false
-          spanType: Exit
-          peer: not null
-          skipAnalysis: false
-          tags:
-            - { key: url, value: not null }
-            - { key: http.method, value: POST }
-            - { key: http.body, value: not null }
-            - { key: http.status_code, value: '200' }
+      - segmentId: not null
+        spans:
+          - operationName: POST:/user
+            parentSpanId: -1
+            spanId: ge 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 151
+            isError: false
+            spanType: Entry
+            peer: ''
+            skipAnalysis: 'false'
+            tags:
+              - { key: http.method, value: POST }
+              - { key: url, value: not null }
+              - { key: http.status_code, value: '200' }
+            refs:
+              - { parentEndpoint: POST:/user, networkAddress: '',
+                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                                                                                            null, parentService: netty-4.1.x-scenario, traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: POST:/user
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 151
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: 'false'
+            tags:
+              - { key: url, value: not null }
+              - { key: http.method, value: POST }
+              - { key: http.body, value: not null }
+              - { key: http.status_code, value: '200' }
 

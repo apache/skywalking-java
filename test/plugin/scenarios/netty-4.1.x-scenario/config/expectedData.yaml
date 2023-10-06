@@ -19,7 +19,7 @@ segmentItems:
     segments:
     - segmentId: not null
        spans:
-        - operationName: POST:/user
+       - operationName: POST:/user
           parentSpanId: -1
           spanId: 0
           spanLayer: Http
@@ -40,7 +40,7 @@ segmentItems:
                 null, parentService: netty-4.1.x-scenario, traceId: not null}
     - segmentId: not null
        spans:
-        - operationName: POST:/user
+      - operationName: POST:/user
           parentSpanId: -1
           spanId: 0
           spanLayer: Http

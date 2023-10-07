@@ -31,6 +31,7 @@ segmentItems:
             peer: mongodb-server:27017
             tags:
               - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
               - {key: db.bind_vars, value: 'testCollection'}
             skipAnalysis: 'false'
           - operationName: MongoDB/MixedBulkWriteOperation
@@ -45,6 +46,7 @@ segmentItems:
             peer: mongodb-server:27017
             tags:
               - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
               - {key: db.bind_vars, value: not null}
             skipAnalysis: 'false'
           - operationName: MongoDB/FindOperation
@@ -59,6 +61,7 @@ segmentItems:
             peer: mongodb-server:27017
             tags:
               - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
               - {key: db.bind_vars, value: '{"name": "org"}'}
             skipAnalysis: 'false'
           - operationName: MongoDB/MixedBulkWriteOperation
@@ -73,6 +76,7 @@ segmentItems:
             peer: mongodb-server:27017
             tags:
               - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
               - {key: db.bind_vars, value: '{"name": "org"},'}
             skipAnalysis: 'false'
           - operationName: MongoDB/FindOperation
@@ -87,6 +91,7 @@ segmentItems:
             peer: mongodb-server:27017
             tags:
               - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
               - {key: db.bind_vars, value: '{"name": "testA"}'}
             skipAnalysis: 'false'
           - operationName: MongoDB/MixedBulkWriteOperation
@@ -101,6 +106,7 @@ segmentItems:
             peer: mongodb-server:27017
             tags:
               - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
               - {key: db.bind_vars, value: '{"id": "1"},'}
             skipAnalysis: 'false'
           - operationName: MongoDB/DropDatabaseOperation
@@ -115,6 +121,7 @@ segmentItems:
             peer: mongodb-server:27017
             tags:
               - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
               - {key: db.bind_vars, value: null}
             skipAnalysis: 'false'
           - operationName: GET:/mongodb-4.x-scenario/case/mongodb-4.x-scenario

@@ -12,7 +12,8 @@ Release Notes.
 * Support customization for the length limitation of string configurations
 * Add max length configurations in `agent.config` file for service_name and instance_name
 * Optimize spring-cloud-gateway 2.1.x, 3.x witness class.
-* Support report mongodb instance info in mongodb 4.x plugin
+* Support report MongoDB instance info in Mongodb 4.x plugin.
+
 #### Documentation
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/194?closed=1)

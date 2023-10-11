@@ -29,7 +29,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>1.8</compiler.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <test.framework.version>3.4.13</test.framework.version>
+        <test.framework.version>3.7.2</test.framework.version>
         <docker.image.version>${test.framework.version}</docker.image.version>
         <log4j.version>2.6.2</log4j.version>
         <spring.version>4.3.8.RELEASE</spring.version>

@@ -41,7 +41,7 @@ public @interface Tag {
 
     /**
      * @return the value of the tag to be injected into the current active span, in the form of the customized
-     * enhancement rules, for more information, refer to https://github.com/apache/skywalking/blob/master/docs/en/setup/service-agent/java-agent/Customize-enhance-trace.md#how-to-configure
+     * enhancement rules, for more information, refer to <a href="https://github.com/apache/skywalking-java/blob/master/docs/en/setup/service-agent/java-agent/Customize-enhance-trace.md#how-to-configure">Customize-enhance-trace.md#how-to-configure</a>
      */
     String value();
 }

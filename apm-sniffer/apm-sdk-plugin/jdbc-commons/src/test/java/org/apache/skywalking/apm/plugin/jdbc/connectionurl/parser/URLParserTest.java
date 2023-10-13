@@ -114,6 +114,14 @@ public class URLParserTest {
     }
 
     @Test
+    public void testParseOracleLowerTNSName() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host= localhost )(port= 1521))(connect_data=(server=dedicated)(service_name=orcl)))");
+        assertThat(connectionInfo.getDBType(), is("Oracle"));
+        assertThat(connectionInfo.getDatabaseName(), is("orcl"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:1521"));
+    }
+
+    @Test
     public void testParseOracleTNSNameWithMultiAddress() {
         ConnectionInfo connectionInfo = new URLParser().parser("jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL= TCP)(HOST=hostA)(PORT= 1523 ))(ADDRESS=(PROTOCOL=TCP)(HOST=hostB)(PORT= 1521 )))(SOURCE_ROUTE=yes)(CONNECT_DATA=(SERVICE_NAME=orcl)))");
         assertThat(connectionInfo.getDBType(), is("Oracle"));

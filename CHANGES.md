@@ -13,6 +13,7 @@ Release Notes.
 * Add max length configurations in `agent.config` file for service_name and instance_name
 * Optimize spring-cloud-gateway 2.1.x, 3.x witness class.
 * Support report MongoDB instance info in Mongodb 4.x plugin.
+* Support collect ZGC memory pool metrics.
 
 #### Documentation
 

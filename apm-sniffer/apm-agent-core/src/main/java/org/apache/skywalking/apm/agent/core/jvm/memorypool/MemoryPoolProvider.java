@@ -61,6 +61,9 @@ public enum MemoryPoolProvider {
         } else if (name.equals("Survivor Space")) {
             // Serial collector ( -XX:+UseSerialGC )
             return new SerialCollectorModule(beans);
+        } else if (name.equals("ZHeap")) {
+            // ZGC collector ( -XX:+UseZGC )
+            return new ZGCCollectorModule(beans);
         } else {
             // Unknown
             return null;

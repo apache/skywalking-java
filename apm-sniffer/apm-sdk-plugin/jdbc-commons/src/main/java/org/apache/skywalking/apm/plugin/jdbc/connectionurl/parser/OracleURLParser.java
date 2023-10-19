@@ -18,11 +18,12 @@
 
 package org.apache.skywalking.apm.plugin.jdbc.connectionurl.parser;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 import org.apache.skywalking.apm.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link OracleURLParser} presents that how to parse oracle connection url.
@@ -36,9 +37,16 @@ public class OracleURLParser extends AbstractURLParser {
     private static final int DEFAULT_PORT = 1521;
     public static final String SERVICE_NAME_FLAG = "@//";
     public static final String TNSNAME_URL_FLAG = "DESCRIPTION";
+    public static final String SERVICE_NAME_FIELD = "SERVICE_NAME";
+    public static final String HOST_FIELD = "HOST";
+    public static final String PORT_FIELD = "PORT";
+
+    // only use to indexOf TNS url keyword
+    private final String upperUrl;
 
     public OracleURLParser(String url) {
         super(url);
+        upperUrl = url == null ? null : url.toUpperCase();
     }
 
     @Override
@@ -63,24 +71,24 @@ public class OracleURLParser extends AbstractURLParser {
     @Override
     protected URLLocation fetchDatabaseNameIndexRange() {
         int hostLabelStartIndex;
-        int hostLabelEndIndex = url.length();
+        int hostLabelEndIndex = upperUrl.length();
         if (isServiceNameURL()) {
-            hostLabelStartIndex = url.lastIndexOf("/") + 1;
+            hostLabelStartIndex = upperUrl.lastIndexOf("/") + 1;
         } else if (isTNSNameURL()) {
-            hostLabelStartIndex = url.indexOf("=", url.indexOf("SERVICE_NAME")) + 1;
-            hostLabelEndIndex = url.indexOf(")", hostLabelStartIndex);
+            hostLabelStartIndex = upperUrl.indexOf("=", upperUrl.indexOf(SERVICE_NAME_FIELD)) + 1;
+            hostLabelEndIndex = upperUrl.indexOf(")", hostLabelStartIndex);
         } else {
-            hostLabelStartIndex = url.lastIndexOf(":") + 1;
+            hostLabelStartIndex = upperUrl.lastIndexOf(":") + 1;
         }
         return new URLLocation(hostLabelStartIndex, hostLabelEndIndex);
     }
 
     private boolean isServiceNameURL() {
-        return url.contains(SERVICE_NAME_FLAG);
+        return upperUrl.contains(SERVICE_NAME_FLAG);
     }
 
     private boolean isTNSNameURL() {
-        return url.contains(TNSNAME_URL_FLAG);
+        return upperUrl.contains(TNSNAME_URL_FLAG);
     }
 
     @Override
@@ -110,23 +118,23 @@ public class OracleURLParser extends AbstractURLParser {
     }
 
     private String parseDatabaseHostsFromURL() {
-        int beginIndex = url.indexOf("DESCRIPTION");
+        int beginIndex = upperUrl.indexOf(TNSNAME_URL_FLAG);
         List<String> hosts = new ArrayList<String>();
         do {
-            int hostStartIndex = url.indexOf("HOST", beginIndex);
+            int hostStartIndex = upperUrl.indexOf(HOST_FIELD, beginIndex);
             if (hostStartIndex == -1) {
                 break;
             }
-            int equalStartIndex = url.indexOf("=", hostStartIndex);
-            int hostEndIndex = url.indexOf(")", hostStartIndex);
+            int equalStartIndex = upperUrl.indexOf("=", hostStartIndex);
+            int hostEndIndex = upperUrl.indexOf(")", hostStartIndex);
             String host = url.substring(equalStartIndex + 1, hostEndIndex);
 
             int port = DEFAULT_PORT;
-            int portStartIndex = url.indexOf("PORT", hostEndIndex);
-            int portEndIndex = url.length();
+            int portStartIndex = upperUrl.indexOf(PORT_FIELD, hostEndIndex);
+            int portEndIndex = upperUrl.length();
             if (portStartIndex != -1) {
-                int portEqualStartIndex = url.indexOf("=", portStartIndex);
-                portEndIndex = url.indexOf(")", portEqualStartIndex);
+                int portEqualStartIndex = upperUrl.indexOf("=", portStartIndex);
+                portEndIndex = upperUrl.indexOf(")", portEqualStartIndex);
                 port = Integer.parseInt(url.substring(portEqualStartIndex + 1, portEndIndex).trim());
             }
             hosts.add(host.trim() + ":" + port);

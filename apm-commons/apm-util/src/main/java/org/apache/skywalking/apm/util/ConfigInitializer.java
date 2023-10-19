@@ -96,7 +96,7 @@ public class ConfigInitializer {
                                 }
                             }
                             if (propertyValue.length() > lengthLimited) {
-                                StringUtil.cut(propertyValue, lengthLimited);
+                                propertyValue = StringUtil.cut(propertyValue, lengthLimited);
                                 System.err.printf("The config value will be truncated , because the length max than %d : %s -> %s%n", lengthDefine.value(), configKey, propertyValue);
                             }
                         }

@@ -55,6 +55,6 @@ segmentItems:
             tags:
               - { key: url, value: https://localhost:8070/user }
               - { key: http.method, value: POST }
-              - { key: http.body, value: not null }
+              - { key: http.body, value: https://localhost:8070/user }
               - { key: http.status_code, value: '200' }
 

@@ -40,7 +40,6 @@ public class ServerService {
             SelfSignedCertificate certificate = new SelfSignedCertificate();
             SslContext sslContext = SslContextBuilder.forServer(certificate.certificate(), certificate.privateKey()).build();
 
-
             ChannelFuture future = new ServerBootstrap()
                     .group(workerGroup, bossGroup)
                     .channel(NioServerSocketChannel.class)

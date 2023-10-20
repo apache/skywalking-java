@@ -33,22 +33,28 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import test.apache.skywalking.apm.testcase.netty.handler.UserClientHandler;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
-public class Client {
+public class ClientService {
     public static void start() {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
+            SslContext sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+
             ChannelFuture channelFuture = new Bootstrap()
                     .group(workerGroup)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<NioSocketChannel>() {
                         @Override
                         protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
+                            nioSocketChannel.pipeline().addLast(sslContext.newHandler(nioSocketChannel.alloc()));
                             nioSocketChannel.pipeline().addLast(new HttpClientCodec());
                             nioSocketChannel.pipeline().addLast(new HttpObjectAggregator(512 * 1024));
                             nioSocketChannel.pipeline().addLast(new UserClientHandler());

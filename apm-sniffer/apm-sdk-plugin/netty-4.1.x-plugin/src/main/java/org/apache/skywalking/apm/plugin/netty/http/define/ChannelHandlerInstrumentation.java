@@ -23,15 +23,15 @@ import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-public class ChannelPipelineInstrumentation extends AbstractNettyInstrumentation {
+public class ChannelHandlerInstrumentation extends AbstractNettyInstrumentation {
 
     @Override
     protected ClassMatch enhanceClass() {
-        return HierarchyMatch.byHierarchyMatch("io.netty.channel.ChannelPipeline");
+        return MultiClassNameMatch.byMultiClassMatch("io.netty.handler.codec.ByteToMessageDecoder", "io.netty.handler.codec.MessageToByteEncoder");
     }
 
     @Override
@@ -45,12 +45,12 @@ public class ChannelPipelineInstrumentation extends AbstractNettyInstrumentation
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("removeLast");
+                        return named("handlerRemoved");
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return "org.apache.skywalking.apm.plugin.netty.http.ChannelPipelineRemoveLastInterceptor";
+                        return "org.apache.skywalking.apm.plugin.netty.http.RemoveHandlerInterceptor";
                     }
 
                     @Override

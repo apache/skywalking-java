@@ -18,16 +18,19 @@
 
 package org.apache.skywalking.apm.plugin.netty.http;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.plugin.netty.common.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
-public class ChannelPipelineRemoveFirstInterceptor implements InstanceMethodsAroundInterceptor {
+public class RemoveHandlerInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
@@ -36,10 +39,28 @@ public class ChannelPipelineRemoveFirstInterceptor implements InstanceMethodsAro
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        // if the removed handler is a enhanced handler by skywalking, we call the method again to remove and return the user handler
-        if (((ChannelHandler) ret).getClass().getName().startsWith(NettyConstants.HANDLER_PACKAGE_NAME)) {
-            return ((ChannelPipeline) objInst).removeFirst();
+        ChannelHandlerContext ctx = (ChannelHandlerContext) allArguments[0];
+
+        Channel channel = ctx.channel();
+        ChannelPipeline pipeline = channel.pipeline();
+
+        // If the removal of the handler fails
+        if (pipeline.context((ChannelHandler) objInst) != null) {
+            return ret;
         }
+
+        Map<ChannelHandler, ChannelHandler> map = channel.attr(AttributeKeys.HANDLER_CLASS_MAP).get();
+
+        if (map == null) {
+            return ret;
+        }
+
+        // If the removed handler has an enhanced handler associated with it,the associated handler should also be removed
+        ChannelHandler enhancedHandler = map.get(objInst);
+        if (enhancedHandler != null && pipeline.context(enhancedHandler) != null) {
+            pipeline.remove(enhancedHandler);
+        }
+
         return ret;
     }
 

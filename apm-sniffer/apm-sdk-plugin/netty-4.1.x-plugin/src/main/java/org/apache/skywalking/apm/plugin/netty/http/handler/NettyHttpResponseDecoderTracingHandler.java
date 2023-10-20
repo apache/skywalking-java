@@ -51,7 +51,6 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        AbstractSpan span;
         try {
             if (!TypeUtils.isHttpResponse(msg)) {
                 return;
@@ -65,7 +64,7 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
             }
 
             Channel channel = ctx.channel();
-            span = channel.attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
+            AbstractSpan span = channel.attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
             if (span == null) {
                 return;
             }

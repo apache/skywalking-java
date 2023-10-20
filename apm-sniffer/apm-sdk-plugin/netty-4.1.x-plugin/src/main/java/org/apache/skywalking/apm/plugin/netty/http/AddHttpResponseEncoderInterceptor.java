@@ -39,11 +39,15 @@ public class AddHttpResponseEncoderInterceptor implements InstanceMethodsAroundI
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-
         ChannelHandlerContext ctx = (ChannelHandlerContext) allArguments[0];
         ChannelPipeline pipeline = ctx.channel().pipeline();
+
+        if (pipeline.context(ctx.name()) == null) {
+            return ret;
+        }
+
         String name = NettyHttpResponseEncoderTracingHandler.class.getName();
-        if (null != pipeline.get(name)) {
+        if (null != pipeline.context(name)) {
             pipeline.remove(name);
         }
         pipeline.addAfter(ctx.name(), name, NettyHttpResponseEncoderTracingHandler.getInstance());

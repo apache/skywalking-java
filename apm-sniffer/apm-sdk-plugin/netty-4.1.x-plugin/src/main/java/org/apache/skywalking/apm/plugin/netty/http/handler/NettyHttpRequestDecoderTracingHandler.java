@@ -21,8 +21,11 @@ package org.apache.skywalking.apm.plugin.netty.http.handler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.ssl.SslHandler;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -34,6 +37,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
 import org.apache.skywalking.apm.plugin.netty.common.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.utils.HttpDataCollectUtils;
 import org.apache.skywalking.apm.plugin.netty.utils.TypeUtils;
 
 import java.net.InetSocketAddress;
@@ -57,54 +61,66 @@ public class NettyHttpRequestDecoderTracingHandler extends ChannelInboundHandler
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
-        AbstractSpan span = null;
         try {
-            if (!TypeUtils.isHttpRequest(msg)) {
-                return;
+            if (TypeUtils.isFullHttpRequest(msg)) {
+                FullHttpRequest request = (FullHttpRequest) msg;
+                AbstractSpan span = createEntrySpan(ctx, request);
+                HttpDataCollectUtils.collectHttpRequestBody(request.headers(), request.content(), span);
+            } else if (TypeUtils.isHttpRequest(msg)) {
+                // if headers before body arrive
+                createEntrySpan(ctx, (HttpRequest) msg);
+                ctx.channel().attr(AttributeKeys.HTTP_REQUEST_HEADER).set(((HttpRequest) msg).headers());
+            } else if (TypeUtils.isLastHttpContent(msg)) {
+                AbstractSpan span = ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).get();
+                HttpHeaders headers = ctx.channel().attr(AttributeKeys.HTTP_REQUEST_HEADER).getAndSet(null);
+                HttpDataCollectUtils.collectHttpRequestBody(headers, ((LastHttpContent) msg).content(), span);
             }
-
-            HttpRequest request = (HttpRequest) msg;
-
-            AbstractSpan lastSpan = ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).getAndSet(null);
-            if (null != lastSpan) {
-                ContextManager.stopSpan(lastSpan);
-            }
-
-            HttpHeaders headers = request.headers();
-
-            ContextCarrier contextCarrier = new ContextCarrier();
-            for (CarrierItem item = contextCarrier.items(); item.hasNext(); ) {
-                item = item.next();
-                item.setHeadValue(headers.get(item.getHeadKey()));
-            }
-
-            InetSocketAddress address = (InetSocketAddress) ctx.channel().localAddress();
-            String peer = address.getAddress().getHostAddress() + ":" + address.getPort();
-            String url = peer + request.uri();
-            String method = request.method().name();
-
-            span = ContextManager.createEntrySpan(method + ":" + request.uri(), contextCarrier);
-
-            SpanLayer.asHttp(span);
-            span.setComponent(ComponentsDefine.NETTY);
-            Tags.HTTP.METHOD.set(span, method);
-            Tags.URL.set(span, NettyConstants.HTTP_PROTOCOL_PREFIX + url);
-            ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).set(span);
         } catch (Exception e) {
             LOGGER.error("Fail to trace netty http request", e);
         } finally {
             try {
                 ctx.fireChannelRead(msg);
             } catch (Throwable throwable) {
+                AbstractSpan span = ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).getAndSet(null);
                 if (span != null) {
                     span.errorOccurred();
                     span.log(throwable);
                     Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);
+                    ContextManager.stopSpan(span);
                 }
-                ContextManager.stopSpan(span);
                 throw throwable;
             }
         }
+    }
+
+    private AbstractSpan createEntrySpan(ChannelHandlerContext ctx, HttpRequest request) {
+        AbstractSpan lastSpan = ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).getAndSet(null);
+        if (null != lastSpan) {
+            ContextManager.stopSpan(lastSpan);
+        }
+
+        HttpHeaders headers = request.headers();
+
+        ContextCarrier contextCarrier = new ContextCarrier();
+        for (CarrierItem item = contextCarrier.items(); item.hasNext(); ) {
+            item = item.next();
+            item.setHeadValue(headers.get(item.getHeadKey()));
+        }
+
+        InetSocketAddress address = (InetSocketAddress) ctx.channel().localAddress();
+        String peer = address.getAddress().getHostAddress() + ":" + address.getPort();
+        String url = peer + request.uri();
+        String method = request.method().name();
+
+        AbstractSpan span = ContextManager.createEntrySpan(method + ":" + request.uri(), contextCarrier);
+
+        SpanLayer.asHttp(span);
+        span.setComponent(ComponentsDefine.NETTY);
+        Tags.HTTP.METHOD.set(span, method);
+
+        boolean sslFlag = ctx.channel().pipeline().context(SslHandler.class) != null;
+        Tags.URL.set(span, sslFlag ? NettyConstants.HTTPS_PROTOCOL_PREFIX + url : NettyConstants.HTTP_PROTOCOL_PREFIX + url);
+        ctx.channel().attr(AttributeKeys.HTTP_SERVER_SPAN).set(span);
+        return span;
     }
 }

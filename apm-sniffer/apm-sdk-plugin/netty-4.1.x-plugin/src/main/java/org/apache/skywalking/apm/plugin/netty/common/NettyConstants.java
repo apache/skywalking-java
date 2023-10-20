@@ -22,6 +22,8 @@ public class NettyConstants {
 
     public static final String HTTP_PROTOCOL_PREFIX = "http://";
 
+    public static final String HTTPS_PROTOCOL_PREFIX = "https://";
+
     public static final String HANDLER_PACKAGE_NAME = "org.apache.skywalking.apm.plugin.netty.http.handler";
 
     private NettyConstants() {

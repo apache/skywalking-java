@@ -18,12 +18,53 @@
 
 package org.apache.skywalking.apm.plugin.netty.utils;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+import org.apache.skywalking.apm.plugin.netty.config.NettyPluginConfig;
+import org.apache.skywalking.apm.util.StringUtil;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class HttpDataCollectUtils {
 
-    public static Charset getCharsetFromContentType(String contentType) {
+    private static final ILog LOGGER = LogManager.getLogger(HttpDataCollectUtils.class);
+
+    public static void collectHttpRequestBody(HttpHeaders headers, ByteBuf content, AbstractSpan span) {
+
+        if (NettyPluginConfig.Plugin.Netty.HTTP_COLLECT_REQUEST_BODY) {
+            if (headers == null || content == null || span == null) {
+                return;
+            }
+            try {
+                String contentTypeValue = headers.get(HttpHeaderNames.CONTENT_TYPE);
+                boolean needCollectHttpBody = false;
+                for (String contentType : NettyPluginConfig.Plugin.Netty.HTTP_SUPPORTED_CONTENT_TYPES_PREFIX.split(",")) {
+                    if (contentTypeValue.startsWith(contentType)) {
+                        needCollectHttpBody = true;
+                        break;
+                    }
+                }
+
+                if (needCollectHttpBody) {
+                    String bodyStr = content.toString(getCharsetFromContentType(
+                            headers.get(HttpHeaderNames.CONTENT_TYPE)));
+                    bodyStr = NettyPluginConfig.Plugin.Netty.HTTP_FILTER_LENGTH_LIMIT > 0 ?
+                            StringUtil.cut(bodyStr, NettyPluginConfig.Plugin.Netty.HTTP_FILTER_LENGTH_LIMIT) : bodyStr;
+                    Tags.HTTP.BODY.set(span, bodyStr);
+                }
+            } catch (Exception e) {
+                LOGGER.error("Fail to collect netty http request body", e);
+            }
+        }
+    }
+
+    private static Charset getCharsetFromContentType(String contentType) {
         String[] parts = contentType.split(";");
         for (String part : parts) {
             part = part.trim();

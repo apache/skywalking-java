@@ -26,20 +26,28 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 import test.apache.skywalking.apm.testcase.netty.handler.UserServerHandler;
 
-public class Server {
+public class ServerService {
 
-    public static void start() {
+    public static void start() throws Exception {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         try {
+            SelfSignedCertificate certificate = new SelfSignedCertificate();
+            SslContext sslContext = SslContextBuilder.forServer(certificate.certificate(), certificate.privateKey()).build();
+
+
             ChannelFuture future = new ServerBootstrap()
                     .group(workerGroup, bossGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<NioSocketChannel>() {
                         @Override
                         protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
+                            nioSocketChannel.pipeline().addLast(sslContext.newHandler(nioSocketChannel.alloc()));
                             nioSocketChannel.pipeline().addLast(new HttpServerCodec());
                             nioSocketChannel.pipeline().addLast(new HttpObjectAggregator(512 * 1024));
                             nioSocketChannel.pipeline().addLast(new UserServerHandler());
@@ -47,8 +55,6 @@ public class Server {
                     }).bind(8070);
             future.sync();
             future.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();

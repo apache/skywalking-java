@@ -21,8 +21,8 @@ package test.apache.skywalking.apm.testcase.netty.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import test.apache.skywalking.apm.testcase.netty.core.Client;
-import test.apache.skywalking.apm.testcase.netty.core.Server;
+import test.apache.skywalking.apm.testcase.netty.core.ClientService;
+import test.apache.skywalking.apm.testcase.netty.core.ServerService;
 
 @RestController
 @RequestMapping("/case")
@@ -31,7 +31,7 @@ public class CaseController {
     @RequestMapping("/netty-4.1.x-case")
     @ResponseBody
     public String nettyCase() throws Exception {
-        Client.start();
+        ClientService.start();
         return "Success";
     }
 
@@ -39,7 +39,7 @@ public class CaseController {
     @ResponseBody
     public String healthCheck() {
         try {
-            Server.start();
+            ServerService.start();
         } catch (Exception e) {
             return "fail";
         }

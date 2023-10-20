@@ -32,7 +32,8 @@ segmentItems:
             skipAnalysis: 'false'
             tags:
               - { key: http.method, value: POST }
-              - { key: url, value: not null }
+              - { key: url, value: https://127.0.0.1:8070/user }
+              - { key: http.body, value: not null }
               - { key: http.status_code, value: '200' }
             refs:
               - { parentEndpoint: POST:/user, networkAddress: 'localhost:8070',
@@ -52,7 +53,7 @@ segmentItems:
             peer: not null
             skipAnalysis: 'false'
             tags:
-              - { key: url, value: not null }
+              - { key: url, value: https://localhost:8070/user }
               - { key: http.method, value: POST }
               - { key: http.body, value: not null }
               - { key: http.status_code, value: '200' }

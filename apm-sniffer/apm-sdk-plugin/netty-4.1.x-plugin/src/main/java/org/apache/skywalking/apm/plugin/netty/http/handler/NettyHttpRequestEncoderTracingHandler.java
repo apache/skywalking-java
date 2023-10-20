@@ -22,11 +22,10 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AsciiString;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
@@ -39,10 +38,8 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.netty.common.AttributeKeys;
 import org.apache.skywalking.apm.plugin.netty.common.NettyConstants;
-import org.apache.skywalking.apm.plugin.netty.config.NettyPluginConfig;
 import org.apache.skywalking.apm.plugin.netty.utils.HttpDataCollectUtils;
 import org.apache.skywalking.apm.plugin.netty.utils.TypeUtils;
-import org.apache.skywalking.apm.util.StringUtil;
 
 import java.net.InetSocketAddress;
 
@@ -65,17 +62,16 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
-
-        AbstractSpan span = null;
         try {
+            if (!TypeUtils.isHttpRequest(msg)) {
+                return;
+            }
+
             AbstractSpan lastSpan = ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
             if (null != lastSpan) {
                 ContextManager.stopSpan(lastSpan);
             }
 
-            if (!TypeUtils.isHttpRequest(msg)) {
-                return;
-            }
             HttpRequest request = (HttpRequest) msg;
             HttpHeaders headers = request.headers();
             String uri = request.uri();
@@ -85,7 +81,7 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             String method = request.method().toString();
 
             ContextCarrier contextCarrier = new ContextCarrier();
-            span = ContextManager.createExitSpan(method + ":" + uri, contextCarrier, peer);
+            AbstractSpan span = ContextManager.createExitSpan(method + ":" + uri, contextCarrier, peer);
 
             for (CarrierItem item = contextCarrier.items(); item.hasNext(); ) {
                 item = item.next();
@@ -95,27 +91,12 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             SpanLayer.asHttp(span);
             span.setPeer(peer);
             span.setComponent(ComponentsDefine.NETTY);
-            Tags.URL.set(span, NettyConstants.HTTP_PROTOCOL_PREFIX + url);
+
+            boolean sslFlag = ctx.channel().pipeline().context(SslHandler.class) != null;
+            Tags.URL.set(span, sslFlag ? NettyConstants.HTTPS_PROTOCOL_PREFIX + url : NettyConstants.HTTP_PROTOCOL_PREFIX + url);
             Tags.HTTP.METHOD.set(span, request.method().name());
 
-            if (NettyPluginConfig.Plugin.Netty.HTTP_COLLECT_REQUEST_BODY) {
-                try {
-                    String contentTypeValue = request.headers().get(HttpHeaderNames.CONTENT_TYPE);
-                    boolean needCollectHttpBody = false;
-                    for (String contentType : NettyPluginConfig.Plugin.Netty.HTTP_SUPPORTED_CONTENT_TYPES_PREFIX.split(",")) {
-                        if (contentTypeValue.startsWith(contentType)) {
-                            needCollectHttpBody = true;
-                            break;
-                        }
-                    }
-
-                    if (needCollectHttpBody && request instanceof FullHttpRequest) {
-                        collectHttpBody((FullHttpRequest) request, span);
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Fail to collect netty http request", e);
-                }
-            }
+            HttpDataCollectUtils.collectHttpRequestBody(request.headers(), ((FullHttpRequest) request).content(), span);
 
             ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).set(span);
         } catch (Exception e) {
@@ -124,23 +105,15 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             try {
                 ctx.write(msg, promise);
             } catch (Throwable throwable) {
+                AbstractSpan span = ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
                 if (span != null) {
                     span.errorOccurred();
                     span.log(throwable);
                     Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);
+                    ContextManager.stopSpan(span);
                 }
-                ContextManager.stopSpan(span);
                 throw throwable;
             }
         }
-    }
-
-    private void collectHttpBody(FullHttpRequest request, AbstractSpan span) {
-        DefaultFullHttpRequest defaultFullHttpRequest = (DefaultFullHttpRequest) request;
-        String bodyStr = defaultFullHttpRequest.content().toString(HttpDataCollectUtils.getCharsetFromContentType(
-                request.headers().get(HttpHeaderNames.CONTENT_TYPE)));
-        bodyStr = NettyPluginConfig.Plugin.Netty.HTTP_FILTER_LENGTH_LIMIT > 0 ?
-                StringUtil.cut(bodyStr, NettyPluginConfig.Plugin.Netty.HTTP_FILTER_LENGTH_LIMIT) : bodyStr;
-        Tags.HTTP.BODY.set(span, bodyStr);
     }
 }

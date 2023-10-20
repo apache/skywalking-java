@@ -22,26 +22,47 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.LastHttpContent;
 
 public class TypeUtils {
 
-  public static boolean isHttpResponse(Object obj) {
-    Class<?> objClass = obj.getClass();
-    if (objClass == DefaultFullHttpResponse.class || objClass == DefaultHttpResponse.class) {
-      return true;
+    public static boolean isHttpResponse(Object obj) {
+        Class<?> objClass = obj.getClass();
+        if (objClass == DefaultFullHttpResponse.class || objClass == DefaultHttpResponse.class) {
+            return true;
+        }
+
+        return obj instanceof HttpResponse;
     }
 
-    return obj instanceof LastHttpContent;
-  }
+    public static boolean isHttpRequest(Object msg) {
+        Class<?> objClass = msg.getClass();
+        if (objClass == DefaultFullHttpRequest.class || objClass == DefaultHttpRequest.class) {
+            return true;
+        }
 
-  public static boolean isHttpRequest(Object msg) {
-    Class<?> objClass = msg.getClass();
-    if (objClass == DefaultFullHttpRequest.class || objClass == DefaultHttpRequest.class) {
-      return true;
+        return msg instanceof HttpRequest;
     }
 
-    return msg instanceof HttpRequest;
-  }
+    public static boolean isLastHttpContent(Object msg) {
+        Class<?> objClass = msg.getClass();
+        if (objClass == DefaultLastHttpContent.class) {
+            return true;
+        }
+
+        return msg instanceof LastHttpContent;
+    }
+
+    public static boolean isFullHttpRequest(Object obj) {
+        Class<?> objClass = obj.getClass();
+        if (objClass == DefaultFullHttpRequest.class) {
+            return true;
+        }
+
+        return obj instanceof FullHttpRequest;
+    }
 }

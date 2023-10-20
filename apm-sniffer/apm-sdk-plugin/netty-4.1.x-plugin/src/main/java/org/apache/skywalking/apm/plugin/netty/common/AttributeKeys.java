@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.netty.common;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.util.AttributeKey;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
@@ -28,11 +29,16 @@ import java.util.Map;
 
 public class AttributeKeys {
 
-    public static final AttributeKey<Map<ChannelHandler, ChannelHandler>> HANDLER_CLASS_MAP = AttributeKey.valueOf("sw8_handler_class_map");
+    public static final AttributeKey<Map<ChannelHandler, ChannelHandler>> HANDLER_CLASS_MAP = AttributeKey.valueOf("skywalking_handler_class_map");
 
-    public static final AttributeKey<AbstractSpan> HTTP_CLIENT_SPAN = AttributeKey.valueOf("sw8_http_client_span");
+    public static final AttributeKey<AbstractSpan> HTTP_CLIENT_SPAN = AttributeKey.valueOf("skywalking_http_client_span");
 
-    public static final AttributeKey<AbstractSpan> HTTP_SERVER_SPAN = AttributeKey.valueOf("sw8_http_server_span");
+    public static final AttributeKey<HttpHeaders> HTTP_REQUEST_HEADER = AttributeKey.valueOf("skywalking_http_request_header");
+
+    public static final AttributeKey<AbstractSpan> HTTP_SERVER_SPAN = AttributeKey.valueOf("skywalking_http_server_span");
+
+    private AttributeKeys() {
+    }
 
     public static Map<ChannelHandler, ChannelHandler> getOrCreateHandlerMap(Channel channel) {
         Map<ChannelHandler, ChannelHandler> map = channel.attr(HANDLER_CLASS_MAP).get();

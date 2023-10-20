@@ -52,7 +52,6 @@ public class NettyHttpResponseEncoderTracingHandler extends ChannelOutboundHandl
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
-        AbstractSpan span = null;
         try {
             if (!TypeUtils.isHttpResponse(msg)) {
                 return;
@@ -65,7 +64,7 @@ public class NettyHttpResponseEncoderTracingHandler extends ChannelOutboundHandl
             }
 
             Channel channel = ctx.channel();
-            span = channel.attr(AttributeKeys.HTTP_SERVER_SPAN).getAndSet(null);
+            AbstractSpan span = channel.attr(AttributeKeys.HTTP_SERVER_SPAN).getAndSet(null);
             if (span == null) {
                 return;
             }
@@ -74,23 +73,11 @@ public class NettyHttpResponseEncoderTracingHandler extends ChannelOutboundHandl
             if (code >= 400) {
                 span.errorOccurred();
             }
+            ContextManager.stopSpan(span);
         } catch (Exception e) {
             LOGGER.error("Fail to trace netty http response", e);
         } finally {
-            try {
-                ctx.write(msg, promise);
-            } catch (Throwable throwable) {
-                if (span != null) {
-                    span.errorOccurred();
-                    span.log(throwable);
-                    Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);
-                }
-                throw throwable;
-            } finally {
-                if (span != null && ((HttpResponse) msg).status() != HttpResponseStatus.CONTINUE) {
-                    ContextManager.stopSpan(span);
-                }
-            }
+            ctx.write(msg, promise);
         }
     }
 }

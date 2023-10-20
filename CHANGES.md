@@ -15,7 +15,7 @@ Release Notes.
 * Support report MongoDB instance info in Mongodb 4.x plugin.
 * To compatible upper and lower case Oracle TNS url parse.
 * Fix config length limitation.
-* Support collect ZGC memory pool metrics.
+* Support collecting ZGC memory pool metrics. Require OAP 9.7.0 to support these new metrics.
 
 
 #### Documentation

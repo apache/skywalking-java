@@ -8,6 +8,8 @@
 1. Add `-javaagent:/path/to/skywalking-package/agent/skywalking-agent.jar` to JVM argument. And make sure to add it
    before the `-jar` argument.
 
+**Require SkyWalking OAP server 9.7.0+ if the agent works on the JRE using ZGC.**
+
 The agent release dist is included in Apache [official release](http://skywalking.apache.org/downloads/). New agent
 package looks like this.
 

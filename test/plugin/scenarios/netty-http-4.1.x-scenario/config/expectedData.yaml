@@ -20,7 +20,7 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: POST:/user
-            parentSpanId: 0
+            parentSpanId: -1
             spanId: ge 0
             spanLayer: Http
             startTime: not null
@@ -42,8 +42,8 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: POST:/user
-            parentSpanId: -1
-            spanId: 0
+            parentSpanId: 0
+            spanId: gt 0
             spanLayer: Http
             startTime: not null
             endTime: not null

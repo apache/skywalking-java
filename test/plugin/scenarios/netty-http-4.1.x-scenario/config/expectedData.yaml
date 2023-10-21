@@ -19,7 +19,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: GET:/case/netty-http-4.1.x-case
+          - operationName: HEAD:/case/healthCheck
             parentSpanId: -1
             spanId: 0
             spanLayer: Http

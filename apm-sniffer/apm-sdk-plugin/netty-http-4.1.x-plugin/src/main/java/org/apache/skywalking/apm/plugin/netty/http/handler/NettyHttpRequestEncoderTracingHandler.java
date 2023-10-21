@@ -90,7 +90,7 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
 
             SpanLayer.asHttp(span);
             span.setPeer(peer);
-            span.setComponent(ComponentsDefine.NETTY);
+            span.setComponent(ComponentsDefine.NETTY_HTTP);
 
             boolean sslFlag = ctx.channel().pipeline().context(SslHandler.class) != null;
             Tags.URL.set(span, sslFlag ? NettyConstants.HTTPS_PROTOCOL_PREFIX + url : NettyConstants.HTTP_PROTOCOL_PREFIX + url);

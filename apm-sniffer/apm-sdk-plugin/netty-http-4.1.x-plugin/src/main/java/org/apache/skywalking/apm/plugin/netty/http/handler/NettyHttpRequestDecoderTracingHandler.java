@@ -115,7 +115,7 @@ public class NettyHttpRequestDecoderTracingHandler extends ChannelInboundHandler
         AbstractSpan span = ContextManager.createEntrySpan(method + ":" + request.uri(), contextCarrier);
 
         SpanLayer.asHttp(span);
-        span.setComponent(ComponentsDefine.NETTY);
+        span.setComponent(ComponentsDefine.NETTY_HTTP);
         Tags.HTTP.METHOD.set(span, method);
 
         boolean sslFlag = ctx.channel().pipeline().context(SslHandler.class) != null;

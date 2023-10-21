@@ -31,7 +31,7 @@ segmentItems:
             peer: ''
             tags:
               - { key: url, value: not null }
-              - { key: http.method, value: GET }
+              - { key: http.method, value: HEAD }
               - { key: http.status_code, value: '200' }
             skipAnalysis: 'false'
       - segmentId: not null

@@ -37,8 +37,8 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: POST:/user
-            parentSpanId: 0
-            spanId: ge 0
+            parentSpanId: -1
+            spanId: 0
             spanLayer: Http
             startTime: not null
             endTime: not null

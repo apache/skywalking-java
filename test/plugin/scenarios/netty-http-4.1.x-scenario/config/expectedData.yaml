@@ -20,7 +20,7 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: POST:/user
-            parentSpanId: -1
+            parentSpanId: 0
             spanId: ge 0
             spanLayer: Http
             startTime: not null
@@ -57,4 +57,19 @@ segmentItems:
               - { key: http.method, value: POST }
               - { key: http.body, value: "{\"name\":\"david\",\"age\":30}" }
               - { key: http.status_code, value: '200' }
+          - operationName: GET:/case/netty-http-4.1.x-case
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - { key: url, value: not null }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
+            skipAnalysis: 'false'
 

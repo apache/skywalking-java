@@ -16,15 +16,16 @@
  *
  */
 
-package test.apache.skywalking.apm.testcase.netty.client;
+package org.apache.skywalking.apm.plugin.netty.common;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+public class NettyConstants {
 
-@SpringBootApplication
-public class Application {
+    public static final String HTTP_PROTOCOL_PREFIX = "http://";
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+    public static final String HTTPS_PROTOCOL_PREFIX = "https://";
+
+    public static final String HANDLER_PACKAGE_NAME = "org.apache.skywalking.apm.plugin.netty.http.handler";
+
+    private NettyConstants() {
     }
 }

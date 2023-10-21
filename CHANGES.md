@@ -16,7 +16,7 @@ Release Notes.
 * To compatible upper and lower case Oracle TNS url parse.
 * Fix config length limitation.
 * Support collecting ZGC memory pool metrics. Require OAP 9.7.0 to support these new metrics.
-
+* Add a netty 4.1.x plugin to trace http
 
 #### Documentation
 

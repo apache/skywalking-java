@@ -16,15 +16,20 @@
  *
  */
 
-package test.apache.skywalking.apm.testcase.netty.client;
+package org.apache.skywalking.apm.plugin.netty.http.define;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
 
-@SpringBootApplication
-public class Application {
+public abstract class AbstractNettyInstrumentation extends ClassEnhancePluginDefine {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+    @Override
+    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
+        return new StaticMethodsInterceptPoint[0];
+    }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[]{"io.netty.handler.codec.http.CombinedHttpHeaders"};
     }
 }

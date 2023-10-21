@@ -16,15 +16,26 @@
  *
  */
 
-package test.apache.skywalking.apm.testcase.netty.client;
+package test.apache.skywalking.apm.testcase.netty.handler;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.FullHttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@SpringBootApplication
-public class Application {
+import java.nio.charset.StandardCharsets;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+public class UserClientHandler extends ChannelInboundHandlerAdapter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserClientHandler.class);
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
+        if (msg instanceof FullHttpResponse) {
+            FullHttpResponse response = (FullHttpResponse) msg;
+            LOGGER.info("receive message from server :{}", response.content().toString(StandardCharsets.UTF_8));
+        }
     }
 }

@@ -55,7 +55,7 @@ segmentItems:
             refs:
               - { parentEndpoint: POST:/user, networkAddress: 'localhost:8070',
                   refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
-                                                                                            null, parentService: netty-4.1.x-scenario, traceId: not null }
+                                                                                            null, parentService: netty-http-4.1.x-scenario, traceId: not null }
       - segmentId: not null
         spans:
           - operationName: POST:/user

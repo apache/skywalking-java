@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -Dskywalking.plugin.netty.http.collect_request_body=true -jar ${agent_opts} ${home}/../libs/netty-http-4.1.x-scenario.jar &
+java -Dskywalking.plugin.nettyHttp.collect_request_body=true -jar ${agent_opts} ${home}/../libs/netty-http-4.1.x-scenario.jar &

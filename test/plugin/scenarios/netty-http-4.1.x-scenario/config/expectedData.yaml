@@ -19,9 +19,26 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
+          - operationName: HEAD:/case/healthCheck
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - { key: url, value: not null }
+              - { key: http.method, value: HEAD }
+              - { key: http.status_code, value: '200' }
+            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
           - operationName: POST:/user
             parentSpanId: -1
-            spanId: ge 0
+            spanId: 0
             spanLayer: Http
             startTime: not null
             endTime: not null
@@ -38,7 +55,7 @@ segmentItems:
             refs:
               - { parentEndpoint: POST:/user, networkAddress: 'localhost:8070',
                   refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
-                                                                                            null, parentService: netty-4.1.x-scenario, traceId: not null }
+                                                                                            null, parentService: netty-http-4.1.x-scenario, traceId: not null }
       - segmentId: not null
         spans:
           - operationName: POST:/user

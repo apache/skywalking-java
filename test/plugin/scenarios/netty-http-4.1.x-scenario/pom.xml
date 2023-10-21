@@ -54,7 +54,7 @@
     </dependencies>
 
     <build>
-        <finalName>netty-4.1.x-scenario</finalName>
+        <finalName>netty-http-4.1.x-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -70,7 +70,7 @@
 - mysql-8.x
 - nacos-client-2.x  
 - netty-socketio
-- netty-4.1.x
+- netty-http-4.1.x
 - nutz-http-1.x
 - nutz-mvc-annotation-1.x
 - okhttp-3.x
@@ -172,4 +172,3 @@
 - jetty-server-11.x
 - jetty-client-11.x
 - websphere-liberty-23.x
-- netty-http-4.1.x

@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestEncoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseDecoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestDecoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseEncoderInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelPipelineInstrumentation
-netty-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelHandlerInstrumentation
+netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestEncoderInstrumentation
+netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseDecoderInstrumentation
+netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestDecoderInstrumentation
+netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseEncoderInstrumentation
+netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelPipelineInstrumentation
+netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelHandlerInstrumentation

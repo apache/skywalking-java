@@ -172,3 +172,4 @@
 - jetty-server-11.x
 - jetty-client-11.x
 - websphere-liberty-23.x
+- netty-4.1.x

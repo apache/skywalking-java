@@ -12,7 +12,7 @@ Release Notes.
 * Support customization for the length limitation of string configurations
 * Add max length configurations in `agent.config` file for service_name and instance_name
 * Optimize spring-cloud-gateway 2.1.x, 3.x witness class.
-* Add netty 4.1.x plugin
+* Add a netty 4.1.x plugin to trace http
 
 #### Documentation
 

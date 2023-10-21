@@ -25,6 +25,7 @@ metrics based on the tracing data.
   * [Jersey REST framework](https://github.com/eclipse-ee4j/jersey) 2.x -> 3.x
   * [Grizzly](https://github.com/eclipse-ee4j/grizzly) 2.3.x -> 4.x
   * [WebSphere Liberty](https://github.com/OpenLiberty/open-liberty) 23.x
+  * [Netty](https://github.com/netty/netty) 4.1.x
 * HTTP Client
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x

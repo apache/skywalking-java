@@ -30,6 +30,6 @@ public abstract class AbstractNettyInstrumentation extends ClassEnhancePluginDef
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"io.netty.handler.codec.http.CombinedHttpHeaders"};
+        return new String[]{"io.netty.handler.codec.compression.SnappyFrameEncoder"};
     }
 }

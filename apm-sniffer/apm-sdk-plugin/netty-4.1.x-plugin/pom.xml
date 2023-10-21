@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>apm-netty-4.1.x-plugin</artifactId>
-    <name>netty-4.x-plugin</name>
+    <name>netty-4.1.x-plugin</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

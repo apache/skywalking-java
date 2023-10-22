@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
   - serviceName: vertx-web-3.54minus-scenario
-    segmentSize: 9
+    segmentSize: ge 9
     segments:
       - segmentId: not null
         spans:

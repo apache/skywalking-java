@@ -103,6 +103,9 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
                 }
             }
 
+            span.prepareForAsync();
+            ContextManager.stopSpan(span);
+
             ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).set(span);
         } catch (Exception e) {
             LOGGER.error("Fail to trace netty http request", e);
@@ -115,7 +118,7 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
                     span.errorOccurred();
                     span.log(throwable);
                     Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);
-                    ContextManager.stopSpan(span);
+                    span.asyncFinish();
                 }
                 throw throwable;
             }

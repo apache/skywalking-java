@@ -25,7 +25,6 @@ import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
@@ -73,7 +72,7 @@ public class NettyHttpResponseEncoderTracingHandler extends ChannelOutboundHandl
             if (code >= 400) {
                 span.errorOccurred();
             }
-            ContextManager.stopSpan(span);
+            span.asyncFinish();
         } catch (Exception e) {
             LOGGER.error("Fail to trace netty http response", e);
         } finally {

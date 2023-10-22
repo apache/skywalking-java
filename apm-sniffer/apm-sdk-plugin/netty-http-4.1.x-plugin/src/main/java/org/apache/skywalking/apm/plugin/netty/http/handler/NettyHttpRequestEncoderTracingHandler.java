@@ -98,7 +98,7 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             Tags.HTTP.METHOD.set(span, request.method().name());
 
             if (NettyHttpPluginConfig.Plugin.NettyHttp.COLLECT_REQUEST_BODY) {
-                if (!TypeUtils.isLastHttpContent(msg)) {
+                if (TypeUtils.isLastHttpContent(msg)) {
                     HttpDataCollectUtils.collectHttpRequestBody(request.headers(), ((LastHttpContent) msg).content(), span);
                 }
             }

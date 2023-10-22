@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.netty.http.utils;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
@@ -36,32 +37,34 @@ public class HttpDataCollectUtils {
     private static final ILog LOGGER = LogManager.getLogger(HttpDataCollectUtils.class);
 
     public static void collectHttpRequestBody(HttpHeaders headers, ByteBuf content, AbstractSpan span) {
-
-        if (NettyHttpPluginConfig.Plugin.NettyHttp.COLLECT_REQUEST_BODY) {
+        try {
             if (headers == null || content == null || span == null) {
                 return;
             }
-            try {
-                String contentTypeValue = headers.get(HttpHeaderNames.CONTENT_TYPE);
-                boolean needCollectHttpBody = false;
-                for (String contentType : NettyHttpPluginConfig.Plugin.NettyHttp.SUPPORTED_CONTENT_TYPES_PREFIX.split(",")) {
-                    if (contentTypeValue.startsWith(contentType)) {
-                        needCollectHttpBody = true;
-                        break;
-                    }
-                }
-
-                if (needCollectHttpBody) {
-                    String bodyStr = content.toString(getCharsetFromContentType(
-                            headers.get(HttpHeaderNames.CONTENT_TYPE)));
-                    bodyStr = NettyHttpPluginConfig.Plugin.NettyHttp.FILTER_LENGTH_LIMIT > 0 ?
-                            StringUtil.cut(bodyStr, NettyHttpPluginConfig.Plugin.NettyHttp.FILTER_LENGTH_LIMIT) : bodyStr;
-                    Tags.HTTP.BODY.set(span, bodyStr);
-                }
-            } catch (Exception e) {
-                LOGGER.error("Fail to collect netty http request body", e);
+            if (Unpooled.EMPTY_BUFFER.equals(content)) {
+                return;
             }
+
+            String contentTypeValue = headers.get(HttpHeaderNames.CONTENT_TYPE);
+            boolean needCollectHttpBody = false;
+            for (String contentType : NettyHttpPluginConfig.Plugin.NettyHttp.SUPPORTED_CONTENT_TYPES_PREFIX.split(",")) {
+                if (contentTypeValue.startsWith(contentType)) {
+                    needCollectHttpBody = true;
+                    break;
+                }
+            }
+
+            if (needCollectHttpBody) {
+                String bodyStr = content.toString(getCharsetFromContentType(
+                        headers.get(HttpHeaderNames.CONTENT_TYPE)));
+                bodyStr = NettyHttpPluginConfig.Plugin.NettyHttp.FILTER_LENGTH_LIMIT > 0 ?
+                        StringUtil.cut(bodyStr, NettyHttpPluginConfig.Plugin.NettyHttp.FILTER_LENGTH_LIMIT) : bodyStr;
+                Tags.HTTP.BODY.set(span, bodyStr);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Fail to collect netty http request body", e);
         }
+
     }
 
     private static Charset getCharsetFromContentType(String contentType) {

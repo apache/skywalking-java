@@ -22,9 +22,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AsciiString;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
@@ -38,6 +38,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.netty.http.common.AttributeKeys;
 import org.apache.skywalking.apm.plugin.netty.http.common.NettyConstants;
+import org.apache.skywalking.apm.plugin.netty.http.config.NettyHttpPluginConfig;
 import org.apache.skywalking.apm.plugin.netty.http.utils.HttpDataCollectUtils;
 import org.apache.skywalking.apm.plugin.netty.http.utils.TypeUtils;
 
@@ -96,7 +97,11 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             Tags.URL.set(span, sslFlag ? NettyConstants.HTTPS_PROTOCOL_PREFIX + url : NettyConstants.HTTP_PROTOCOL_PREFIX + url);
             Tags.HTTP.METHOD.set(span, request.method().name());
 
-            HttpDataCollectUtils.collectHttpRequestBody(request.headers(), ((FullHttpRequest) request).content(), span);
+            if (NettyHttpPluginConfig.Plugin.NettyHttp.COLLECT_REQUEST_BODY) {
+                if (!TypeUtils.isLastHttpContent(msg)) {
+                    HttpDataCollectUtils.collectHttpRequestBody(request.headers(), ((LastHttpContent) msg).content(), span);
+                }
+            }
 
             ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).set(span);
         } catch (Exception e) {

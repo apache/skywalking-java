@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
   - serviceName: vertx-core-4.x-scenario
-    segmentSize: ge 8
+    segmentSize: 8
     segments:
       - segmentId: not null
         spans:

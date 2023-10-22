@@ -117,7 +117,7 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
   - serviceName: micronaut-scenario-8081
-    segmentSize: ge 3
+    segmentSize: 3
     segments:
       - segmentId: not null
         spans:

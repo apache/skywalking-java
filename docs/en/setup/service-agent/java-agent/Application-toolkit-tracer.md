@@ -6,7 +6,7 @@
   import org.apache.skywalking.apm.toolkit.trace.Tracer;
   ...
     
-  SpanRef spanRef = Tracer.createEnteySpan("${operationName}", null);
+  SpanRef spanRef = Tracer.createEntrySpan("${operationName}", null);
   ```
 
 * Use `Tracer.createLocalSpan()` API to create local span, the only parameter is the operation name of span.

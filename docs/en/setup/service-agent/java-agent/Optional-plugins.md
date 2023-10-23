@@ -24,3 +24,4 @@ Now, we have the following known optional plugins.
 * Plugin of trace sampler CPU policy in the optional plugin folder. Please only activate this plugin when you need to disable trace collecting when the agent process CPU usage is too high(over threshold).
 * Plugin for Spring 6.x and RestTemplate 6.x are in the optional plugin folder. Spring 6 requires Java 17 but SkyWalking is still compatible with Java 8. So, we put it in the optional plugin folder.
 * Plugin of nacos-client 2.x lib in optional plugin folder.The reason is many business irrelevant traces are generated, which cause extra payload to agents and backends, also spend more CPU, memory and network.
+* Plugin of netty-http 4.1.x lib in optional plugin folder.The reason is some frameworks use netty as an HTTP server, which can result in double trace collection,and many business irrelevant traces are generated, which cause extra payload to agents and backends, also spend more CPU, memory and network.

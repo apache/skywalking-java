@@ -117,7 +117,7 @@ public class NettyHttpRequestDecoderTracingHandler extends ChannelInboundHandler
         String url = peer + request.uri();
         String method = request.method().name();
 
-        AbstractSpan span = ContextManager.createEntrySpan(NettyConstants.NETTY_HTTP + request.uri(), contextCarrier);
+        AbstractSpan span = ContextManager.createEntrySpan(NettyConstants.NETTY_HTTP_OPERATION_PREFIX + request.uri(), contextCarrier);
         span.prepareForAsync();
 
         SpanLayer.asHttp(span);

@@ -82,7 +82,7 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             String method = request.method().toString();
 
             ContextCarrier contextCarrier = new ContextCarrier();
-            AbstractSpan span = ContextManager.createExitSpan(NettyConstants.NETTY_HTTP + uri, contextCarrier, peer);
+            AbstractSpan span = ContextManager.createExitSpan(NettyConstants.NETTY_HTTP_OPERATION_PREFIX + uri, contextCarrier, peer);
 
             for (CarrierItem item = contextCarrier.items(); item.hasNext(); ) {
                 item = item.next();

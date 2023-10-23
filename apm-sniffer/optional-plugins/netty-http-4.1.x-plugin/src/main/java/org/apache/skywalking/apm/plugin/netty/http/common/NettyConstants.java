@@ -20,7 +20,7 @@ package org.apache.skywalking.apm.plugin.netty.http.common;
 
 public class NettyConstants {
 
-    public static final String NETTY_HTTP = "Netty-http";
+    public static final String NETTY_HTTP_OPERATION_PREFIX = "Netty-http:";
 
     public static final String HTTP_PROTOCOL_PREFIX = "http://";
 

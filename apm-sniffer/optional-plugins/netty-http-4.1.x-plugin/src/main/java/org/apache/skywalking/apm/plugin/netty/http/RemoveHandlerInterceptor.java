@@ -44,7 +44,7 @@ public class RemoveHandlerInterceptor implements InstanceMethodsAroundIntercepto
         Channel channel = ctx.channel();
         ChannelPipeline pipeline = channel.pipeline();
 
-        // If the removal of the handler fails
+        // If the removal of the handler fails.
         if (pipeline.context((ChannelHandler) objInst) != null) {
             return ret;
         }

@@ -6,7 +6,7 @@
   import org.apache.skywalking.apm.toolkit.trace.Tracer;
   ...
     
-  SpanRef spanRef = Tracer.createEnteySpan("${operationName}", null);
+  SpanRef spanRef = Tracer.createEntrySpan("${operationName}", null);
   ```
 
 * Use `Tracer.createLocalSpan()` API to create local span, the only parameter is the operation name of span.
@@ -69,6 +69,7 @@ while (next.hasNext()) {
 ...
  
 ```
+note: Inject can be done only in Exit Span
 
 ```java
 // Receive the map representing a header/metadata and do the extract operation in another process. 
@@ -76,12 +77,12 @@ while (next.hasNext()) {
 
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();
 CarrierItemRef next = contextCarrierRef.items();
-for (Map.Entry<String, String> entry : map.entrySet()) {
-    if (next.hasNext()) {
-        next = next.next();
-        if (entry.getKey().equals(next.getHeadKey()))
-            next.setHeadValue(entry.getValue());
-    }
+while ((next.hasNext())) {
+	next = next.next();
+	String value = map.get(next.getHeadKey());
+	if (value != null){
+		next.setHeadValue(value);
+	}
 }
 Tracer.extract(contextCarrierRef);
 ```
@@ -106,12 +107,12 @@ while (next.hasNext()) {
 
 ContextCarrierRef contextCarrierRef = new ContextCarrierRef();
 CarrierItemRef next = contextCarrierRef.items();
-for (Map.Entry<String, String> entry : map.entrySet()) {
-    if (next.hasNext()) {
-        next = next.next();
-        if (entry.getKey().equals(next.getHeadKey()))
-            next.setHeadValue(entry.getValue());
-    }
+while ((next.hasNext())) {
+	next = next.next();
+	String value = map.get(next.getHeadKey());
+	if (value != null){
+		next.setHeadValue(value);
+	}
 }
 SpanRef spanRef = Tracer.createEntrySpan("${operationName}", contextCarrierRef);
 ```

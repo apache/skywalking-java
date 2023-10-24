@@ -23,6 +23,7 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 public class MongoSpanHelper {
@@ -42,6 +43,13 @@ public class MongoSpanHelper {
         span.setComponent(ComponentsDefine.MONGO_DRIVER);
         Tags.DB_TYPE.set(span, MongoConstants.DB_TYPE);
         SpanLayer.asDB(span);
+
+        if (operation instanceof EnhancedInstance) {
+            Object databaseName = ((EnhancedInstance) operation).getSkyWalkingDynamicField();
+            if (databaseName != null) {
+                Tags.DB_INSTANCE.set(span, (String) databaseName);
+            }
+        }
 
         if (MongoPluginConfig.Plugin.MongoDB.TRACE_PARAM) {
             Tags.DB_BIND_VARIABLES.set(span, MongoOperationHelper.getTraceParam(operation));

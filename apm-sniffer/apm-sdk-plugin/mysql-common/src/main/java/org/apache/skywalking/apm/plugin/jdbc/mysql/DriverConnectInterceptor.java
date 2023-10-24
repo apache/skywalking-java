@@ -18,9 +18,12 @@
 
 package org.apache.skywalking.apm.plugin.jdbc.mysql;
 
+import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.conf.dynamic.ConfigurationDiscoveryService;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.plugin.jdbc.TraceSqlParametersWatcher;
 import org.apache.skywalking.apm.plugin.jdbc.connectionurl.parser.URLParser;
 
 import java.lang.reflect.Method;
@@ -31,11 +34,18 @@ public class DriverConnectInterceptor implements InstanceMethodsAroundIntercepto
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
         ConnectionCache.save(URLParser.parser(allArguments[0].toString()));
+        TraceSqlParametersWatcher traceSqlParametersWatcher = new TraceSqlParametersWatcher("plugin.jdbc.trace_sql_parameters");
+        ConfigurationDiscoveryService configurationDiscoveryService = ServiceManager.INSTANCE.findService(
+                ConfigurationDiscoveryService.class);
+        configurationDiscoveryService.registerAgentConfigChangeWatcher(traceSqlParametersWatcher);
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
+        if (ret != null && ret instanceof EnhancedInstance) {
+            ((EnhancedInstance) ret).setSkyWalkingDynamicField(URLParser.parser((String) allArguments[0]));
+        }
         return ret;
     }
 

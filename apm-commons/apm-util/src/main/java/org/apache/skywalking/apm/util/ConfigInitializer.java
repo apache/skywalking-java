@@ -85,9 +85,20 @@ public class ConfigInitializer {
                     } else {
                         // Convert the value into real type
                         final Length lengthDefine = field.getAnnotation(Length.class);
-                        if (lengthDefine != null && propertyValue.length() > lengthDefine.value()) {
-                            StringUtil.cut(propertyValue, lengthDefine.value());
-                            System.err.printf("The config value will be truncated , because the length max than %d : %s -> %s%n", lengthDefine.value(), configKey, propertyValue);
+                        if (lengthDefine != null) {
+                            int lengthLimited = lengthDefine.value();
+                            String lengthKey = String.format("%s#length", configKey);
+                            if (properties.containsKey(lengthKey)) {
+                                try {
+                                    lengthLimited = Integer.valueOf(properties.getProperty(lengthKey));
+                                } catch (NumberFormatException ex) {
+                                    System.err.printf("The length config (%s=%s) is invalid. The value can not be cast to number.", lengthKey, properties.getProperty(lengthKey));
+                                }
+                            }
+                            if (propertyValue.length() > lengthLimited) {
+                                propertyValue = StringUtil.cut(propertyValue, lengthLimited);
+                                System.err.printf("The config value will be truncated , because the length max than %d : %s -> %s%n", lengthDefine.value(), configKey, propertyValue);
+                            }
                         }
                         Object convertedValue = convertToTypicalType(type, propertyValue);
                         if (convertedValue != null) {

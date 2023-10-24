@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# test all 4.x version, with corresponding latest patch version
+# test all 4.x and 5.x version, with corresponding latest patch version
+5.0.7.Final
 4.7.6.Final
 4.6.2.Final
 4.5.12.Final

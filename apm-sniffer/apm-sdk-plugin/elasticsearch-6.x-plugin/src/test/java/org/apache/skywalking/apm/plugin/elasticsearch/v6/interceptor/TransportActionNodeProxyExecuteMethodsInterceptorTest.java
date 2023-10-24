@@ -121,7 +121,7 @@ public class TransportActionNodeProxyExecuteMethodsInterceptorTest {
     }
 
     @Test
-    public void testConstruct() {
+    public void testConstruct() throws Throwable {
 
         final EnhancedInstance objInst1 = new EnhancedInstance() {
             private Object object = null;
@@ -158,7 +158,8 @@ public class TransportActionNodeProxyExecuteMethodsInterceptorTest {
             objInst1
         };
 
-        interceptor.onConstruct(objInst2, allArguments);
+        TransportActionNodeProxyThreeArgsConstructorInterceptor constructorInterceptor = new TransportActionNodeProxyThreeArgsConstructorInterceptor();
+        constructorInterceptor.onConstruct(objInst2, allArguments);
         assertThat(objInst1.getSkyWalkingDynamicField(), is(objInst2.getSkyWalkingDynamicField()));
     }
 

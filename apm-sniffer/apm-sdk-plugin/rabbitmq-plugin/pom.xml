@@ -31,7 +31,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <rabbitmq-client.version>5.2.0</rabbitmq-client.version>
+        <rabbitmq-client.version>5.18.0</rabbitmq-client.version>
     </properties>
 
     <dependencies>

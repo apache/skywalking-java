@@ -25,7 +25,7 @@ metrics based on the tracing data.
   * [Jersey REST framework](https://github.com/eclipse-ee4j/jersey) 2.x -> 3.x
   * [Grizzly](https://github.com/eclipse-ee4j/grizzly) 2.3.x -> 4.x
   * [WebSphere Liberty](https://github.com/OpenLiberty/open-liberty) 23.x
-  * [Netty HTTP](https://github.com/netty/netty) 4.1.x
+  * [Netty HTTP](https://github.com/netty/netty) 4.1.x (Optional¹)
 * HTTP Client
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
@@ -71,6 +71,7 @@ metrics based on the tracing data.
   * [Apache CXF](https://github.com/apache/cxf) 3.x
   * [JSONRPC4J](https://github.com/briandilley/jsonrpc4j) 1.2.0 -> 1.6
   * [Nacos-Client](https://github.com/alibaba/nacos) 2.x (Optional²)
+  * [Netty](https://github.com/netty/netty) 4.1.x (Optional²)
 * MQ
   * [RocketMQ](https://github.com/apache/rocketmq) 3.x-> 5.x
   * [RocketMQ-gRPC](http://github.com/apache/rocketmq-clients) 5.x

@@ -36,7 +36,7 @@ segmentItems:
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: POST:/user
+          - operationName: Netty-http:/user
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -53,12 +53,12 @@ segmentItems:
               - { key: http.body, value: "{\"name\":\"david\",\"age\":30}" }
               - { key: http.status_code, value: '200' }
             refs:
-              - { parentEndpoint: POST:/user, networkAddress: 'localhost:8070',
+              - { parentEndpoint: Netty-http:/user, networkAddress: 'localhost:8070',
                   refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                                             null, parentService: netty-http-4.1.x-scenario, traceId: not null }
       - segmentId: not null
         spans:
-          - operationName: POST:/user
+          - operationName: Netty-http:/user
             parentSpanId: -1
             spanId: 0
             spanLayer: Http

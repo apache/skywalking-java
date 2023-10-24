@@ -24,7 +24,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
@@ -73,7 +72,7 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
             if (code >= 400) {
                 span.errorOccurred();
             }
-            ContextManager.stopSpan(span);
+            span.asyncFinish();
         } catch (Exception e) {
             LOGGER.error("Fail to trace netty http response", e);
         } finally {
@@ -86,7 +85,7 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
         // to close span in some case there is no response.
         AbstractSpan span = ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).getAndSet(null);
         if (span != null) {
-            ContextManager.stopSpan(span);
+            span.asyncFinish();
         }
         super.channelInactive(ctx);
     }
@@ -97,7 +96,7 @@ public class NettyHttpResponseDecoderTracingHandler extends ChannelInboundHandle
         if (span != null) {
             span.errorOccurred().log(cause);
             Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);
-            ContextManager.stopSpan(span);
+            span.asyncFinish();
         }
         super.exceptionCaught(ctx, cause);
     }

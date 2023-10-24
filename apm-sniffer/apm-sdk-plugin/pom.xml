@@ -136,7 +136,6 @@
         <module>websphere-liberty-23.x-plugin</module>
         <module>aerospike-plugin</module>
         <module>rocketMQ-client-java-5.x-plugin</module>
-        <module>netty-http-4.1.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

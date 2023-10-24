@@ -19,23 +19,6 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: HEAD:/case/healthCheck
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Http
-            startTime: not null
-            endTime: not null
-            componentId: 14
-            isError: false
-            spanType: Entry
-            peer: ''
-            tags:
-              - { key: url, value: not null }
-              - { key: http.method, value: HEAD }
-              - { key: http.status_code, value: '200' }
-            skipAnalysis: 'false'
-      - segmentId: not null
-        spans:
           - operationName: Netty-http:/user
             parentSpanId: -1
             spanId: 0

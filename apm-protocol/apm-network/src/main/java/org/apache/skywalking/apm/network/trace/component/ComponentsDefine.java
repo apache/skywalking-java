@@ -241,4 +241,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent AEROSPIKE = new OfficialComponent(149, "Aerospike");
 
+    public static final OfficialComponent PULSAR_FUNCTION = new OfficialComponent(150, "pulsar-function");
+
 }

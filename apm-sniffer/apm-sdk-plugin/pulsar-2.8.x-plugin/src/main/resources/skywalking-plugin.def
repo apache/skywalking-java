@@ -20,3 +20,4 @@ pulsar-2.8.x=org.apache.skywalking.apm.plugin.pulsar.v28x.define.PulsarConsumerL
 pulsar-2.8.x=org.apache.skywalking.apm.plugin.pulsar.v28x.define.PulsarProducerInstrumentation
 pulsar-2.8.x=org.apache.skywalking.apm.plugin.pulsar.v28x.define.MessageInstrumentation
 pulsar-2.8.x=org.apache.skywalking.apm.plugin.pulsar.v28x.define.TopicMessageInstrumentation
+pulsar-2.8.x=org.apache.skywalking.apm.plugin.pulsar.v28x.define.FunctionInstrumentation

@@ -158,7 +158,7 @@ public class SkyWalkingAgent {
 
         SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(NAME_TRAIT);
         return new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST);
+                .with(AgentBuilder.DescriptionStrategy.Default.HYBRID);
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

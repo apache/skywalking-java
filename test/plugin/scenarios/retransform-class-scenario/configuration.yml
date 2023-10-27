@@ -19,6 +19,6 @@ entryService: http://localhost:8080/case/retransform-class-scenario
 healthCheck: http://localhost:8080/case/healthCheck
 startScript: ./bin/startup.sh
 environment:
-  - SW_ENABLE_RETRANSFORM_SUPPORT="true"
+  - SW_ENABLE_RETRANSFORM_SUPPORT=true
 dependencies:
 withPlugins: apm-spring-*.jar, apm-jdk-*.jar

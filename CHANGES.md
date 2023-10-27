@@ -5,6 +5,9 @@ Release Notes.
 9.1.0
 ------------------
 
+* **IMPORTANT** Expose `SW_ENABLE_RETRANSFORM_SUPPORT` config to set up the re-transform support explicitly, 
+  and close it by default to keep startup delay low. 
+  This was added and enabled in 9.0.0, and we confirmed it would slow down the service launch.
 * Fix hbase onConstruct NPE in the file configuration scenario
 * Fix the issue of createSpan failure caused by invalid request URL in HttpClient 4.x/5.x plugin
 * Optimize ElasticSearch 6.x 7.x plugin compatibility

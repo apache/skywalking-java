@@ -174,6 +174,17 @@ public class Config {
          * Enable the agent kernel services and instrumentation.
          */
         public static boolean ENABLE = true;
+
+        /**
+         * Enables the Java agent kernel to run in a mode that supports class re-transformation by other agents.
+         * It's recommended to use this mode only if the service has more than one SkyWalking agent installed.
+         *
+         * Be aware that this mode can slow down class loading. As a result, you might experience a higher
+         * startup delay (the time it takes for the program to launch and be ready for use).
+         *
+         * @since 9.1.0
+         */
+        public static boolean ENABLE_RETRANSFORM_SUPPORT = false;
     }
 
     public static class OsInfo {

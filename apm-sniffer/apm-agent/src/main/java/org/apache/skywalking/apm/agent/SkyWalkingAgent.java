@@ -157,8 +157,10 @@ public class SkyWalkingAgent {
                 .with(new SWImplementationContextFactory(NAME_TRAIT));
 
         SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(NAME_TRAIT);
-        return new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST);
+        final SWAgentBuilderDefault swAgentBuilder = new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy);
+        return Config.Agent.ENABLE_RETRANSFORM_SUPPORT ?
+            swAgentBuilder.with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+            : swAgentBuilder;
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

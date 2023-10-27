@@ -19,3 +19,5 @@ entryService: http://localhost:8080/retransform-class-tomcat-scenario/case/retra
 healthCheck: http://localhost:8080/retransform-class-tomcat-scenario/case/healthCheck
 dependencies:
 withPlugins: apm-spring-*.jar, apm-jdk-*.jar
+environment:
+  - CATALINA_OPTS="-Dskywalking.agent.enable_retransform_support=true"

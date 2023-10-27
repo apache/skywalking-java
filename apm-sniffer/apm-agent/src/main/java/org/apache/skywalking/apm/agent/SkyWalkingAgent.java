@@ -23,6 +23,8 @@ import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
@@ -158,7 +160,8 @@ public class SkyWalkingAgent {
 
         SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(NAME_TRAIT);
         return new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST);
+                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+                .with(new AgentBuilder.PoolStrategy.WithTypePoolCache.Simple(new ConcurrentHashMap<>()));
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

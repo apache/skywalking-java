@@ -51,6 +51,7 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AbstractInterceptTest {
     public static final String BIZ_FOO_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo";
@@ -174,6 +175,7 @@ public class AbstractInterceptTest {
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(nameTrait))
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                 .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+                .with(new AgentBuilder.PoolStrategy.WithTypePoolCache.Simple(new ConcurrentHashMap<>()))
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
     }
 

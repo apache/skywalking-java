@@ -54,7 +54,11 @@ public class ReTransform2Test extends AbstractReTransformTest {
         checkMethodInterceptor(SAY_HELLO_METHOD, 2);
 
         // do retransform
-        reTransform(instrumentation, BizFoo.class);
+        int retransformCount = 30;
+        for (int i = 0; i < retransformCount; i++) {
+            reTransform(instrumentation, BizFoo.class);
+            // reTransform(instrumentation, ProjectService.class);
+        }
 
         // test again
         callBizFoo(2);

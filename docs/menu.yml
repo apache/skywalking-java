@@ -34,6 +34,8 @@ catalog:
         path: "/en/setup/service-agent/java-agent/tls"
       - name: "Token Authentication"
         path: "/en/setup/service-agent/java-agent/token-auth"
+      - name: "Work with other Java agents"
+        path: "/en/setup/service-agent/java-agent/re-transform"
       - name: "Manual APIs"
         catalog:
           - name: "Tracing APIs"

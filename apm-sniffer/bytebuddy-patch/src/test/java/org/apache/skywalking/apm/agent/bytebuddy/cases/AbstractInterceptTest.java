@@ -22,11 +22,13 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
+import net.bytebuddy.agent.builder.SWDescriptionStrategy;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.implementation.SuperMethodCall;
 import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.pool.TypePool;
 import net.bytebuddy.utility.JavaModule;
 import org.apache.skywalking.apm.agent.bytebuddy.ConstructorInter;
 import org.apache.skywalking.apm.agent.bytebuddy.EnhanceHelper;
@@ -51,7 +53,6 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AbstractInterceptTest {
     public static final String BIZ_FOO_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo";
@@ -63,6 +64,7 @@ public class AbstractInterceptTest {
     public static final String METHOD_INTERCEPTOR_CLASS = "methodInterceptorClass";
     protected List<String> nameTraits = Arrays.asList("sw2023", "sw2024");
     protected boolean deleteDuplicatedFields = false;
+    protected SWDescriptionStrategy descriptionStrategy = new SWDescriptionStrategy();
 
     @BeforeClass
     public static void setUp() {
@@ -122,6 +124,8 @@ public class AbstractInterceptTest {
 
         newAgentBuilder(nameTrait).type(ElementMatchers.named(className))
                 .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
+                            descriptionStrategy.getCacheProvider(classLoader)
+                                    .register(typeDescription.getName(), new TypePool.Resolution.Simple(typeDescription));
                             if (deleteDuplicatedFields) {
                                 builder = builder.visit(new SWAsmVisitorWrapper());
                             }
@@ -174,8 +178,7 @@ public class AbstractInterceptTest {
 
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(nameTrait))
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
-                .with(new AgentBuilder.PoolStrategy.WithTypePoolCache.Simple(new ConcurrentHashMap<>()))
+                .with(descriptionStrategy)
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
     }
 

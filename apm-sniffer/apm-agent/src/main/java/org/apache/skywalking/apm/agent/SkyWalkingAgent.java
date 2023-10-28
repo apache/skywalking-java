@@ -23,16 +23,17 @@ import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
+import net.bytebuddy.agent.builder.SWDescriptionStrategy;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
+import net.bytebuddy.pool.TypePool;
 import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -101,7 +102,8 @@ public class SkyWalkingAgent {
 
         LOGGER.info("Skywalking agent begin to install transformer ...");
 
-        AgentBuilder agentBuilder = newAgentBuilder().ignore(
+        SWDescriptionStrategy typeDescriptionStrategy = new SWDescriptionStrategy();
+        AgentBuilder agentBuilder = newAgentBuilder(typeDescriptionStrategy).ignore(
             nameStartsWith("net.bytebuddy.")
                 .or(nameStartsWith("org.slf4j."))
                 .or(nameStartsWith("org.groovy."))
@@ -128,7 +130,7 @@ public class SkyWalkingAgent {
         }
 
         agentBuilder.type(pluginFinder.buildMatch())
-                    .transform(new Transformer(pluginFinder))
+                    .transform(new Transformer(pluginFinder, typeDescriptionStrategy))
                     .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                     .with(new RedefinitionListener())
                     .with(new Listener())
@@ -152,23 +154,23 @@ public class SkyWalkingAgent {
      * Create a new agent builder through customized {@link ByteBuddy} powered by
      * {@link SWAuxiliaryTypeNamingStrategy} {@link DelegateNamingResolver} {@link SWMethodNameTransformer} and {@link SWImplementationContextFactory}
      */
-    private static AgentBuilder newAgentBuilder() {
+    private static AgentBuilder newAgentBuilder(SWDescriptionStrategy descriptionStrategy) {
         final ByteBuddy byteBuddy = new ByteBuddy()
                 .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
                 .with(new SWAuxiliaryTypeNamingStrategy(NAME_TRAIT))
                 .with(new SWImplementationContextFactory(NAME_TRAIT));
 
-        SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(NAME_TRAIT);
-        return new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
-                .with(new AgentBuilder.PoolStrategy.WithTypePoolCache.Simple(new ConcurrentHashMap<>()));
+        return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(NAME_TRAIT))
+                .with(descriptionStrategy);
     }
 
     private static class Transformer implements AgentBuilder.Transformer {
         private PluginFinder pluginFinder;
+        private final SWDescriptionStrategy typeDescriptionStrategy;
 
-        Transformer(PluginFinder pluginFinder) {
+        Transformer(PluginFinder pluginFinder, SWDescriptionStrategy typeDescriptionStrategy) {
             this.pluginFinder = pluginFinder;
+            this.typeDescriptionStrategy = typeDescriptionStrategy;
         }
 
         @Override
@@ -180,6 +182,9 @@ public class SkyWalkingAgent {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
+                // register the class to the cache for re-transformer stage enhance.
+                typeDescriptionStrategy.getCacheProvider(classLoader)
+                        .register(typeDescription.getName(), new TypePool.Resolution.Simple(typeDescription));
                 DynamicType.Builder<?> newBuilder = builder;
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {

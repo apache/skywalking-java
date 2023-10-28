@@ -39,7 +39,8 @@ public class CaseController {
     @ResponseBody
     public String healthCheck() {
         try {
-            ServerService.start();
+            new Thread(ServerService::start).start();
+            Thread.sleep(3000);
         } catch (Exception e) {
             return "fail";
         }

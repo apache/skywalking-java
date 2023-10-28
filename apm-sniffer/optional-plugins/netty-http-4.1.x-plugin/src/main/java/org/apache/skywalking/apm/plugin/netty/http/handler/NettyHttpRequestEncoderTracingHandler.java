@@ -30,6 +30,7 @@ import io.netty.util.AsciiString;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -89,6 +90,13 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
                 headers.add(AsciiString.of(item.getHeadKey()), item.getHeadValue());
             }
 
+            ContextSnapshot contextSnapshot = ctx.channel().attr(AttributeKeys.CONTEXT_SNAPSHOT_ATTRIBUTE_KEY).get();
+            if (contextSnapshot != null) {
+                ContextManager.continued(contextSnapshot);
+            }
+
+            span.prepareForAsync();
+
             SpanLayer.asHttp(span);
             span.setPeer(peer);
             span.setComponent(ComponentsDefine.NETTY_HTTP);
@@ -103,7 +111,6 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
                 }
             }
 
-            span.prepareForAsync();
             ContextManager.stopSpan(span);
 
             ctx.channel().attr(AttributeKeys.HTTP_CLIENT_SPAN).set(span);

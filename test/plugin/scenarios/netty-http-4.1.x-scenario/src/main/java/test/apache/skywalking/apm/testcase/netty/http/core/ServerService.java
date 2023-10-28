@@ -33,7 +33,7 @@ import test.apache.skywalking.apm.testcase.netty.http.handler.UserServerHandler;
 
 public class ServerService {
 
-    public static void start() throws Exception {
+    public static void start() {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         try {
@@ -54,6 +54,8 @@ public class ServerService {
                     }).bind(8070);
             future.sync();
             future.channel().closeFuture().sync();
+        } catch (Exception e) {
+
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();

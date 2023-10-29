@@ -55,7 +55,7 @@ public class RemoveHandlerInterceptor implements InstanceMethodsAroundIntercepto
             return ret;
         }
 
-        // If the removed handler has an enhanced handler associated with it,the associated handler should also be removed
+        // If the removed handler has an enhanced handler associated with it, the associated handler should also be removed
         ChannelHandler enhancedHandler = map.get(objInst);
         if (enhancedHandler != null && pipeline.context(enhancedHandler) != null) {
             pipeline.remove(enhancedHandler);

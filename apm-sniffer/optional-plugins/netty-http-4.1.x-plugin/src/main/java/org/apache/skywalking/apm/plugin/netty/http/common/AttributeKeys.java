@@ -22,6 +22,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.util.AttributeKey;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
 import java.util.HashMap;
@@ -36,6 +37,8 @@ public class AttributeKeys {
     public static final AttributeKey<HttpHeaders> HTTP_REQUEST_HEADER = AttributeKey.valueOf("skywalking_http_request_header");
 
     public static final AttributeKey<AbstractSpan> HTTP_SERVER_SPAN = AttributeKey.valueOf("skywalking_http_server_span");
+
+    public static final AttributeKey<ContextSnapshot> CONTEXT_SNAPSHOT_ATTRIBUTE_KEY = AttributeKey.valueOf("skywalking_context_snapshot");
 
     private AttributeKeys() {
     }

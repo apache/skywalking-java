@@ -20,3 +20,4 @@ netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpRequestD
 netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.HttpResponseEncoderInstrumentation
 netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelPipelineInstrumentation
 netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelHandlerInstrumentation
+netty-http-4.1.x=org.apache.skywalking.apm.plugin.netty.http.define.ChannelHandlerContextInstrumentation

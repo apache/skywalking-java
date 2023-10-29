@@ -21,6 +21,7 @@ package test.apache.skywalking.apm.testcase.netty.http.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,10 @@ public class UserClientHandler extends ChannelInboundHandlerAdapter {
 
         if (msg instanceof FullHttpResponse) {
             FullHttpResponse response = (FullHttpResponse) msg;
-            LOGGER.info("receive message from server :{}", response.content().toString(StandardCharsets.UTF_8));
+            if (HttpResponseStatus.CONTINUE.code() != response.status().code()) {
+                LOGGER.info("receive message from server :{}", response.content().toString(StandardCharsets.UTF_8));
+                ctx.channel().close();
+            }
         }
     }
 }

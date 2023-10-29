@@ -57,4 +57,25 @@ segmentItems:
               - { key: http.method, value: POST }
               - { key: http.body, value: "{\"name\":\"david\",\"age\":30}" }
               - { key: http.status_code, value: '200' }
+            refs:
+              - { parentEndpoint: GET:/case/netty-http-4.1.x-case, networkAddress: '',
+                refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                                                                                          null, parentService: netty-http-4.1.x-scenario, traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: GET:/case/netty-http-4.1.x-case
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - { key: url, value: not null }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
+            skipAnalysis: 'false'
 

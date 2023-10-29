@@ -242,4 +242,6 @@ public class ComponentsDefine {
     public static final OfficialComponent AEROSPIKE = new OfficialComponent(149, "Aerospike");
 
     public static final OfficialComponent NACOS = new OfficialComponent(150, "Nacos");
+
+    public static final OfficialComponent NETTY_HTTP = new OfficialComponent(151, "Netty-http");
 }

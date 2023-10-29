@@ -1,0 +1,81 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+segmentItems:
+  - serviceName: netty-http-4.1.x-scenario
+    segmentSize: gt 0
+    segments:
+      - segmentId: not null
+        spans:
+          - operationName: Netty-http:/user
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 151
+            isError: false
+            spanType: Entry
+            peer: ''
+            skipAnalysis: 'false'
+            tags:
+              - { key: http.method, value: POST }
+              - { key: url, value: https://127.0.0.1:8070/user }
+              - { key: http.body, value: "{\"name\":\"david\",\"age\":30}" }
+              - { key: http.status_code, value: '200' }
+            refs:
+              - { parentEndpoint: Netty-http:/user, networkAddress: 'localhost:8070',
+                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                                                                                            null, parentService: netty-http-4.1.x-scenario, traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: Netty-http:/user
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 151
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: 'false'
+            tags:
+              - { key: url, value: https://localhost:8070/user }
+              - { key: http.method, value: POST }
+              - { key: http.body, value: "{\"name\":\"david\",\"age\":30}" }
+              - { key: http.status_code, value: '200' }
+            refs:
+              - { parentEndpoint: GET:/case/netty-http-4.1.x-case, networkAddress: '',
+                refType: CrossThread, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                                                                                          null, parentService: netty-http-4.1.x-scenario, traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: GET:/case/netty-http-4.1.x-case
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            tags:
+              - { key: url, value: not null }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
+            skipAnalysis: 'false'
+

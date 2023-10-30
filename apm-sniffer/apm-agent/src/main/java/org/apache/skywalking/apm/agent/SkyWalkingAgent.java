@@ -33,7 +33,6 @@ import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.scaffold.TypeValidation;
-import net.bytebuddy.pool.TypePool;
 import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -182,9 +181,6 @@ public class SkyWalkingAgent {
             LoadedLibraryCollector.registerURLClassLoader(classLoader);
             List<AbstractClassEnhancePluginDefine> pluginDefines = pluginFinder.find(typeDescription);
             if (pluginDefines.size() > 0) {
-                // register the class to the cache for re-transformer stage enhance.
-                typeDescriptionStrategy.getCacheProvider(classLoader)
-                        .register(typeDescription.getName(), new TypePool.Resolution.Simple(typeDescription));
                 DynamicType.Builder<?> newBuilder = builder;
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {

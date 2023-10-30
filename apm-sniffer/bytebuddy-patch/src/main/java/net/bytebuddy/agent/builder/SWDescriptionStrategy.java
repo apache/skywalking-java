@@ -27,7 +27,8 @@ import net.bytebuddy.utility.nullability.MaybeNull;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A DescriptionStrategy with interoperable cache provider.
+ * A DescriptionStrategy to implement the cache first policy,
+ * to get the original class description and avoid unnecessary bytecode parsing.
  */
 public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
 
@@ -53,11 +54,16 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
         if (resolution != null && resolution.isResolved()) {
             return resolution.resolve();
         }
+
         // do as AgentBuilder.DescriptionStrategy.Default.HYBRID
-        return delegate.apply(name, type, typePool, circularityLock, classLoader, module);
+        TypeDescription typeDescription = delegate.apply(name, type, typePool, circularityLock, classLoader, module);
+
+        // cache it
+        cacheProvider.register(name, new TypePool.Resolution.Simple(typeDescription));
+        return typeDescription;
     }
 
-    public TypePool.CacheProvider getCacheProvider(ClassLoader classLoader) {
+    protected TypePool.CacheProvider getCacheProvider(ClassLoader classLoader) {
         return typePoolCache.locate(classLoader);
     }
 

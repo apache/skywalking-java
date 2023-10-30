@@ -28,7 +28,6 @@ import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.implementation.SuperMethodCall;
 import net.bytebuddy.matcher.ElementMatchers;
-import net.bytebuddy.pool.TypePool;
 import net.bytebuddy.utility.JavaModule;
 import org.apache.skywalking.apm.agent.bytebuddy.ConstructorInter;
 import org.apache.skywalking.apm.agent.bytebuddy.EnhanceHelper;
@@ -124,8 +123,6 @@ public class AbstractInterceptTest {
 
         newAgentBuilder(nameTrait).type(ElementMatchers.named(className))
                 .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
-                            descriptionStrategy.getCacheProvider(classLoader)
-                                    .register(typeDescription.getName(), new TypePool.Resolution.Simple(typeDescription));
                             if (deleteDuplicatedFields) {
                                 builder = builder.visit(new SWAsmVisitorWrapper());
                             }

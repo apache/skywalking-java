@@ -31,7 +31,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <activemq-client.version>5.14.5</activemq-client.version>
+        <activemq-client.version>5.15.16</activemq-client.version>
     </properties>
 
     <dependencies>

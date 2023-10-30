@@ -80,6 +80,7 @@ jobs:
           - mssql-jdbc-scenario
           - mybatis-3.x-scenario
           - resteasy-4.x-scenario
+          - netty-http-4.1.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

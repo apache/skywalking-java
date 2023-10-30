@@ -31,6 +31,7 @@ github:
     squash:  true
     merge:   false
     rebase:  false
+  dependabot_updates: false
   protected_branches:
     main:
       required_status_checks:

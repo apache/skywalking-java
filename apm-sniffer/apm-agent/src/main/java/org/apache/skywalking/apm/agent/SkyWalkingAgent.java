@@ -101,8 +101,7 @@ public class SkyWalkingAgent {
 
         LOGGER.info("Skywalking agent begin to install transformer ...");
 
-        SWDescriptionStrategy typeDescriptionStrategy = new SWDescriptionStrategy();
-        AgentBuilder agentBuilder = newAgentBuilder(typeDescriptionStrategy).ignore(
+        AgentBuilder agentBuilder = newAgentBuilder().ignore(
             nameStartsWith("net.bytebuddy.")
                 .or(nameStartsWith("org.slf4j."))
                 .or(nameStartsWith("org.groovy."))
@@ -129,7 +128,7 @@ public class SkyWalkingAgent {
         }
 
         agentBuilder.type(pluginFinder.buildMatch())
-                    .transform(new Transformer(pluginFinder, typeDescriptionStrategy))
+                    .transform(new Transformer(pluginFinder))
                     .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                     .with(new RedefinitionListener())
                     .with(new Listener())
@@ -153,23 +152,21 @@ public class SkyWalkingAgent {
      * Create a new agent builder through customized {@link ByteBuddy} powered by
      * {@link SWAuxiliaryTypeNamingStrategy} {@link DelegateNamingResolver} {@link SWMethodNameTransformer} and {@link SWImplementationContextFactory}
      */
-    private static AgentBuilder newAgentBuilder(SWDescriptionStrategy descriptionStrategy) {
+    private static AgentBuilder newAgentBuilder() {
         final ByteBuddy byteBuddy = new ByteBuddy()
                 .with(TypeValidation.of(Config.Agent.IS_OPEN_DEBUGGING_CLASS))
                 .with(new SWAuxiliaryTypeNamingStrategy(NAME_TRAIT))
                 .with(new SWImplementationContextFactory(NAME_TRAIT));
 
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(NAME_TRAIT))
-                .with(descriptionStrategy);
+                .with(new SWDescriptionStrategy());
     }
 
     private static class Transformer implements AgentBuilder.Transformer {
         private PluginFinder pluginFinder;
-        private final SWDescriptionStrategy typeDescriptionStrategy;
 
-        Transformer(PluginFinder pluginFinder, SWDescriptionStrategy typeDescriptionStrategy) {
+        Transformer(PluginFinder pluginFinder) {
             this.pluginFinder = pluginFinder;
-            this.typeDescriptionStrategy = typeDescriptionStrategy;
         }
 
         @Override

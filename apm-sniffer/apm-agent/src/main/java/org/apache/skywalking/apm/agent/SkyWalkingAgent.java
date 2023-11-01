@@ -159,7 +159,7 @@ public class SkyWalkingAgent {
                 .with(new SWImplementationContextFactory(NAME_TRAIT));
 
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(NAME_TRAIT))
-                .with(new SWDescriptionStrategy());
+                .with(new SWDescriptionStrategy(NAME_TRAIT));
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

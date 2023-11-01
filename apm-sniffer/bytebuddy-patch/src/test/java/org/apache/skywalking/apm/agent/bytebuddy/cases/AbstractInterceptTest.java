@@ -61,9 +61,8 @@ public class AbstractInterceptTest {
     public static final int BASE_INT_VALUE = 100;
     public static final String CONSTRUCTOR_INTERCEPTOR_CLASS = "constructorInterceptorClass";
     public static final String METHOD_INTERCEPTOR_CLASS = "methodInterceptorClass";
-    protected List<String> nameTraits = Arrays.asList("sw2023", "sw2024");
+    protected List<String> nameTraits = Arrays.asList("sw$", "sw$2");
     protected boolean deleteDuplicatedFields = false;
-    protected SWDescriptionStrategy descriptionStrategy = new SWDescriptionStrategy();
 
     @BeforeClass
     public static void setUp() {
@@ -144,7 +143,7 @@ public class AbstractInterceptTest {
     protected void installConstructorInterceptorWithMethodDelegation(String className, int round) {
         String interceptorClassName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + className + "$" + round;
         String nameTrait = getNameTrait(round);
-        String fieldName = nameTrait + "_delegate$constructor" + round;
+        String fieldName = nameTrait + "delegate$" + "constructor" + round;
 
         AgentBuilder agentBuilder = newAgentBuilder(nameTrait);
         agentBuilder.type(ElementMatchers.named(className))
@@ -175,7 +174,7 @@ public class AbstractInterceptTest {
 
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(nameTrait))
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
-                .with(descriptionStrategy)
+                .with(new SWDescriptionStrategy(nameTrait))
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
     }
 

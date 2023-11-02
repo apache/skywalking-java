@@ -36,6 +36,9 @@ public class ImpalaJdbcURLParser extends AbstractURLParser {
     protected URLLocation fetchDatabaseHostsIndexRange() {
         int hostLabelStartIndex = url.indexOf("//");
         int hostLabelEndIndex = url.length();
+        if (url.indexOf("/", hostLabelStartIndex + 2) != -1) {
+            hostLabelEndIndex = url.indexOf("/", hostLabelStartIndex + 2);
+        }
         int hostLabelEndIndexWithParameter = url.indexOf(";", hostLabelStartIndex);
         if (hostLabelEndIndexWithParameter != -1) {
             String subUrl = url.substring(0, hostLabelEndIndexWithParameter);
@@ -64,6 +67,9 @@ public class ImpalaJdbcURLParser extends AbstractURLParser {
         if (databaseStartTag == -1 && firstParamIndex == -1) {
             return null;
         } else {
+            if (firstParamIndex == -1) {
+                firstParamIndex = url.length();
+            }
             String subUrl = url.substring(startSize, firstParamIndex);
             int schemaIndex = subUrl.indexOf("/");
             if (schemaIndex == -1) {

@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class SWClassFileLocator implements ClassFileLocator {
     private static final ILog LOGGER = LogManager.getLogger(SWClassFileLocator.class);
-    private static final String[] TYPE_NAME_TRAITS = {"auxiliary$", "ByteBuddy$", "sw$"};
+    private static final String[] TYPE_NAME_TRAITS = {"auxiliary$", "ByteBuddy$", "$sw$"};
     private static final int DEFAULT_TIMEOUT_SECONDS = 2;
 
     private final ForInstrumentation.ClassLoadingDelegate classLoadingDelegate;

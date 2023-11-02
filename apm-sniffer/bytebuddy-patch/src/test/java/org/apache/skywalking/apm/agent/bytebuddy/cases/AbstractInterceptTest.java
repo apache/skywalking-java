@@ -67,7 +67,7 @@ public class AbstractInterceptTest {
     public static final int BASE_INT_VALUE = 100;
     public static final String CONSTRUCTOR_INTERCEPTOR_CLASS = "constructorInterceptorClass";
     public static final String METHOD_INTERCEPTOR_CLASS = "methodInterceptorClass";
-    protected List<String> nameTraits = Arrays.asList("sw$", "sw$2");
+    protected List<String> nameTraits = Arrays.asList("$sw$", "$sw$2");
     protected boolean deleteDuplicatedFields = false;
 
     @BeforeClass

@@ -53,7 +53,6 @@ public class ReTransform2Test extends AbstractReTransformTest {
         checkMethodInterceptor(SAY_HELLO_METHOD, 1);
         checkMethodInterceptor(SAY_HELLO_METHOD, 2);
 
-
         // do retransform
         reTransform(instrumentation, BizFoo.class);
 

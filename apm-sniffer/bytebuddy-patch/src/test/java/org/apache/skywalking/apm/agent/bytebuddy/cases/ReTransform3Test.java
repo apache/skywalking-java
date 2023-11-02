@@ -41,7 +41,7 @@ public class ReTransform3Test extends AbstractReTransformTest {
         callBizFoo(1);
 
         // check interceptors
-        checkImplementInterface(BizFoo.class, EnhancedInstance.class);
+        checkInterface(BizFoo.class, EnhancedInstance.class);
         checkMethodInterceptor(SAY_HELLO_METHOD, 1);
         checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
         checkErrors();
@@ -55,7 +55,7 @@ public class ReTransform3Test extends AbstractReTransformTest {
         callBizFoo(1);
 
         // check interceptors
-        checkImplementInterface(BizFoo.class, EnhancedInstance.class);
+        checkInterface(BizFoo.class, EnhancedInstance.class);
         checkMethodInterceptor(SAY_HELLO_METHOD, 1);
         checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
         checkErrors();

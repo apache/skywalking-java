@@ -113,8 +113,8 @@ public class AbstractInterceptTest {
         Log.info("Found interceptor: " + interceptorName);
     }
 
-    protected static void checkImplementInterface(Class testClass, Class interfaceCls) {
-        Assert.assertTrue("check interface failure, test class: " + testClass + ", expected interface: " + interfaceCls,
+    protected static void checkInterface(Class testClass, Class interfaceCls) {
+        Assert.assertTrue("Check interface failure, the test class: " + testClass + " does not implement the expected interface: " + interfaceCls,
                 EnhancedInstance.class.isAssignableFrom(BizFoo.class));
     }
 

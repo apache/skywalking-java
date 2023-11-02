@@ -64,7 +64,7 @@ public class ImpalaJdbcURLParser extends AbstractURLParser {
         if (databaseStartTag == -1 && firstParamIndex == -1) {
             return null;
         } else {
-            if(firstParamIndex == -1){
+            if (firstParamIndex == -1) {
                 firstParamIndex = url.length();
             }
             String subUrl = url.substring(startSize, firstParamIndex);

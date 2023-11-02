@@ -24,6 +24,7 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
 import net.bytebuddy.agent.builder.SWDescriptionStrategy;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
+import net.bytebuddy.implementation.FieldAccessor;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.implementation.SuperMethodCall;
@@ -37,6 +38,7 @@ import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
 import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import org.apache.skywalking.apm.agent.bytebuddy.SWClassFileLocator;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -52,6 +54,10 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.List;
+
+import static net.bytebuddy.jar.asm.Opcodes.ACC_PRIVATE;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_VOLATILE;
+import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_ATTR_NAME;
 
 public class AbstractInterceptTest {
     public static final String BIZ_FOO_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo";
@@ -107,6 +113,11 @@ public class AbstractInterceptTest {
         Log.info("Found interceptor: " + interceptorName);
     }
 
+    protected static void checkImplementInterface(Class testClass, Class interfaceCls) {
+        Assert.assertTrue("check interface failure, test class: " + testClass + ", expected interface: " + interfaceCls,
+                EnhancedInstance.class.isAssignableFrom(BizFoo.class));
+    }
+
     protected static void checkErrors() {
         Assert.assertEquals("Error occurred in transform", 0, EnhanceHelper.getErrors().size());
     }
@@ -160,6 +171,36 @@ public class AbstractInterceptTest {
                         }
                 )
                 .with(getListener(interceptorClassName))
+                .installOn(ByteBuddyAgent.install());
+    }
+
+    protected void installInterface(String className) {
+        String nameTrait = getNameTrait(1);
+        newAgentBuilder(nameTrait).type(ElementMatchers.named(className))
+                .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
+                            if (deleteDuplicatedFields) {
+                                builder = builder.visit(new SWAsmVisitorWrapper());
+                            }
+                            /**
+                             * Manipulate class source code.<br/>
+                             *
+                             * new class need:<br/>
+                             * 1.Add field, name {@link #CONTEXT_ATTR_NAME}.
+                             * 2.Add a field accessor for this field.
+                             *
+                             * And make sure the source codes manipulation only occurs once.
+                             *
+                             */
+                            if (!typeDescription.isAssignableTo(EnhancedInstance.class)) {
+                                builder = builder.defineField(
+                                                CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE | ACC_VOLATILE)
+                                        .implement(EnhancedInstance.class)
+                                        .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
+                            }
+                            return builder;
+                        }
+                )
+                .with(getListener("EnhancedInstance"))
                 .installOn(ByteBuddyAgent.install());
     }
 

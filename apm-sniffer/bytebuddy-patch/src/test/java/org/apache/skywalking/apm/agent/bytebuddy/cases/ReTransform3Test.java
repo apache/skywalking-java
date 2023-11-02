@@ -20,14 +20,12 @@ package org.apache.skywalking.apm.agent.bytebuddy.cases;
 
 import net.bytebuddy.agent.ByteBuddyAgent;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
-import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectDO;
-import org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectService;
-import org.junit.Assert;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.Test;
 
 import java.lang.instrument.Instrumentation;
 
-public class ReTransform1Test extends AbstractReTransformTest {
+public class ReTransform3Test extends AbstractReTransformTest {
 
     @Test
     public void testInterceptConstructor() throws Exception {
@@ -36,16 +34,14 @@ public class ReTransform1Test extends AbstractReTransformTest {
         // install transformer
         installMethodInterceptor(BIZ_FOO_CLASS_NAME, SAY_HELLO_METHOD, 1);
         installConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
-        // project service
-        installMethodInterceptor(PROJECT_SERVICE_CLASS_NAME, "add", 1);
-        installMethodInterceptor(PROJECT_SERVICE_CLASS_NAME, "get", 1);
-        installMethodInterceptor(PROJECT_SERVICE_CLASS_NAME, "list", 1);
-        installConstructorInterceptor(PROJECT_SERVICE_CLASS_NAME, 1);
+        // implement EnhancedInstance
+        installInterface(BIZ_FOO_CLASS_NAME);
 
         // call target class
         callBizFoo(1);
 
         // check interceptors
+        checkImplementInterface(BizFoo.class, EnhancedInstance.class);
         checkMethodInterceptor(SAY_HELLO_METHOD, 1);
         checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
         checkErrors();
@@ -59,28 +55,9 @@ public class ReTransform1Test extends AbstractReTransformTest {
         callBizFoo(1);
 
         // check interceptors
+        checkImplementInterface(BizFoo.class, EnhancedInstance.class);
         checkMethodInterceptor(SAY_HELLO_METHOD, 1);
         checkConstructorInterceptor(BIZ_FOO_CLASS_NAME, 1);
-
-        // test ProjectService
-        ProjectService projectService = new ProjectService();
-        ProjectDO originProjectDO = ProjectDO.builder()
-                .name("test")
-                .id(1)
-                .build();
-        projectService.add(originProjectDO);
-        ProjectDO projectDO = projectService.getById(1);
-        projectService.list();
-
-        reTransform(instrumentation, ProjectService.class);
-
-        projectDO = projectService.getById(1);
-        Assert.assertEquals(originProjectDO, projectDO);
-
-        checkConstructorInterceptor(PROJECT_SERVICE_CLASS_NAME, 1);
-        checkMethodInterceptor("add", 1);
-        checkMethodInterceptor("get", 1);
-        checkMethodInterceptor("list", 1);
         checkErrors();
     }
 

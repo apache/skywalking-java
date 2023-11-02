@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.agent.bytebuddy.biz;
 
-public class BizFoo {
+public class BizFoo implements BizInterface {
 
     private String name;
 

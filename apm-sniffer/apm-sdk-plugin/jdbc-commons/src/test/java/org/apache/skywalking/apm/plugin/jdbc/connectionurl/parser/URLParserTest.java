@@ -185,4 +185,18 @@ public class URLParserTest {
         assertThat(connectionInfo.getDatabasePeer(), is("localhost:8123"));
     }
 
+    @Test
+    public void testParseImpalaJDBCURLWithSchema() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:impala://localhost:21050/test");
+        assertThat(connectionInfo.getDBType(), is("Impala"));
+        assertThat(connectionInfo.getDatabaseName(), is("test"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:21050"));
+    }
+
+    @Test
+    public void testParseImpalaJDBCURL() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:impala://localhost:21050;AuthMech=3;UID=UserName;PWD=Password");
+        assertThat(connectionInfo.getDBType(), is("Impala"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:21050"));
+    }
 }

@@ -23,9 +23,11 @@ import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
+import net.bytebuddy.agent.builder.SWDescriptionStrategy;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
 import net.bytebuddy.description.NamedElement;
 import net.bytebuddy.description.type.TypeDescription;
@@ -156,9 +158,8 @@ public class SkyWalkingAgent {
                 .with(new SWAuxiliaryTypeNamingStrategy(NAME_TRAIT))
                 .with(new SWImplementationContextFactory(NAME_TRAIT));
 
-        SWNativeMethodStrategy nativeMethodStrategy = new SWNativeMethodStrategy(NAME_TRAIT);
-        return new SWAgentBuilderDefault(byteBuddy, nativeMethodStrategy)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST);
+        return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(NAME_TRAIT))
+                .with(new SWDescriptionStrategy(NAME_TRAIT));
     }
 
     private static class Transformer implements AgentBuilder.Transformer {

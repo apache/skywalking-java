@@ -19,7 +19,7 @@ Release Notes.
 * Upgrade netty-codec-http2 to 4.1.100.Final
 * Add a netty-http 4.1.x plugin to trace HTTP requests.
 * Fix Impala Jdbc URL (including schema without properties) parsing exception.
-
+* Optimize byte-buddy type description performance.
 
 #### Documentation
 

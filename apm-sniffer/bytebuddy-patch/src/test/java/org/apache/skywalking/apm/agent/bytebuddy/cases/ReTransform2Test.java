@@ -56,6 +56,12 @@ public class ReTransform2Test extends AbstractReTransformTest {
         // do retransform
         reTransform(instrumentation, BizFoo.class);
 
+//        int retransformCount = 30;
+//        for (int i = 0; i < retransformCount; i++) {
+//            reTransform(instrumentation, BizFoo.class);
+//            // reTransform(instrumentation, ProjectService.class);
+//        }
+
         // test again
         callBizFoo(2);
         // check interceptors

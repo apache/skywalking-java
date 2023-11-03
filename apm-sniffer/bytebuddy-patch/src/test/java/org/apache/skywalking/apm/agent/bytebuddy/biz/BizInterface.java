@@ -16,29 +16,8 @@
  *
  */
 
-package org.apache.skywalking.apm.agent.bytebuddy.biz;
+ package org.apache.skywalking.apm.agent.bytebuddy.biz;
 
-public class BizFoo implements BizInterface {
+public interface BizInterface {
 
-    private String name;
-
-    public BizFoo() {
-        this("Tom");
-    }
-
-    public BizFoo(String name) {
-        this.name = name;
-    }
-
-    public String sayHello(String someone) {
-        return "Hello to " + someone + " from " + name;
-    }
-
-    public int sayHello(int uid) {
-        return uid;
-    }
-
-    public String greeting(String man) {
-        return "Greet " + man;
-    }
 }

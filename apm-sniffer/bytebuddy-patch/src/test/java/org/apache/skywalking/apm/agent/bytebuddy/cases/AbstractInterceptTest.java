@@ -22,7 +22,9 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
+import net.bytebuddy.agent.builder.SWDescriptionStrategy;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
+import net.bytebuddy.implementation.FieldAccessor;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
 import net.bytebuddy.implementation.SuperMethodCall;
@@ -36,6 +38,7 @@ import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
 import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import org.apache.skywalking.apm.agent.bytebuddy.SWClassFileLocator;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -52,6 +55,10 @@ import java.security.ProtectionDomain;
 import java.util.Arrays;
 import java.util.List;
 
+import static net.bytebuddy.jar.asm.Opcodes.ACC_PRIVATE;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_VOLATILE;
+import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_ATTR_NAME;
+
 public class AbstractInterceptTest {
     public static final String BIZ_FOO_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo";
     public static final String PROJECT_SERVICE_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectService";
@@ -60,7 +67,7 @@ public class AbstractInterceptTest {
     public static final int BASE_INT_VALUE = 100;
     public static final String CONSTRUCTOR_INTERCEPTOR_CLASS = "constructorInterceptorClass";
     public static final String METHOD_INTERCEPTOR_CLASS = "methodInterceptorClass";
-    protected List<String> nameTraits = Arrays.asList("sw2023", "sw2024");
+    protected List<String> nameTraits = Arrays.asList("$sw$", "$sw$2");
     protected boolean deleteDuplicatedFields = false;
 
     @BeforeClass
@@ -106,6 +113,11 @@ public class AbstractInterceptTest {
         Log.info("Found interceptor: " + interceptorName);
     }
 
+    protected static void checkInterface(Class testClass, Class interfaceCls) {
+        Assert.assertTrue("Check interface failure, the test class: " + testClass + " does not implement the expected interface: " + interfaceCls,
+                EnhancedInstance.class.isAssignableFrom(BizFoo.class));
+    }
+
     protected static void checkErrors() {
         Assert.assertEquals("Error occurred in transform", 0, EnhanceHelper.getErrors().size());
     }
@@ -142,7 +154,7 @@ public class AbstractInterceptTest {
     protected void installConstructorInterceptorWithMethodDelegation(String className, int round) {
         String interceptorClassName = CONSTRUCTOR_INTERCEPTOR_CLASS + "$" + className + "$" + round;
         String nameTrait = getNameTrait(round);
-        String fieldName = nameTrait + "_delegate$constructor" + round;
+        String fieldName = nameTrait + "delegate$" + "constructor" + round;
 
         AgentBuilder agentBuilder = newAgentBuilder(nameTrait);
         agentBuilder.type(ElementMatchers.named(className))
@@ -162,6 +174,36 @@ public class AbstractInterceptTest {
                 .installOn(ByteBuddyAgent.install());
     }
 
+    protected void installInterface(String className) {
+        String nameTrait = getNameTrait(1);
+        newAgentBuilder(nameTrait).type(ElementMatchers.named(className))
+                .transform((builder, typeDescription, classLoader, module, protectionDomain) -> {
+                            if (deleteDuplicatedFields) {
+                                builder = builder.visit(new SWAsmVisitorWrapper());
+                            }
+                            /**
+                             * Manipulate class source code.<br/>
+                             *
+                             * new class need:<br/>
+                             * 1.Add field, name {@link #CONTEXT_ATTR_NAME}.
+                             * 2.Add a field accessor for this field.
+                             *
+                             * And make sure the source codes manipulation only occurs once.
+                             *
+                             */
+                            if (!typeDescription.isAssignableTo(EnhancedInstance.class)) {
+                                builder = builder.defineField(
+                                                CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE | ACC_VOLATILE)
+                                        .implement(EnhancedInstance.class)
+                                        .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
+                            }
+                            return builder;
+                        }
+                )
+                .with(getListener("EnhancedInstance"))
+                .installOn(ByteBuddyAgent.install());
+    }
+
     protected String getNameTrait(int round) {
         return nameTraits.get(round - 1);
     }
@@ -173,7 +215,7 @@ public class AbstractInterceptTest {
 
         return new SWAgentBuilderDefault(byteBuddy, new SWNativeMethodStrategy(nameTrait))
                 .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
-                .with(AgentBuilder.DescriptionStrategy.Default.POOL_FIRST)
+                .with(new SWDescriptionStrategy(nameTrait))
                 .with(new SWClassFileLocator(ByteBuddyAgent.install(), getClassLoader()));
     }
 

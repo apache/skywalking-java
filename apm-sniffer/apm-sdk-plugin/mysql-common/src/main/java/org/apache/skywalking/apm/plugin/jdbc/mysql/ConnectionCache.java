@@ -38,6 +38,9 @@ public class ConnectionCache {
     }
 
     public static void save(ConnectionInfo connectionInfo) {
+        if (connectionInfo == null) {
+            return;
+        }
         for (String conn : connectionInfo.getDatabasePeer().split(CONNECTION_SPLIT_STR)) {
             if (!StringUtil.isEmpty(conn)) {
                 CONNECTIONS_MAP.putIfAbsent(conn + "/" + connectionInfo.getDatabaseName(), connectionInfo);

@@ -60,7 +60,10 @@ public class URLParser {
             parser = new ImpalaJdbcURLParser(url);
         } else if (lowerCaseUrl.startsWith(CLICKHOUSE_JDBC_URK_PREFIX)) {
             parser = new ClickHouseURLParser(url);
+        } else {
+            return null;
         }
+
         return parser.parse();
     }
 }

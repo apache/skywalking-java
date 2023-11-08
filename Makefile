@@ -34,13 +34,14 @@ dist: build
 
 # Docker build
 
-base.all := alpine java8 java11 java17
+base.all := alpine java8 java11 java17 java21
 base.each = $(word 1, $@)
 
 base.image.alpine := alpine:3
 base.image.java8 := eclipse-temurin:8-jre
 base.image.java11 := eclipse-temurin:11-jre
 base.image.java17 := eclipse-temurin:17-jre
+base.image.java21 := eclipse-temurin:21-jre
 
 docker.%: PLATFORMS =
 docker.%: LOAD_OR_PUSH = --load

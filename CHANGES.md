@@ -20,6 +20,7 @@ Release Notes.
 * Add a netty-http 4.1.x plugin to trace HTTP requests.
 * Fix Impala Jdbc URL (including schema without properties) parsing exception.
 * Optimize byte-buddy type description performance.
+* Add `eclipse-temurin:21-jre` as another base image.
 
 #### Documentation
 

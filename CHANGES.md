@@ -21,6 +21,8 @@ Release Notes.
 * Fix Impala Jdbc URL (including schema without properties) parsing exception.
 * Optimize byte-buddy type description performance.
 * Add `eclipse-temurin:21-jre` as another base image.
+* Bump byte-buddy to 1.14.9 for JDK21 support.
+* Add JDK21 plugin tests for Spring 6.
 
 #### Documentation
 

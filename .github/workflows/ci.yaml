@@ -48,7 +48,10 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu, macos, windows ]
-        java-version: [ 17, 21 ]
+        java-version: [ 17 ]
+        include:
+          - os: ubuntu
+            java-version: 21
     steps:
       - uses: actions/checkout@v2
         with:

@@ -55,7 +55,7 @@ jobs:
     strategy:
       matrix:
         case:
-          - spring-6.x-scenario
+          - jdk21-spring-6.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

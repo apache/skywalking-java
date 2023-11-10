@@ -681,6 +681,7 @@ mostly you'll just need to decide which file (`plugins-test.<n>.yaml`) to add yo
 You can run `python3 tools/select-group.py` to see which file contains the least cases and add your cases into it, in order to balance the running time of each group.
 
 If a test case required to run in JDK 17 environment, please add you test case into file `plugins-jdk17-test.<n>.yaml`.
+If a test case required to run in JDK 21 environment, please add you test case into file `plugins-jdk21-test.<n>.yaml`.
 
 ```yaml
 jobs:

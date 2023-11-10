@@ -49,6 +49,9 @@ jobs:
       matrix:
         os: [ ubuntu, macos, windows ]
         java-version: [ 17 ]
+        include:
+          - os: ubuntu
+            java-version: 21
     steps:
       - uses: actions/checkout@v2
         with:

@@ -21,8 +21,13 @@ Release Notes.
 * Fix Impala Jdbc URL (including schema without properties) parsing exception.
 * Optimize byte-buddy type description performance.
 * Add `eclipse-temurin:21-jre` as another base image.
+* Bump byte-buddy to 1.14.9 for JDK21 support.
+* Add JDK21 plugin tests for Spring 6.
+* Bump Lombok to 1.18.30 to adopt JDK21 compiling.
 
 #### Documentation
+* Fix JDK requirement in the compiling docs.
+* Add JDK21 support in the compiling docs.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/194?closed=1)
 

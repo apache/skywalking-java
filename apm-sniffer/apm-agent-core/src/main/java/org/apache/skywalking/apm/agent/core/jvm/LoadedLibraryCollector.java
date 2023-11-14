@@ -41,12 +41,12 @@ public class LoadedLibraryCollector {
 
     private static final ILog LOGGER = LogManager.getLogger(LoadedLibraryCollector.class);
     private static final  String JAR_SEPARATOR = "!";
-    private static Set<ClassLoader> CURRENT_URL_CLASSLOADER_SET = new HashSet<>();
+    private static final Set<ClassLoader> CURRENT_URL_CLASSLOADER_SET = new HashSet<>();
     private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().create();
     /**
      * Prevent OOM in special scenes
      */
-    private static int CURRENT_URL_CLASSLOADER_SET_MAX_SIZE = 50;
+    private static final int CURRENT_URL_CLASSLOADER_SET_MAX_SIZE = 50;
 
     public static void registerURLClassLoader(ClassLoader classLoader) {
         if (CURRENT_URL_CLASSLOADER_SET.size() < CURRENT_URL_CLASSLOADER_SET_MAX_SIZE && classLoader instanceof URLClassLoader) {

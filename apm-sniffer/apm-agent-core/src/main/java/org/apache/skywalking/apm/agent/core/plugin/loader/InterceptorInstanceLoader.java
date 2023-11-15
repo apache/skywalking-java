@@ -34,9 +34,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class InterceptorInstanceLoader {
 
-    private static ConcurrentHashMap<String, Object> INSTANCE_CACHE = new ConcurrentHashMap<String, Object>();
-    private static ReentrantLock INSTANCE_LOAD_LOCK = new ReentrantLock();
-    private static Map<ClassLoader, ClassLoader> EXTEND_PLUGIN_CLASSLOADERS = new HashMap<ClassLoader, ClassLoader>();
+    private static final ConcurrentHashMap<String, Object> INSTANCE_CACHE = new ConcurrentHashMap<String, Object>();
+    private static final ReentrantLock INSTANCE_LOAD_LOCK = new ReentrantLock();
+    private static final Map<ClassLoader, ClassLoader> EXTEND_PLUGIN_CLASSLOADERS = new HashMap<ClassLoader, ClassLoader>();
 
     /**
      * Load an instance of interceptor, and keep it singleton. Create {@link AgentClassLoader} for each
@@ -69,9 +69,7 @@ public class InterceptorInstanceLoader {
                 INSTANCE_LOAD_LOCK.unlock();
             }
             inst = Class.forName(className, true, pluginLoader).newInstance();
-            if (inst != null) {
-                INSTANCE_CACHE.put(instanceKey, inst);
-            }
+            INSTANCE_CACHE.put(instanceKey, inst);
         }
 
         return (T) inst;

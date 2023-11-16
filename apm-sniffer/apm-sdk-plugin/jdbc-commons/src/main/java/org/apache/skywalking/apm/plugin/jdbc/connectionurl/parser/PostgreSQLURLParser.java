@@ -37,15 +37,29 @@ public class PostgreSQLURLParser extends AbstractURLParser {
     protected URLLocation fetchDatabaseHostsIndexRange() {
         int hostLabelStartIndex = url.indexOf("//");
         int hostLabelEndIndex = url.indexOf("/", hostLabelStartIndex + 2);
+        if (hostLabelEndIndex == -1) {
+            hostLabelEndIndex = url.length();
+        }
         return new URLLocation(hostLabelStartIndex + 2, hostLabelEndIndex);
     }
 
     @Override
     protected URLLocation fetchDatabaseNameIndexRange() {
-        int databaseStartTag = url.lastIndexOf("/");
-        int databaseEndTag = url.indexOf("?", databaseStartTag);
+        int databaseLabelStartIndex = url.indexOf("//");
+        int databaseStartTag = url.indexOf("/", databaseLabelStartIndex + 2);
+        int databaseEndTag = url.indexOf("?", databaseLabelStartIndex + 2);
+        if (databaseEndTag < databaseStartTag && databaseEndTag != -1) {
+            //database parse fail
+            return new URLLocation(0, 0);
+        }
+        if (databaseStartTag == -1) {
+            //database empty
+            return new URLLocation(0, 0);
+        }
         if (databaseEndTag == -1) {
             databaseEndTag = url.length();
+        } else {
+            databaseStartTag = url.substring(0, databaseEndTag).lastIndexOf("/");
         }
         return new URLLocation(databaseStartTag + 1, databaseEndTag);
     }
@@ -64,7 +78,7 @@ public class PostgreSQLURLParser extends AbstractURLParser {
                     sb.append(host + ",");
                 }
             }
-            return new ConnectionInfo(ComponentsDefine.POSTGRESQL_DRIVER, DB_TYPE, sb.toString(), fetchDatabaseNameFromURL());
+            return new ConnectionInfo(ComponentsDefine.POSTGRESQL_DRIVER, DB_TYPE, sb.substring(0, sb.length() - 1), fetchDatabaseNameFromURL());
         } else {
             String[] hostAndPort = hostSegment[0].split(":");
             if (hostAndPort.length != 1) {
@@ -74,5 +88,4 @@ public class PostgreSQLURLParser extends AbstractURLParser {
             }
         }
     }
-
 }

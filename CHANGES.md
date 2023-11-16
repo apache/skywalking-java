@@ -24,6 +24,7 @@ Release Notes.
 * Bump byte-buddy to 1.14.9 for JDK21 support.
 * Add JDK21 plugin tests for Spring 6.
 * Bump Lombok to 1.18.30 to adopt JDK21 compiling.
+* Fix PostgreSQL Jdbc URL parsing exception.
 
 #### Documentation
 * Fix JDK requirement in the compiling docs.

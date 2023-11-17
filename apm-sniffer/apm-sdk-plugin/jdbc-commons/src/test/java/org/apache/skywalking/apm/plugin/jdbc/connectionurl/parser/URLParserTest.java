@@ -255,4 +255,29 @@ public class URLParserTest {
         assertThat(connectionInfo.getDatabaseName(), is(""));
         assertThat(connectionInfo.getDatabasePeer(), is(":5432"));
     }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithNamedParams() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql:///testdb?host=localhost&port=5433");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5433"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithSingleIpv6() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://[2001:db8::1234]/testdb");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("[2001:db8::1234]:5432"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithMultiIpv6() {
+        ConnectionInfo connectionInfo = new URLParser().parser(
+            "jdbc:postgresql://[2001:db8::1234],[2001:db8::1235]/testdb");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("[2001:db8::1234]:5432,[2001:db8::1235]:5432"));
+    }
 }

@@ -200,11 +200,84 @@ public class URLParserTest {
         assertThat(connectionInfo.getDatabaseName(), is("test"));
         assertThat(connectionInfo.getDatabasePeer(), is("localhost:21050"));
     }
-    
+
     @Test
     public void testParseImpalaJDBCURLWithoutSchema() {
         ConnectionInfo connectionInfo = new URLParser().parser("jdbc:impala://localhost:21050");
         assertThat(connectionInfo.getDBType(), is("Impala"));
         assertThat(connectionInfo.getDatabasePeer(), is("localhost:21050"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithHostAndParams() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://localhost:5432/testdb?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&useSSL=false&allowMultiQueries=true");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5432"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithMultiHost() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://localhost1:5432,localhost2:5433/testdb?target_session_attrs=any&application_name=myapp");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost1:5432,localhost2:5433"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithHostNoPort() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://localhost/testdb");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5432"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithHostNoDb() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://localhost:5432");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is(""));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5432"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithHostNoPortAndDb() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://localhost");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is(""));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5432"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLEmpty() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is(""));
+        assertThat(connectionInfo.getDatabasePeer(), is(":5432"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithNamedParams() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql:///testdb?host=localhost&port=5433");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5433"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithSingleIpv6() {
+        ConnectionInfo connectionInfo = new URLParser().parser("jdbc:postgresql://[2001:db8::1234]/testdb");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("[2001:db8::1234]:5432"));
+    }
+
+    @Test
+    public void testParsePostgresqlJDBCURLWithMultiIpv6() {
+        ConnectionInfo connectionInfo = new URLParser().parser(
+            "jdbc:postgresql://[2001:db8::1234],[2001:db8::1235]/testdb");
+        assertThat(connectionInfo.getDBType(), is("PostgreSQL"));
+        assertThat(connectionInfo.getDatabaseName(), is("testdb"));
+        assertThat(connectionInfo.getDatabasePeer(), is("[2001:db8::1234]:5432,[2001:db8::1235]:5432"));
     }
 }

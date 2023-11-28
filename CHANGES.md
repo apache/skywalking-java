@@ -14,7 +14,6 @@ Release Notes.
 * Optimize spring-cloud-gateway 2.1.x, 3.x witness class.
 * Support report MongoDB instance info in Mongodb 4.x plugin.
 * To compatible upper and lower case Oracle TNS url parse.
-* Fix config length limitation.
 * Support collecting ZGC memory pool metrics. Require OAP 9.7.0 to support these new metrics.
 * Upgrade netty-codec-http2 to 4.1.100.Final
 * Add a netty-http 4.1.x plugin to trace HTTP requests.
@@ -25,6 +24,7 @@ Release Notes.
 * Add JDK21 plugin tests for Spring 6.
 * Bump Lombok to 1.18.30 to adopt JDK21 compiling.
 * Fix PostgreSQL Jdbc URL parsing exception.
+* Bump up grpc version.
 
 #### Documentation
 * Fix JDK requirement in the compiling docs.

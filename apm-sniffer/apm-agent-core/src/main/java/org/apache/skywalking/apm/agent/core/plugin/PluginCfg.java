@@ -52,14 +52,13 @@ public enum PluginCfg {
                     LOGGER.error(e, "Failed to format plugin({}) define.", pluginDefine);
                 }
             }
-            pluginClassList = pluginSelector.select(pluginClassList);
         } finally {
             input.close();
         }
     }
 
     public List<PluginDefine> getPluginClassList() {
-        return pluginClassList;
+        return pluginSelector.select(pluginClassList);
     }
 
 }

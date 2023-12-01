@@ -58,7 +58,8 @@ public enum PluginCfg {
     }
 
     public List<PluginDefine> getPluginClassList() {
-        return pluginSelector.select(pluginClassList);
+        pluginClassList = pluginSelector.select(pluginClassList);
+        return pluginClassList;
     }
 
 }

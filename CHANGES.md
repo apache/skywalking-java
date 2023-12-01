@@ -25,6 +25,7 @@ Release Notes.
 * Bump Lombok to 1.18.30 to adopt JDK21 compiling.
 * Fix PostgreSQL Jdbc URL parsing exception.
 * Bump up grpc version.
+* Optimize plugin selector logic.
 
 #### Documentation
 * Fix JDK requirement in the compiling docs.

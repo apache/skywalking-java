@@ -276,7 +276,7 @@ export NAME=skywalking-java-agent
 export HUB=apache
 export TAG=$SW_VERSION
 
-make docker.push.alpine docker.push.java8 docker.push.java11 docker.push.java17
+make docker.push.alpine docker.push.java8 docker.push.java11 docker.push.java17 docker.push.java21
 ```
 
 ## Clean up the old releases

@@ -20,7 +20,7 @@ HUB ?= skywalking
 NAME ?= skywalking-java
 TAG ?= latest
 AGENT_PACKAGE ?= skywalking-agent
-CLI_VERSION ?= 0.9.0 # CLI version inside agent image should always use an Apache released artifact.
+CLI_VERSION ?= 0.13.0 # CLI version inside agent image should always use an Apache released artifact.
 
 .PHONY: build
 build:

@@ -12,8 +12,8 @@ metrics based on the tracing data.
   * Spring MVC 6.x (Optional²)
   * [Nutz Web Framework](https://github.com/nutzam/nutz)  1.x
   * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x
-  * [Resin](https://www.caucho.com/resin-4.0/) 3 (Optional¹)
-  * [Resin](https://www.caucho.com/resin-4.0/) 4 (Optional¹)
+  * Resin 3 (Optional¹)
+  * Resin 4 (Optional¹)
   * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional¹)
   * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.0.27.Final

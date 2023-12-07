@@ -27,6 +27,8 @@ import java.util.List;
 import org.apache.pulsar.client.impl.LookupService;
 import org.apache.pulsar.client.impl.MessageImpl;
 import org.apache.pulsar.client.impl.PulsarClientImpl;
+import org.apache.pulsar.shade.io.netty.buffer.ByteBuf;
+import org.apache.pulsar.shade.io.netty.buffer.Unpooled;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
@@ -56,10 +58,13 @@ public class PulsarProducerInterceptorTest {
     private Object[] arguments;
     private Class[] argumentType;
 
-    private MessageImpl msg = new MockMessage();
+    private MessageImpl msg;
 
     @Before
     public void setUp() {
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeBytes("Hello Pulsar".getBytes());
+        msg = new MockMessage(buf);
         producerInterceptor = new PulsarProducerInterceptor();
         arguments = new Object[] {
             msg,

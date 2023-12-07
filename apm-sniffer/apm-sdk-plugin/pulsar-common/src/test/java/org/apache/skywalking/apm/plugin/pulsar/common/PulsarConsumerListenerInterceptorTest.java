@@ -31,6 +31,8 @@ import org.apache.pulsar.client.api.MessageListener;
 import org.apache.pulsar.client.impl.LookupService;
 import org.apache.pulsar.client.impl.PulsarClientImpl;
 import org.apache.pulsar.common.api.proto.PulsarApi;
+import org.apache.pulsar.shade.io.netty.buffer.ByteBuf;
+import org.apache.pulsar.shade.io.netty.buffer.Unpooled;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -76,7 +78,9 @@ public class PulsarConsumerListenerInterceptorTest {
     public void setUp() {
         consumerListenerInterceptor = new PulsarConsumerListenerInterceptor();
         messageListener = (consumer, message) -> message.getTopicName();
-        msg = new MockMessage();
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeBytes("Hello Pulsar".getBytes());
+        msg = new MockMessage(buf);
         msg.getMessageBuilder()
                 .addProperties(PulsarApi.KeyValue.newBuilder()
                         .setKey(SW8CarrierItem.HEADER_NAME)

@@ -39,6 +39,10 @@ public class MockMessage extends MessageImpl implements EnhancedInstance {
         this(null, "1:1", new HashMap(), null, null);
     }
 
+    public MockMessage(ByteBuf payload) {
+        this(null, "1:1", new HashMap(), payload, null);
+    }
+
     public MockMessage(String topic, String msgId, Map properties, ByteBuf payload, Schema schema) {
         super(topic, msgId, properties, payload, schema);
     }

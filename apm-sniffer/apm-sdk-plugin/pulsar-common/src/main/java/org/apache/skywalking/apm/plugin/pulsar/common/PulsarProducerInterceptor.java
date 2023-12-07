@@ -32,6 +32,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.pulsar.common.PulsarPluginConfig.Plugin.Pulsar;
+import org.apache.skywalking.apm.util.StringUtil;
 
 import java.lang.reflect.Method;
 
@@ -75,6 +77,9 @@ public class PulsarProducerInterceptor implements InstanceMethodsAroundIntercept
                     next = next.next();
                     propertiesInjector.inject(msg, next);
                 }
+            }
+            if (Pulsar.TRACE_MESSAGE_CONTENTS) {
+                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData()), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
             }
 
             if (allArguments.length > 1) {

@@ -31,6 +31,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.pulsar.common.PulsarPluginConfig.Plugin.Pulsar;
+import org.apache.skywalking.apm.util.StringUtil;
 
 /**
  * Interceptor for pulsar consumer enhanced instance
@@ -73,6 +75,9 @@ public class PulsarConsumerInterceptor implements InstanceMethodsAroundIntercept
             Tags.MQ_BROKER.set(activeSpan, serviceUrl);
             Tags.MQ_TOPIC.set(activeSpan, consumer.getTopic());
             activeSpan.setPeer(serviceUrl);
+            if (Pulsar.TRACE_MESSAGE_CONTENTS) {
+                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData()), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
+            }
         }
     }
 

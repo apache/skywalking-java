@@ -82,6 +82,11 @@ public final class Tags {
      */
     public static final StringTag MQ_STATUS = new StringTag(16, "mq_status");
 
+    /**
+     * MQ_BODY records the message contents of message-middleware.
+     */
+    public static final StringTag MQ_BODY = new StringTag(24, "mq.body");
+
     public static final StringTag MYBATIS_MAPPER = new StringTag(17, "mybatis.mapper");
 
     /**

@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.jdk.forkjoinpool.define;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.namedOneOf;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -33,6 +34,9 @@ public class ForkJoinWorkerQueueInstrumentation extends ClassInstanceMethodsEnha
     private static final String FORK_JOIN_WORKER_QUEUE_CLASS = "java.util.concurrent.ForkJoinPool$WorkQueue";
 
     private static final String FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD = "runTask";
+    
+    private static final String FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD_JDK11 = "topLevelExec";
+
     private static final String FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jdk.forkjoinpool.ForkJoinWorkerQueueMethodInterceptor";
 
     @Override
@@ -51,7 +55,7 @@ public class ForkJoinWorkerQueueInstrumentation extends ClassInstanceMethodsEnha
                 new InstanceMethodsInterceptV2Point() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD);
+                        return namedOneOf(FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD, FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD_JDK11);
                     }
 
                     @Override

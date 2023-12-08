@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.pulsar.common;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.impl.ConsumerImpl;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
@@ -76,7 +77,7 @@ public class PulsarConsumerInterceptor implements InstanceMethodsAroundIntercept
             Tags.MQ_TOPIC.set(activeSpan, consumer.getTopic());
             activeSpan.setPeer(serviceUrl);
             if (Pulsar.TRACE_MESSAGE_CONTENTS) {
-                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData()), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
+                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData(), StandardCharsets.UTF_8), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
             }
         }
     }

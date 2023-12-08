@@ -34,8 +34,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.pulsar.common.PulsarPluginConfig.Plugin.Pulsar;
 import org.apache.skywalking.apm.util.StringUtil;
-
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Interceptor for pulsar producer enhanced instance.
@@ -79,7 +79,7 @@ public class PulsarProducerInterceptor implements InstanceMethodsAroundIntercept
                 }
             }
             if (Pulsar.TRACE_MESSAGE_CONTENTS) {
-                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData()), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
+                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData(), StandardCharsets.UTF_8), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
             }
 
             if (allArguments.length > 1) {

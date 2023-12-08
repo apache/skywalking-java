@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.MessageListener;
@@ -79,7 +80,7 @@ public class PulsarConsumerListenerInterceptorTest {
         consumerListenerInterceptor = new PulsarConsumerListenerInterceptor();
         messageListener = (consumer, message) -> message.getTopicName();
         ByteBuf buf = Unpooled.buffer();
-        buf.writeBytes("Hello Pulsar".getBytes());
+        buf.writeCharSequence("Hello Pulsar!", StandardCharsets.UTF_8);
         msg = new MockMessage(buf);
         msg.getMessageBuilder()
                 .addProperties(PulsarApi.KeyValue.newBuilder()

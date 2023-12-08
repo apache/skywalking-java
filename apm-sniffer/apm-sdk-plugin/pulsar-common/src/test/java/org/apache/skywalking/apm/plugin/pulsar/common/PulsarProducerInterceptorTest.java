@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.apache.pulsar.client.impl.LookupService;
 import org.apache.pulsar.client.impl.MessageImpl;
@@ -64,7 +65,7 @@ public class PulsarProducerInterceptorTest {
     @Before
     public void setUp() {
         ByteBuf buf = Unpooled.buffer();
-        buf.writeBytes("Hello Pulsar".getBytes());
+        buf.writeCharSequence("Hello Pulsar!", StandardCharsets.UTF_8);
         msg = new MockMessage(buf);
         producerInterceptor = new PulsarProducerInterceptor();
         arguments = new Object[] {

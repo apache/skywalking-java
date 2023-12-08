@@ -27,7 +27,7 @@ public class PulsarPluginConfig {
             /**
              * If set to true, the message contents of the Pulsar topic would be collected.
              */
-            public static boolean TRACE_MESSAGE_CONTENTS = true;
+            public static boolean TRACE_MESSAGE_CONTENTS = false;
             /**
              * For the sake of performance, SkyWalking won't save message contents string into the tag.
              * If TRACE_MESSAGE_CONTENTS is set to true, the first {@code MESSAGE_CONTENTS_MAX_LENGTH} parameter

@@ -43,6 +43,7 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
+import org.apache.skywalking.apm.plugin.pulsar.common.PulsarPluginConfig.Plugin.Pulsar;
 import org.hamcrest.MatcherAssert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -141,7 +142,7 @@ public class PulsarConsumerInterceptorTest {
     private void assertConsumerSpan(AbstractTracingSpan span) {
         SpanAssert.assertLayer(span, SpanLayer.MQ);
         SpanAssert.assertComponent(span, PULSAR_CONSUMER);
-        SpanAssert.assertTagSize(span, 3);
+        SpanAssert.assertTagSize(span, Pulsar.TRACE_MESSAGE_CONTENTS ? 3 : 2);
         SpanAssert.assertTag(span, 0, "pulsar://localhost:6650");
         SpanAssert.assertTag(span, 1, "persistent://my-tenant/my-ns/my-topic");
     }

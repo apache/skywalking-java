@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.jdk.forkjoinpool.define;
 
-import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.namedOneOf;
 
 import net.bytebuddy.description.method.MethodDescription;

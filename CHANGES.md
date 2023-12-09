@@ -5,6 +5,7 @@ Release Notes.
 9.2.0
 ------------------
 
+* fix forkjoinpool plugin in JDK11
 
 #### Documentation
 

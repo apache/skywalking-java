@@ -1,0 +1,130 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Test
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/plugins-*.yaml'
+      - 'apm-application-toolkit/**'
+      - 'apm-commons/**'
+      - 'apm-protocol/**'
+      - 'apm-sniffer/**'
+      - 'test/plugin/**'
+      - '**/pom.xml'
+      - '!**.md'
+
+concurrency:
+  group: plugins-3-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Build
+        uses: ./.github/actions/build
+
+  test:
+    needs: [ build ]
+    name: ${{ matrix.case }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        case:
+          - aerospike-scenario
+          - mysql-scenario
+          - undertow-scenario
+          - webflux-scenario
+          - zookeeper-scenario
+          - spring-3.1.x-scenario
+          - spring-4.1.x-scenario
+          - spring-4.3.x-scenario
+          - spring-async-scenario
+          - vertx-core-4.x-scenario
+          - vertx-eventbus-3.x-scenario
+          - vertx-web-3.54minus-scenario
+          - vertx-web-3.6plus-scenario
+          - mariadb-scenario
+          - micronaut-http-scenario
+          - nats-2.14.x-2.15.x-scenario
+          - quasar-scenario
+          - baidu-brpc-scenario
+          - baidu-brpc-3.x-scenario
+          - retransform-class-scenario
+          - retransform-class-tomcat-scenario
+          - graphql-8.x-scenario
+          - graphql-9.x-scenario
+          - graphql-16plus-scenario
+          - graphql-12.x-15.x-scenario
+          - hbase-scenario
+          - spring-kafka-1.3.x-scenario
+          - spring-kafka-2.2.x-scenario
+          - spring-kafka-2.3.x-scenario
+          - spring-scheduled-scenario
+          - elasticjob-2.x-scenario
+          - quartz-scheduler-2.x-scenario
+          - xxl-job-2.2.0-scenario
+          - xxl-job-2.3.x-scenario
+          - thrift-scenario
+          - dbcp-2.x-scenario
+          - jsonrpc4j-1.x-scenario
+          - gateway-3.x-scenario
+          - gateway-3.x-filter-context-scenario
+          - neo4j-4.x-scenario
+          - oracle-scenario
+          - druid-1.x-scenario
+          - hikaricp-scenario
+          - clickhouse-0.3.1-scenario
+          - clickhouse-0.3.2.x-scenario
+          - kylin-jdbc-2.6.x-3.x-4.x-scenario
+          - undertow-worker-thread-pool-scenario
+          - tomcat-thread-pool-scenario
+          - guava-eventbus-scenario
+          - shenyu-2.4.x-scenario
+          - jdk-threadpool-scenario
+          - jdk-forkjoinpool-scenario
+          - shenyu-2.4.x-dubbo-scenario
+          - grpc-generic-call-scenario
+          - shenyu-2.4.x-grpc-scenario
+          - shenyu-2.4.x-sofarpc-scenario
+          - impala-jdbc-2.6.x-scenario
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 11
+      - name: Install Oracle Libs
+        if: matrix.case == 'oracle-scenario'
+        run: |
+          mkdir -p skywalking-agent/plugins
+          curl -O https://skyapm.github.io/ci-assist/jars/ojdbc14-10.2.0.4.0.jar
+          curl -L -o ./skywalking-agent/plugins/apm-oracle-10.x-plugin-2.3.1.jar https://github.com/SkyAPM/java-plugin-extensions/releases/download/2.3.1/apm-oracle-10.x-plugin-2.3.1.jar
+          ./mvnw -q --batch-mode install:install-file -Dfile=ojdbc14-10.2.0.4.0.jar -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.4.0 -Dpackaging=jar
+      - name: Run Plugin Test
+        uses: ./.github/actions/run
+        with:
+          test_case: ${{ matrix.case }}

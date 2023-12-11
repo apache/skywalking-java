@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -Dservice.url=${PULSAR_STANDALONE} -jar ${agent_opts} ${home}/../libs/pulsar-scenario.jar &
+java -Dservice.url=${PULSAR_STANDALONE} -jar ${agent_opts} -Dskywalking.plugin.pulsar.trace_message_contents=true ${home}/../libs/pulsar-scenario.jar &

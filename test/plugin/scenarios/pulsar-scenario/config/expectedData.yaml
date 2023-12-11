@@ -32,6 +32,7 @@ segmentItems:
           tags:
             - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: test }
+            - { key: mq.body, value: "1" }
           skipAnalysis: 'false'
         - operationName: Pulsar/testMultiPartition/Producer
           parentSpanId: 0
@@ -47,6 +48,7 @@ segmentItems:
           tags:
             - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: testMultiPartition }
+            - { key: mq.body, value: "1" }
         - operationName: GET:/case/pulsar-case
           parentSpanId: -1
           spanId: 0
@@ -97,6 +99,7 @@ segmentItems:
             - { key: transmission.latency, value: not blank }
             - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: test }
+            - { key: mq.body, value: "1" }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null, refType: CrossProcess,
               parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -119,6 +122,7 @@ segmentItems:
             - { key: transmission.latency, value: not blank }
             - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: test }
+            - { key: mq.body, value: "1" }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null,
                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
@@ -178,6 +182,7 @@ segmentItems:
             - { key: transmission.latency, value: not blank }
             - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: testMultiPartition }
+            - { key: mq.body, value: "1" }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null, refType: CrossProcess,
               parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -200,6 +205,7 @@ segmentItems:
             - { key: transmission.latency, value: not blank }
             - { key: mq.broker, value: not blank }
             - { key: mq.topic, value: testMultiPartition }
+            - { key: mq.body, value: "1" }
           refs:
             - { parentEndpoint: GET:/case/pulsar-case, networkAddress: not null,
                 refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null,

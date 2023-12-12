@@ -33,7 +33,15 @@ public class ForkJoinWorkerQueueInstrumentation extends ClassInstanceMethodsEnha
     private static final String FORK_JOIN_WORKER_QUEUE_CLASS = "java.util.concurrent.ForkJoinPool$WorkQueue";
 
     private static final String FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD = "runTask";
-    
+
+    /**
+     * The runWorker method is one of the core methods of ForkJoinPool,
+     * responsible for retrieving tasks from the work queue and executing them.
+     * <p>
+     * Within the runWorker method, it calls the scan method to search and execute tasks.
+     * <p>
+     * in java11+ ForkJoinPool. scan calls WorkQueue.topLevelExec, in JAVA8 it calls  WorkQueue.runTask.
+     */
     private static final String FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD_JDK11 = "topLevelExec";
 
     private static final String FORK_JOIN_WORKER_QUEUE_RUN_TASK_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.jdk.forkjoinpool.ForkJoinWorkerQueueMethodInterceptor";

@@ -43,6 +43,8 @@ jobs:
           submodules: true
       - name: Build
         uses: ./.github/actions/build
+        with:
+          base_image_java: eclipse-temurin:11-jdk
 
   test:
     needs: [ build ]

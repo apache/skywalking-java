@@ -77,7 +77,7 @@ public class PulsarConsumerInterceptor implements InstanceMethodsAroundIntercept
             Tags.MQ_TOPIC.set(activeSpan, consumer.getTopic());
             activeSpan.setPeer(serviceUrl);
             if (Pulsar.TRACE_MESSAGE_CONTENTS) {
-                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData(), StandardCharsets.UTF_8), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
+                Tags.MQ_MESSAGE_CONTENTS.set(activeSpan, StringUtil.cut(new String(msg.getData(), StandardCharsets.UTF_8), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
             }
         }
     }

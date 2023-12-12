@@ -79,7 +79,7 @@ public class PulsarProducerInterceptor implements InstanceMethodsAroundIntercept
                 }
             }
             if (Pulsar.TRACE_MESSAGE_CONTENTS) {
-                Tags.MQ_BODY.set(activeSpan, StringUtil.cut(new String(msg.getData(), StandardCharsets.UTF_8), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
+                Tags.MQ_MESSAGE_CONTENTS.set(activeSpan, StringUtil.cut(new String(msg.getData(), StandardCharsets.UTF_8), Pulsar.MESSAGE_CONTENTS_MAX_LENGTH));
             }
 
             if (allArguments.length > 1) {

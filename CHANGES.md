@@ -5,6 +5,8 @@ Release Notes.
 9.2.0
 ------------------
 
+* Fix NoSuchMethodError in mvc-annotation-commons and change deprecated method 
+
 
 #### Documentation
 

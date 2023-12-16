@@ -19,6 +19,7 @@ package org.apache.skywalking.apm.agent;
 
 import com.google.common.base.Stopwatch;
 import net.bytebuddy.agent.ByteBuddyAgent;
+import org.apache.skywalking.apm.agent.core.logging.core.SystemOutWriter;
 import org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.ByteBuddyCoreClasses;
 import org.apache.skywalking.apm.agent.core.plugin.PluginFinder;
@@ -56,7 +57,7 @@ public class JedisInstrumentationTest {
             Assert.assertTrue(e.toString(), e.toString().contains("JedisConnectionException"));
         }
 
-        System.out.println("Do re-transform class : redis.clients.jedis.Jedis ..");
+        log("Do re-transform class : redis.clients.jedis.Jedis ..");
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         // re-transform class
@@ -65,7 +66,7 @@ public class JedisInstrumentationTest {
             stopwatch.start();
             instrumentation.retransformClasses(Jedis.class);
             long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-            System.out.println("re-transform class cost: " + elapsed);
+            log("Re-transform class cost: " + elapsed);
         }
 
         // test after re-transform class
@@ -74,5 +75,9 @@ public class JedisInstrumentationTest {
         } catch (Exception e) {
             Assert.assertTrue(e.toString(), e.toString().contains("JedisConnectionException"));
         }
+    }
+
+    private void log(String message) {
+        SystemOutWriter.INSTANCE.write(message);
     }
 }

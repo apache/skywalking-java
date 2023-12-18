@@ -398,7 +398,6 @@
                         <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
 <sourceDirectory>scenarios/resttemplate-6.x-scenario</sourceDirectory>
-<sourceDirectory>scenarios/spring-scenario</sourceDirectory>
                     </sourceDirectories>
                     <resourceIncludes>
                         **/*.properties,

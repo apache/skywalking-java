@@ -35,9 +35,9 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnhancePluginDefine {
 
     public static final String INTERCEPT_CLASS =
-            "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingOperatorsInterceptor";
+        "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingOperatorsInterceptor";
     public static final String ENHANCE_CLASS =
-            "org.apache.skywalking.apm.toolkit.webflux.WebFluxSkyWalkingOperators";
+        "org.apache.skywalking.apm.toolkit.webflux.WebFluxSkyWalkingOperators";
     public static final String ENHANCE_METHOD = "continueTracing";
 
     @Override
@@ -53,24 +53,29 @@ public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnha
     @Override
     public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
         return new StaticMethodsInterceptPoint[] {
-                new StaticMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_METHOD).and(takesArguments(2))
-                                .and(takesArgument(0, named("reactor.util.context.Context"))
-                                        .or(takesArgument(0, named("org.springframework.web.server.ServerWebExchange"))));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return INTERCEPT_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
+            new StaticMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(ENHANCE_METHOD).and(takesArguments(2))
+                                                .and(takesArgument(0, named("reactor.util.context.Context"))
+                                                         .or(takesArgument(0, named("org.springframework.web.server.ServerWebExchange"))));
                 }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return INTERCEPT_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            }
         };
+    }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[]{"reactor.util.context.Context"};
     }
 }

@@ -18,8 +18,11 @@
 
 package org.apache.skywalking.apm.plugin.spring.webflux.v5.define;
 
+import java.util.Collections;
+import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
@@ -29,6 +32,9 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+    private static final String WEBFLUX_CONTEXT_WRITE_CLASS = "reactor.core.publisher.Mono";
+    private static final String WEBFLUX_CONTEXT_WRITE_METHOD = "subscriberContext";
+
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[0];
@@ -59,5 +65,11 @@ public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhanc
     @Override
     protected ClassMatch enhanceClass() {
         return byName("org.springframework.web.reactive.DispatcherHandler");
+    }
+
+    @Override
+    protected List<WitnessMethod> witnessMethods() {
+        return Collections.singletonList(
+            new WitnessMethod(WEBFLUX_CONTEXT_WRITE_CLASS, named(WEBFLUX_CONTEXT_WRITE_METHOD)));
     }
 }

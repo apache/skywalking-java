@@ -5,8 +5,8 @@ Release Notes.
 9.2.0
 ------------------
 
-* Fix NoSuchMethodError in mvc-annotation-commons and change deprecated method 
-
+* Fix NoSuchMethodError in mvc-annotation-commons and change deprecated method
+* Support for tracing Spring-Webflux request in Webflux 6.x plugin.
 
 #### Documentation
 

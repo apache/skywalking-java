@@ -44,6 +44,7 @@
         <module>scheduled-annotation-plugin</module>
         <module>spring-webflux-5.x-webclient-plugin</module>
         <module>resttemplate-commons</module>
+        <module>spring-webflux-6.x-webclient-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

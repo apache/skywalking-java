@@ -21,10 +21,10 @@ package org.apache.skywalking.apm.toolkit.webflux;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Signal;
 import reactor.core.publisher.SignalType;
-import reactor.util.context.Context;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import reactor.util.context.ContextView;
 
 /**
  * WebFlux operators that are capable to reuse tracing context from Reactor's Context.
@@ -63,7 +63,7 @@ public final class WebFluxSkyWalkingOperators {
             if (signalType != signal.getType()) {
                 return;
             }
-            continueTracing(signal.getContext(), () -> consumer.accept(signal));
+            continueTracing(signal.getContextView(), () -> consumer.accept(signal));
         };
     }
 
@@ -75,7 +75,7 @@ public final class WebFluxSkyWalkingOperators {
      */
     public static Consumer<Signal> continueTracing(Runnable runnable) {
         return signal -> {
-            Context context = signal.getContext();
+            ContextView context = signal.getContextView();
             continueTracing(context, runnable);
         };
     }
@@ -86,7 +86,7 @@ public final class WebFluxSkyWalkingOperators {
      * @param context  - Reactor context that contains the tracing context
      * @param runnable - lambda to execute within the tracing context
      */
-    public static void continueTracing(Context context, Runnable runnable) {
+    public static void continueTracing(ContextView context, Runnable runnable) {
         runnable.run();
     }
 
@@ -98,7 +98,7 @@ public final class WebFluxSkyWalkingOperators {
      * @param <T>      callable's return type
      * @return value from the callable
      */
-    public static <T> T continueTracing(Context context, Callable<T> callable) {
+    public static <T> T continueTracing(ContextView context, Callable<T> callable) {
         try {
             return callable.call();
         } catch (Exception e) {

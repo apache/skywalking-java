@@ -35,9 +35,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <compiler.version>1.8</compiler.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <test.framework.version>2.1.1.RELEASE</test.framework.version>
+        <compiler.version>17</compiler.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <test.framework.version>3.0.0</test.framework.version>
         <docker.image.version>${test.framework.version}</docker.image.version>
     </properties>
 

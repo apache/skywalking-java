@@ -168,11 +168,11 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
                         next.setHeadValue(serverHttpRequest.getHeaders().getFirst(next.getHeadKey()));
                     }
 
-                    String operationName = this.buildOperationName(method, serverHttpRequest.getMethodValue(),
+                    String operationName = this.buildOperationName(method, serverHttpRequest.getMethod().name(),
                                                                    (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField());
                     AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
                     Tags.URL.set(span, serverHttpRequest.getURI().toString());
-                    Tags.HTTP.METHOD.set(span, serverHttpRequest.getMethodValue());
+                    Tags.HTTP.METHOD.set(span, serverHttpRequest.getMethod().name());
                     span.setComponent(ComponentsDefine.SPRING_MVC_ANNOTATION);
                     SpanLayer.asHttp(span);
 

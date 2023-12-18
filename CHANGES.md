@@ -5,8 +5,8 @@ Release Notes.
 9.2.0
 ------------------
 
-* Fix NoSuchMethodError in mvc-annotation-commons and change deprecated method 
-
+* Fix NoSuchMethodError in mvc-annotation-commons and change deprecated method.
+* fix forkjoinpool plugin in JDK11。
 
 #### Documentation
 

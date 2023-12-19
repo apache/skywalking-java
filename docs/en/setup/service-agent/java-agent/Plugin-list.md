@@ -173,3 +173,4 @@
 - jetty-client-11.x
 - websphere-liberty-23.x
 - spring-cloud-gateway-4.x
+- spring-webflux-6.x

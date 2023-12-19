@@ -15,21 +15,21 @@
  *  limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define;
+package test.apache.skywalking.apm.testcase.sc.gateway.projectA;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-/**
- * This abstract class defines the <code>witnessClasses()</code> method, and other plugin define classes need to inherit
- * from this class
- */
-public abstract class AbstractGatewayV3EnhancePluginDefine extends ClassInstanceMethodsEnhancePluginDefine {
+@Configuration
+public class TestFilterConfig {
 
-    @Override
-    protected String[] witnessClasses() {
-        return new String[] {
-            "org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties",
-            "org.springframework.web.client.AsyncRestTemplate"
-        };
+    @Bean
+    public Test1Filter test1Filter() {
+        return new Test1Filter();
+    }
+
+    @Bean
+    public Test2Filter test2Filter() {
+        return new Test2Filter();
     }
 }

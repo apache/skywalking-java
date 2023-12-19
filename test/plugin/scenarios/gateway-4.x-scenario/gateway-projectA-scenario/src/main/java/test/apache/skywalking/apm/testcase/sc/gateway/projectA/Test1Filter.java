@@ -15,21 +15,24 @@
  *  limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define;
+package test.apache.skywalking.apm.testcase.sc.gateway.projectA;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
-/**
- * This abstract class defines the <code>witnessClasses()</code> method, and other plugin define classes need to inherit
- * from this class
- */
-public abstract class AbstractGatewayV3EnhancePluginDefine extends ClassInstanceMethodsEnhancePluginDefine {
+public class Test1Filter implements GlobalFilter, Ordered {
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        ServerHttpRequest buildRequest = exchange.getRequest().mutate().build();
+        return chain.filter(exchange.mutate().request(buildRequest).build());
+    }
 
     @Override
-    protected String[] witnessClasses() {
-        return new String[] {
-            "org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties",
-            "org.springframework.web.client.AsyncRestTemplate"
-        };
+    public int getOrder() {
+        return 0;
     }
 }

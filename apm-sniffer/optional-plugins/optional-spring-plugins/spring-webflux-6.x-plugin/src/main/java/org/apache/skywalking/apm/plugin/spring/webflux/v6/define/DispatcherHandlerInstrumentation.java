@@ -16,10 +16,8 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.spring.webflux.v5.define;
+package org.apache.skywalking.apm.plugin.spring.webflux.v6.define;
 
-import java.util.Collections;
-import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
@@ -28,12 +26,17 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
+import java.util.Collections;
+import java.util.List;
+
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String WEBFLUX_CONTEXT_WRITE_CLASS = "reactor.core.publisher.Mono";
-    private static final String WEBFLUX_CONTEXT_WRITE_METHOD = "subscriberContext";
+    private static final String WEBFLUX_CONTEXT_WRITE_METHOD = "contextWrite";
+    private static final String WEBFLUX_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.webflux.v6.DispatcherHandlerHandleMethodInterceptor";
+    private static final String WEBFLUX_ENHANCE_CLASS = "org.springframework.web.reactive.DispatcherHandler";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -51,7 +54,7 @@ public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhanc
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return "org.apache.skywalking.apm.plugin.spring.webflux.v5.DispatcherHandlerHandleMethodInterceptor";
+                    return WEBFLUX_METHOD_INTERCEPTOR;
                 }
 
                 @Override
@@ -64,9 +67,12 @@ public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhanc
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName("org.springframework.web.reactive.DispatcherHandler");
+        return byName(WEBFLUX_ENHANCE_CLASS);
     }
 
+    /**
+     * @since 6.0.0
+     */
     @Override
     protected List<WitnessMethod> witnessMethods() {
         return Collections.singletonList(

@@ -15,21 +15,17 @@
  *  limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define;
+package test.apache.skywalking.apm.testcase.sc.gateway.projectA;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
-/**
- * This abstract class defines the <code>witnessClasses()</code> method, and other plugin define classes need to inherit
- * from this class
- */
-public abstract class AbstractGatewayV3EnhancePluginDefine extends ClassInstanceMethodsEnhancePluginDefine {
+@Component
+public class ApiKeyResolver implements KeyResolver {
 
-    @Override
-    protected String[] witnessClasses() {
-        return new String[] {
-            "org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties",
-            "org.springframework.web.client.AsyncRestTemplate"
-        };
+    public Mono<String> resolve(ServerWebExchange exchange) {
+        return Mono.just(exchange.getRequest().getPath().value());
     }
 }

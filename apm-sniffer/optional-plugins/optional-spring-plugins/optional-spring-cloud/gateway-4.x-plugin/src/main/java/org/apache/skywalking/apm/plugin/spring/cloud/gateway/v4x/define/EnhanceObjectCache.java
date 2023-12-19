@@ -15,21 +15,40 @@
  *  limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define;
+package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v4x.define;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
 /**
- * This abstract class defines the <code>witnessClasses()</code> method, and other plugin define classes need to inherit
- * from this class
+ * enhance object cache
  */
-public abstract class AbstractGatewayV3EnhancePluginDefine extends ClassInstanceMethodsEnhancePluginDefine {
+public class EnhanceObjectCache {
 
-    @Override
-    protected String[] witnessClasses() {
-        return new String[] {
-            "org.springframework.cloud.gateway.config.GatewayLoadBalancerProperties",
-            "org.springframework.web.client.AsyncRestTemplate"
-        };
+    private String url;
+    private AbstractSpan span;
+    private AbstractSpan span1;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setCacheSpan(AbstractSpan span) {
+        this.span = span;
+    }
+
+    public AbstractSpan getSpan() {
+        return span;
+    }
+
+    public AbstractSpan getSpan1() {
+        return span1;
+    }
+
+    public void setSpan1(final AbstractSpan span) {
+        span1 = span;
     }
 }

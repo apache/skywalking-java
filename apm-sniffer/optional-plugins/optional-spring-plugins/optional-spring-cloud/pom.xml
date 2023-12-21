@@ -31,6 +31,7 @@
         <module>gateway-2.0.x-plugin</module>
         <module>gateway-2.1.x-plugin</module>
         <module>gateway-3.x-plugin</module>
+        <module>gateway-4.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

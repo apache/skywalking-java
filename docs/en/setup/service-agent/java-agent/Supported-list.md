@@ -15,7 +15,7 @@ metrics based on the tracing data.
   * Resin 3 (Optional¹)
   * Resin 4 (Optional¹)
   * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 11.x
-  * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional¹)
+  * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional¹) -> 6.x (Optional¹)
   * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.0.27.Final
   * [RESTEasy](https://resteasy.github.io/)  3.1.0.Final -> 6.2.4.Final
   * [Play Framework](https://www.playframework.com/) 2.6.x -> 2.8.x
@@ -40,7 +40,7 @@ metrics based on the tracing data.
   * [Hutool-http](https://www.hutool.cn/) client 5.x
   * [Micronaut HTTP Client](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
 * HTTP Gateway
-  * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 3.x (Optional²)
+  * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 4.1.x (Optional²)
   * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)
 * JDBC
   * Mysql Driver 5.x, 6.x, 8.x

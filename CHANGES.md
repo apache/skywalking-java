@@ -7,6 +7,8 @@ Release Notes.
 
 * Fix NoSuchMethodError in mvc-annotation-commons and change deprecated method.
 * fix forkjoinpool plugin in JDK11。
+* Support for tracing spring-cloud-gateway 4.x in gateway-4.x-plugin.
+
 
 #### Documentation
 

@@ -88,7 +88,11 @@ public class SWVertxTracer implements VertxTracer<AbstractSpan, AbstractSpan> {
             }
 
             if (response instanceof HttpResponse) {
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(payload, ((HttpResponse) response).statusCode());
+                int statusCode = ((HttpResponse) response).statusCode();
+                Tags.HTTP_RESPONSE_STATUS_CODE.set(payload, statusCode);
+                if (statusCode >= 400) {
+                    payload.errorOccurred();
+                }
             }
             payload.asyncFinish();
         }

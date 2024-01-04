@@ -9,6 +9,7 @@ Release Notes.
 * fix forkjoinpool plugin in JDK11。
 * Support for tracing spring-cloud-gateway 4.x in gateway-4.x-plugin.
 * Fix re-transform bug when plugin enhanced class proxy parent method.
+* Fix error HTTP status codes not recording as SLA failures in Vert.x plugins. 
 
 #### Documentation
 

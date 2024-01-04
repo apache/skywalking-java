@@ -43,7 +43,11 @@ public class HttpServerResponseImplInterceptor implements InstanceMethodsAroundI
         if (VertxContext.VERTX_VERSION < 36 && allArguments[0] instanceof ByteBuf
                 || VertxContext.VERTX_VERSION >= 36 && VertxContext.VERTX_VERSION <= 37 || allArguments.length == 2) {
             VertxContext context = (VertxContext) objInst.getSkyWalkingDynamicField();
-            Tags.HTTP_RESPONSE_STATUS_CODE.set(context.getSpan(), ((HttpServerResponse) objInst).getStatusCode());
+            int statusCode = ((HttpServerResponse) objInst).getStatusCode();
+            Tags.HTTP_RESPONSE_STATUS_CODE.set(context.getSpan(), statusCode);
+            if (statusCode >= 400) {
+                context.getSpan().errorOccurred();
+            }
             context.getSpan().asyncFinish();
         }
     }

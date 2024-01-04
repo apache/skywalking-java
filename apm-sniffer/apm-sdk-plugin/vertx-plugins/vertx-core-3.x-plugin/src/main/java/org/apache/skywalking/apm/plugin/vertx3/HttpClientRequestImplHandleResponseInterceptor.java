@@ -40,7 +40,11 @@ public class HttpClientRequestImplHandleResponseInterceptor implements InstanceM
             HttpClientRequestContext requestContext = (HttpClientRequestContext) objInst.getSkyWalkingDynamicField();
             if (!requestContext.usingWebClient) {
                 VertxContext context = requestContext.vertxContext;
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(context.getSpan(), ((HttpClientResponse) allArguments[0]).statusCode());
+                int statusCode = ((HttpClientResponse) allArguments[0]).statusCode();
+                Tags.HTTP_RESPONSE_STATUS_CODE.set(context.getSpan(), statusCode);
+                if (statusCode >= 400) {
+                    context.getSpan().errorOccurred();
+                }
                 context.getSpan().asyncFinish();
 
                 AbstractSpan span = ContextManager.createLocalSpan("#" + context.getSpan().getOperationName());

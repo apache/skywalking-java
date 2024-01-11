@@ -36,6 +36,7 @@ metrics based on the tracing data.
   * [Jetty Client](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
   * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
+  * [Spring Webflux WebClient](https://github.com/spring-projects/spring-framework/tree/main/spring-webflux) 5.x -> 6.x
   * JRE HttpURLConnection (Optional²)
   * [Hutool-http](https://www.hutool.cn/) client 5.x
   * [Micronaut HTTP Client](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x

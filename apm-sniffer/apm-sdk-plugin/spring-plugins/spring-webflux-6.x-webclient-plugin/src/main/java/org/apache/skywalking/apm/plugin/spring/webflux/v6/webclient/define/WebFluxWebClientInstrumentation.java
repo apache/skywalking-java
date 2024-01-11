@@ -16,10 +16,8 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.spring.webflux.v5.webclient.define;
+package org.apache.skywalking.apm.plugin.spring.webflux.v6.webclient.define;
 
-import java.util.Collections;
-import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
@@ -30,13 +28,16 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassI
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
+import java.util.Collections;
+import java.util.List;
+
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 public class WebFluxWebClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefineV2 {
     private static final String ENHANCE_CLASS = "org.springframework.web.reactive.function.client.ExchangeFunctions$DefaultExchangeFunction";
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.spring.webflux.v5.webclient.WebFluxWebClientInterceptor";
+    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.spring.webflux.v6.webclient.WebFluxWebClientInterceptor";
     private static final String WEBFLUX_CONTEXT_WRITE_CLASS = "reactor.core.publisher.Mono";
-    private static final String WEBFLUX_CONTEXT_WRITE_METHOD = "subscriberContext";
+    private static final String WEBFLUX_CONTEXT_WRITE_METHOD = "deferContextual";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -50,23 +51,23 @@ public class WebFluxWebClientInstrumentation extends ClassInstanceMethodsEnhance
 
     @Override
     public InstanceMethodsInterceptV2Point[] getInstanceMethodsInterceptV2Points() {
-        return new InstanceMethodsInterceptV2Point[]{
-                new InstanceMethodsInterceptV2Point() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("exchange");
-                    }
-
-                    @Override
-                    public String getMethodsInterceptorV2() {
-                        return INTERCEPT_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
+        return new InstanceMethodsInterceptV2Point[] {
+            new InstanceMethodsInterceptV2Point() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named("exchange");
                 }
+
+                @Override
+                public String getMethodsInterceptorV2() {
+                    return INTERCEPT_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            }
         };
     }
 

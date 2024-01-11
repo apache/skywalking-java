@@ -14,7 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# 2.0.0-2.1.0 are supported, but due to the status code bug(https://github.com/spring-projects/spring-framework/issues/21901)
-# we don’t test them
-# 3.0.x,3.1.x are supported, but 
+# 3.0.x,3.1.x are supported, but the creation method of client is deprecated, so we don’t test them.
 3.2.0

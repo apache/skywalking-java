@@ -78,19 +78,20 @@ public enum ServiceManager {
                         throw new ServiceConflictException("Duplicate service define for :" + bootServiceClass);
                     }
                 } else {
-                    Class<? extends BootService> targetService = overrideImplementor.value();
-                    if (bootedServices.containsKey(targetService)) {
-                        boolean presentDefault = bootedServices.get(targetService)
-                                                               .getClass()
-                                                               .isAnnotationPresent(DefaultImplementor.class);
+                    Class<? extends BootService> targetServiceClass = overrideImplementor.value();
+                    if (bootedServices.containsKey(targetServiceClass)) {
+                        BootService previousService = bootedServices.get(targetServiceClass);
+                        boolean presentDefault = previousService.getClass().isAnnotationPresent(DefaultImplementor.class);
                         if (presentDefault) {
-                            bootedServices.put(targetService, bootService);
+                            bootedServices.put(targetServiceClass, bootService);
                         } else {
-                            throw new ServiceConflictException(
-                                "Service " + bootServiceClass + " overrides conflict, " + "exist more than one service want to override :" + targetService);
+                            String errorMsg = String.format("Service %s overrides conflict, more then one service found, " +
+                                            "service[%s] want to override[%s], please check your plugins",
+                                            bootServiceClass, targetServiceClass, previousService.getClass());
+                            throw new ServiceConflictException(errorMsg);
                         }
                     } else {
-                        bootedServices.put(targetService, bootService);
+                        bootedServices.put(targetServiceClass , bootService);
                     }
                 }
             }

@@ -11,6 +11,7 @@ Release Notes.
 * Fix re-transform bug when plugin enhanced class proxy parent method.
 * Fix error HTTP status codes not recording as SLA failures in Vert.x plugins. 
 * Support for HttpExchange request tracing
+* Support tracing for async producing, batch sync consuming, and batch async consuming in rocketMQ-client-java-5.x-plugin.
 
 #### Documentation
 

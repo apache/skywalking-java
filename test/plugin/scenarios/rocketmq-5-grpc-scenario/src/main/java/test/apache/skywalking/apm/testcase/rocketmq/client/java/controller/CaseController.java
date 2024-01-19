@@ -18,27 +18,15 @@
 
 package test.apache.skywalking.apm.testcase.rocketmq.client.java.controller;
 
+import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.apis.ClientConfiguration;
-import org.apache.rocketmq.client.apis.ClientServiceProvider;
-import org.apache.rocketmq.client.apis.consumer.FilterExpression;
-import org.apache.rocketmq.client.apis.consumer.FilterExpressionType;
-import org.apache.rocketmq.client.apis.consumer.MessageListener;
-import org.apache.rocketmq.client.apis.consumer.ConsumeResult;
-import org.apache.rocketmq.client.apis.consumer.PushConsumer;
-import org.apache.rocketmq.client.apis.message.Message;
-import org.apache.rocketmq.client.apis.message.MessageView;
 import org.apache.rocketmq.client.apis.producer.Producer;
-import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.common.MixAll;
-import org.apache.rocketmq.tools.command.MQAdminStartup;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/case")
@@ -46,69 +34,44 @@ import java.util.Collections;
 public class CaseController {
 
     private static final String SUCCESS = "Success";
+    private static final String NORMAL_TOPIC = "NormalTopicTest";
+    private static final String ASYNC_PRODUCER_TOPIC = "ProducerAsyncTopicTest";
+    private static final String ASYNC_CONSUMER_TOPIC = "ConsumerAsyncTopicTest";
+    private static final String TAG_NOMARL = "Tag:normal";
+    private static final String TAG_ASYNC_PRODUCER = "Tag:async:producer";
+    private static final String TAG_ASYNC_CONSUMER = "Tag:async:consumer";
+    private static final String GROUP = "group1";
 
     @Value("${endpoints}")
     private String endpoints;
 
-    @Value("${nameServer}")
-    private String nameServer;
-
-    static final String TOPIC = "TopicTest";
-    static final String TAG = "TagA";
-    static final String GROUP = "group1";
-
-    Producer producer;
-
-    PushConsumer consumer;
+    @Autowired
+    private MessageService messageService;
 
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
     public String testcase() {
         try {
-            ClientServiceProvider provider = ClientServiceProvider.loadService();
-            ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
-                    .setEndpoints(endpoints)
-                    .enableSsl(false)
-                    .build();
-            // start producer
-            if (producer == null) {
-                producer = provider.newProducerBuilder()
-                        .setClientConfiguration(clientConfiguration)
-                        .build();
-            }
+            messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
+            new Thread(() -> messageService.pushConsumes(
+                Collections.singletonList(NORMAL_TOPIC),
+                Collections.singletonList(TAG_NOMARL),
+                GROUP
+            )).start();
 
-            // send msg
-            Message message = provider.newMessageBuilder()
-                    // Set topic for the current message.
-                    .setTopic(TOPIC)
-                    // Message secondary classifier of message besides topic.
-                    .setTag(TAG)
-                    // Key(s) of the message, another way to mark message besides message id.
-                    .setKeys("KeyA")
-                    .setBody("This is a normal message for Apache RocketMQ".getBytes(StandardCharsets.UTF_8))
-                    .build();
-            SendReceipt sendReceipt = producer.send(message);
+            messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
+            messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
+            new Thread(() -> messageService.simpleConsumes(Collections.singletonList(ASYNC_PRODUCER_TOPIC),
+                                                           Collections.singletonList(TAG_ASYNC_PRODUCER), GROUP,
+                                                           10, 10
+            )).start();
 
-            // start consumer
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        FilterExpression filterExpression = new FilterExpression(TAG, FilterExpressionType.TAG);
-                        if (consumer == null) {
-                            consumer = provider.newPushConsumerBuilder()
-                                    .setClientConfiguration(clientConfiguration)
-                                    .setConsumerGroup(GROUP)
-                                    .setSubscriptionExpressions(Collections.singletonMap(TOPIC, filterExpression))
-                                    .setMessageListener(new MyConsumer())
-                                    .build();
-                        }
-                    } catch (Exception e) {
-                        log.error("consumer start error", e);
-                    }
-                }
-            });
-            thread.start();
+            messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
+            messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
+            new Thread(() -> messageService.simpleConsumeAsync(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP, 10,
+                                                               10
+            )).start();
+            Thread.sleep(1000);
         } catch (Exception e) {
             log.error("testcase error", e);
         }
@@ -119,46 +82,10 @@ public class CaseController {
     @ResponseBody
     public String healthCheck() throws Exception {
         System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
-        String[] subArgs = new String[]{
-                "updateTopic",
-                "-n",
-                nameServer,
-                "-c",
-                "DefaultCluster",
-                "-t",
-                "TopicTest"};
-        MQAdminStartup.main(subArgs);
-
-        subArgs = new String[]{
-                "updateSubGroup",
-                "-n",
-                nameServer,
-                "-c",
-                "DefaultCluster",
-                "-g",
-                "group1"};
-        MQAdminStartup.main(subArgs);
-
-        ClientServiceProvider provider = ClientServiceProvider.loadService();
-        ClientConfiguration clientConfiguration = ClientConfiguration.newBuilder()
-                .setEndpoints(endpoints)
-                .enableSsl(false)
-                .build();
-        // start producer
-        Producer producer = provider.newProducerBuilder()
-                .setClientConfiguration(clientConfiguration)
-                .build();
+        messageService.updateNormalTopic(NORMAL_TOPIC);
+        messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
+        messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
+        final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
         return SUCCESS;
     }
-
-    public static class MyConsumer implements MessageListener {
-
-        @Override
-        public ConsumeResult consume(MessageView messageView) {
-            log.info("Consume message successfully, messageId={},messageBody={}", messageView.getMessageId(),
-                    messageView.getBody().toString());
-            return ConsumeResult.SUCCESS;
-        }
-    }
-
 }

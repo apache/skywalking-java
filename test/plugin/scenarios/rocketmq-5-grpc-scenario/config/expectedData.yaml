@@ -106,6 +106,7 @@ segmentItems:
               - { key: mq.topic, value: ProducerAsyncTopicTest }
               - { key: mq.message.keys, value: not null }
               - { key: mq.message.tags, value: not null }
+              - { key: mq.message.id, value: not null }
           - operationName: RocketMQ/ProducerAsyncTopicTest/Producer
             parentSpanId: 0
             spanId: 3
@@ -122,6 +123,7 @@ segmentItems:
               - { key: mq.topic, value: ProducerAsyncTopicTest }
               - { key: mq.message.keys, value: not null }
               - { key: mq.message.tags, value: not null }
+              - { key: mq.message.id, value: not null }
           - operationName: RocketMQ/ConsumerAsyncTopicTest/Producer
             parentSpanId: 0
             spanId: 4

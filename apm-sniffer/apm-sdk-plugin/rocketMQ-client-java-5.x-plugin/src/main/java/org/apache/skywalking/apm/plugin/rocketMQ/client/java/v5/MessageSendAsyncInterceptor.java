@@ -28,10 +28,10 @@ import org.apache.rocketmq.client.apis.message.MessageBuilder;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
 import org.apache.rocketmq.client.java.impl.ClientImpl;
 import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
-import org.apache.rocketmq.shaded.com.google.gson.Gson;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -49,7 +49,9 @@ import org.apache.skywalking.apm.util.StringUtil;
 public class MessageSendAsyncInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String ASYNC_SEND_OPERATION_NAME_PREFIX = "RocketMQ/";
-    public static final Gson GSON = new Gson();
+    public static final StringTag MQ_MESSAGE_ID = new StringTag("mq.message.id");
+    public static final StringTag MQ_MESSAGE_KEYS = new StringTag("mq.message.keys");
+    public static final StringTag MQ_MESSAGE_TAGS = new StringTag("mq.message.tags");
 
     @Override
     public void beforeMethod(EnhancedInstance objInst,
@@ -67,12 +69,16 @@ public class MessageSendAsyncInterceptor implements InstanceMethodsAroundInterce
         span.setComponent(ComponentsDefine.ROCKET_MQ_PRODUCER);
         Tags.MQ_BROKER.set(span, namingServiceAddress);
         Tags.MQ_TOPIC.set(span, message.getTopic());
-        Collection<String> keys = message.getKeys();
-        if (!CollectionUtil.isEmpty(keys)) {
-            span.tag(Tags.ofKey("mq.message.keys"), String.join(",", keys));
+        if (RocketMqClientJavaPluginConfig.Plugin.Rocketmqclient.COLLECT_MESSAGE_KEYS) {
+            Collection<String> keys = message.getKeys();
+            if (!CollectionUtil.isEmpty(keys)) {
+                span.tag(MQ_MESSAGE_KEYS, String.join(",", keys));
+            }
         }
-        Optional<String> tag = message.getTag();
-        tag.ifPresent(s -> span.tag(Tags.ofKey("mq.message.tags"), s));
+        if (RocketMqClientJavaPluginConfig.Plugin.Rocketmqclient.COLLECT_MESSAGE_TAGS) {
+            Optional<String> tag = message.getTag();
+            tag.ifPresent(s -> span.tag(MQ_MESSAGE_TAGS, s));
+        }
 
         contextCarrier.extensionInjector().injectSendingTimestamp();
         SpanLayer.asMQ(span);
@@ -128,7 +134,7 @@ public class MessageSendAsyncInterceptor implements InstanceMethodsAroundInterce
                 span.asyncFinish();
                 return;
             }
-            span.tag(Tags.ofKey("mq.message.id"), sendReceipt.getMessageId().toString());
+            span.tag(MQ_MESSAGE_ID, sendReceipt.getMessageId().toString());
             span.asyncFinish();
         });
     }

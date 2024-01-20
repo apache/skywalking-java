@@ -20,10 +20,10 @@ package org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5;
 
 import org.apache.rocketmq.client.apis.consumer.ConsumeResult;
 import org.apache.rocketmq.client.apis.message.MessageView;
-import org.apache.rocketmq.shaded.com.google.gson.Gson;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -38,38 +38,31 @@ import java.lang.reflect.Method;
 public class MessageListenerInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String CONSUMER_OPERATION_NAME_PREFIX = "RocketMQ/";
-    public static final Gson GSON = new Gson();
+    public static final StringTag MQ_MESSAGE_ID = new StringTag("mq.message.id");
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst,
-                             Method method,
-                             Object[] allArguments,
-                             Class<?>[] argumentsTypes,
-                             MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         MessageView messageView = (MessageView) allArguments[0];
 
         ContextCarrier contextCarrier = getContextCarrierFromMessage(messageView);
 
         AbstractSpan span = ContextManager.createEntrySpan(CONSUMER_OPERATION_NAME_PREFIX + messageView.getTopic()
-                                                               + "/Consumer", contextCarrier);
+                + "/Consumer", contextCarrier);
         Tags.MQ_TOPIC.set(span, messageView.getTopic());
-        span.tag(Tags.ofKey("mq.message.id"), messageView.getMessageId().toString());
+        span.tag(MQ_MESSAGE_ID, messageView.getMessageId().toString());
         Object skyWalkingDynamicField = objInst.getSkyWalkingDynamicField();
         if (skyWalkingDynamicField != null) {
             ConsumerEnhanceInfos consumerEnhanceInfos = (ConsumerEnhanceInfos) skyWalkingDynamicField;
             Tags.MQ_BROKER.set(span, consumerEnhanceInfos.getNamesrvAddr());
             span.setPeer(consumerEnhanceInfos.getNamesrvAddr());
         }
+
         span.setComponent(ComponentsDefine.ROCKET_MQ_CONSUMER);
         SpanLayer.asMQ(span);
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst,
-                              Method method,
-                              Object[] allArguments,
-                              Class<?>[] argumentsTypes,
-                              Object ret) throws Throwable {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
         ConsumeResult status = (ConsumeResult) ret;
         if (ConsumeResult.FAILURE.equals(status)) {
             AbstractSpan activeSpan = ContextManager.activeSpan();
@@ -81,11 +74,7 @@ public class MessageListenerInterceptor implements InstanceMethodsAroundIntercep
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst,
-                                      Method method,
-                                      Object[] allArguments,
-                                      Class<?>[] argumentsTypes,
-                                      Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
     }
 

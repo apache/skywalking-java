@@ -69,6 +69,7 @@ public class SimpleConsumerImplAsyncInterceptor implements InstanceMethodsAround
                 ContextManager.continued(finalCapture);
             }
             if (null != throwable) {
+                span.log(throwable);
                 span.errorOccurred();
                 ContextManager.stopSpan();
                 return;

@@ -11,6 +11,7 @@ Release Notes.
 * Fix re-transform bug when plugin enhanced class proxy parent method.
 * Fix error HTTP status codes not recording as SLA failures in Vert.x plugins. 
 * Support for HttpExchange request tracing
+* Convert the Redisson lock span into an async span
 
 #### Documentation
 

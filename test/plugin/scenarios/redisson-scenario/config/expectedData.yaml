@@ -66,7 +66,7 @@ segmentItems:
         - { key: cache.instance, value: not null }
         - { key: cache.cmd, value: EVAL }
         - { key: cache.key, value: not null }
-      skipAnalysis: 'true'
+      skipAnalysis: 'false'
     - operationName: Redisson/LOCK
       parentSpanId: 0
       spanId: nq 0
@@ -98,7 +98,7 @@ segmentItems:
         - { key: cache.instance, value: not null }
         - { key: cache.cmd, value: EVAL }
         - { key: cache.key, value: not null }
-      skipAnalysis: 'true'
+      skipAnalysis: 'false'
     - operationName: Redisson/LOCK
       parentSpanId: 0
       spanId: nq 0

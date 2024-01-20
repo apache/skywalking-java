@@ -56,7 +56,7 @@ public class RedissonLockInterceptor implements InstanceMethodsAroundInterceptor
 
         RFuture<Object> future = (RFuture) ret;
         CompletableFuture<Object> completableFuture = future.toCompletableFuture();
-        completableFuture.whenCompleteAsync((res, ex) -> {
+        completableFuture.whenComplete((res, ex) -> {
             if (ex != null) {
                 span.errorOccurred();
                 span.log(ex);

@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -Dendpoints=${ENDPOINTS} -DnameServer=${NAME_SERVER} -jar ${agent_opts} ${home}/../libs/rocketmq-5-grpc-scenario.jar &
+java -Dskywalking.plugin.rocketmqclient.collect_message_keys=true -Dskywalking.plugin.rocketmqclient.collect_message_tags=true -Dendpoints=${ENDPOINTS} -DnameServer=${NAME_SERVER} -jar ${agent_opts} ${home}/../libs/rocketmq-5-grpc-scenario.jar &

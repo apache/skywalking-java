@@ -86,7 +86,8 @@ public class MessageService {
                                         .setBody(body)
                                         .build();
         try {
-            producer.sendAsync(message);
+            CompletableFuture<SendReceipt> future = producer.sendAsync(message);
+            future.join();
             log.info("Send async message successfully");
         } catch (Throwable t) {
             log.error("Failed to send message", t);

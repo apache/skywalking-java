@@ -53,25 +53,30 @@ public class CaseController {
     public String testcase() {
         try {
             messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
-            new Thread(() -> messageService.pushConsumes(
+            Thread t1 = new Thread(() -> messageService.pushConsumes(
                 Collections.singletonList(NORMAL_TOPIC),
                 Collections.singletonList(TAG_NOMARL),
                 GROUP
-            )).start();
+            ));
+            t1.start();
+            t1.join();
 
             messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
             messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
-            new Thread(() -> messageService.simpleConsumes(Collections.singletonList(ASYNC_PRODUCER_TOPIC),
+            Thread t2 = new Thread(() -> messageService.simpleConsumes(Collections.singletonList(ASYNC_PRODUCER_TOPIC),
                                                            Collections.singletonList(TAG_ASYNC_PRODUCER), GROUP,
                                                            10, 10
-            )).start();
+            ));
+            t2.start();
+            t2.join();
 
             messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
             messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
-            new Thread(() -> messageService.simpleConsumeAsync(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP, 10,
+            Thread t3 = new Thread(() -> messageService.simpleConsumeAsync(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP, 10,
                                                                10
-            )).start();
-            Thread.sleep(1000);
+            ));
+            t3.start();
+            t3.join();
         } catch (Exception e) {
             log.error("testcase error", e);
         }

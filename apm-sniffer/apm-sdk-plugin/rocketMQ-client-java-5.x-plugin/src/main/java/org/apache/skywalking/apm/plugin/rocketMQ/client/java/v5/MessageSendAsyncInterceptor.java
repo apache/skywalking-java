@@ -18,10 +18,14 @@
 
 package org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import org.apache.rocketmq.client.apis.message.Message;
 import org.apache.rocketmq.client.apis.message.MessageBuilder;
 import org.apache.rocketmq.client.apis.producer.SendReceipt;
-import org.apache.rocketmq.client.apis.producer.Transaction;
 import org.apache.rocketmq.client.java.impl.ClientImpl;
 import org.apache.rocketmq.client.java.message.MessageBuilderImpl;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
@@ -38,17 +42,11 @@ import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 /**
- * {@link MessageSendInterceptor} create exit span when the method {@link org.apache.rocketmq.client.java.impl.producer.ProducerImpl#send(Message)}
- * and {@link org.apache.rocketmq.client.java.impl.producer.ProducerImpl#send(Message, Transaction)} execute.
+ * {@link MessageSendAsyncInterceptor} create exit span when the method {@link org.apache.rocketmq.client.java.impl.producer.ProducerImpl#sendAsync(org.apache.rocketmq.client.apis.message.Message)}
+ * execute
  */
-public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor {
+public class MessageSendAsyncInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String ASYNC_SEND_OPERATION_NAME_PREFIX = "RocketMQ/";
     public static final StringTag MQ_MESSAGE_ID = new StringTag("mq.message.id");
@@ -56,27 +54,30 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
     public static final StringTag MQ_MESSAGE_TAGS = new StringTag("mq.message.tags");
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
+    public void beforeMethod(EnhancedInstance objInst,
+                             Method method,
+                             Object[] allArguments,
+                             Class<?>[] argumentsTypes,
+                             MethodInterceptResult result) throws Throwable {
         Message message = (Message) allArguments[0];
         ClientImpl producerImpl = (ClientImpl) objInst;
 
         ContextCarrier contextCarrier = new ContextCarrier();
         String namingServiceAddress = producerImpl.getClientConfiguration().getEndpoints();
-        AbstractSpan span = ContextManager.createExitSpan(buildOperationName(message.getTopic()), contextCarrier, namingServiceAddress);
+        AbstractSpan span = ContextManager.createExitSpan(
+            buildOperationName(message.getTopic()), contextCarrier, namingServiceAddress);
         span.setComponent(ComponentsDefine.ROCKET_MQ_PRODUCER);
         Tags.MQ_BROKER.set(span, namingServiceAddress);
         Tags.MQ_TOPIC.set(span, message.getTopic());
         if (RocketMqClientJavaPluginConfig.Plugin.Rocketmqclient.COLLECT_MESSAGE_KEYS) {
             Collection<String> keys = message.getKeys();
             if (!CollectionUtil.isEmpty(keys)) {
-                span.tag(MQ_MESSAGE_KEYS, keys.stream().collect(Collectors.joining(",")));
+                span.tag(MQ_MESSAGE_KEYS, String.join(",", keys));
             }
         }
         if (RocketMqClientJavaPluginConfig.Plugin.Rocketmqclient.COLLECT_MESSAGE_TAGS) {
             Optional<String> tag = message.getTag();
-            if (tag.isPresent()) {
-                span.tag(MQ_MESSAGE_TAGS, tag.get());
-            }
+            tag.ifPresent(s -> span.tag(MQ_MESSAGE_TAGS, s));
         }
 
         contextCarrier.extensionInjector().injectSendingTimestamp();
@@ -107,23 +108,43 @@ public class MessageSendInterceptor implements InstanceMethodsAroundInterceptor 
         if (message.getDeliveryTimestamp().isPresent()) {
             messageBuilder.setDeliveryTimestamp(message.getDeliveryTimestamp().get());
         }
-        properties.entrySet().forEach(item -> messageBuilder.addProperty(item.getKey(), item.getValue()));
+
+        properties.forEach(messageBuilder::addProperty);
         allArguments[0] = messageBuilder.build();
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
-        SendReceipt sendReceipt = (SendReceipt) ret;
-        if (sendReceipt != null && sendReceipt.getMessageId() != null) {
-            AbstractSpan activeSpan = ContextManager.activeSpan();
-            activeSpan.tag(MQ_MESSAGE_ID, sendReceipt.getMessageId().toString());
-        }
+    public Object afterMethod(EnhancedInstance objInst,
+                              Method method,
+                              Object[] allArguments,
+                              Class<?>[] argumentsTypes,
+                              Object ret) throws Throwable {
+        CompletableFuture<SendReceipt> future = (CompletableFuture<SendReceipt>) ret;
+        AbstractSpan span = ContextManager.activeSpan();
+        span.prepareForAsync();
         ContextManager.stopSpan();
-        return ret;
+        return future.whenCompleteAsync((sendReceipt, throwable) -> {
+            if (null != throwable) {
+                span.log(throwable);
+                span.errorOccurred();
+                span.asyncFinish();
+                return;
+            }
+            if (sendReceipt == null || sendReceipt.getMessageId() == null) {
+                span.asyncFinish();
+                return;
+            }
+            span.tag(MQ_MESSAGE_ID, sendReceipt.getMessageId().toString());
+            span.asyncFinish();
+        });
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst,
+                                      Method method,
+                                      Object[] allArguments,
+                                      Class<?>[] argumentsTypes,
+                                      Throwable t) {
         ContextManager.activeSpan().log(t);
     }
 

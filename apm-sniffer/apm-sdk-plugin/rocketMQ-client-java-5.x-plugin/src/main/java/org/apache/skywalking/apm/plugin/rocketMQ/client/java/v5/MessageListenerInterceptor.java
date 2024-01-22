@@ -23,6 +23,7 @@ import org.apache.rocketmq.client.apis.message.MessageView;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -37,6 +38,7 @@ import java.lang.reflect.Method;
 public class MessageListenerInterceptor implements InstanceMethodsAroundInterceptor {
 
     public static final String CONSUMER_OPERATION_NAME_PREFIX = "RocketMQ/";
+    public static final StringTag MQ_MESSAGE_ID = new StringTag("mq.message.id");
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
@@ -47,7 +49,7 @@ public class MessageListenerInterceptor implements InstanceMethodsAroundIntercep
         AbstractSpan span = ContextManager.createEntrySpan(CONSUMER_OPERATION_NAME_PREFIX + messageView.getTopic()
                 + "/Consumer", contextCarrier);
         Tags.MQ_TOPIC.set(span, messageView.getTopic());
-
+        span.tag(MQ_MESSAGE_ID, messageView.getMessageId().toString());
         Object skyWalkingDynamicField = objInst.getSkyWalkingDynamicField();
         if (skyWalkingDynamicField != null) {
             ConsumerEnhanceInfos consumerEnhanceInfos = (ConsumerEnhanceInfos) skyWalkingDynamicField;

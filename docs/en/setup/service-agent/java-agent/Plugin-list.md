@@ -175,3 +175,4 @@
 - spring-cloud-gateway-4.x
 - spring-webflux-6.x
 - spring-webflux-6.x-webclient
+- activemq-artemis-jakata-client-2.x

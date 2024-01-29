@@ -24,7 +24,7 @@ environment:
   - PASSWORD=artemis
 dependencies:
   activemq-server:
-    image: apache/activemq-artemis:${CASE_SERVER_IMAGE_VERSION}
+    image: apache/activemq-artemis:2.31.2
     hostname: activemq-server
     expose:
       - 8161

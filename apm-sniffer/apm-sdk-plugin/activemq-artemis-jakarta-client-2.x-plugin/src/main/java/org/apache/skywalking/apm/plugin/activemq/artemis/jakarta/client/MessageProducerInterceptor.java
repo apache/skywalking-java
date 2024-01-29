@@ -19,11 +19,7 @@ package org.apache.skywalking.apm.plugin.activemq.artemis.jakarta.client;
 
 import jakarta.jms.Message;
 import java.lang.reflect.Method;
-import org.apache.activemq.artemis.api.core.client.ClientProducer;
-import org.apache.activemq.artemis.jms.client.ActiveMQConnection;
 import org.apache.activemq.artemis.jms.client.ActiveMQDestination;
-import org.apache.activemq.artemis.jms.client.ActiveMQSession;
-import org.apache.activemq.artemis.jms.client.ConnectionFactoryOptions;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -38,9 +34,8 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.activemq.artemis.jakarta.client.define.EnhanceInfo;
 
 /**
- * {@link MessageProducerInterceptor} create exit span when the method {@link org.apache.activemq.artemis.jms.client.ActiveMQMessageProducer#doSendx(
- * ActiveMQConnection connection, ClientProducer producer, ActiveMQDestination defaultDestination, ActiveMQSession
- * session, ConnectionFactoryOptions options)} execute
+ * {@link MessageProducerInterceptor} create exit span when the method {@link org.apache.activemq.artemis.jms.client.ActiveMQMessageProducer#doSendx}
+ * execute
  */
 public class MessageProducerInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String OPERATION_NAME_PREFIX = "ActiveMQ/";

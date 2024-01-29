@@ -19,40 +19,70 @@ package org.apache.skywalking.apm.plugin.activemq.artemis.jakarta.client.define;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQDestination;
 
+/**
+ * {@link EnhanceInfo} saves the brokerUrl/name/address/TYPE properties.
+ */
 public class EnhanceInfo {
     private String brokerUrl;
     private String name;
     private String address;
     private ActiveMQDestination.TYPE type;
 
+    public EnhanceInfo() {
+    }
+
+    /**
+     * get the brokerUrl of ActiveMQ
+     */
     public String getBrokerUrl() {
         return brokerUrl;
     }
 
+    /**
+     * set the brokerUrl of ActiveMQ
+     */
     public void setBrokerUrl(final String brokerUrl) {
         this.brokerUrl = brokerUrl;
     }
 
+    /**
+     * get the type of destination(Queue/Topic)
+     */
     public ActiveMQDestination.TYPE getType() {
         return type;
     }
 
+    /**
+     * set the type of destination(Queue/Topic)
+     */
     public void setType(final ActiveMQDestination.TYPE type) {
         this.type = type;
     }
 
+    /**
+     * get the name of destination
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * set the name of destination
+     */
     public void setName(final String name) {
         this.name = name;
     }
 
+    /**
+     * get the address of destination
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * set the address of destination
+     */
     public void setAddress(final String address) {
         this.address = address;
     }

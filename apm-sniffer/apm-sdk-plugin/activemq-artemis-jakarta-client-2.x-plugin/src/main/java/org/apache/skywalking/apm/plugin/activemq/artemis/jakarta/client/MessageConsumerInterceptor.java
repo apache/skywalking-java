@@ -34,8 +34,7 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.activemq.artemis.jakarta.client.define.EnhanceInfo;
 
 /**
- * {@link MessageConsumerInterceptor} create entry span when the method {@link org.apache.activemq.artemis.jms.client.ActiveMQMessageConsumer#getMessage(final
- * long timeout, final boolean noWait)} execute
+ * {@link MessageConsumerInterceptor} create entry span when the method {@link org.apache.activemq.artemis.jms.client.ActiveMQMessageConsumer#getMessage(long, boolean)} execute
  */
 public class MessageConsumerInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String OPERATION_NAME_PREFIX = "ActiveMQ/";

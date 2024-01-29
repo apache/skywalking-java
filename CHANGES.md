@@ -14,6 +14,7 @@ Release Notes.
 * Support tracing for async producing, batch sync consuming, and batch async consuming in rocketMQ-client-java-5.x-plugin.
 * Convert the Redisson span into an async span.
 * Rename system env name from `sw_plugin_kafka_producer_config` to `SW_PLUGIN_KAFKA_PRODUCER_CONFIG`.
+* Support for ActiveMQ-Artemis messaging tracing.
 
 #### Documentation
 

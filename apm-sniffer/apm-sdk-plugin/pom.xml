@@ -87,6 +87,7 @@
         <module>netty-socketio-plugin</module>
         <module>httpclient-3.x-plugin</module>
         <module>play-2.x-plugin</module>
+        <module>play-3.x-plugin</module>
         <module>lettuce-5.x-plugin</module>
         <module>avro-plugin</module>
         <module>finagle-6.25.x-plugin</module>

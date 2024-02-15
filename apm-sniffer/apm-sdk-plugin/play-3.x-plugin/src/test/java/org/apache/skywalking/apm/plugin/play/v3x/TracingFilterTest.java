@@ -53,6 +53,7 @@ import play.api.http.MediaRange;
 import play.api.mvc.RequestHeader;
 import play.api.routing.HandlerDef;
 import play.i18n.Lang;
+import play.libs.typedmap.TypedEntry;
 import play.libs.typedmap.TypedKey;
 import play.libs.typedmap.TypedMap;
 import play.mvc.Http;
@@ -115,6 +116,26 @@ public class TracingFilterTest {
         }
 
         @Override
+        public Http.RequestHeader addAttrs(TypedEntry<?> typedEntry) {
+            return null;
+        }
+
+        @Override
+        public Http.RequestHeader addAttrs(TypedEntry<?> typedEntry, TypedEntry<?> typedEntry1) {
+            return null;
+        }
+
+        @Override
+        public Http.RequestHeader addAttrs(TypedEntry<?> typedEntry, TypedEntry<?> typedEntry1, TypedEntry<?> typedEntry2) {
+            return null;
+        }
+
+        @Override
+        public Http.RequestHeader addAttrs(List<TypedEntry<?>> list) {
+            return null;
+        }
+
+        @Override
         public Http.RequestHeader removeAttr(TypedKey<?> typedKey) {
             return null;
         }
@@ -160,18 +181,33 @@ public class TracingFilterTest {
         }
 
         @Override
+        public Optional<String> queryString(String s) {
+            return Optional.empty();
+        }
+
+        @Override
         public Http.Cookies cookies() {
             return null;
         }
 
         @Override
-        public Http.Cookie cookie(String s) {
-            return null;
+        public Optional<Http.Cookie> cookie(String s) {
+            return getCookie(s);
+        }
+
+        @Override
+        public Optional<Http.Cookie> getCookie(String s) {
+            return Optional.empty();
         }
 
         @Override
         public Http.Headers getHeaders() {
             return new Http.Headers(new HashMap<>());
+        }
+
+        @Override
+        public Http.Headers headers() {
+            return getHeaders();
         }
 
         @Override

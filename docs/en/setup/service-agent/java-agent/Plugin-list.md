@@ -76,6 +76,7 @@
 - okhttp-3.x
 - okhttp-4.x
 - play-2.x
+- play-3.x
 - postgresql-8.x
 - pulsar-2.2-2.7
 - quasar

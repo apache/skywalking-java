@@ -55,7 +55,7 @@ metrics based on the tracing data.
   * [Mssql-jdbc](https://github.com/microsoft/mssql-jdbc) 6.x -> 8.x
   * [ClickHouse-jdbc](https://github.com/ClickHouse/clickhouse-jdbc) 0.3.x
   * [Apache-Kylin-Jdbc](https://github.com/apache/kylin.git) 2.6.x -> 3.x -> 4.x
-  * [Impala-jdbc](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x
+  * [Impala-jdbc](https://www.cloudera.com/downloads/connectors/impala/jdbc/2-6-29.html) 2.6.x (Optional³)
 * RPC Frameworks
   * [Dubbo](https://github.com/alibaba/dubbo) 2.5.4 -> 2.6.0
   * [Dubbox](https://github.com/dangdangdotcom/dubbox) 2.8.4
@@ -171,3 +171,6 @@ ___
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.
 
 ²These plugins affect the performance or must be used under some conditions, from experiences. So only released in `/optional-plugins` or `/bootstrap-plugins`, copy to `/plugins` in order to make them work.
+
+³These plugins are not tested in the CI/CD pipeline, as the previous added tests are not able to run according to the latest
+CI/CD infrastructure limitations, lack of maintenance, or dependencies/images not available(e.g. removed from DockerHub). 

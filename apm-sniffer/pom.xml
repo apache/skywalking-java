@@ -38,6 +38,7 @@
         <module>optional-plugins</module>
         <module>optional-reporter-plugins</module>
         <module>bytebuddy-patch</module>
+        <module>expired-plugins</module>
     </modules>
 
     <properties>

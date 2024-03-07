@@ -170,7 +170,8 @@ public class NettyRoutingFilterInterceptorTest {
     public void testWithNullDynamicField() throws Throwable {
         interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
         interceptor.afterMethod(null, null, null, null, null);
-        ContextManager.stopSpan();
+        // no more need this, span was stopped at interceptor#afterMethod
+        // ContextManager.stopSpan();
         final List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertEquals(traceSegments.size(), 1);
         final List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegments.get(0));
@@ -187,7 +188,8 @@ public class NettyRoutingFilterInterceptorTest {
         enhancedInstance.setSkyWalkingDynamicField(ContextManager.capture());
         interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
         interceptor.afterMethod(null, null, null, null, null);
-        ContextManager.stopSpan();
+        // no more need this, span was stopped at interceptor#afterMethod
+        // ContextManager.stopSpan();
         ContextManager.stopSpan(entrySpan);
         final List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertEquals(traceSegments.size(), 1);
@@ -207,9 +209,10 @@ public class NettyRoutingFilterInterceptorTest {
         interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
         interceptor.afterMethod(null, null, null, null, null);
         Assert.assertEquals(enhancedInstance.getAttributes().get(NETTY_ROUTING_FILTER_TRACED_ATTR), true);
-        Assert.assertNotNull(ContextManager.activeSpan());
+        Assert.assertFalse(ContextManager.isActive());
 
-        ContextManager.stopSpan();
+        // no more need this, span was stopped at interceptor#afterMethod
+        // ContextManager.stopSpan();
 
         interceptor.beforeMethod(null, null, new Object[]{enhancedInstance}, null, null);
         interceptor.afterMethod(null, null, null, null, null);

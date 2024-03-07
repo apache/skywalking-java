@@ -81,6 +81,10 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             Object ret) throws Throwable {
+        if (ContextManager.isActive()) {
+            // if HttpClientFinalizerSendInterceptor does not invoke, we will stop the span there to avoid context leak.
+            ContextManager.stopSpan();
+        }
         return ret;
     }
 

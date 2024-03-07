@@ -15,6 +15,7 @@ Release Notes.
 * Convert the Redisson span into an async span.
 * Rename system env name from `sw_plugin_kafka_producer_config` to `SW_PLUGIN_KAFKA_PRODUCER_CONFIG`.
 * Support for ActiveMQ-Artemis messaging tracing.
+* Fix a bug in Spring Cloud Gateway if HttpClientFinalizer#send does not invoke, the span created at NettyRoutingFilterInterceptor can not stop.
 
 #### Documentation
 

@@ -108,7 +108,6 @@ jobs:
           - grpc-generic-call-scenario
           - shenyu-2.4.x-grpc-scenario
           - shenyu-2.4.x-sofarpc-scenario
-          - impala-jdbc-2.6.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

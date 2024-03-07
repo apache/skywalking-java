@@ -33,6 +33,10 @@ package looks like this.
     +-- bootstrap-plugins
          jdk-http-plugin.jar
          .....
+    +-- expired-plugins
+         # Expired plugins are moved to this folder. No guarantee of working and maintenance.
+         apm-impala-2.6.x-plugin.jar
+         .....
     +-- logs
     skywalking-agent.jar
 ```

@@ -125,7 +125,6 @@
         <module>micronaut-plugins</module>
         <module>nats-2.14.x-2.15.x-plugin</module>
         <module>jedis-plugins</module>
-        <module>impala-jdbc-2.6.x-plugin</module>
         <module>apm-armeria-plugins</module>
         <module>jetty-thread-pool-plugin</module>
         <module>jersey-2.x-plugin</module>

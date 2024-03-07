@@ -15,10 +15,11 @@ Release Notes.
 * Convert the Redisson span into an async span.
 * Rename system env name from `sw_plugin_kafka_producer_config` to `SW_PLUGIN_KAFKA_PRODUCER_CONFIG`.
 * Support for ActiveMQ-Artemis messaging tracing.
+* Archive the expired plugins `impala-jdbc-2.6.x-plugin`.
 * Fix a bug in Spring Cloud Gateway if HttpClientFinalizer#send does not invoke, the span created at NettyRoutingFilterInterceptor can not stop.
 
 #### Documentation
-
+* Update docs to describe `expired-plugins`.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/204?closed=1)
 

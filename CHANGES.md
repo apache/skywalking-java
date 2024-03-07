@@ -16,6 +16,7 @@ Release Notes.
 * Rename system env name from `sw_plugin_kafka_producer_config` to `SW_PLUGIN_KAFKA_PRODUCER_CONFIG`.
 * Support for ActiveMQ-Artemis messaging tracing.
 * Archive the expired plugins `impala-jdbc-2.6.x-plugin`.
+* Fix a bug in Spring Cloud Gateway if HttpClientFinalizer#send does not invoke, the span created at NettyRoutingFilterInterceptor can not stop.
 
 #### Documentation
 * Update docs to describe `expired-plugins`.

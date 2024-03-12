@@ -38,7 +38,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInterceptor {
+public abstract class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String ERROR_URI = "/_blank";
 
     private static final ILog LOGGER = LogManager.getLogger(HttpClientDoExecuteInterceptor.class);
@@ -46,11 +46,11 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInterceptResult result) throws Throwable {
-        if (allArguments[0] == null || allArguments[1] == null) {
+        if (skipIntercept(objInst, method, allArguments, argumentsTypes)) {
             // illegal args, can't trace. ignore.
             return;
         }
-        final HttpHost httpHost = (HttpHost) allArguments[0];
+        final HttpHost httpHost = getHttpHost(objInst, method, allArguments, argumentsTypes);
         ClassicHttpRequest httpRequest = (ClassicHttpRequest) allArguments[1];
         final ContextCarrier contextCarrier = new ContextCarrier();
 
@@ -75,10 +75,18 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
         }
     }
 
+    protected boolean skipIntercept(EnhancedInstance objInst, Method method, Object[] allArguments,
+                                    Class<?>[] argumentsTypes) {
+        return allArguments[1] == null || getHttpHost(objInst, method, allArguments, argumentsTypes) == null;
+    }
+
+    protected abstract HttpHost getHttpHost(EnhancedInstance objInst, Method method, Object[] allArguments,
+                                   Class<?>[] argumentsTypes) ;
+
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             Object ret) throws Throwable {
-        if (allArguments[0] == null || allArguments[1] == null) {
+        if (skipIntercept(objInst, method, allArguments, argumentsTypes)) {
             return ret;
         }
 
@@ -100,6 +108,9 @@ public class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInte
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
             Class<?>[] argumentsTypes, Throwable t) {
+        if (skipIntercept(objInst, method, allArguments, argumentsTypes)) {
+            return;
+        }
         AbstractSpan activeSpan = ContextManager.activeSpan();
         activeSpan.log(t);
     }

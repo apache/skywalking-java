@@ -53,7 +53,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 @RunWith(TracingSegmentRunner.class)
-public class HttpClientExecuteInterceptorTest {
+public class MinimalHttpClientExecuteInterceptorTest {
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
@@ -82,7 +82,7 @@ public class HttpClientExecuteInterceptorTest {
     public void setUp() throws Exception {
 
         ServiceManager.INSTANCE.boot();
-        httpClientDoExecuteInterceptor = new HttpClientDoExecuteInterceptor();
+        httpClientDoExecuteInterceptor = new MinimalClientDoExecuteInterceptor();
 
         when(httpResponse.getCode()).thenReturn(200);
         when(httpHost.getHostName()).thenReturn("127.0.0.1");

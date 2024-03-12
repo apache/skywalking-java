@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.HttpClientInstrumentation
+httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.MinimalHttpClientInstrumentation
+httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.InternalHttpClientInstrumentation
 httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.HttpAsyncClientInstrumentation
 httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.IOSessionImplInstrumentation

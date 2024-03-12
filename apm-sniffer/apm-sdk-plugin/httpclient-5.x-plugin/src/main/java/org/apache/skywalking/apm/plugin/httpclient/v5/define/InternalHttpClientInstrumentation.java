@@ -28,21 +28,20 @@ import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
-public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class InternalHttpClientInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS_MINIMAL = "org.apache.hc.client5.http.impl.classic.MinimalHttpClient";
-    private static final String ENHANCE_CLASS_INTERNAL = "org.apache.hc.client5.http.impl.classic.InternalHttpClient";
+    private static final String ENHANCE_CLASS_MINIMAL = "org.apache.hc.client5.http.impl.classic.InternalHttpClient";
     private static final String METHOD_NAME = "doExecute";
-    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.httpclient.v5.HttpClientDoExecuteInterceptor";
+    private static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.httpclient.v5.InternalClientDoExecuteInterceptor";
 
     @Override
     public ClassMatch enhanceClass() {
-        return MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS_MINIMAL, ENHANCE_CLASS_INTERNAL);
+        return MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS_MINIMAL);
     }
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return null;
+        return new ConstructorInterceptPoint[0];
     }
 
     @Override

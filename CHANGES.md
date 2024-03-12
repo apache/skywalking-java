@@ -17,7 +17,7 @@ Release Notes.
 * Support for ActiveMQ-Artemis messaging tracing.
 * Archive the expired plugins `impala-jdbc-2.6.x-plugin`.
 * Fix a bug in Spring Cloud Gateway if HttpClientFinalizer#send does not invoke, the span created at NettyRoutingFilterInterceptor can not stop.
-* Fix a bug in hc5: when the arg HttpHost of InternalHttpClient#doExecute is null, hc5 would send request but the agent don't create span
+* Fix not tracing in HttpClient v5 when HttpHost(arg[0]) is null but `RoutingSupport#determineHost` works.
 
 #### Documentation
 * Update docs to describe `expired-plugins`.

@@ -33,7 +33,7 @@
         <test.framework.version>5.0</test.framework.version>
         <docker.image.version>${test.framework.version}</docker.image.version>
         <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <log4j.version>2.8.1</log4j.version>
     </properties>
 

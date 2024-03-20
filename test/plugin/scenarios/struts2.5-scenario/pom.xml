@@ -34,7 +34,7 @@
         <compiler.version>1.8</compiler.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <test.framework.version>2.5.1</test.framework.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
     </properties>
 
     <dependencies>

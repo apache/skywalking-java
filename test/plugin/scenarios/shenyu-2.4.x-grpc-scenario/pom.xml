@@ -41,7 +41,7 @@
         <test.framework.version>2.4.3</test.framework.version>
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
         <shenyu.gateway.version>2.4.3</shenyu.gateway.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
 
         <grpc.version>1.33.1</grpc.version>
         <protobuf.version>3.13.0</protobuf.version>

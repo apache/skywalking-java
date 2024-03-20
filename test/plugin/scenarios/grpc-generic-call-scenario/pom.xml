@@ -40,7 +40,7 @@
         <test.framework.version>1.6.0</test.framework.version>
         <grpc.version>1.6.0</grpc.version>
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <!--just for test-->
         <fastjson.version>1.2.79</fastjson.version>
     </properties>

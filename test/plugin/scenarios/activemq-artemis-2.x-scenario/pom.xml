@@ -30,7 +30,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <test.framework.version>2.31.2</test.framework.version>
         <spring-boot.version>3.0.0</spring-boot.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <artemis.version>${test.framework.version}</artemis.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <jboss-logging.version>3.5.0.Final</jboss-logging.version>

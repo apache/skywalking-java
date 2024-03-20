@@ -41,7 +41,7 @@
         <test.framework.version>2.4.3</test.framework.version>
         <spring.boot.version>2.2.2.RELEASE</spring.boot.version>
         <shenyu.gateway.version>2.4.3</shenyu.gateway.version>
-        <lombok.version>1.18.20</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
 
         <rpc-sofa-boot-starter.version>6.0.4</rpc-sofa-boot-starter.version>
         <sofa-rpc-all.version>5.7.6</sofa-rpc-all.version>

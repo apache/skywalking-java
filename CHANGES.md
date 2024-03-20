@@ -18,6 +18,7 @@ Release Notes.
 * Archive the expired plugins `impala-jdbc-2.6.x-plugin`.
 * Fix a bug in Spring Cloud Gateway if HttpClientFinalizer#send does not invoke, the span created at NettyRoutingFilterInterceptor can not stop.
 * Fix not tracing in HttpClient v5 when HttpHost(arg[0]) is null but `RoutingSupport#determineHost` works.
+* Bump up lombok version to 1.18.30 to support JDK21.
 
 #### Documentation
 * Update docs to describe `expired-plugins`.

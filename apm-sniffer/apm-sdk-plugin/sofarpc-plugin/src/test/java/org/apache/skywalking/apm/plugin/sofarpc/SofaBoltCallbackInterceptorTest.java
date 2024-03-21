@@ -99,7 +99,7 @@ public class SofaBoltCallbackInterceptorTest {
 
             @Override
             public void onResponse(Object o) {
-                ContextManager.createLocalSpan("TestBegin");
+                ContextManager.createLocalSpan("onResponse");
                 ContextManager.stopSpan();
             }
 
@@ -173,7 +173,9 @@ public class SofaBoltCallbackInterceptorTest {
         TraceSegment traceSegment2 = segmentStorage.getTraceSegments().get(1);
         List<AbstractTracingSpan> spans2 = SegmentHelper.getSpans(traceSegment2);
         assertEquals(2, spans2.size());
-        assertEquals("TestBegin", spans2.get(0).getOperationName());
+        assertEquals("onResponse", spans2.get(0).getOperationName());
+
+        assertEquals(traceSegment1.getRelatedGlobalTrace().getId(),traceSegment2.getRef().getTraceId());
     }
 
 }

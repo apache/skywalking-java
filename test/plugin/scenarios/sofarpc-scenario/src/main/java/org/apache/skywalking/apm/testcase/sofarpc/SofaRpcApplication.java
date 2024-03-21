@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.testcase.sofarpc;
 
+import com.alipay.sofa.rpc.common.RpcConstants;
 import com.alipay.sofa.rpc.config.ConsumerConfig;
 import com.alipay.sofa.rpc.config.ProviderConfig;
 import com.alipay.sofa.rpc.config.ServerConfig;
@@ -42,8 +43,9 @@ public class SofaRpcApplication {
         public ProviderConfig provider() {
             ServerConfig config = new ServerConfig().setProtocol("bolt").setPort(12200).setDaemon(true);
 
-            ProviderConfig<SofaRpcDemoService> providerConfig = new ProviderConfig<SofaRpcDemoService>().setInterfaceId(SofaRpcDemoService.class
-                .getName()).setRef(new SofaRpcDemoServiceImpl()).setServer(config);
+            ProviderConfig<SofaRpcDemoService> providerConfig = new ProviderConfig<SofaRpcDemoService>().setInterfaceId(
+                SofaRpcDemoService.class
+                    .getName()).setRef(new SofaRpcDemoServiceImpl()).setServer(config);
 
             providerConfig.export();
             return providerConfig;
@@ -53,6 +55,14 @@ public class SofaRpcApplication {
         public ConsumerConfig consumer() {
             return new ConsumerConfig<SofaRpcDemoService>().setInterfaceId(SofaRpcDemoService.class.getName())
                                                            .setProtocol("bolt")
+                                                           .setDirectUrl("bolt://127.0.0.1:12200");
+        }
+
+        @Bean
+        public ConsumerConfig callbackConsumer() {
+            return new ConsumerConfig<SofaRpcDemoService>().setInterfaceId(SofaRpcDemoService.class.getName())
+                                                           .setProtocol("bolt")
+                                                           .setInvokeType(RpcConstants.INVOKER_TYPE_CALLBACK)
                                                            .setDirectUrl("bolt://127.0.0.1:12200");
         }
     }

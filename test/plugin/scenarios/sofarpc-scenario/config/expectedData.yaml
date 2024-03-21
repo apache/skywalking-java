@@ -19,23 +19,6 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-      - operationName: HEAD:/sofarpc-scenario/case/healthCheck
-        parentSpanId: -1
-        spanId: 0
-        spanLayer: Http
-        startTime: nq 0
-        endTime: nq 0
-        componentId: 1
-        isError: false
-        spanType: Entry
-        peer: ''
-        skipAnalysis: false
-        tags:
-          - {key: url, value: 'http://localhost:8080/sofarpc-scenario/case/healthCheck'}
-          - {key: http.method, value: HEAD}
-          - {key: http.status_code, value: '200'}
-  - segmentId: not null
-    spans:
     - operationName: org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.hello(java.lang.String)
       parentSpanId: -1
       spanId: 0
@@ -53,19 +36,6 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
-    - operationName: org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.onAppResponse(java.lang.String)
-      parentSpanId: 0
-      spanId: 1
-      spanLayer: RPCFramework
-      startTime: nq 0
-      endTime: nq 0
-      componentId: 43
-      isError: false
-      spanType: Exit
-      peer: 127.0.0.1:12200
-      skipAnalysis: false
-      tags:
-      - {key: url, value: 'bolt://127.0.0.1:12200/org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.onAppResponse(java.lang.String)'}
     - operationName: Thread/com.alipay.sofa.rpc.message.bolt.BoltInvokerCallback/onResponse
       parentSpanId: -1
       spanId: 0

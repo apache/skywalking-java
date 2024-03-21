@@ -33,7 +33,6 @@ public class TestCallback implements SofaResponseCallback {
 
     @Override
     public void onAppResponse(final Object o, final String s, final RequestBase requestBase) {
-        service.onAppResponse("hello");
     }
 
     @Override

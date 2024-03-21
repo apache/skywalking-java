@@ -22,7 +22,5 @@ public interface SofaRpcDemoService {
 
     String hello(String name);
 
-    String onAppResponse(String name);
-
     String callback(String name);
 }

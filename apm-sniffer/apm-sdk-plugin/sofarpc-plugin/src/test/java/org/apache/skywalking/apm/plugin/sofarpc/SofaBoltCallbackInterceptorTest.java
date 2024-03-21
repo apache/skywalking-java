@@ -175,7 +175,7 @@ public class SofaBoltCallbackInterceptorTest {
         assertEquals(2, spans2.size());
         assertEquals("onResponse", spans2.get(0).getOperationName());
 
-        assertEquals(traceSegment1.getRelatedGlobalTrace().getId(),traceSegment2.getRef().getTraceId());
+        assertEquals(traceSegment1.getRelatedGlobalTrace().getId(), traceSegment2.getRef().getTraceId());
     }
 
 }

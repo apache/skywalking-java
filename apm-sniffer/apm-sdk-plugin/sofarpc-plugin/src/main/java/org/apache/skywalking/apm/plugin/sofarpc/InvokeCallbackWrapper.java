@@ -34,7 +34,6 @@ public class InvokeCallbackWrapper implements InvokeCallback {
             this.contextSnapshot = ContextManager.capture();
         }
         this.invokeCallback = invokeCallback;
-
     }
 
     @Override
@@ -49,8 +48,8 @@ public class InvokeCallbackWrapper implements InvokeCallback {
             ContextManager.activeSpan().log(t);
             throw t;
         } finally {
-            ContextManager.stopSpan();
             contextSnapshot = null;
+            ContextManager.stopSpan();
         }
 
     }
@@ -73,8 +72,8 @@ public class InvokeCallbackWrapper implements InvokeCallback {
             ContextManager.activeSpan().log(t);
             throw t;
         } finally {
-            ContextManager.stopSpan();
             contextSnapshot = null;
+            ContextManager.stopSpan();
         }
     }
 

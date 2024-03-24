@@ -18,9 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.sofarpc;
 
+import com.alipay.remoting.InvokeCallback;
 import java.lang.reflect.Method;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -32,10 +31,8 @@ public class SofaBoltCallbackInvokeInterceptor implements InstanceMethodsAroundI
                              Object[] allArguments,
                              Class<?>[] argumentsTypes,
                              MethodInterceptResult result) {
-        ContextManager.createLocalSpan("Thread/" + objInst.getClass().getName() + "/" + method.getName());
-        ContextSnapshot cachedObjects = (ContextSnapshot) objInst.getSkyWalkingDynamicField();
-        if (cachedObjects != null) {
-            ContextManager.continued(cachedObjects);
+        if (allArguments[2] instanceof InvokeCallback) {
+            allArguments[2] = new InvokeCallbackWrapper((InvokeCallback) allArguments[2]);
         }
     }
 
@@ -45,9 +42,6 @@ public class SofaBoltCallbackInvokeInterceptor implements InstanceMethodsAroundI
                               Object[] allArguments,
                               Class<?>[] argumentsTypes,
                               Object ret) {
-        ContextManager.stopSpan();
-        // clear ContextSnapshot
-        objInst.setSkyWalkingDynamicField(null);
         return ret;
     }
 
@@ -57,6 +51,5 @@ public class SofaBoltCallbackInvokeInterceptor implements InstanceMethodsAroundI
                                       Object[] allArguments,
                                       Class<?>[] argumentsTypes,
                                       Throwable t) {
-        ContextManager.activeSpan().log(t);
     }
 }

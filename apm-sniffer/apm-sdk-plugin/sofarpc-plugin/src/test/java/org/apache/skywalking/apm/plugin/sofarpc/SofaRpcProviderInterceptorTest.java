@@ -18,10 +18,11 @@
 
 package org.apache.skywalking.apm.plugin.sofarpc;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import com.alipay.sofa.rpc.client.ProviderInfo;
+import com.alipay.sofa.rpc.context.RpcInternalContext;
+import com.alipay.sofa.rpc.core.request.SofaRequest;
+import com.alipay.sofa.rpc.core.response.SofaResponse;
+import com.alipay.sofa.rpc.filter.ProviderInvoker;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
@@ -51,11 +52,11 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import com.alipay.sofa.rpc.client.ProviderInfo;
-import com.alipay.sofa.rpc.context.RpcInternalContext;
-import com.alipay.sofa.rpc.core.request.SofaRequest;
-import com.alipay.sofa.rpc.core.response.SofaResponse;
-import com.alipay.sofa.rpc.filter.ProviderInvoker;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(TracingSegmentRunner.class)
 public class SofaRpcProviderInterceptorTest {

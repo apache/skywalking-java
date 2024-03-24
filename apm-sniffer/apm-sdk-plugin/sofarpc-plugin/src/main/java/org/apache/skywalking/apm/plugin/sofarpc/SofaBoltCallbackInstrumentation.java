@@ -24,42 +24,25 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
-public class SofaBoltCallbackActivation extends ClassInstanceMethodsEnhancePluginDefine {
+public class SofaBoltCallbackInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "com.alipay.remoting.InvokeCallback";
-    private static final String INIT_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.sofarpc.SofaBoltCallbackConstructInterceptor";
-    private static final String CALL_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.sofarpc.SofaBoltCallbackInvokeInterceptor";
-    private static final String EXCEPTION_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.sofarpc.SofaBoltCallbackExceptionInterceptor";
-    private static final String RESPONSE_METHOD_NAME = "onResponse";
-    private static final String EXCEPTION_METHOD_NAME = "onException";
+    private static final String ENHANCE_CLASS = "com.alipay.remoting.BaseRemoting";
+    private static final String INVOKE_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.sofarpc.SofaBoltCallbackInvokeInterceptor";
+    private static final String INVOKE_METHOD = "invokeWithCallback";
 
     @Override
     protected ClassMatch enhanceClass() {
-        return HierarchyMatch.byHierarchyMatch(ENHANCE_CLASS);
+        return NameMatch.byName(ENHANCE_CLASS);
     }
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
-            new ConstructorInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return any();
-                }
-
-                @Override
-                public String getConstructorInterceptor() {
-                    return INIT_METHOD_INTERCEPTOR;
-                }
-            }
-        };
-
+        return null;
     }
 
     @Override
@@ -68,33 +51,18 @@ public class SofaBoltCallbackActivation extends ClassInstanceMethodsEnhancePlugi
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(RESPONSE_METHOD_NAME).and(takesArguments(1));
+                    return named(INVOKE_METHOD).and(
+                        takesArguments(4));
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return CALL_METHOD_INTERCEPTOR;
+                    return INVOKE_METHOD_INTERCEPTOR;
                 }
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
-                }
-            },
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(EXCEPTION_METHOD_NAME).and(takesArguments(1));
-                }
-
-                @Override
-                public String getMethodsInterceptor() {
-                    return EXCEPTION_METHOD_INTERCEPTOR;
-                }
-
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             }
         };

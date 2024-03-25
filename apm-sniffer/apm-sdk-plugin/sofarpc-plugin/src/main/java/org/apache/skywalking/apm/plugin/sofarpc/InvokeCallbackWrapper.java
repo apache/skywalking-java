@@ -27,9 +27,9 @@ import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
 public class InvokeCallbackWrapper implements InvokeCallback {
 
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private ContextSnapshot contextSnapshot;
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private final InvokeCallback invokeCallback;
 
     public InvokeCallbackWrapper(InvokeCallback invokeCallback) {

@@ -20,13 +20,16 @@ package org.apache.skywalking.apm.plugin.sofarpc;
 
 import com.alipay.remoting.InvokeCallback;
 import java.util.concurrent.Executor;
+import lombok.Getter;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
 public class InvokeCallbackWrapper implements InvokeCallback {
 
+    @Getter
     private ContextSnapshot contextSnapshot;
+    @Getter
     private final InvokeCallback invokeCallback;
 
     public InvokeCallbackWrapper(InvokeCallback invokeCallback) {
@@ -80,13 +83,5 @@ public class InvokeCallbackWrapper implements InvokeCallback {
     @Override
     public Executor getExecutor() {
         return invokeCallback.getExecutor();
-    }
-
-    protected ContextSnapshot getContextSnapshot() {
-        return contextSnapshot;
-    }
-
-    protected InvokeCallback getInvokeCallback() {
-        return invokeCallback;
     }
 }

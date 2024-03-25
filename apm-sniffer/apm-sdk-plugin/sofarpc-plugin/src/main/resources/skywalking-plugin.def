@@ -16,3 +16,4 @@
 
 sofarpc=org.apache.skywalking.apm.plugin.sofarpc.SofaRpcConsumerInstrumentation
 sofarpc=org.apache.skywalking.apm.plugin.sofarpc.SofaRpcProviderInstrumentation
+sofarpc=org.apache.skywalking.apm.plugin.sofarpc.SofaBoltCallbackInstrumentation

@@ -36,6 +36,24 @@ segmentItems:
       skipAnalysis: 'false'
   - segmentId: not null
     spans:
+    - operationName: Thread/com.alipay.sofa.rpc.message.bolt.BoltInvokerCallback/onResponse
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Unknown
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 0
+      isError: false
+      spanType: Local
+      peer: ''
+      skipAnalysis: false
+      refs:
+      - {parentEndpoint: 'GET:/sofarpc-scenario/case/sofarpc', networkAddress: '',
+        refType: CrossThread, parentSpanId: 2, parentTraceSegmentId: not null,
+        parentServiceInstance: not null, parentService: sofarpc-scenario,
+        traceId: not null}
+  - segmentId: not null
+    spans:
     - operationName: org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.hello(java.lang.String)
       parentSpanId: 0
       spanId: 1
@@ -48,6 +66,19 @@ segmentItems:
       peer: 127.0.0.1:12200
       tags:
       - {key: url, value: 'bolt://127.0.0.1:12200/org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.hello(java.lang.String)'}
+      skipAnalysis: 'false'
+    - operationName: org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.callback(java.lang.String)
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: RPCFramework
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 43
+      isError: false
+      spanType: Exit
+      peer: 127.0.0.1:12200
+      tags:
+        - { key: url, value: 'bolt://127.0.0.1:12200/org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.callback(java.lang.String)' }
       skipAnalysis: 'false'
     - operationName: GET:/sofarpc-scenario/case/sofarpc
       parentSpanId: -1
@@ -63,4 +94,21 @@ segmentItems:
       - {key: url, value: 'http://localhost:8080/sofarpc-scenario/case/sofarpc'}
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService.callback(java.lang.String)
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: RPCFramework
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 43
+      isError: false
+      spanType: Entry
+      peer: ''
+      refs:
+        - { parentEndpoint: GET:/sofarpc-scenario/case/sofarpc, networkAddress: '127.0.0.1:12200',
+          refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
+              null, parentService: sofarpc-scenario, traceId: not null }
       skipAnalysis: 'false'

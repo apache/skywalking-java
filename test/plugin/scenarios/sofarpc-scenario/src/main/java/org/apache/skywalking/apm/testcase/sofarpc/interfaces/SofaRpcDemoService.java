@@ -21,4 +21,6 @@ package org.apache.skywalking.apm.testcase.sofarpc.interfaces;
 public interface SofaRpcDemoService {
 
     String hello(String name);
+
+    String callback(String name);
 }

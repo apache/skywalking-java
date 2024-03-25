@@ -18,11 +18,11 @@
 
 package org.apache.skywalking.apm.plugin.sofarpc;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
+import com.alipay.sofa.rpc.client.ProviderInfo;
+import com.alipay.sofa.rpc.context.RpcInternalContext;
+import com.alipay.sofa.rpc.core.request.SofaRequest;
+import com.alipay.sofa.rpc.core.response.SofaResponse;
+import com.alipay.sofa.rpc.filter.ConsumerInvoker;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
@@ -50,11 +50,12 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import com.alipay.sofa.rpc.client.ProviderInfo;
-import com.alipay.sofa.rpc.context.RpcInternalContext;
-import com.alipay.sofa.rpc.core.request.SofaRequest;
-import com.alipay.sofa.rpc.core.response.SofaResponse;
-import com.alipay.sofa.rpc.filter.ConsumerInvoker;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 @RunWith(TracingSegmentRunner.class)
 public class SofaRpcConsumerInterceptorTest {
@@ -121,7 +122,8 @@ public class SofaRpcConsumerInterceptorTest {
 
     @Test
     public void testConsumerWithAttachment() throws Throwable {
-        sofaRpcConsumerInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
+        sofaRpcConsumerInterceptor.beforeMethod(
+            enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
         sofaRpcConsumerInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, sofaResponse);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
@@ -133,8 +135,10 @@ public class SofaRpcConsumerInterceptorTest {
 
     @Test
     public void testConsumerWithException() throws Throwable {
-        sofaRpcConsumerInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
-        sofaRpcConsumerInterceptor.handleMethodException(enhancedInstance, null, allArguments, argumentTypes, new RuntimeException());
+        sofaRpcConsumerInterceptor.beforeMethod(
+            enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
+        sofaRpcConsumerInterceptor.handleMethodException(
+            enhancedInstance, null, allArguments, argumentTypes, new RuntimeException());
         sofaRpcConsumerInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, sofaResponse);
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
@@ -146,7 +150,8 @@ public class SofaRpcConsumerInterceptorTest {
         when(sofaResponse.isError()).thenReturn(true);
         when(sofaResponse.getAppResponse()).thenReturn(new RuntimeException());
 
-        sofaRpcConsumerInterceptor.beforeMethod(enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
+        sofaRpcConsumerInterceptor.beforeMethod(
+            enhancedInstance, null, allArguments, argumentTypes, methodInterceptResult);
         sofaRpcConsumerInterceptor.afterMethod(enhancedInstance, null, allArguments, argumentTypes, sofaResponse);
 
         assertThat(segmentStorage.getTraceSegments().size(), is(1));
@@ -180,8 +185,11 @@ public class SofaRpcConsumerInterceptorTest {
         assertThat(tags.size(), is(1));
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.RPC_FRAMEWORK));
         assertThat(SpanHelper.getComponentId(span), is(43));
-        assertThat(tags.get(0)
-                       .getValue(), is("bolt://127.0.0.1:12200/org.apache.skywalking.apm.test.TestSofaRpcService.test(String)"));
+        assertThat(
+            tags.get(0)
+                .getValue(),
+            is("bolt://127.0.0.1:12200/org.apache.skywalking.apm.test.TestSofaRpcService.test(String)")
+        );
         assertThat(span.getOperationName(), is("org.apache.skywalking.apm.test.TestSofaRpcService.test(String)"));
     }
 }

@@ -19,8 +19,11 @@
 package org.apache.skywalking.apm.testcase.sofarpc.controller;
 
 import com.alipay.sofa.rpc.config.ConsumerConfig;
+import com.alipay.sofa.rpc.context.RpcInvokeContext;
+import org.apache.skywalking.apm.testcase.sofarpc.callback.TestCallback;
 import org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +35,12 @@ public class CaseController {
     private static final String SUCCESS = "Success";
 
     @Autowired
+    @Qualifier("consumer")
     private ConsumerConfig<SofaRpcDemoService> consumerConfig;
+
+    @Autowired
+    @Qualifier("callbackConsumer")
+    private ConsumerConfig<SofaRpcDemoService> callbackConsumer;
 
     @RequestMapping("/healthCheck")
     @ResponseBody
@@ -45,6 +53,11 @@ public class CaseController {
     public String sofarpc() {
         SofaRpcDemoService service = consumerConfig.refer();
         service.hello("sofarpc");
+
+        SofaRpcDemoService callbackService = callbackConsumer.refer();
+        RpcInvokeContext invokeCtx = RpcInvokeContext.peekContext();
+        invokeCtx.setResponseCallback(new TestCallback(service));
+        callbackService.callback("sofarpc");
         return SUCCESS;
     }
 }

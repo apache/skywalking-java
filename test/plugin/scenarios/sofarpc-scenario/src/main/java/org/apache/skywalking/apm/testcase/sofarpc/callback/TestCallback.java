@@ -16,18 +16,32 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.sofarpc.service;
+package org.apache.skywalking.apm.testcase.sofarpc.callback;
 
+import com.alipay.sofa.rpc.core.exception.SofaRpcException;
+import com.alipay.sofa.rpc.core.invoke.SofaResponseCallback;
+import com.alipay.sofa.rpc.core.request.RequestBase;
 import org.apache.skywalking.apm.testcase.sofarpc.interfaces.SofaRpcDemoService;
 
-public class SofaRpcDemoServiceImpl implements SofaRpcDemoService {
-    @Override
-    public String hello(String name) {
-        return "hello, " + name;
+public class TestCallback implements SofaResponseCallback {
+
+    private SofaRpcDemoService service;
+
+    public TestCallback(final SofaRpcDemoService service) {
+        this.service = service;
     }
 
     @Override
-    public String callback(String name) {
-        return "hello, " + name;
+    public void onAppResponse(final Object o, final String s, final RequestBase requestBase) {
+    }
+
+    @Override
+    public void onAppException(final Throwable throwable, final String s, final RequestBase requestBase) {
+
+    }
+
+    @Override
+    public void onSofaException(final SofaRpcException e, final String s, final RequestBase requestBase) {
+
     }
 }

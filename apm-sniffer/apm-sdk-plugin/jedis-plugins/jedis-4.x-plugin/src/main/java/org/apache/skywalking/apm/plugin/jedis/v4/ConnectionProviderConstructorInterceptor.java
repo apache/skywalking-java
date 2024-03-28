@@ -19,15 +19,26 @@ package org.apache.skywalking.apm.plugin.jedis.v4;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import redis.clients.jedis.DefaultJedisSocketFactory;
 import redis.clients.jedis.HostAndPort;
 
-public class ConnectionConstructorInterceptor implements InstanceConstructorInterceptor {
+public class ConnectionProviderConstructorInterceptor implements InstanceConstructorInterceptor {
     @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
-        HostAndPort hostAndPort = ((DefaultJedisSocketFactory) allArguments[0]).getHostAndPort();
-        ConnectionInformation connectionData = new ConnectionInformation();
-        connectionData.setActualTarget(hostAndPort.toString());
-        objInst.setSkyWalkingDynamicField(connectionData);
+    public void onConstruct(final EnhancedInstance objInst, final Object[] allArguments) throws Throwable {
+        if (objInst.getSkyWalkingDynamicField() != null) {
+            return;
+        }
+        Object arg = allArguments[0];
+        if (arg instanceof Iterable<?>) {
+            Iterable<?> iterable = (Iterable<?>) arg;
+            StringBuilder sb = new StringBuilder();
+            for (Object o : iterable) {
+                sb.append(o.toString()).append(",");
+            }
+            objInst.setSkyWalkingDynamicField(sb.delete(sb.length() - 1, sb.length()).toString());
+        }
+        if (arg instanceof HostAndPort) {
+            objInst.setSkyWalkingDynamicField(arg.toString());
+        }
     }
+
 }

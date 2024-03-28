@@ -18,6 +18,7 @@
 package org.apache.skywalking.apm.plugin.jedis.v4;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -27,18 +28,23 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import java.lang.reflect.Method;
+import org.apache.skywalking.apm.util.StringUtil;
 
 public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor {
+    private static final StringTag TAG_ARGS = new StringTag("actual_target");
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
+        final ConnectionInformation connectionData = (ConnectionInformation) objInst.getSkyWalkingDynamicField();
+        // Use cluster information to adapt Virtual Cache if exists, otherwise use real server host
+        String peer =  StringUtil.isBlank(connectionData.getClusterNodes()) ? connectionData.getActualTarget() : connectionData.getClusterNodes();
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + method.getName(), peer);
         span.setComponent(ComponentsDefine.JEDIS);
         SpanLayer.asCache(span);
         Tags.CACHE_TYPE.set(span, "Redis");
         Tags.CACHE_CMD.set(span, "BATCH_EXECUTE");
+        TAG_ARGS.set(span, connectionData.getActualTarget());
     }
 
     @Override

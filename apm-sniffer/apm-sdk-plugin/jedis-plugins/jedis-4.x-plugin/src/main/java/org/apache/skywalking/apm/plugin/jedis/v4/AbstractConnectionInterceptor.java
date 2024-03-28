@@ -18,6 +18,7 @@
 package org.apache.skywalking.apm.plugin.jedis.v4;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -39,6 +40,8 @@ public abstract class AbstractConnectionInterceptor implements InstanceMethodsAr
 
     private static final String CACHE_TYPE = "Redis";
 
+    private static final StringTag TAG_ARGS = new StringTag("actual_target");
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         Iterator<Rawable> iterator = getCommands(allArguments);
@@ -49,12 +52,15 @@ public abstract class AbstractConnectionInterceptor implements InstanceMethodsAr
         // Use lowercase to make config compatible with jedis-2.x-3.x plugin
         // Refer to `plugin.jedis.operation_mapping_read`, `plugin.jedis.operation_mapping_write` config item in agent.config
         String cmd = protocolCommand == null ? UNKNOWN : protocolCommand.toLowerCase();
-        String peer = String.valueOf(objInst.getSkyWalkingDynamicField());
+        ConnectionInformation connectionData = (ConnectionInformation) objInst.getSkyWalkingDynamicField();
+        // Use cluster information to adapt Virtual Cache if exists, otherwise use real server host
+        String peer =  StringUtil.isBlank(connectionData.getClusterNodes()) ? connectionData.getActualTarget() : connectionData.getClusterNodes();
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + cmd, peer);
         span.setComponent(ComponentsDefine.JEDIS);
         readKeyIfNecessary(iterator).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
         Tags.CACHE_CMD.set(span, cmd);
         Tags.CACHE_TYPE.set(span, CACHE_TYPE);
+        TAG_ARGS.set(span, connectionData.getActualTarget());
         parseOperation(cmd).ifPresent(op -> Tags.CACHE_OP.set(span, op));
         SpanLayer.asCache(span);
     }

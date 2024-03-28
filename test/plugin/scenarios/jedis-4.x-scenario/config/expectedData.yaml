@@ -36,6 +36,7 @@ segmentItems:
               - {key: cache.key, value: a}
               - {key: cache.cmd, value: set}
               - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
               - {key: cache.op, value: write}
           - operationName: Jedis/get
             operationId: 0
@@ -53,6 +54,7 @@ segmentItems:
               - {key: cache.key, value: a}
               - {key: cache.cmd, value: get}
               - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
               - {key: cache.op, value: read}
           - operationName: Jedis/del
             operationId: 0
@@ -70,6 +72,7 @@ segmentItems:
               - {key: cache.key, value: a}
               - {key: cache.cmd, value: del}
               - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
               - {key: cache.op, value: write}
           - operationName: Jedis/syncAndReturnAll
             operationId: 0
@@ -86,6 +89,7 @@ segmentItems:
             tags:
               - {key: cache.type, value: Redis}
               - {key: cache.cmd, value: BATCH_EXECUTE}
+              - {key: actual_target, value: 'redis-server:6379'}
           - operationName: Jedis/exec
             operationId: 0
             parentSpanId: 0
@@ -101,6 +105,7 @@ segmentItems:
             tags:
               - {key: cache.type, value: Redis}
               - {key: cache.cmd, value: BATCH_EXECUTE}
+              - {key: actual_target, value: 'redis-server:6379'}
           - operationName: Jedis/discard
             operationId: 0
             parentSpanId: 0
@@ -116,6 +121,7 @@ segmentItems:
             tags:
               - {key: cache.type, value: Redis}
               - {key: cache.cmd, value: BATCH_EXECUTE}
+              - {key: actual_target, value: 'redis-server:6379'}
           - operationName: Jedis/xadd
             operationId: 0
             parentSpanId: 0
@@ -132,6 +138,7 @@ segmentItems:
               - {key: cache.key, value: abc}
               - {key: cache.cmd, value: xadd}
               - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
               - {key: cache.op, value: write}
           - operationName: Jedis/xread
             operationId: 0
@@ -148,6 +155,7 @@ segmentItems:
             tags:
             - {key: cache.cmd, value: xread}
             - {key: cache.type, value: Redis}
+            - {key: actual_target, value: 'redis-server:6379'}
             - {key: cache.op, value: read}
           - operationName: Jedis/xdel
             operationId: 0
@@ -165,6 +173,109 @@ segmentItems:
               - {key: cache.key, value: abc}
               - {key: cache.cmd, value: xdel}
               - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
+              - {key: cache.op, value: write}
+          - operationName: Jedis/set
+            parentSpanId: 0
+            spanId: 10
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-server:6379,redis-server:6379
+            skipAnalysis: false
+            tags:
+              - {key: cache.key, value: x}
+              - {key: cache.cmd, value: set}
+              - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
+              - {key: cache.op, value: write}
+          - operationName: Jedis/get
+            parentSpanId: 0
+            spanId: 11
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-server:6379,redis-server:6379
+            skipAnalysis: false
+            tags:
+              - {key: cache.key, value: x}
+              - {key: cache.cmd, value: get}
+              - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
+              - {key: cache.op, value: read}
+          - operationName: Jedis/del
+            parentSpanId: 0
+            spanId: 12
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-server:6379,redis-server:6379
+            skipAnalysis: false
+            tags:
+              - {key: cache.key, value: x}
+              - {key: cache.cmd, value: del}
+              - {key: cache.type, value: Redis}
+              - {key: actual_target, value: 'redis-server:6379'}
+              - {key: cache.op, value: write}
+          - operationName: Jedis/set
+            parentSpanId: 0
+            spanId: 13
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-cluster-m3:6379,redis-cluster-m2:6379,redis-cluster-m1:6379
+            skipAnalysis: false
+            tags:
+              - {key: cache.key, value: x}
+              - {key: cache.cmd, value: set}
+              - {key: cache.type, value: Redis}
+              - {key: actual_target, value: not blank }
+              - {key: cache.op, value: write}
+          - operationName: Jedis/get
+            parentSpanId: 0
+            spanId: 14
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-cluster-m3:6379,redis-cluster-m2:6379,redis-cluster-m1:6379
+            skipAnalysis: false
+            tags:
+              - {key: cache.key, value: x}
+              - {key: cache.cmd, value: get}
+              - {key: cache.type, value: Redis}
+              - {key: actual_target, value: not blank}
+              - {key: cache.op, value: read}
+          - operationName: Jedis/del
+            parentSpanId: 0
+            spanId: 15
+            spanLayer: Cache
+            startTime: gt 0
+            endTime: gt 0
+            componentId: 30
+            isError: false
+            spanType: Exit
+            peer: redis-cluster-m3:6379,redis-cluster-m2:6379,redis-cluster-m1:6379
+            skipAnalysis: false
+            tags:
+              - {key: cache.key, value: x}
+              - {key: cache.cmd, value: del}
+              - {key: cache.type, value: Redis}
+              - {key: actual_target, value: not blank }
               - {key: cache.op, value: write}
           - operationName: GET:/jedis-scenario/case/jedis-scenario
             operationId: 0

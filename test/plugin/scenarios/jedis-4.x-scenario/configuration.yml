@@ -21,8 +21,27 @@ startScript: ./bin/startup.sh
 environment:
   - REDIS_HOST=redis-server
   - REDIS_PORT=6379
+  - REDIS_CLUSTER_M1_HOST=redis-cluster-m1
+  - REDIS_CLUSTER_M1_PORT=6379
+  - REDIS_CLUSTER_M2_HOST=redis-cluster-m2
+  - REDIS_CLUSTER_M2_PORT=6379
+  - REDIS_CLUSTER_M3_HOST=redis-cluster-m3
+  - REDIS_CLUSTER_M3_PORT=6379
+
 dependencies:
   redis-server:
     image: redis:7.0.4
     hostname: redis-server
 
+  redis-cluster-m1:
+    image: redis:7.2.4
+    hostname: redis-cluster-m1
+    command: sh -c " printf '%s\\n' 'port 6379'>> /etc/redis.conf && printf '%s\\n' 'cluster-enabled yes'>> /etc/redis.conf && printf '%s\\n' 'cluster-config-file nodes.conf'>> /etc/redis.conf && printf '%s\\n' 'nohup redis-server /etc/redis.conf>>/tmp/redis.log &' >> /tmp/start-redis.sh  && printf '%s\\n' 'while true; do printf yes | redis-cli --cluster create redis-cluster-m1:6379 redis-cluster-m2:6379 redis-cluster-m3:6379 --cluster-replicas 0 && break; done ' >> /tmp/start-redis.sh && printf '%s\\n' 'tail -f /tmp/redis.log' >> /tmp/start-redis.sh && sh /tmp/start-redis.sh"
+  redis-cluster-m2:
+    image: redis:7.2.4
+    hostname: redis-cluster-m2
+    command: sh -c " printf '%s\\n' 'port 6379'>> /etc/redis.conf && printf '%s\\n' 'cluster-enabled yes'>> /etc/redis.conf && printf '%s\\n' 'cluster-config-file nodes.conf'>> /etc/redis.conf && printf '%s\\n' 'nohup redis-server /etc/redis.conf>>/tmp/redis.log &' >> /tmp/start-redis.sh  && printf '%s\\n' 'while true; do printf yes | redis-cli --cluster create redis-cluster-m1:6379 redis-cluster-m2:6379 redis-cluster-m3:6379 --cluster-replicas 0 && break; done ' >> /tmp/start-redis.sh && printf '%s\\n' 'tail -f /tmp/redis.log' >> /tmp/start-redis.sh && sh /tmp/start-redis.sh"
+  redis-cluster-m3:
+    image: redis:7.2.4
+    hostname: redis-cluster-m3
+    command: sh -c " printf '%s\\n' 'port 6379'>> /etc/redis.conf && printf '%s\\n' 'cluster-enabled yes'>> /etc/redis.conf && printf '%s\\n' 'cluster-config-file nodes.conf'>> /etc/redis.conf && printf '%s\\n' 'nohup redis-server /etc/redis.conf>>/tmp/redis.log &' >> /tmp/start-redis.sh  && printf '%s\\n' 'while true; do printf yes | redis-cli --cluster create redis-cluster-m1:6379 redis-cluster-m2:6379 redis-cluster-m3:6379 --cluster-replicas 0 && break; done ' >> /tmp/start-redis.sh && printf '%s\\n' 'tail -f /tmp/redis.log' >> /tmp/start-redis.sh && sh /tmp/start-redis.sh"

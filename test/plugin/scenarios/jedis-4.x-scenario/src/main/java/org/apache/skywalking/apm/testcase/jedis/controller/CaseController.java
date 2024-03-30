@@ -19,14 +19,12 @@
 package org.apache.skywalking.apm.testcase.jedis.controller;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.exceptions.JedisClusterOperationException;
 
 @RestController
 @RequestMapping("/case")

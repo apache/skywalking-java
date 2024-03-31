@@ -46,7 +46,7 @@ public class ConnectionProviderInstrumentation extends AbstractWitnessInstrument
                 @Override
                 public ElementMatcher<MethodDescription> getConstructorMatcher() {
                     return ElementMatchers.takesArgument(0, named("redis.clients.jedis.HostAndPort"))
-                                          .or(ElementMatchers.takesArgument(0, hasSuperType(named("java.lang.Iterable"))));
+                                          .or(ElementMatchers.takesArgument(0, hasSuperType(named("java.util.Collection"))));
                 }
 
                 @Override

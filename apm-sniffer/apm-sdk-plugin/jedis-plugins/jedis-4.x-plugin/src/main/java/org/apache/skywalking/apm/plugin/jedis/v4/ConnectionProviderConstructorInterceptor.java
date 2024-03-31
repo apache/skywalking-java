@@ -17,8 +17,10 @@
 
 package org.apache.skywalking.apm.plugin.jedis.v4;
 
+import java.util.Collection;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.skywalking.apm.util.StringUtil;
 import redis.clients.jedis.HostAndPort;
 
 public class ConnectionProviderConstructorInterceptor implements InstanceConstructorInterceptor {
@@ -28,15 +30,10 @@ public class ConnectionProviderConstructorInterceptor implements InstanceConstru
             return;
         }
         Object arg = allArguments[0];
-        if (arg instanceof Iterable<?>) {
-            Iterable<?> iterable = (Iterable<?>) arg;
-            StringBuilder sb = new StringBuilder();
-            for (Object o : iterable) {
-                sb.append(o.toString()).append(",");
-            }
-            if (sb.length() > 0) {
-                objInst.setSkyWalkingDynamicField(sb.delete(sb.length() - 1, sb.length()).toString());
-            }
+        if (arg instanceof Collection) {
+            Collection<?> collection = (Collection<?>) arg;
+            final String[] array = collection.stream().map(Object::toString).toArray(String[]::new);
+            objInst.setSkyWalkingDynamicField(StringUtil.join(',', array));
         }
         if (arg instanceof HostAndPort) {
             objInst.setSkyWalkingDynamicField(arg.toString());

@@ -34,7 +34,9 @@ public class ConnectionProviderConstructorInterceptor implements InstanceConstru
             for (Object o : iterable) {
                 sb.append(o.toString()).append(",");
             }
-            objInst.setSkyWalkingDynamicField(sb.delete(sb.length() - 1, sb.length()).toString());
+            if (sb.length() > 0) {
+                objInst.setSkyWalkingDynamicField(sb.delete(sb.length() - 1, sb.length()).toString());
+            }
         }
         if (arg instanceof HostAndPort) {
             objInst.setSkyWalkingDynamicField(arg.toString());

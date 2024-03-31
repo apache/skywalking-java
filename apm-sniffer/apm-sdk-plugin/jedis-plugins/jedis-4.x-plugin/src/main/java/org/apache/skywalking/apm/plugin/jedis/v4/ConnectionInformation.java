@@ -17,17 +17,10 @@
 
 package org.apache.skywalking.apm.plugin.jedis.v4;
 
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import redis.clients.jedis.DefaultJedisSocketFactory;
-import redis.clients.jedis.HostAndPort;
+import lombok.Data;
 
-public class ConnectionConstructorInterceptor implements InstanceConstructorInterceptor {
-    @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) throws Throwable {
-        HostAndPort hostAndPort = ((DefaultJedisSocketFactory) allArguments[0]).getHostAndPort();
-        ConnectionInformation connectionData = new ConnectionInformation();
-        connectionData.setActualTarget(hostAndPort.toString());
-        objInst.setSkyWalkingDynamicField(connectionData);
-    }
+@Data
+public class ConnectionInformation {
+    private String clusterNodes;
+    private String actualTarget;
 }

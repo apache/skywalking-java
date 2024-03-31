@@ -18,10 +18,13 @@
 
 package org.apache.skywalking.apm.testcase.jedis.controller;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.HostAndPort;
 
 @RestController
 @RequestMapping("/case")
@@ -35,6 +38,21 @@ public class CaseController {
     @Value("${redis.port:6379}")
     private Integer redisPort;
 
+    @Value("${redis.cluster.m1.host:127.0.0.1}")
+    private String redisClusterM1Host;
+    @Value("${redis.cluster.m1.port:6379}")
+    private Integer redisClusterM1Port;
+
+    @Value("${redis.cluster.m2.host:127.0.0.1}")
+    private String redisClusterM2Host;
+    @Value("${redis.cluster.m2.port:6379}")
+    private Integer redisClusterM2Port;
+
+    @Value("${redis.cluster.m3.host:127.0.0.1}")
+    private String redisClusterM3Host;
+    @Value("${redis.cluster.m3.port:6379}")
+    private Integer redisClusterM3Port;
+
     @RequestMapping("/jedis-scenario")
     @ResponseBody
     public String testcase() throws Exception {
@@ -43,7 +61,6 @@ public class CaseController {
             command.get("a");
             command.del("a");
         }
-
         try (RedisPipelineCommandExecutor command = new RedisPipelineCommandExecutor(redisHost, redisPort)) {
             command.pipelineExecute();
         }
@@ -55,7 +72,18 @@ public class CaseController {
         try (RedisStreamCommandExecutor executor = new RedisStreamCommandExecutor(redisHost, redisPort)) {
             executor.exec();
         }
-
+        try (ShardingExecutor shardingExecutor = new ShardingExecutor(
+            Arrays.asList(new HostAndPort(redisHost, redisPort), new HostAndPort(redisHost, redisPort)))) {
+            shardingExecutor.exec();
+        }
+        try (ClusterExecutor clusterExecutor = new ClusterExecutor(new HashSet<>(
+            Arrays.asList(
+                new HostAndPort(redisClusterM1Host, redisClusterM1Port),
+                new HostAndPort(redisClusterM2Host, redisClusterM2Port),
+                new HostAndPort(redisClusterM3Host, redisClusterM3Port)
+            )))) {
+            clusterExecutor.exec();
+        }
         return SUCCESS;
     }
 

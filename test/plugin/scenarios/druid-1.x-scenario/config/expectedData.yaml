@@ -224,12 +224,6 @@ meterItems:
       name: datasource
       tags:
       - {name: name, value: test_mysql-server:3306}
-      - {name: status, value: idleCount}
-    singleValue: ge 0
-  - meterId:
-      name: datasource
-      tags:
-      - {name: name, value: test_mysql-server:3306}
       - {name: status, value: lockQueueLength}
     singleValue: ge 0
   - meterId:

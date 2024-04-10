@@ -58,10 +58,9 @@ public class PoolingAddDruidDataSourceInterceptor implements StaticMethodsAround
     }
 
     private Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> getMetrics() {
-        Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap = new HashMap();
+        Map<String, Function<DruidDataSourceMBean, Supplier<Double>>> metricMap = new HashMap<>();
         metricMap.put("activeCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getActiveCount());
         metricMap.put("poolingCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getPoolingCount());
-        metricMap.put("idleCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) (druidDataSource.getPoolingCount() - druidDataSource.getActiveCount()));
         metricMap.put("lockQueueLength", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getLockQueueLength());
         metricMap.put("maxWaitThreadCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getMaxWaitThreadCount());
         metricMap.put("commitCount", (DruidDataSourceMBean druidDataSource) -> () -> (double) druidDataSource.getCommitCount());

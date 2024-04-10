@@ -206,7 +206,7 @@ segmentItems:
       - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: druid-1.x-scenario
-  meterSize: 14
+  meterSize: 13
   meters:
   - meterId:
       name: datasource
@@ -219,12 +219,6 @@ meterItems:
       tags:
       - {name: name, value: test_mysql-server:3306}
       - {name: status, value: poolingCount}
-    singleValue: ge 0
-  - meterId:
-      name: datasource
-      tags:
-      - {name: name, value: test_mysql-server:3306}
-      - {name: status, value: idleCount}
     singleValue: ge 0
   - meterId:
       name: datasource

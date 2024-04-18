@@ -63,6 +63,10 @@ public abstract class AbstractThreadingPoolInterceptor implements InstanceMethod
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
+        if (!ContextManager.isActive()) {
+            return;
+        }
+
         ContextManager.activeSpan().log(t);
     }
 }

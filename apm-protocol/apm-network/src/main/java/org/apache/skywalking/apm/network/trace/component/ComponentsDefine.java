@@ -244,4 +244,7 @@ public class ComponentsDefine {
     public static final OfficialComponent NACOS = new OfficialComponent(150, "Nacos");
 
     public static final OfficialComponent NETTY_HTTP = new OfficialComponent(151, "Netty-http");
+
+    public static final OfficialComponent C3P0 = new OfficialComponent(152, "c3p0");
+
 }

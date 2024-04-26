@@ -148,6 +148,7 @@ metrics based on the tracing data.
   * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
   * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
   * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x
+  * [C3P0](https://github.com/swaldman/c3p0) 0.9.0 -> 0.10.0
 * Logging Framework
   * [log4j](https://github.com/apache/log4j) 2.x
   * [log4j2](https://github.com/apache/logging-log4j2) 1.2.x
@@ -166,6 +167,11 @@ The meter plugin provides the advanced metrics collections, which are not a part
   * [Dubbo](https://github.com/apache/dubbo) 2.5.x -> 2.7.x
   * [Jetty](https://github.com/eclipse/jetty.project) 9.1.x -> 11.x
   * [Grizzly](https://github.com/eclipse-ee4j/grizzly) 2.3.x -> 4.x
+* Connection Pool
+  * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
+  * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
+  * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x
+  * [C3P0](https://github.com/swaldman/c3p0) 0.9.0 -> 0.10.0
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository,
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

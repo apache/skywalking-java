@@ -7,6 +7,7 @@ Release Notes.
 
 * Remove `idleCount` tag in Alibaba Druid meter plugin.
 * Fix NPE in handleMethodException method of apm-jdk-threadpool-plugin.
+* Support for C3P0 connection pool tracing.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)
 

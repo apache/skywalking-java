@@ -16,15 +16,13 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.c3p0.service;
+package org.apache.skywalking.apm.testcase.c3p0.mchange.service;
 
-import com.mchange.v2.c3p0.C3P0Registry;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Set;
-import org.apache.skywalking.apm.testcase.c3p0.MysqlConfig;
+import org.apache.skywalking.apm.testcase.c3p0.mchange.MysqlConfig;
 import org.springframework.stereotype.Service;
 
 @Service

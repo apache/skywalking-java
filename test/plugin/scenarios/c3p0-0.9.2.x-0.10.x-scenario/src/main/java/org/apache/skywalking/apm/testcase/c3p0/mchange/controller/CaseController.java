@@ -16,11 +16,11 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.c3p0.controller;
+package org.apache.skywalking.apm.testcase.c3p0.mchange.controller;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.skywalking.apm.testcase.c3p0.service.CaseService;
+import org.apache.skywalking.apm.testcase.c3p0.mchange.service.CaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,7 +37,7 @@ public class CaseController {
 
     private static final String SUCCESS = "Success";
     
-    @RequestMapping("/c3p0-0.9.0.x-0.9.1.x-scenario")
+    @RequestMapping("/c3p0-0.9.2.x-0.10.x-scenario")
     @ResponseBody
     public String testcase() throws Exception {
         try {

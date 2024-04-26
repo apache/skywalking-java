@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.c3p0;
+package org.apache.skywalking.apm.testcase.c3p0.c3p0;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

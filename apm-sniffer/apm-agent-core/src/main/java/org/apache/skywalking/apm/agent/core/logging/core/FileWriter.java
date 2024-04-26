@@ -97,6 +97,7 @@ public class FileWriter implements IWriter {
             public void handle(Throwable t) {
             }
         }), "SkywalkingAgent-LogFileWriter");
+        logFlusherThread.setDaemon(true);
         logFlusherThread.start();
     }
 

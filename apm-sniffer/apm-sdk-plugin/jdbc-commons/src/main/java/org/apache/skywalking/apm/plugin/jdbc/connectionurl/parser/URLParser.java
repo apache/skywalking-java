@@ -33,9 +33,9 @@ public class URLParser {
     private static final String MARIADB_JDBC_URL_PREFIX = "jdbc:mariadb";
     private static final String MSSQL_JTDS_URL_PREFIX = "jdbc:jtds:sqlserver:";
     private static final String MSSQL_JDBC_URL_PREFIX = "jdbc:sqlserver:";
-    private static final String KYLIN_JDBC_URK_PREFIX = "jdbc:kylin";
-    private static final String IMPALA_JDBC_URK_PREFIX = "jdbc:impala";
-    private static final String CLICKHOUSE_JDBC_URK_PREFIX = "jdbc:clickhouse";
+    private static final String KYLIN_JDBC_URL_PREFIX = "jdbc:kylin";
+    private static final String IMPALA_JDBC_URL_PREFIX = "jdbc:impala";
+    private static final String CLICKHOUSE_JDBC_URL_PREFIX = "jdbc:clickhouse";
 
     public static ConnectionInfo parser(String url) {
         ConnectionURLParser parser = null;
@@ -54,11 +54,11 @@ public class URLParser {
             parser = new MssqlJtdsURLParser(url);
         } else if (lowerCaseUrl.startsWith(MSSQL_JDBC_URL_PREFIX)) {
             parser = new MssqlJdbcURLParser(url);
-        } else if (lowerCaseUrl.startsWith(KYLIN_JDBC_URK_PREFIX)) {
+        } else if (lowerCaseUrl.startsWith(KYLIN_JDBC_URL_PREFIX)) {
             parser = new KylinJdbcURLParser(url);
-        } else if (lowerCaseUrl.startsWith(IMPALA_JDBC_URK_PREFIX)) {
+        } else if (lowerCaseUrl.startsWith(IMPALA_JDBC_URL_PREFIX)) {
             parser = new ImpalaJdbcURLParser(url);
-        } else if (lowerCaseUrl.startsWith(CLICKHOUSE_JDBC_URK_PREFIX)) {
+        } else if (lowerCaseUrl.startsWith(CLICKHOUSE_JDBC_URL_PREFIX)) {
             parser = new ClickHouseURLParser(url);
         }
         return parser.parse();

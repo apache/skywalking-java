@@ -55,7 +55,7 @@ public class TracingSegmentRunner extends BlockJUnit4ClassRunner {
 
     @Override
     protected Statement withAfters(FrameworkMethod method, Object target, final Statement statement) {
-        return new Statement() {
+        Statement st = new Statement() {
             @Override
             public void evaluate() throws Throwable {
                 if (field != null) {
@@ -89,5 +89,7 @@ public class TracingSegmentRunner extends BlockJUnit4ClassRunner {
                 }
             }
         };
+
+        return super.withAfters(method, target, st);
     }
 }

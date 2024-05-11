@@ -247,4 +247,15 @@ public class ComponentsDefine {
 
     public static final OfficialComponent C3P0 = new OfficialComponent(152, "c3p0");
 
+    public static final OfficialComponent DERBY_JDBC_DRIVER = new OfficialComponent(153, "Derby-jdbc-driver");
+
+    public static final OfficialComponent SQLITE_JDBC_DRIVER = new OfficialComponent(154, "Sqlite-jdbc-driver");
+
+    public static final OfficialComponent DB2_JDBC_DRIVER = new OfficialComponent(155, "Db2-jdbc-driver");
+
+    public static final OfficialComponent SYBASE_JDBC_DRIVER = new OfficialComponent(156, "Sybase-jdbc-driver");
+
+    public static final OfficialComponent OCEANBASE_JDBC_DRIVER = new OfficialComponent(157, "OceanBase-jdbc-driver");
+
+
 }

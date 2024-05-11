@@ -168,10 +168,27 @@ The meter plugin provides the advanced metrics collections, which are not a part
   * [Jetty](https://github.com/eclipse/jetty.project) 9.1.x -> 11.x
   * [Grizzly](https://github.com/eclipse-ee4j/grizzly) 2.3.x -> 4.x
 * Connection Pool
-  * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
-  * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
-  * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x
-  * [C3P0](https://github.com/swaldman/c3p0) 0.9.0 -> 0.10.0
+  * Supported JDBC drviers
+    * [MySQL](https://www.mysql.com/)
+    * [Oracle](https://www.oracle.com/)
+    * [H2](https://h2database.com/html/main.html)
+    * [PostgreSQL](https://www.postgresql.org/)
+    * [MariaDB](https://mariadb.org/)
+    * [SQL Server](https://www.microsoft.com/en-us/sql-server/)
+    * [Apache Kylin](https://kylin.apache.org/)
+    * [Impala](https://impala.apache.org/)
+    * [ClickHouse](https://clickhouse.com/)
+    * [Derby](https://db.apache.org/derby/)
+    * [SQLite](https://www.sqlite.org/index.html)
+    * [DB2](https://www.ibm.com/products/db2/database)
+    * Sybase
+    * [OceanBase](https://www.oceanbase.com/)
+  * Supported Connection Pool Frameworks
+    * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
+    * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
+    * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x    
+    * [C3P0](https://github.com/swaldman/c3p0) 0.9.0 -> 0.10.0
+  
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository,
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

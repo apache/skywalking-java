@@ -172,6 +172,21 @@ The meter plugin provides the advanced metrics collections, which are not a part
   * [Alibaba Druid](https://github.com/alibaba/druid) 1.x
   * [HikariCP](https://github.com/brettwooldridge/HikariCP) 3.x -> 4.x
   * [C3P0](https://github.com/swaldman/c3p0) 0.9.0 -> 0.10.0
+* Database
+  * [MySQL](https://www.mysql.com/)
+  * [Oracle](https://www.oracle.com/)
+  * [H2](https://h2database.com/html/main.html)
+  * [PostgreSQL](https://www.postgresql.org/)
+  * [MariaDB](https://mariadb.org/)
+  * [SQL Server](https://www.microsoft.com/en-us/sql-server/)
+  * [Apache Kylin](https://kylin.apache.org/)
+  * [Impala](https://impala.apache.org/)
+  * [ClickHouse](https://clickhouse.com/)
+  * [Derby](https://db.apache.org/derby/)
+  * [SQLite](https://www.sqlite.org/index.html)
+  * [DB2](https://www.ibm.com/products/db2/database)
+  * [Sybase](https://www.sap.com/products/acquired-brands/what-is-sybase.html)
+  * [OceanBase](https://www.oceanbase.com/)
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository,
  go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.

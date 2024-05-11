@@ -10,6 +10,7 @@ Release Notes.
 * Support for C3P0 connection pool tracing.
 * Use a daemon thread to flush logs.
 * Fix typos in `URLParser`.
+* Add support for `Derby`/`Sybase`/`SQLite`/`DB2`/`OceanBase` jdbc url format in `URLParser`.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)
 

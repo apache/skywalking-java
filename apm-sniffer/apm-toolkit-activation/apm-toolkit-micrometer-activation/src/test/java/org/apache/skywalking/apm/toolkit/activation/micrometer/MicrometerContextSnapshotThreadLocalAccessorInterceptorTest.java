@@ -92,8 +92,6 @@ public class MicrometerContextSnapshotThreadLocalAccessorInterceptorTest {
     @AfterClass
     public static void clearAfterAll() {
         // test from threadlocalaccessor test x 2 TODO: I have no idea what is going on
-        ContextManager.stopSpan();
-        ContextManager.stopSpan();
         assertThat(ContextManager.isActive(), is(false));
     }
 
@@ -103,6 +101,7 @@ public class MicrometerContextSnapshotThreadLocalAccessorInterceptorTest {
             PluginBootService.class);
 
         Assert.assertNotNull(service);
+        ContextManager.stopSpan();
     }
 
     @Test
@@ -110,6 +109,7 @@ public class MicrometerContextSnapshotThreadLocalAccessorInterceptorTest {
         ContextManagerExtendService service = ServiceManager.INSTANCE.findService(ContextManagerExtendService.class);
 
         Assert.assertTrue(service instanceof ContextManagerExtendOverrideService);
+        ContextManager.stopSpan();
     }
 
     @Test

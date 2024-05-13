@@ -82,6 +82,19 @@ public class ScheduledMethodInterceptorInstrumentation extends ClassInstanceMeth
                 public String getConstructorInterceptor() {
                     return CONSTRUCTOR_WITH_STRING_INTERCEPTOR_CLASS;
                 }
+            },
+            new ConstructorInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                    return takesArguments(4)
+                        .and(takesArgument(0, Object.class))
+                        .and(takesArgument(1, Method.class));
+                }
+
+                @Override
+                public String getConstructorInterceptor() {
+                    return CONSTRUCTOR_WITH_METHOD_INTERCEPTOR_CLASS;
+                }
             }
         };
     }

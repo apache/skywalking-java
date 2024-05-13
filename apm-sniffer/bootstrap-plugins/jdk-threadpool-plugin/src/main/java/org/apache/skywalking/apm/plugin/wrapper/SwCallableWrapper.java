@@ -37,9 +37,8 @@ public class SwCallableWrapper implements Callable {
 
     @Override
     public Object call() throws Exception {
-        AbstractSpan span = ContextManager.createLocalSpan(getOperationName());
+        AbstractSpan span = ContextManager.createLocalSpan(getOperationName(), contextSnapshot);
         span.setComponent(ComponentsDefine.JDK_THREADING);
-        ContextManager.continued(contextSnapshot);
         try {
             return callable.call();
         } finally {

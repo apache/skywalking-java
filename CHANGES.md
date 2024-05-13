@@ -11,6 +11,7 @@ Release Notes.
 * Use a daemon thread to flush logs.
 * Fix typos in `URLParser`.
 * Add support for `Derby`/`Sybase`/`SQLite`/`DB2`/`OceanBase` jdbc url format in `URLParser`.
+* Add a forceIgnoring mechanism and apply it to the plugins (Spring Cloud Gateway, HttpClient, JDK-ForkJoinPool, JDK-Threading, JDK-ThreadPool, Toolkit-Trace, Toolkit-WebFlux).
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)
 

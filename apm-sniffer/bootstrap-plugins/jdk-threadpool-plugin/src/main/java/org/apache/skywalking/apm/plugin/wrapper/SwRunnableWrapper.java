@@ -36,9 +36,8 @@ public class SwRunnableWrapper implements Runnable {
 
     @Override
     public void run() {
-        AbstractSpan span = ContextManager.createLocalSpan(getOperationName());
+        AbstractSpan span = ContextManager.createLocalSpan(getOperationName(), contextSnapshot);
         span.setComponent(ComponentsDefine.JDK_THREADING);
-        ContextManager.continued(contextSnapshot);
         try {
             runnable.run();
         } finally {

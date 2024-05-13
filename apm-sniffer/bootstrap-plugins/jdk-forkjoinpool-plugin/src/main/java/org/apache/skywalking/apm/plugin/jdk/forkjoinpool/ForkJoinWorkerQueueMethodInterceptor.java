@@ -32,17 +32,19 @@ public class ForkJoinWorkerQueueMethodInterceptor implements InstanceMethodsArou
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
             MethodInvocationContext context) throws Throwable {
-        AbstractSpan span = ContextManager.createLocalSpan(generateOperationName(objInst, method));
-        span.setComponent(ComponentsDefine.JDK_THREADING);
-        context.setContext(span);
         EnhancedInstance forkJoinTask = (EnhancedInstance) allArguments[0];
+        ContextSnapshot contextSnapshot = null;
         if (forkJoinTask != null) {
             final Object storedField = forkJoinTask.getSkyWalkingDynamicField();
             if (storedField != null) {
-                final ContextSnapshot contextSnapshot = (ContextSnapshot) storedField;
-                ContextManager.continued(contextSnapshot);
+                contextSnapshot = (ContextSnapshot) storedField;
             }
         }
+
+        AbstractSpan span = ContextManager.createLocalSpan(generateOperationName(objInst, method), contextSnapshot);
+        span.setComponent(ComponentsDefine.JDK_THREADING);
+        context.setContext(span);
+
     }
 
     @Override

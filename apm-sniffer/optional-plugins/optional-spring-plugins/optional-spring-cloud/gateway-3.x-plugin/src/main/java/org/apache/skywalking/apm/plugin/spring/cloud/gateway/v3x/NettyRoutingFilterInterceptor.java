@@ -52,10 +52,13 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
 
         EnhancedInstance enhancedInstance = getInstance(allArguments[0]);
 
-        AbstractSpan span = ContextManager.createLocalSpan("SpringCloudGateway/RoutingFilter");
+        ContextSnapshot contextSnapshot = null;
         if (enhancedInstance != null && enhancedInstance.getSkyWalkingDynamicField() != null) {
-            ContextManager.continued((ContextSnapshot) enhancedInstance.getSkyWalkingDynamicField());
+            contextSnapshot = (ContextSnapshot) enhancedInstance.getSkyWalkingDynamicField();
         }
+
+        AbstractSpan span = ContextManager.createLocalSpan("SpringCloudGateway/RoutingFilter", contextSnapshot);
+
         span.setComponent(SPRING_CLOUD_GATEWAY);
     }
 

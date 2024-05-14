@@ -42,9 +42,12 @@ public class SessionRequestCompleteInterceptor implements InstanceMethodsAroundI
             return;
         }
         ContextSnapshot snapshot = (ContextSnapshot) array[0];
-        AbstractSpan localSpan = ContextManager.createLocalSpan("httpasyncclient/local", snapshot);
+        AbstractSpan localSpan = ContextManager.createLocalSpan("httpasyncclient/local");
         localSpan.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
         localSpan.setLayer(SpanLayer.HTTP);
+        if (snapshot != null) {
+            ContextManager.continued(snapshot);
+        }
         Constants.HTTP_CONTEXT_LOCAL.set((HttpContext) array[1]);
 
     }

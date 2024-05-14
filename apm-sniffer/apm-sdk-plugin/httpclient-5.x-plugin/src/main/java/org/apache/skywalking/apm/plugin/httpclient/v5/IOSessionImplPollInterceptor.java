@@ -59,9 +59,10 @@ public class IOSessionImplPollInterceptor implements InstanceMethodsAroundInterc
             return ret;
         }
         httpContext.removeAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT);
-        AbstractSpan localSpan = ContextManager.createLocalSpan("httpasyncclient/local", snapshot);
+        AbstractSpan localSpan = ContextManager.createLocalSpan("httpasyncclient/local");
         localSpan.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
         localSpan.setLayer(SpanLayer.HTTP);
+        ContextManager.continued(snapshot);
 
         final ContextCarrier contextCarrier = new ContextCarrier();
         BasicHttpRequest request = (BasicHttpRequest) httpContext.getAttribute(HttpClientContext.HTTP_REQUEST);

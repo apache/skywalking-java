@@ -121,9 +121,10 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
         ContextSnapshot snapshot = (ContextSnapshot) contextInConn.getAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT);
         conn.getContext().removeAttribute(Constants.SKYWALKING_CONTEXT_SNAPSHOT);
         if (snapshot != null) {
-            AbstractSpan localSpan = ContextManager.createLocalSpan("HttpAsyncClient/local", snapshot);
+            AbstractSpan localSpan = ContextManager.createLocalSpan("HttpAsyncClient/local");
             localSpan.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
             localSpan.setLayer(SpanLayer.HTTP);
+            ContextManager.continued(snapshot);
         }
         return context;
     }

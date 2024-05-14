@@ -40,12 +40,14 @@ public class WebFluxSkyWalkingOperatorsInterceptor extends WebFluxSkyWalkingStat
         if (parameterTypes[0] == Context.class) {
             ((Context) allArguments[0]).getOrEmpty("SKYWALKING_CONTEXT_SNAPSHOT")
                     .ifPresent(ctx -> {
-                        ContextManager.createLocalSpan("WebFluxOperators/onNext", (ContextSnapshot) ctx).setComponent(ComponentsDefine.SPRING_WEBFLUX);
+                        ContextManager.createLocalSpan("WebFluxOperators/onNext").setComponent(ComponentsDefine.SPRING_WEBFLUX);
+                        ContextManager.continued((ContextSnapshot) ctx);
                     });
         } else if (parameterTypes[0] == ServerWebExchange.class) {
             EnhancedInstance instance = getInstance(allArguments[0]);
             if (instance != null && instance.getSkyWalkingDynamicField() != null) {
-                ContextManager.createLocalSpan("WebFluxOperators/onNext", (ContextSnapshot) instance.getSkyWalkingDynamicField()).setComponent(ComponentsDefine.SPRING_WEBFLUX);
+                ContextManager.createLocalSpan("WebFluxOperators/onNext").setComponent(ComponentsDefine.SPRING_WEBFLUX);
+                ContextManager.continued((ContextSnapshot) instance.getSkyWalkingDynamicField());
             }
         }
     }

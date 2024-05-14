@@ -19,7 +19,6 @@
 package org.apache.skywalking.apm.agent.core.context;
 
 import java.util.Objects;
-
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -46,12 +45,12 @@ public class ContextManager implements BootService {
     private static ThreadLocal<RuntimeContext> RUNTIME_CONTEXT = new ThreadLocal<RuntimeContext>();
     private static ContextManagerExtendService EXTEND_SERVICE;
 
-    private static AbstractTracerContext getOrCreate(String operationName, boolean forceSampling, boolean forceIgnoring) {
+    private static AbstractTracerContext getOrCreate(String operationName, boolean forceSampling) {
         AbstractTracerContext context = CONTEXT.get();
         if (context == null) {
-            if (forceIgnoring || StringUtil.isEmpty(operationName)) {
+            if (StringUtil.isEmpty(operationName)) {
                 if (LOGGER.isDebugEnable()) {
-                    LOGGER.debug("No operation name or forceIgnoring, ignore this trace.");
+                    LOGGER.debug("No operation name, ignore this trace.");
                 }
                 context = new IgnoredTracerContext();
             } else {
@@ -109,11 +108,11 @@ public class ContextManager implements BootService {
         if (carrier != null && carrier.isValid()) {
             SamplingService samplingService = ServiceManager.INSTANCE.findService(SamplingService.class);
             samplingService.forceSampled();
-            context = getOrCreate(operationName, true, false);
+            context = getOrCreate(operationName, true);
             span = context.createEntrySpan(operationName);
             context.extract(carrier);
         } else {
-            context = getOrCreate(operationName, false, false);
+            context = getOrCreate(operationName, false);
             span = context.createEntrySpan(operationName);
         }
         return span;
@@ -121,24 +120,8 @@ public class ContextManager implements BootService {
 
     public static AbstractSpan createLocalSpan(String operationName) {
         operationName = StringUtil.cut(operationName, OPERATION_NAME_THRESHOLD);
-        AbstractTracerContext context = getOrCreate(operationName, false, false);
+        AbstractTracerContext context = getOrCreate(operationName, false);
         return context.createLocalSpan(operationName);
-    }
-
-    public static AbstractSpan createLocalSpan(String operationName, ContextSnapshot snapshot) {
-        operationName = StringUtil.cut(operationName, OPERATION_NAME_THRESHOLD);
-
-        boolean forceIgnoring = false;
-        if (snapshot != null) {
-            forceIgnoring = !snapshot.isValid();
-        }
-        AbstractTracerContext context = getOrCreate(operationName, false, forceIgnoring);
-
-        AbstractSpan span = context.createLocalSpan(operationName);
-        if (snapshot != null) {
-            context.continued(snapshot);
-        }
-        return span;
     }
 
     public static AbstractSpan createExitSpan(String operationName, ContextCarrier carrier, String remotePeer) {
@@ -146,7 +129,7 @@ public class ContextManager implements BootService {
             throw new IllegalArgumentException("ContextCarrier can't be null.");
         }
         operationName = StringUtil.cut(operationName, OPERATION_NAME_THRESHOLD);
-        AbstractTracerContext context = getOrCreate(operationName, false, false);
+        AbstractTracerContext context = getOrCreate(operationName, false);
         AbstractSpan span = context.createExitSpan(operationName, remotePeer);
         context.inject(carrier);
         return span;
@@ -154,7 +137,7 @@ public class ContextManager implements BootService {
 
     public static AbstractSpan createExitSpan(String operationName, String remotePeer) {
         operationName = StringUtil.cut(operationName, OPERATION_NAME_THRESHOLD);
-        AbstractTracerContext context = getOrCreate(operationName, false, false);
+        AbstractTracerContext context = getOrCreate(operationName, false);
         return context.createExitSpan(operationName, remotePeer);
     }
 

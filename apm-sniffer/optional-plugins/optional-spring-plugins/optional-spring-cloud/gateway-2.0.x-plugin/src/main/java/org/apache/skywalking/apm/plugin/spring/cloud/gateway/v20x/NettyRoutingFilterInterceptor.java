@@ -18,7 +18,6 @@
 package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x;
 
 import java.lang.reflect.Method;
-
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -38,13 +37,10 @@ public class NettyRoutingFilterInterceptor implements InstanceMethodsAroundInter
         ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
         EnhancedInstance enhancedInstance = getInstance(exchange);
 
-        ContextSnapshot contextSnapshot = null;
+        AbstractSpan span = ContextManager.createLocalSpan("SpringCloudGateway/RoutingFilter");
         if (enhancedInstance != null && enhancedInstance.getSkyWalkingDynamicField() != null) {
-            contextSnapshot = (ContextSnapshot) enhancedInstance.getSkyWalkingDynamicField();
+            ContextManager.continued((ContextSnapshot) enhancedInstance.getSkyWalkingDynamicField());
         }
-
-        AbstractSpan span = ContextManager.createLocalSpan("SpringCloudGateway/RoutingFilter", contextSnapshot);
-
         span.setComponent(SPRING_CLOUD_GATEWAY);
         span.prepareForAsync();
     }

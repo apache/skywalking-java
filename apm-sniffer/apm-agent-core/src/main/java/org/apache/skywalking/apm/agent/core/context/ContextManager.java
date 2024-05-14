@@ -163,7 +163,12 @@ public class ContextManager implements BootService {
             throw new IllegalArgumentException("ContextSnapshot can't be null.");
         }
         if (!snapshot.isFromCurrent()) {
-            get().continued(snapshot);
+            if (snapshot.isValid()) {
+                get().continued(snapshot);
+            } else {
+                AbstractTracerContext context = get().forceIgnoring();
+                CONTEXT.set(context);
+            }
         }
     }
 

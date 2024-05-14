@@ -34,14 +34,21 @@ public class IgnoredTracerContext implements AbstractTracerContext {
     private static final NoopSpan NOOP_SPAN = new NoopSpan();
     private static final String IGNORE_TRACE = "Ignored_Trace";
 
+    private LinkedList<AbstractSpan> activeSpanStack;
+
     private final CorrelationContext correlationContext;
     private final ExtensionContext extensionContext;
     private final ProfileStatusContext profileStatusContext;
 
-    private int stackDepth;
-
     public IgnoredTracerContext() {
-        this.stackDepth = 0;
+        this.activeSpanStack = new LinkedList<>();
+        this.correlationContext = new CorrelationContext();
+        this.extensionContext = new ExtensionContext();
+        this.profileStatusContext = ProfileStatusContext.createWithNone();
+    }
+
+    public IgnoredTracerContext(LinkedList<AbstractSpan> activeSpanStack) {
+        this.activeSpanStack = activeSpanStack;
         this.correlationContext = new CorrelationContext();
         this.extensionContext = new ExtensionContext();
         this.profileStatusContext = ProfileStatusContext.createWithNone();
@@ -84,34 +91,35 @@ public class IgnoredTracerContext implements AbstractTracerContext {
 
     @Override
     public AbstractSpan createEntrySpan(String operationName) {
-        stackDepth++;
+        activeSpanStack.addLast(NOOP_SPAN);
         return NOOP_SPAN;
     }
 
     @Override
     public AbstractSpan createLocalSpan(String operationName) {
-        stackDepth++;
+        activeSpanStack.addLast(NOOP_SPAN);
         return NOOP_SPAN;
     }
 
     @Override
     public AbstractSpan createExitSpan(String operationName, String remotePeer) {
-        stackDepth++;
+        activeSpanStack.addLast(NOOP_SPAN);
         return NOOP_SPAN;
     }
 
     @Override
     public AbstractSpan activeSpan() {
-        return NOOP_SPAN;
+        return activeSpanStack.getLast();
     }
 
     @Override
     public boolean stopSpan(AbstractSpan span) {
-        stackDepth--;
-        if (stackDepth == 0) {
+        activeSpanStack.removeLast();
+        if (activeSpanStack.isEmpty()) {
             ListenerManager.notifyFinish(this);
         }
-        return stackDepth == 0;
+
+        return activeSpanStack.isEmpty();
     }
 
     @Override
@@ -132,6 +140,11 @@ public class IgnoredTracerContext implements AbstractTracerContext {
     @Override
     public String getPrimaryEndpointName() {
         return null;
+    }
+
+    @Override
+    public AbstractTracerContext forceIgnoring() {
+        return this;
     }
 
     public static class ListenerManager {

@@ -120,7 +120,7 @@ metrics based on the tracing data.
 * Scheduler
   * [Elastic Job](https://github.com/elasticjob/elastic-job) 2.x
   * [Apache ShardingSphere-Elasticjob](https://github.com/apache/shardingsphere-elasticjob) 3.x
-  * [Spring @Scheduled](https://github.com/spring-projects/spring-framework) 3.1+
+  * [Spring @Scheduled](https://github.com/spring-projects/spring-framework) 3.1.x -> 6.1.x
   * [Quartz Scheduler](https://github.com/quartz-scheduler/quartz) 2.x (Optional²)
   * [XXL Job](https://github.com/xuxueli/xxl-job) 2.x
 * OpenTracing community supported

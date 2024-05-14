@@ -11,6 +11,7 @@ Release Notes.
 * Use a daemon thread to flush logs.
 * Fix typos in `URLParser`.
 * Add support for `Derby`/`Sybase`/`SQLite`/`DB2`/`OceanBase` jdbc url format in `URLParser`.
+* Optimize spring-plugins:scheduled-annotation-plugin compatibility about Spring 6.1.x support.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)
 

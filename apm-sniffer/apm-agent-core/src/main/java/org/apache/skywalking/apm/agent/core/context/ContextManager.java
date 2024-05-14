@@ -136,7 +136,7 @@ public class ContextManager implements BootService {
 
         AbstractSpan span = context.createLocalSpan(operationName);
         if (snapshot != null) {
-            continued(snapshot);
+            context.continued(snapshot);
         }
         return span;
     }

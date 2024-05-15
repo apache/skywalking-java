@@ -41,7 +41,7 @@ public class SchedulingJob {
     public void work() throws IOException {
         LOGGER.info("work job running!");
 
-        Request request = new Request.Builder().url("http://localhost:8080/spring-scheduled-scenario/case/call").build();
+        Request request = new Request.Builder().url("http://localhost:8080/spring-scheduled-3.x-5.x-scenario/case/call").build();
         Response response = CLIENT.newCall(request).execute();
         response.body().close();
     }

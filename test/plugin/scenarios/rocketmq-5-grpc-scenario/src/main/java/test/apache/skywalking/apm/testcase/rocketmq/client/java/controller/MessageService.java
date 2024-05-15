@@ -87,8 +87,8 @@ public class MessageService {
                                         .build();
         try {
             CompletableFuture<SendReceipt> future = producer.sendAsync(message);
-            future.join();
-            log.info("Send async message successfully");
+            SendReceipt sendReceipt = future.join();
+            log.info("Send async message successfully, messageId={}", sendReceipt.getMessageId());
         } catch (Throwable t) {
             log.error("Failed to send message", t);
         }
@@ -142,17 +142,34 @@ public class MessageService {
                                               .build();
 
             Duration invisibleDuration = Duration.ofSeconds(duration);
-            final List<MessageView> messages = consumer.receive(maxMessageNum, invisibleDuration);
-            messages.forEach(messageView -> {
-                log.info("Received message: {}", messageView);
-            });
-            for (MessageView msg : messages) {
-                final MessageId messageId = msg.getMessageId();
-                try {
-                    consumer.ack(msg);
-                    log.info("Message is acknowledged successfully, messageId={}", messageId);
-                } catch (Throwable t) {
-                    log.error("Message is failed to be acknowledged, messageId={}", messageId, t);
+            int counter = 0;
+            int checkCounter = 0;
+            while (true) {
+                final List<MessageView> messages = consumer.receive(maxMessageNum, invisibleDuration);
+                messages.forEach(messageView -> {
+                    log.info("Received message: {}", messageView);
+                });
+                boolean finishFlag = false;
+                for (MessageView msg : messages) {
+                    final MessageId messageId = msg.getMessageId();
+                    try {
+                        consumer.ack(msg);
+                        log.info("Message is acknowledged successfully, messageId={}", messageId);
+                        counter++;
+                        if (counter >= 2) {
+                            finishFlag = true;
+                        }
+                    } catch (Throwable t) {
+                        log.error("Message is failed to be acknowledged, messageId={}", messageId, t);
+                    }
+                }
+                checkCounter++;
+                if (finishFlag) {
+                    break;
+                }
+                if (checkCounter >= 3) {
+                    log.error("Message is failed to receive after 3 attempts");
+                    break;
                 }
             }
         } catch (Exception e) {

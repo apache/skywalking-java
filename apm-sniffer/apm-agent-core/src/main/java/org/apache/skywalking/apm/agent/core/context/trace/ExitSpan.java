@@ -111,7 +111,9 @@ public class ExitSpan extends StackBasedTracingSpan implements ExitTypeSpan {
 
     @Override
     public ExitSpan inject(final ContextCarrier carrier) {
-        this.owner.inject(this, carrier);
+        if (!ignored) {
+            this.owner.inject(this, carrier);
+        }
         return this;
     }
 

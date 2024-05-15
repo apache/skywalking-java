@@ -34,21 +34,21 @@ public class IgnoredTracerContext implements AbstractTracerContext {
     private static final NoopSpan NOOP_SPAN = new NoopSpan();
     private static final String IGNORE_TRACE = "Ignored_Trace";
 
-    private LinkedList<AbstractSpan> activeSpanStack;
-
     private final CorrelationContext correlationContext;
     private final ExtensionContext extensionContext;
     private final ProfileStatusContext profileStatusContext;
 
+    private int stackDepth;
+
     public IgnoredTracerContext() {
-        this.activeSpanStack = new LinkedList<>();
+        this.stackDepth = 0;
         this.correlationContext = new CorrelationContext();
         this.extensionContext = new ExtensionContext();
         this.profileStatusContext = ProfileStatusContext.createWithNone();
     }
 
-    public IgnoredTracerContext(LinkedList<AbstractSpan> activeSpanStack) {
-        this.activeSpanStack = activeSpanStack;
+    public IgnoredTracerContext(int stackDepth) {
+        this.stackDepth = stackDepth;
         this.correlationContext = new CorrelationContext();
         this.extensionContext = new ExtensionContext();
         this.profileStatusContext = ProfileStatusContext.createWithNone();
@@ -91,35 +91,34 @@ public class IgnoredTracerContext implements AbstractTracerContext {
 
     @Override
     public AbstractSpan createEntrySpan(String operationName) {
-        activeSpanStack.addLast(NOOP_SPAN);
+        stackDepth++;
         return NOOP_SPAN;
     }
 
     @Override
     public AbstractSpan createLocalSpan(String operationName) {
-        activeSpanStack.addLast(NOOP_SPAN);
+        stackDepth++;
         return NOOP_SPAN;
     }
 
     @Override
     public AbstractSpan createExitSpan(String operationName, String remotePeer) {
-        activeSpanStack.addLast(NOOP_SPAN);
+        stackDepth++;
         return NOOP_SPAN;
     }
 
     @Override
     public AbstractSpan activeSpan() {
-        return activeSpanStack.getLast();
+        return NOOP_SPAN;
     }
 
     @Override
     public boolean stopSpan(AbstractSpan span) {
-        activeSpanStack.removeLast();
-        if (activeSpanStack.isEmpty()) {
+        stackDepth--;
+        if (stackDepth == 0) {
             ListenerManager.notifyFinish(this);
         }
-
-        return activeSpanStack.isEmpty();
+        return stackDepth == 0;
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.context.ids.NewDistributedTraceId;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.LocalSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.NoopSpan;
 import org.apache.skywalking.apm.agent.core.profile.ProfileStatusContext;
 import org.apache.skywalking.apm.agent.core.test.tools.AgentServiceRule;
@@ -85,7 +86,7 @@ public class ContinuedContextTest {
         AbstractSpan span = ContextManager.createLocalSpan("test-span");
         ContextManager.continued(snapshot);
 
-        Assert.assertEquals(ContextManager.activeSpan(), span);
+        Assert.assertTrue(span instanceof LocalSpan);
 
         AbstractSpan span2 = ContextManager.createLocalSpan("test-span2");
         Assert.assertTrue(span2 instanceof NoopSpan);

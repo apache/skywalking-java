@@ -421,8 +421,10 @@ public class TracingContext implements AbstractTracerContext {
 
     @Override
     public AbstractTracerContext forceIgnoring() {
-
-        return new IgnoredTracerContext(activeSpanStack);
+        for (AbstractSpan span: activeSpanStack) {
+            span.forceIgnoring();
+        }
+        return new IgnoredTracerContext(activeSpanStack.size());
     }
 
     /**

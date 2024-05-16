@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.MockContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -36,7 +37,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -69,8 +69,7 @@ public class CallableOrRunnableInterceptorTest {
         }
     };
 
-    @Mock
-    private ContextSnapshot contextSnapshot;
+    private ContextSnapshot contextSnapshot = MockContextSnapshot.INSTANCE.mockContextSnapshot();
 
     private Object[] arguments;
 

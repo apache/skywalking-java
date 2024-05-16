@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.MockContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -57,7 +58,6 @@ public class OnSuccessInterceptorTest {
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
 
-    @Mock
     private ContextSnapshot contextSnapshot;
     @Mock
     private SendResult sendResult;
@@ -70,6 +70,7 @@ public class OnSuccessInterceptorTest {
     @Before
     public void setUp() {
         successInterceptor = new OnSuccessInterceptor();
+        contextSnapshot = MockContextSnapshot.INSTANCE.mockContextSnapshot();
 
         enhanceInfo = new SendCallBackEnhanceInfo("test", contextSnapshot);
         when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn(enhanceInfo);

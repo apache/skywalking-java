@@ -63,7 +63,8 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
     private volatile boolean isAsyncStopped = false;
 
     /**
-     * The context to which the span belongs
+     * The context to which the span belongs.
+     * This should not be called when {@link #ignored} is true.
      */
     protected final TracingContext owner;
 
@@ -98,6 +99,11 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
      * Tracing Mode. If true means represents all spans generated in this context should skip analysis.
      */
     protected boolean skipAnalysis;
+
+    /**
+     * The ignore flag of this span.
+     */
+    protected boolean ignored;
 
     protected AbstractTracingSpan(int spanId, int parentSpanId, String operationName, TracingContext owner) {
         this.operationName = operationName;
@@ -318,7 +324,9 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
         if (isInAsyncMode) {
             throw new RuntimeException("Prepare for async repeatedly. Span is already in async mode.");
         }
-        ContextManager.awaitFinishAsync(this);
+        if (!ignored) {
+            ContextManager.awaitFinishAsync(this);
+        }
         isInAsyncMode = true;
         return this;
     }
@@ -332,18 +340,28 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
             throw new RuntimeException("Can not do async finish for the span repeatedly.");
         }
         this.endTime = System.currentTimeMillis();
-        owner.asyncStop(this);
+        if (!ignored) {
+            owner.asyncStop(this);
+        }
         isAsyncStopped = true;
         return this;
     }
 
     @Override
     public boolean isProfiling() {
+        if (ignored) {
+            return false;
+        }
         return this.owner.profileStatus().isProfiling();
     }
 
     @Override
     public void skipAnalysis() {
         this.skipAnalysis = true;
+    }
+
+    @Override
+    public void forceIgnoring() {
+        this.ignored = true;
     }
 }

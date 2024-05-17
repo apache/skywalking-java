@@ -22,7 +22,7 @@ import static org.junit.Assert.assertThat;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.MockContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -36,7 +36,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -69,9 +68,6 @@ public class CallableOrRunnableInterceptorTest {
         }
     };
 
-    @Mock
-    private ContextSnapshot contextSnapshot;
-
     private Object[] arguments;
 
     private Method callMethod;
@@ -100,7 +96,7 @@ public class CallableOrRunnableInterceptorTest {
     @Test
     public void testCall() throws Throwable {
 
-        enhancedInstance.setSkyWalkingDynamicField(contextSnapshot);
+        enhancedInstance.setSkyWalkingDynamicField(MockContextSnapshot.INSTANCE.mockContextSnapshot());
         callableCallInterceptor.beforeMethod(enhancedInstance, callMethod, arguments, null, null);
         callableCallInterceptor.afterMethod(enhancedInstance, callMethod, arguments, null, "result");
 
@@ -108,6 +104,18 @@ public class CallableOrRunnableInterceptorTest {
         TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
         List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
         assertThat(spans.size(), is(1));
+
+    }
+
+    @Test
+    public void testCallWithIgnoreSnapshot() throws Throwable {
+
+        enhancedInstance.setSkyWalkingDynamicField(MockContextSnapshot.INSTANCE.mockIgnoreContextSnapshot());
+        callableCallInterceptor.beforeMethod(enhancedInstance, callMethod, arguments, null, null);
+        callableCallInterceptor.afterMethod(enhancedInstance, callMethod, arguments, null, "result");
+
+        assertThat(segmentStorage.getTraceSegments().size(), is(0));
+        assertThat(segmentStorage.getIgnoredTracerContexts().size(), is(1));
 
     }
 

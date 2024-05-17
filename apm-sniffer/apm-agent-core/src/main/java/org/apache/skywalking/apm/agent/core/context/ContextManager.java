@@ -163,7 +163,14 @@ public class ContextManager implements BootService {
             throw new IllegalArgumentException("ContextSnapshot can't be null.");
         }
         if (!snapshot.isFromCurrent()) {
-            get().continued(snapshot);
+            // Invalid snapshot is only created by {@link IgnoredTracerContext#capture()}.
+            // When the snapshot is not valid, need to force ignoring the current tracing context.
+            if (snapshot.isValid()) {
+                get().continued(snapshot);
+            } else {
+                AbstractTracerContext context = get().forceIgnoring();
+                CONTEXT.set(context);
+            }
         }
     }
 

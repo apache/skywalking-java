@@ -124,6 +124,10 @@ public class NoopSpan implements AbstractSpan {
     }
 
     @Override
+    public void forceIgnoring() {
+    }
+
+    @Override
     public AbstractSpan prepareForAsync() {
         return this;
     }

@@ -26,6 +26,8 @@ public enum MockContextSnapshot {
 
     private ContextSnapshot contextSnapshot;
 
+    private ContextSnapshot ignoreContextSnapshot;
+
     MockContextSnapshot() {
         contextSnapshot = new ContextSnapshot(
             "1, 2, 3",
@@ -36,9 +38,21 @@ public enum MockContextSnapshot {
             new ExtensionContext(),
             ProfileStatusContext.createWithNone()
         );
+        ignoreContextSnapshot = new ContextSnapshot(
+                null,
+                -1,
+                null,
+                null,
+                new CorrelationContext(),
+                new ExtensionContext(),
+                ProfileStatusContext.createWithNone());
     }
 
     public ContextSnapshot mockContextSnapshot() {
         return contextSnapshot;
+    }
+
+    public ContextSnapshot mockIgnoreContextSnapshot() {
+        return ignoreContextSnapshot;
     }
 }

@@ -47,6 +47,13 @@ public class IgnoredTracerContext implements AbstractTracerContext {
         this.profileStatusContext = ProfileStatusContext.createWithNone();
     }
 
+    public IgnoredTracerContext(int stackDepth) {
+        this.stackDepth = stackDepth;
+        this.correlationContext = new CorrelationContext();
+        this.extensionContext = new ExtensionContext();
+        this.profileStatusContext = ProfileStatusContext.createWithNone();
+    }
+
     @Override
     public void inject(ContextCarrier carrier) {
         this.correlationContext.inject(carrier);
@@ -132,6 +139,11 @@ public class IgnoredTracerContext implements AbstractTracerContext {
     @Override
     public String getPrimaryEndpointName() {
         return null;
+    }
+
+    @Override
+    public AbstractTracerContext forceIgnoring() {
+        return this;
     }
 
     public static class ListenerManager {

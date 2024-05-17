@@ -419,6 +419,14 @@ public class TracingContext implements AbstractTracerContext {
         return primaryEndpoint.getName();
     }
 
+    @Override
+    public AbstractTracerContext forceIgnoring() {
+        for (AbstractSpan span: activeSpanStack) {
+            span.forceIgnoring();
+        }
+        return new IgnoredTracerContext(activeSpanStack.size());
+    }
+
     /**
      * Re-check current trace need profiling, encase third part plugin change the operation name.
      *

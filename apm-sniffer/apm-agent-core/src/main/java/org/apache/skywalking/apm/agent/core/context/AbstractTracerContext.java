@@ -140,7 +140,7 @@ public interface AbstractTracerContext {
     String getPrimaryEndpointName();
 
     /**
-     *  Change the current context to IgnoredTracerContext.
+     *  Change the current context to be in ignoring status.
      */
     AbstractTracerContext forceIgnoring();
 

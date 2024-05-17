@@ -64,7 +64,7 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
 
     /**
      * The context to which the span belongs.
-     * This should not be called when ignored is set to true.
+     * This should not be called when {@link #ignored} is true.
      */
     protected final TracingContext owner;
 

@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.redisson.v3;
 
+import java.util.Objects;
 import org.apache.skywalking.apm.agent.core.context.util.PeerFormat;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
@@ -26,11 +27,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.plugin.redisson.v3.util.ClassUtil;
 import org.redisson.config.Config;
-import org.redisson.connection.ConnectionManager;
 
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collection;
+import org.redisson.connection.MasterSlaveConnectionManager;
+import org.redisson.connection.ServiceManager;
 
 public class ConnectionManagerInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -45,14 +47,19 @@ public class ConnectionManagerInterceptor implements InstanceMethodsAroundInterc
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
         try {
-            ConnectionManager connectionManager = (ConnectionManager) objInst;
-            Config config = connectionManager.getCfg();
-
-            Object singleServerConfig = ClassUtil.getObjectField(config, "singleServerConfig");
-            Object sentinelServersConfig = ClassUtil.getObjectField(config, "sentinelServersConfig");
-            Object masterSlaveServersConfig = ClassUtil.getObjectField(config, "masterSlaveServersConfig");
-            Object clusterServersConfig = ClassUtil.getObjectField(config, "clusterServersConfig");
-            Object replicatedServersConfig = ClassUtil.getObjectField(config, "replicatedServersConfig");
+            Config config = getConfig(objInst);
+            Object singleServerConfig = null;
+            Object sentinelServersConfig = null;
+            Object masterSlaveServersConfig = null;
+            Object clusterServersConfig = null;
+            Object replicatedServersConfig = null;
+            if (Objects.nonNull(config)) {
+                singleServerConfig = ClassUtil.getObjectField(config, "singleServerConfig");
+                sentinelServersConfig = ClassUtil.getObjectField(config, "sentinelServersConfig");
+                masterSlaveServersConfig = ClassUtil.getObjectField(config, "masterSlaveServersConfig");
+                clusterServersConfig = ClassUtil.getObjectField(config, "clusterServersConfig");
+                replicatedServersConfig = ClassUtil.getObjectField(config, "replicatedServersConfig");
+            }
 
             StringBuilder peer = new StringBuilder();
             EnhancedInstance retInst = (EnhancedInstance) ret;
@@ -70,7 +77,7 @@ public class ConnectionManagerInterceptor implements InstanceMethodsAroundInterc
             }
             if (masterSlaveServersConfig != null) {
                 Object masterAddress = ClassUtil.getObjectField(masterSlaveServersConfig, "masterAddress");
-                peer.append(getPeer(masterAddress));
+                peer.append(getPeer(masterAddress)).append(";");
                 appendAddresses(peer, (Collection) ClassUtil.getObjectField(masterSlaveServersConfig, "slaveAddresses"));
                 retInst.setSkyWalkingDynamicField(PeerFormat.shorten(peer.toString()));
                 return ret;
@@ -116,6 +123,22 @@ public class ConnectionManagerInterceptor implements InstanceMethodsAroundInterc
             LOGGER.warn("redisson not support this version");
             return null;
         }
+    }
+
+    private Config getConfig(EnhancedInstance objInst) {
+        Config config = null;
+        MasterSlaveConnectionManager connectionManager = (MasterSlaveConnectionManager) objInst;
+        try {
+            config = (Config) ClassUtil.getObjectField(connectionManager, "cfg");
+        } catch (NoSuchFieldException | IllegalAccessException ignore) {
+            try {
+                ServiceManager serviceManager = (ServiceManager) ClassUtil.getObjectField(
+                    connectionManager, "serviceManager");
+                config = serviceManager.getCfg();
+            } catch (NoSuchFieldException | IllegalAccessException ignore2) {
+            }
+        }
+        return config;
     }
 
     @Override

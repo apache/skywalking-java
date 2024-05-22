@@ -31,7 +31,7 @@
     <name>redisson-3.x-plugin</name>
     <url>http://maven.apache.org</url>
     <properties>
-        <redisson.version>3.6.0</redisson.version>
+        <redisson.version>3.20.0</redisson.version>
     </properties>
 
     <dependencies>

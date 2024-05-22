@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -Dredis.servers=${REDIS_SERVERS} -Dskywalking.plugin.redisson.trace_redis_parameters=true -jar ${agent_opts} ${home}/../libs/redisson-scenario.jar &
+java -Dredis.servers=${REDIS_SERVERS} -Dskywalking.plugin.redisson.trace_redis_parameters=true -Dskywalking.plugin.redisson.show_batch_commands=true -Dskywalking.plugin.redisson.ping_ignored=true -jar ${agent_opts} ${home}/../libs/redisson-scenario.jar &

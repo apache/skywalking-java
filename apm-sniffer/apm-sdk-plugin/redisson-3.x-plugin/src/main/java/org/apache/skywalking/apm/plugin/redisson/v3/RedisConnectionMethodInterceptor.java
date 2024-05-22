@@ -68,12 +68,12 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
             operationName = operationName + "BATCH_EXECUTE";
             command = "BATCH_EXECUTE";
             if (RedissonPluginConfig.Plugin.Redisson.SHOW_BATCH_COMMANDS) {
-                command += ":" + showBatchCommands(allArguments[0]);
+                command += ":" + showBatchCommands((CommandsData) allArguments[0]);
             }
         } else if (allArguments[0] instanceof CommandData) {
             CommandData commandData = (CommandData) allArguments[0];
             command = commandData.getCommand().getName();
-            if ("PING".equals(command) && RedissonPluginConfig.Plugin.Redisson.PING_IGNORED) {
+            if ("PING".equals(command) && !RedissonPluginConfig.Plugin.Redisson.SHOW_PING_COMMAND) {
                 return;
             } else {
                 operationName = operationName + command;
@@ -152,8 +152,7 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
         return Optional.empty();
     }
 
-    private String showBatchCommands(Object argument) {
-        CommandsData commandsData = (CommandsData) argument;
+    private String showBatchCommands(CommandsData commandsData) {
         return commandsData.getCommands()
                            .stream()
                            .map(data -> data.getCommand().getName())

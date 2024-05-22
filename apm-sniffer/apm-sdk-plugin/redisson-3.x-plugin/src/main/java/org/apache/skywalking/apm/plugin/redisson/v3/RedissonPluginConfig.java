@@ -41,9 +41,9 @@ public class RedissonPluginConfig {
              */
             public static int REDIS_PARAMETER_MAX_LENGTH = 128;
             /**
-             * If set to false, the PING command would be collected.
+             * If set to true, the PING command would be collected.
              */
-            public static boolean PING_IGNORED = true;
+            public static boolean SHOW_PING_COMMAND = false;
             /**
              * If set to true, the detail of the Redis batch commands would be collected.
              */

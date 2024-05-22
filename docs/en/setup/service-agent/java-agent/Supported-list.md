@@ -87,7 +87,7 @@ metrics based on the tracing data.
   * [aerospike](https://github.com/aerospike/aerospike-client-java) 3.x -> 6.x
   * Redis
     * [Jedis](https://github.com/xetorthio/jedis) 2.x-4.x
-    * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.2+
+    * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.0 -> 3.30.0 
     * [Lettuce](https://github.com/lettuce-io/lettuce-core) 5.x
   * [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) 2.13-2.14, 3.4.0-3.12.7, 4.0.0-4.1.0
   * Memcached Client

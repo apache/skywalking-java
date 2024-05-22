@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.redisson.v3;
 
 import io.netty.channel.Channel;
+import java.util.stream.Collectors;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -66,11 +67,18 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
         if (allArguments[0] instanceof CommandsData) {
             operationName = operationName + "BATCH_EXECUTE";
             command = "BATCH_EXECUTE";
+            if (RedissonPluginConfig.Plugin.Redisson.SHOW_BATCH_COMMANDS) {
+                command += ":" + showBatchCommands((CommandsData) allArguments[0]);
+            }
         } else if (allArguments[0] instanceof CommandData) {
             CommandData commandData = (CommandData) allArguments[0];
             command = commandData.getCommand().getName();
-            operationName = operationName + command;
-            arguments = commandData.getParams();
+            if ("PING".equals(command) && !RedissonPluginConfig.Plugin.Redisson.SHOW_PING_COMMAND) {
+                return;
+            } else {
+                operationName = operationName + command;
+                arguments = commandData.getParams();
+            }
         }
 
         AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
@@ -142,5 +150,12 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
             return Optional.of("write");
         }
         return Optional.empty();
+    }
+
+    private String showBatchCommands(CommandsData commandsData) {
+        return commandsData.getCommands()
+                           .stream()
+                           .map(data -> data.getCommand().getName())
+                           .collect(Collectors.joining(";"));
     }
 }

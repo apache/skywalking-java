@@ -40,6 +40,14 @@ public class RedissonPluginConfig {
              * Set a negative number to save specified length of parameter string to the tag.
              */
             public static int REDIS_PARAMETER_MAX_LENGTH = 128;
+            /**
+             * If set to true, the PING command would be collected.
+             */
+            public static boolean SHOW_PING_COMMAND = false;
+            /**
+             * If set to true, the detail of the Redis batch commands would be collected.
+             */
+            public static boolean SHOW_BATCH_COMMANDS = false;
 
             /**
              * Operation represent a cache span is "write" or "read" action , and "op"(operation) is tagged with key "cache.op" usually

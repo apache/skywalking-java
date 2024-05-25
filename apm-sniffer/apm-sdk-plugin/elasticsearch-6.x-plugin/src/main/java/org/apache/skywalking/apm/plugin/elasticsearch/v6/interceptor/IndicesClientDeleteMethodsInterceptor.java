@@ -29,6 +29,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
+import org.apache.skywalking.apm.plugin.elasticsearch.v6.support.AdapterUtil;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 
 import static org.apache.skywalking.apm.plugin.elasticsearch.v6.interceptor.Constants.DB_TYPE;
@@ -48,6 +50,10 @@ public class IndicesClientDeleteMethodsInterceptor implements InstanceMethodsAro
             Tags.DB_TYPE.set(span, DB_TYPE);
             Tags.DB_INSTANCE.set(span, Arrays.asList(deleteIndexRequest.indices()).toString());
             SpanLayer.asDB(span);
+            if (allArguments.length > 2 && allArguments[2] != null && allArguments[2] instanceof ActionListener) {
+                allArguments[2] = AdapterUtil.wrapActionListener(restClientEnhanceInfo, Constants.DELETE_OPERATOR_NAME,
+                                                                 (ActionListener) allArguments[2]);
+            }
         }
     }
 

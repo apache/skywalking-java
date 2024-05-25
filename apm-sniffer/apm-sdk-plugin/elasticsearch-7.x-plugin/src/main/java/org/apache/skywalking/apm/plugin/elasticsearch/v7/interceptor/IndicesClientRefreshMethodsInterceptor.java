@@ -28,6 +28,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
 import org.apache.skywalking.apm.plugin.elasticsearch.v7.Constants;
+import org.apache.skywalking.apm.plugin.elasticsearch.v7.support.AdapterUtil;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 
 import java.lang.reflect.Method;
@@ -49,6 +51,11 @@ public class IndicesClientRefreshMethodsInterceptor implements InstanceMethodsAr
             Tags.DB_TYPE.set(span, DB_TYPE);
             Tags.DB_INSTANCE.set(span, buildIndicesString(request.indices()));
             SpanLayer.asDB(span);
+
+            if (allArguments.length > 2 && allArguments[2] != null && allArguments[2] instanceof ActionListener) {
+                allArguments[2] = AdapterUtil.wrapActionListener(restClientEnhanceInfo, Constants.REFRESH_OPERATOR_NAME,
+                                                                 (ActionListener) allArguments[2]);
+            }
         }
     }
 

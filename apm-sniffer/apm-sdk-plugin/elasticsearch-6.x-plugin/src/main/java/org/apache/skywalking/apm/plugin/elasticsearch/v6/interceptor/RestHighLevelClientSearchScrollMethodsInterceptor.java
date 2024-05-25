@@ -27,6 +27,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.elasticsearch.common.RestClientEnhanceInfo;
+import org.apache.skywalking.apm.plugin.elasticsearch.v6.support.AdapterUtil;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.search.SearchScrollRequest;
 
 import java.lang.reflect.Method;
@@ -51,6 +53,10 @@ public class RestHighLevelClientSearchScrollMethodsInterceptor implements Instan
         }
 
         SpanLayer.asDB(span);
+        if (allArguments.length > 2 && allArguments[2] != null && allArguments[2] instanceof ActionListener) {
+            allArguments[2] = AdapterUtil.wrapActionListener(restClientEnhanceInfo, Constants.SEARCH_SCROLL_OPERATOR_NAME,
+                                                             (ActionListener) allArguments[2]);
+        }
     }
 
     @Override

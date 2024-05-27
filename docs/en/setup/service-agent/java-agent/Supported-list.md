@@ -98,7 +98,7 @@ metrics based on the tracing data.
     * [transport-client](https://github.com/elastic/elasticsearch/tree/v6.2.3/client/transport) 6.2.3-6.8.4
     * [transport-client](https://github.com/elastic/elasticsearch/tree/7.0/client/transport) 7.0.0-7.5.2
     * [rest-high-level-client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/6.7/index.html) 6.7.1-6.8.4
-    * [rest-high-level-client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.0/java-rest-high.html) 7.0.0-7.5.2
+    * [rest-high-level-client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.0/java-rest-high.html) 7.x
   * [Solr](https://github.com/apache/solr/)
     * [SolrJ](https://github.com/apache/solr/tree/main/solr/solrj) 7.x
   * [Cassandra](https://github.com/apache/cassandra) 3.x

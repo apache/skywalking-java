@@ -16,6 +16,7 @@ Release Notes.
 * Fix NPE in Redisson plugin since Redisson 3.20.0.
 * Support for showing batch command details and ignoring PING commands in Redisson plugin.
 * Fix peer value of Master-Slave mode in Redisson plugin.
+* Support for tracing the callbacks of asynchronous methods in elasticsearch-6.x-plugin/elasticsearch-7.x-plugin.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)
 

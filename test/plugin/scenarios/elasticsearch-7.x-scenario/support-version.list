@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# 7.0.0 - 7.17.12 have been tested, and 7.0.0 - 7.2.1 not included in the test
 7.3.2
 7.4.2
 7.5.2
@@ -27,4 +28,4 @@
 7.13.4
 7.14.2
 7.16.3
-7.17.12
+7.17.21

@@ -15,7 +15,7 @@
 # limitations under the License.
 segmentItems:
   - serviceName: elasticsearch-7.x-scenario
-    segmentSize: ge 1
+    segmentSize: ge 10
     segments:
       - segmentId: not null
         spans:
@@ -23,303 +23,650 @@ segmentItems:
             parentSpanId: 0
             spanId: 1
             spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
+            startTime: not null
+            endTime: not null
             componentId: 77
             isError: false
             spanType: Exit
             peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/GetSettings
-            parentSpanId: 0
-            spanId: 2
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/PutSettings
-            parentSpanId: 0
-            spanId: 3
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/CreateRequest
-            parentSpanId: 0
-            spanId: 4
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/IndexRequest
-            parentSpanId: 0
-            spanId: 5
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/RefreshRequest
-            parentSpanId: 0
-            spanId: 6
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/GetRequest
-            parentSpanId: 0
-            spanId: 7
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/SearchRequest
-            parentSpanId: 0
-            spanId: 8
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/UpdateRequest
-            parentSpanId: 0
-            spanId: 9
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/AnalyzeRequest
-            parentSpanId: 0
-            spanId: 10
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: analyzer, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/DeleteRequest
-            parentSpanId: 0
-            spanId: 11
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 77
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/IndexRequest
-            parentSpanId: 0
-            spanId: 12
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: node.address, value: not null }
-              - { key: es.indices, value: not null }
-              - { key: es.types, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/actionGet
-            parentSpanId: 0
-            spanId: 13
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Local
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/GetRequest
-            parentSpanId: 0
-            spanId: 14
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: node.address, value: not null }
-              - { key: es.indices, value: not null }
-              - { key: es.types, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/SearchRequest
-            parentSpanId: 0
-            spanId: 15
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: node.address, value: not null }
-              - { key: es.indices, value: not null }
-              - { key: es.types, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/actionGet
-            parentSpanId: 0
-            spanId: 16
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Local
+            skipAnalysis: false
             tags:
               - {key: db.type, value: Elasticsearch}
-              - {key: es.took_millis, value: not null }
-              - {key: es.total_hits, value: not null }
-              - {key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/UpdateRequest
-            parentSpanId: 0
-            spanId: 17
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: node.address, value: not null }
-              - { key: es.indices, value: not null }
-              - { key: es.types, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/DeleteRequest
-            parentSpanId: 0
-            spanId: 18
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: node.address, value: not null }
-              - { key: es.indices, value: not null }
-              - { key: es.types, value: not null }
-              - { key: db.statement, value: not null }
-            skipAnalysis: 'false'
-          - operationName: Elasticsearch/DeleteIndexRequest
-            parentSpanId: 0
-            spanId: 19
-            spanLayer: Database
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 48
-            isError: false
-            spanType: Exit
-            peer: not null
-            tags:
-              - { key: db.type, value: Elasticsearch }
-              - { key: db.instance, value: not null }
-              - { key: node.address, value: not null }
-              - { key: es.indices, value: not null }
-            skipAnalysis: 'false'
-          - operationName: GET:/elasticsearch-case/case/elasticsearch
+          - operationName: HEAD:/elasticsearch-case/case/healthCheck
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
-            startTime: nq 0
-            endTime: nq 0
+            startTime: not null
+            endTime: not null
             componentId: 1
             isError: false
             spanType: Entry
             peer: ''
+            skipAnalysis: false
             tags:
-              - { key: url, value: 'http://localhost:8080/elasticsearch-case/case/elasticsearch' }
-              - { key: http.method, value: GET }
+              - {key: url, value: 'http://localhost:8080/elasticsearch-case/case/healthCheck'}
+              - {key: http.method, value: HEAD}
               - {key: http.status_code, value: '200'}
-            skipAnalysis: 'false'
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/CreateRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 5, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/IndexRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 8, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/RefreshRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 9, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/GetRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 13, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/SearchRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 15, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/UpdateRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 17, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/AnalyzeRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 19, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/DeleteRequest/onResponse
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: transmission.latency, value: not null}
+            refs:
+              - {parentEndpoint: 'GET:/elasticsearch-case/case/elasticsearch', networkAddress: '',
+                 refType: CrossThread, parentSpanId: 21, parentTraceSegmentId: not null,
+                 parentServiceInstance: not null, parentService: elasticsearch-7.x-scenario,
+                 traceId: not null}
+      - segmentId: not null
+        spans:
+          - operationName: Elasticsearch/Health
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+          - operationName: Elasticsearch/GetSettings
+            parentSpanId: 0
+            spanId: 2
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+          - operationName: Elasticsearch/PutSettings
+            parentSpanId: 0
+            spanId: 3
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/CreateRequest
+            parentSpanId: 0
+            spanId: 4
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/CreateRequest
+            parentSpanId: 0
+            spanId: 5
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/IndexRequest
+            parentSpanId: 0
+            spanId: 6
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/RefreshRequest
+            parentSpanId: 0
+            spanId: 7
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/IndexRequest
+            parentSpanId: 0
+            spanId: 8
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/RefreshRequest
+            parentSpanId: 0
+            spanId: 9
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/RefreshRequest
+            parentSpanId: 0
+            spanId: 10
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/RefreshRequest
+            parentSpanId: 0
+            spanId: 11
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/GetRequest
+            parentSpanId: 0
+            spanId: 12
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/GetRequest
+            parentSpanId: 0
+            spanId: 13
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/SearchRequest
+            parentSpanId: 0
+            spanId: 14
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/SearchRequest
+            parentSpanId: 0
+            spanId: 15
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/UpdateRequest
+            parentSpanId: 0
+            spanId: 16
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/UpdateRequest
+            parentSpanId: 0
+            spanId: 17
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/AnalyzeRequest
+            parentSpanId: 0
+            spanId: 18
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: analyzer, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/AnalyzeRequest
+            parentSpanId: 0
+            spanId: 19
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: analyzer, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/DeleteRequest
+            parentSpanId: 0
+            spanId: 20
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/DeleteRequest
+            parentSpanId: 0
+            spanId: 21
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 77
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+          - operationName: Elasticsearch/IndexRequest
+            parentSpanId: 0
+            spanId: 22
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: node.address, value: not null}
+              - {key: es.indices, value: not null}
+              - {key: es.types, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/actionGet
+            parentSpanId: 0
+            spanId: 23
+            spanLayer: Unknown
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/GetRequest
+            parentSpanId: 0
+            spanId: 24
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: node.address, value: not null}
+              - {key: es.indices, value: not null}
+              - {key: es.types, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/SearchRequest
+            parentSpanId: 0
+            spanId: 25
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: node.address, value: not null}
+              - {key: es.indices, value: not null}
+              - {key: es.types, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/actionGet
+            parentSpanId: 0
+            spanId: 26
+            spanLayer: Unknown
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: es.took_millis, value: not null}
+              - {key: es.total_hits, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/UpdateRequest
+            parentSpanId: 0
+            spanId: 27
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: node.address, value: not null}
+              - {key: es.indices, value: not null}
+              - {key: es.types, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/DeleteRequest
+            parentSpanId: 0
+            spanId: 28
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: node.address, value: not null}
+              - {key: es.indices, value: not null}
+              - {key: es.types, value: not null}
+              - {key: db.statement, value: not null}
+          - operationName: Elasticsearch/DeleteIndexRequest
+            parentSpanId: 0
+            spanId: 29
+            spanLayer: Database
+            startTime: not null
+            endTime: not null
+            componentId: 48
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - {key: db.type, value: Elasticsearch}
+              - {key: db.instance, value: not null}
+              - {key: node.address, value: not null}
+              - {key: es.indices, value: not null}
+          - operationName: GET:/elasticsearch-case/case/elasticsearch
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 1
+            isError: false
+            spanType: Entry
+            peer: ''
+            skipAnalysis: false
+            tags:
+              - {key: url, value: 'http://localhost:8080/elasticsearch-case/case/elasticsearch'}
+              - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}

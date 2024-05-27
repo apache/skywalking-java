@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.skywalking.apm.testcase.elasticsearch.controller.CaseController;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.settings.ClusterGetSettingsRequest;
@@ -33,6 +35,7 @@ import org.elasticsearch.action.admin.cluster.settings.ClusterUpdateSettingsRequ
 import org.elasticsearch.action.admin.cluster.settings.ClusterUpdateSettingsResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
+import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -85,6 +88,7 @@ public class RestHighLevelClientCase {
 
     public String elasticsearch() throws Exception {
         String indexName = UUID.randomUUID().toString();
+        String indexName2 = UUID.randomUUID().toString();
         try {
             // health
             health();
@@ -97,27 +101,35 @@ public class RestHighLevelClientCase {
 
             // create
             createIndex(indexName);
+            createIndexAsync(indexName2);
 
             // index
             index(indexName);
+            indexAsync(indexName2);
 
             // refresh
             client.indices().refresh(new RefreshRequest(indexName), RequestOptions.DEFAULT);
+            client.indices().refresh(new RefreshRequest(indexName2), RequestOptions.DEFAULT);
 
             // get
             get(indexName);
+            getAsync(indexName2);
 
             // search
             search(indexName);
+            searchAsync(indexName2);
 
             // update
             update(indexName);
+            updateAsync(indexName2);
 
             // analyze
             analyze(indexName);
+            analyzeAsync(indexName2);
 
             // delete
             delete(indexName);
+            deleteAsync(indexName2);
         } finally {
             if (null != client) {
                 client.close();
@@ -189,6 +201,41 @@ public class RestHighLevelClientCase {
         }
     }
 
+    private void createIndexAsync(String indexName) throws InterruptedException {
+        CreateIndexRequest request = new CreateIndexRequest(indexName);
+        Map<String, Object> mapping = new HashMap<>();
+        Map<String, Object> mappingProperties = new HashMap<>();
+        Map<String, String> mappingPropertiesAuthor = new HashMap<>();
+        mappingPropertiesAuthor.put("type", "keyword");
+        mappingProperties.put("author", mappingPropertiesAuthor);
+        Map<String, String> mappingPropertiesTitle = new HashMap<>();
+        mappingPropertiesTitle.put("type", "keyword");
+        mappingProperties.put("title", mappingPropertiesTitle);
+        mapping.put("properties", mappingProperties);
+        request.mapping(mapping);
+
+        request.settings(Settings.builder().put("index.number_of_shards", 1).put("index.number_of_replicas", 0));
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        client.indices().createAsync(request, RequestOptions.DEFAULT, new ActionListener<CreateIndexResponse>() {
+            @Override
+            public void onResponse(final CreateIndexResponse createIndexResponse) {
+                latch.countDown();
+                if (!createIndexResponse.isAcknowledged()) {
+                    String message = "elasticsearch create index fail.";
+                    LOGGER.error(message);
+                    throw new RuntimeException(message);
+                }
+            }
+
+            @Override
+            public void onFailure(final Exception e) {
+                latch.countDown();
+            }
+        });
+        latch.await();
+    }
+
     private void index(String indexName) throws IOException {
         Map<String, String> source = new HashMap<>();
         source.put("author", "Marker");
@@ -201,6 +248,49 @@ public class RestHighLevelClientCase {
             LOGGER.error(message);
             throw new RuntimeException(message);
         }
+        client.indices().refresh(new RefreshRequest(indexName), RequestOptions.DEFAULT);
+    }
+
+    private void indexAsync(String indexName) throws InterruptedException {
+        Map<String, String> source = new HashMap<>();
+        source.put("author", "Marker");
+        source.put("title", "Java programing.");
+        IndexRequest indexRequest = new IndexRequest(indexName).id("1").source(source);
+
+        final CountDownLatch latch = new CountDownLatch(2);
+        client.indexAsync(indexRequest, RequestOptions.DEFAULT,
+                          new ActionListener<IndexResponse>() {
+                              @Override
+                              public void onResponse(final IndexResponse indexResponse) {
+                                  latch.countDown();
+                                  if (indexResponse.status().getStatus() >= 400) {
+                                      String message = "elasticsearch index data fail.";
+                                      LOGGER.error(message);
+                                      throw new RuntimeException(message);
+                                  }
+                              }
+
+                              @Override
+                              public void onFailure(final Exception e) {
+                                  latch.countDown();
+                              }
+                          }
+        );
+
+        client.indices().refreshAsync(new RefreshRequest(indexName), RequestOptions.DEFAULT,
+                                      new ActionListener<RefreshResponse>() {
+                                          @Override
+                                          public void onResponse(final RefreshResponse refreshResponse) {
+                                              latch.countDown();
+                                          }
+
+                                          @Override
+                                          public void onFailure(final Exception e) {
+                                              latch.countDown();
+                                          }
+                                      }
+        );
+        latch.await();
     }
 
     private void get(String indexName) throws IOException {
@@ -212,6 +302,31 @@ public class RestHighLevelClientCase {
             LOGGER.error(message);
             throw new RuntimeException(message);
         }
+    }
+
+    private void getAsync(String indexName) throws InterruptedException {
+        GetRequest getRequest = new GetRequest(indexName, "1");
+        final CountDownLatch latch = new CountDownLatch(1);
+        client.getAsync(getRequest, RequestOptions.DEFAULT,
+                        new ActionListener<GetResponse>() {
+                            @Override
+                            public void onResponse(final GetResponse getResponse) {
+                                latch.countDown();
+                                if (!getResponse.isExists()) {
+                                    String message = "elasticsearch get data fail.";
+                                    LOGGER.error(message);
+                                    throw new RuntimeException(message);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(final Exception e) {
+                                latch.countDown();
+                                throw new RuntimeException(e);
+                            }
+                        }
+        );
+       latch.await();
     }
 
     private void update(String indexName) throws IOException {
@@ -228,6 +343,33 @@ public class RestHighLevelClientCase {
         }
     }
 
+    private void updateAsync(String indexName) throws InterruptedException {
+        UpdateRequest request = new UpdateRequest(indexName, "1");
+        Map<String, Object> parameters = singletonMap("title", "c++ programing.");
+        Script inline = new Script(ScriptType.INLINE, "painless", "ctx._source.title = params.title", parameters);
+        request.script(inline);
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        client.updateAsync(request, RequestOptions.DEFAULT, new ActionListener<UpdateResponse>() {
+            @Override
+            public void onResponse(final UpdateResponse updateResponse) {
+                latch.countDown();
+                if (updateResponse.getVersion() != 2) {
+                    String message = "elasticsearch update data fail.";
+                    LOGGER.error(message);
+                    throw new RuntimeException(message);
+                }
+            }
+
+            @Override
+            public void onFailure(final Exception e) {
+                latch.countDown();
+                throw new RuntimeException(e);
+            }
+        });
+        latch.await();
+    }
+
     private void analyze(String indexName) throws IOException {
         AnalyzeRequest analyzeRequest = AnalyzeRequest.withIndexAnalyzer(indexName, null, "SkyWalking");
         AnalyzeResponse analyzeResponse = client.indices().analyze(analyzeRequest, RequestOptions.DEFAULT);
@@ -238,6 +380,30 @@ public class RestHighLevelClientCase {
         }
     }
 
+    private void analyzeAsync(String indexName) throws InterruptedException {
+        AnalyzeRequest analyzeRequest = AnalyzeRequest.withIndexAnalyzer(indexName, null, "SkyWalking");
+        final CountDownLatch latch = new CountDownLatch(1);
+        client.indices().analyzeAsync(
+            analyzeRequest, RequestOptions.DEFAULT, new ActionListener<AnalyzeResponse>() {
+                @Override
+                public void onResponse(final AnalyzeResponse analyzeResponse) {
+                    latch.countDown();
+                    if (null == analyzeResponse.getTokens() || analyzeResponse.getTokens().size() < 1) {
+                        String message = "elasticsearch analyze index fail.";
+                        LOGGER.error(message);
+                        throw new RuntimeException(message);
+                    }
+                }
+
+                @Override
+                public void onFailure(final Exception e) {
+                    latch.countDown();
+                    LOGGER.error(e);
+                }
+            });
+        latch.await();
+    }
+
     private void delete(String indexName) throws IOException {
         DeleteIndexRequest request = new DeleteIndexRequest(indexName);
         AcknowledgedResponse deleteIndexResponse = client.indices().delete(request, RequestOptions.DEFAULT);
@@ -246,6 +412,29 @@ public class RestHighLevelClientCase {
             LOGGER.error(message);
             throw new RuntimeException(message);
         }
+    }
+
+    private void deleteAsync(String indexName) throws InterruptedException {
+        DeleteIndexRequest request = new DeleteIndexRequest(indexName);
+        final CountDownLatch latch = new CountDownLatch(1);
+        client.indices().deleteAsync(request, RequestOptions.DEFAULT, new ActionListener<AcknowledgedResponse>() {
+            @Override
+            public void onResponse(final AcknowledgedResponse acknowledgedResponse) {
+                latch.countDown();
+                if (!acknowledgedResponse.isAcknowledged()) {
+                    String message = "elasticsearch delete index fail.";
+                    LOGGER.error(message);
+                    throw new RuntimeException(message);
+                }
+            }
+
+            @Override
+            public void onFailure(final Exception e) {
+                latch.countDown();
+                throw new RuntimeException(e);
+            }
+        });
+        latch.await();
     }
 
     private void search(String indexName) throws IOException {
@@ -265,5 +454,36 @@ public class RestHighLevelClientCase {
             LOGGER.error(message);
             throw new RuntimeException(message);
         }
+    }
+
+    private void searchAsync(String indexName) throws InterruptedException {
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(QueryBuilders.termQuery("author", "Marker"));
+        sourceBuilder.from(0);
+        sourceBuilder.size(10);
+
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices(indexName);
+        searchRequest.source(sourceBuilder);
+        final CountDownLatch latch = new CountDownLatch(1);
+        client.searchAsync(searchRequest, RequestOptions.DEFAULT, new ActionListener<SearchResponse>() {
+            @Override
+            public void onResponse(final SearchResponse searchResponse) {
+                latch.countDown();
+                int length = searchResponse.getHits().getHits().length;
+                if (!(length > 0)) {
+                    String message = "elasticsearch search data fail.";
+                    LOGGER.error(message);
+                    throw new RuntimeException(message);
+                }
+            }
+
+            @Override
+            public void onFailure(final Exception e) {
+                latch.countDown();
+                LOGGER.error(e);
+            }
+        });
+        latch.await();
     }
 }

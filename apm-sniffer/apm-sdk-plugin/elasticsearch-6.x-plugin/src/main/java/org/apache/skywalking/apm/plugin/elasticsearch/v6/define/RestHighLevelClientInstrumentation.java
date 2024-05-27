@@ -86,7 +86,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -102,7 +102,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -118,7 +118,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -134,7 +134,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -182,7 +182,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -198,7 +198,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -214,7 +214,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -230,7 +230,7 @@ public class RestHighLevelClientInstrumentation extends ClassEnhancePluginDefine
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             }
         };

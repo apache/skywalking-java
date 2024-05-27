@@ -48,4 +48,8 @@ public class Constants {
     public static final AbstractTag<String> ES_TOOK_MILLIS = Tags.ofKey("es.took_millis");
     public static final AbstractTag<String> ES_TOTAL_HITS = Tags.ofKey("es.total_hits");
     public static final AbstractTag<String> ES_INGEST_TOOK_MILLIS = Tags.ofKey("es.ingest_took_millis");
+
+    public static final String ON_RESPONSE_SUFFIX = "/onResponse";
+    public static final String ON_FAILURE_SUFFIX = "/onFailure";
+
 }

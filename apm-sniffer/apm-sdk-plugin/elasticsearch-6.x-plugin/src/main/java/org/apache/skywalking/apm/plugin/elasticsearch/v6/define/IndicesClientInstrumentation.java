@@ -68,7 +68,7 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -85,7 +85,7 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
             new InstanceMethodsInterceptPoint() {
@@ -102,7 +102,7 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return false;
+                    return true;
                 }
             },
                 new InstanceMethodsInterceptPoint() {
@@ -119,7 +119,7 @@ public class IndicesClientInstrumentation extends ClassEnhancePluginDefine {
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return false;
+                        return true;
                     }
                 }
         };

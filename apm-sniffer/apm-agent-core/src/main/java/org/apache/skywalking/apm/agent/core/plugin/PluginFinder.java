@@ -95,13 +95,13 @@ public class PluginFinder {
                 return nameMatchDefine.containsKey(target.getActualName());
             }
         };
-        judge = judge.and(not(isInterface()));
         for (AbstractClassEnhancePluginDefine define : signatureMatchDefine) {
             ClassMatch match = define.enhanceClass();
             if (match instanceof IndirectMatch) {
                 judge = judge.or(((IndirectMatch) match).buildJunction());
             }
         }
+        judge = judge.and(not(isInterface()));
         return new ProtectiveShieldMatcher(judge);
     }
 

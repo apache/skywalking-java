@@ -101,7 +101,8 @@ public class PluginFinder {
                 judge = judge.or(((IndirectMatch) match).buildJunction());
             }
         }
-        judge = judge.and(not(isInterface()));
+        // Filter out all matchers returns to exclude pure interface types.
+        judge = not(isInterface()).and(judge);
         return new ProtectiveShieldMatcher(judge);
     }
 

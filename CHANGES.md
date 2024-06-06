@@ -18,6 +18,7 @@ Release Notes.
 * Fix peer value of Master-Slave mode in Redisson plugin.
 * Support for tracing the callbacks of asynchronous methods in elasticsearch-6.x-plugin/elasticsearch-7.x-plugin.
 * Fixed the invalid issue in the isInterface method in PluginFinder.
+* Fix the opentracing toolkit SPI config
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)
 

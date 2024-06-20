@@ -30,7 +30,9 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.noear.solon.Utils;
+import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
+import org.noear.solon.core.mvc.ActionDefault;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
@@ -118,7 +120,18 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
         if (excludePaths.contains(ctx.pathNew()) || pathMatch(ctx.pathNew())) {
             return ret;
         }
-
+        Object action = ctx.attr("action");
+        if (action instanceof ActionDefault) {
+            ActionDefault actionDefault = (ActionDefault) action;
+            Mapping mapping = actionDefault.mapping();
+            if (mapping != null) {
+                ContextManager.activeSpan().tag("http.mapping", mapping.value());
+            }
+        }
+        Object controller = ctx.attr("controller");
+        if (controller != null) {
+            ContextManager.activeSpan().tag("http.controller", controller.getClass().getName());
+        }
         ContextManager.activeSpan().tag("http.status_code", String.valueOf(ctx.status()));
         ContextManager.stopSpan();
         return ret;

@@ -38,7 +38,7 @@ public class Controller {
     @Mapping("/testcase/{test}")
     public String hello(@Body String body, @Path("test") String test) throws SQLException {
         testService.executeSQL();
-        String body1 = HttpRequest.post("http://localhost:8082/testcase/error").execute().body();
+        String body1 = HttpRequest.get("http://localhost:8082/testcase/error").execute().body();
         return "Hello World";
     }
 

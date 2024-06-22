@@ -26,6 +26,7 @@ metrics based on the tracing data.
   * [Grizzly](https://github.com/eclipse-ee4j/grizzly) 2.3.x -> 4.x
   * [WebSphere Liberty](https://github.com/OpenLiberty/open-liberty) 23.x
   * [Netty HTTP](https://github.com/netty/netty) 4.1.x (Optional²)
+  * [Solon](https://github.com/opensolon/solon) 2.7.x -> 2.8.x
 * HTTP Client
   * [Feign](https://github.com/OpenFeign/feign) 9.x
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x

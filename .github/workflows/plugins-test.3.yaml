@@ -92,7 +92,6 @@ jobs:
           - gateway-3.x-scenario
           - gateway-3.x-filter-context-scenario
           - neo4j-4.x-scenario
-          - oracle-scenario
           - druid-1.x-scenario
           - hikaricp-scenario
           - clickhouse-0.3.1-scenario

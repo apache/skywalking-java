@@ -18,7 +18,11 @@
 package test.apache.skywalking.apm.testcase.sc.solon.controller;
 
 import cn.hutool.http.HttpRequest;
-import org.noear.solon.annotation.*;
+import org.noear.solon.annotation.Body;
+import org.noear.solon.annotation.Get;
+import org.noear.solon.annotation.Inject;
+import org.noear.solon.annotation.Mapping;
+import org.noear.solon.annotation.Path;
 import test.apache.skywalking.apm.testcase.sc.solon.service.TestService;
 
 import java.sql.SQLException;

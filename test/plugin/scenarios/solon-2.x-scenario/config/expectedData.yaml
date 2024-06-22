@@ -85,4 +85,6 @@ segmentItems:
         - {key: error.kind, value: not null}
         - {key: message, value: not null}
         - {key: stack, value: not null}
+      refs:
+        - {refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not null, traceId: not null }
       skipAnalysis: 'false'

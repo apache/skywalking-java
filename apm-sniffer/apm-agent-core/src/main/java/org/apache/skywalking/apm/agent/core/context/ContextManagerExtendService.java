@@ -18,7 +18,10 @@
 
 package org.apache.skywalking.apm.agent.core.context;
 
-import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
@@ -35,7 +38,7 @@ import org.apache.skywalking.apm.util.StringUtil;
 @DefaultImplementor
 public class ContextManagerExtendService implements BootService, GRPCChannelListener {
 
-    private volatile String[] ignoreSuffixArray = new String[0];
+    private volatile Set ignoreSuffixSet;
 
     private volatile GRPCChannelStatus status = GRPCChannelStatus.DISCONNECT;
 
@@ -50,7 +53,7 @@ public class ContextManagerExtendService implements BootService, GRPCChannelList
 
     @Override
     public void boot() {
-        ignoreSuffixArray = Config.Agent.IGNORE_SUFFIX.split(",");
+        ignoreSuffixSet = Stream.of(Config.Agent.IGNORE_SUFFIX.split(",")).collect(Collectors.toSet());
         ignoreSuffixPatternsWatcher = new IgnoreSuffixPatternsWatcher("agent.ignore_suffix", this);
         spanLimitWatcher = new SpanLimitWatcher("agent.span_limit_per_segment");
 
@@ -82,8 +85,7 @@ public class ContextManagerExtendService implements BootService, GRPCChannelList
         }
 
         int suffixIdx = operationName.lastIndexOf(".");
-        if (suffixIdx > -1 && Arrays.stream(ignoreSuffixArray)
-                                    .anyMatch(a -> a.equals(operationName.substring(suffixIdx)))) {
+        if (suffixIdx > -1 && ignoreSuffixSet.contains(operationName.substring(suffixIdx))) {
             context = new IgnoredTracerContext();
         } else {
             SamplingService samplingService = ServiceManager.INSTANCE.findService(SamplingService.class);
@@ -104,7 +106,7 @@ public class ContextManagerExtendService implements BootService, GRPCChannelList
 
     public void handleIgnoreSuffixPatternsChanged() {
         if (StringUtil.isNotBlank(ignoreSuffixPatternsWatcher.getIgnoreSuffixPatterns())) {
-            ignoreSuffixArray = ignoreSuffixPatternsWatcher.getIgnoreSuffixPatterns().split(",");
+            ignoreSuffixSet = Stream.of(ignoreSuffixPatternsWatcher.getIgnoreSuffixPatterns().split(",")).collect(Collectors.toSet());
         }
     }
 }

@@ -29,60 +29,20 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
-import org.noear.solon.Utils;
 import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.mvc.ActionDefault;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInterceptor {
-
-    private static FastPathMatcher pathMatcher = new FastPathMatcher();
-
-    private final Set<String> excludePaths = new HashSet<>();
-
-    private final Set<String> matchPaths = new HashSet<>();
-
-    public SolonActionExecuteInterceptor() {
-        String excluded = System.getProperty("skywalking.agent.solon.excluded", "");
-        if (Utils.isNotEmpty(excluded)) {
-            for (String path : excluded.split(",")) {
-                path = path.trim();
-                if (!path.isEmpty()) {
-                    if (!path.startsWith("/")) {
-                        path = "/" + path;
-                    }
-                    if (path.contains("*")) {
-                        matchPaths.add(path);
-                    } else {
-                        excludePaths.add(path);
-                    }
-                }
-            }
-        }
-    }
-
-    public boolean pathMatch(String path) {
-        for (String matchPath : matchPaths) {
-            if (pathMatcher.match(matchPath, path)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
         Context ctx = (Context) allArguments[0];
-        if (excludePaths.contains(ctx.pathNew()) || pathMatch(ctx.pathNew())) {
-            return;
-        }
         ContextCarrier contextCarrier = new ContextCarrier();
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {
@@ -117,9 +77,6 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) {
         Context ctx = (Context) allArguments[0];
-        if (excludePaths.contains(ctx.pathNew()) || pathMatch(ctx.pathNew())) {
-            return ret;
-        }
         Object action = ctx.attr("action");
         if (action instanceof ActionDefault) {
             ActionDefault actionDefault = (ActionDefault) action;

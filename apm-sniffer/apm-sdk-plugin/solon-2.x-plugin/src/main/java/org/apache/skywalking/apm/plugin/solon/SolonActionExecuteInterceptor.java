@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -34,7 +35,6 @@ import org.noear.solon.core.handle.Context;
 import org.noear.solon.core.mvc.ActionDefault;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 @Slf4j
 public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInterceptor {
@@ -53,24 +53,27 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
         AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
         span.setComponent(ComponentsDefine.SOLON_MVC);
         SpanLayer.asHttp(span);
-        span.tag("http.method", ctx.method());
-        span.tag("http.path", ctx.path());
-        span.tag("framework", "solon");
-        for (Map.Entry<String, String> stringStringEntry : ctx.headerMap().entrySet()) {
-            span.tag(stringStringEntry.getKey(), stringStringEntry.getValue());
+        Tags.URL.set(span, ctx.url());
+        Tags.HTTP.METHOD.set(span, ctx.method());
+        String headerStr = ctx.headerMap().toString();
+        if (headerStr.length() > 1024) {
+            headerStr = headerStr.substring(0, 1024);
         }
+        Tags.HTTP.HEADERS.set(span, headerStr);
         String body = ctx.body();
         if (StringUtil.isNotBlank(body)) {
             if (body.length() > 1024) {
                 body = body.substring(0, 1024);
             }
-            span.tag("http.body", body);
+            Tags.HTTP.BODY.set(span, body);
         }
         String param = ctx.paramMap().toString();
         if (param.length() > 1024) {
             param = param.substring(0, 1024);
         }
-        span.tag("http.param", param);
+        Tags.HTTP.PARAMS.set(span, param);
+        span.tag("http.path", ctx.path());
+        span.tag("framework", "solon");
     }
 
     @Override
@@ -89,7 +92,11 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
         if (controller != null) {
             ContextManager.activeSpan().tag("http.controller", controller.getClass().getName());
         }
-        ContextManager.activeSpan().tag("http.status_code", String.valueOf(ctx.status()));
+        if (ctx.errors != null) {
+            Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), 500);
+        } else {
+            Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), ctx.status());
+        }
         ContextManager.stopSpan();
         return ret;
     }

@@ -47,21 +47,6 @@ segmentItems:
       - {key: url, value: not null}
       - {key: http.method, value: GET}
       skipAnalysis: 'false'
-    - operationName: 'Solon:GET:/testcase/error'
-      parentSpanId: -1
-      spanId: 0
-      spanLayer: not null
-      startTime: not null
-      endTime: not null
-      isError: true
-      componentId: not null
-      logs:
-      - logEvent:
-        - {key: event, value: error}
-        - {key: error.kind, value: not null}
-        - {key: message, value: not null}
-        - {key: stack, value: not null}
-      skipAnalysis: 'false'
     - operationName: 'Solon:GET:/testcase/test'
       parentSpanId: -1
       spanId: 0
@@ -72,7 +57,7 @@ segmentItems:
       isError: false
       tags:
       - {key: http.path, value: not null}
-      - {key: http.param, value: not null}
+      - {key: http.params, value: not null}
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       - {key: framework, value: 'solon'}
@@ -90,7 +75,7 @@ segmentItems:
       isError: true
       tags:
       - {key: http.path, value: not null }
-      - {key: http.param, value: not null }
+      - {key: http.params, value: not null }
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '500'}
       - {key: framework, value: 'solon' }

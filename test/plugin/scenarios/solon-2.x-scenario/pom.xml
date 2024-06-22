@@ -76,7 +76,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>test.apache.skywalking.apm.testcase.sc.App</mainClass>
+                            <mainClass>test.apache.skywalking.apm.testcase.sc.solon.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

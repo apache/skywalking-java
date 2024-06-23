@@ -83,8 +83,8 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
             }
         }
 
-        context.setContext(STOP_SPAN_FLAG);
         AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
+        context.setContext(STOP_SPAN_FLAG);
         span.setComponent(ComponentsDefine.REDISSON);
         Tags.CACHE_TYPE.set(span, "Redis");
         Tags.CACHE_INSTANCE.set(span, dbInstance);

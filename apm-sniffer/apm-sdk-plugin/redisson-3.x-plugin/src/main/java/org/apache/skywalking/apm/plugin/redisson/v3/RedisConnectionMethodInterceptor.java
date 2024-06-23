@@ -159,8 +159,8 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
     private String showBatchCommands(CommandsData commandsData) {
         return commandsData.getCommands()
-                .stream()
-                .map(data -> data.getCommand().getName())
-                .collect(Collectors.joining(";"));
+                        .stream()
+                        .map(data -> data.getCommand().getName())
+                        .collect(Collectors.joining(";"));
     }
 }

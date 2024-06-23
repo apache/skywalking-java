@@ -38,39 +38,39 @@ public class RedisConnectionInstrumentation extends ClassInstanceMethodsEnhanceP
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[] {
-                new ConstructorInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArgumentWithType(0, "org.redisson.client.RedisClient");
-                    }
-
-                    @Override
-                    public String getConstructorInterceptor() {
-                        return REDISSON_METHOD_INTERCEPTOR_CLASS;
-                    }
+            new ConstructorInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                    return takesArgumentWithType(0, "org.redisson.client.RedisClient");
                 }
+
+                @Override
+                public String getConstructorInterceptor() {
+                    return REDISSON_METHOD_INTERCEPTOR_CLASS;
+                }
+            }
         };
     }
 
     @Override
     public InstanceMethodsInterceptV2Point[] getInstanceMethodsInterceptV2Points() {
         return new InstanceMethodsInterceptV2Point[] {
-                new InstanceMethodsInterceptV2Point() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("send");
-                    }
-
-                    @Override
-                    public String getMethodsInterceptorV2() {
-                        return REDISSON_METHOD_INTERCEPTOR_CLASS;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return false;
-                    }
+            new InstanceMethodsInterceptV2Point() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named("send");
                 }
+
+                @Override
+                public String getMethodsInterceptorV2() {
+                    return REDISSON_METHOD_INTERCEPTOR_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            }
         };
     }
 

@@ -105,7 +105,7 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
-        if (ContextManager.isActive()) {
+        if (Objects.nonNull(context.getContext())) {
             AbstractSpan span = ContextManager.activeSpan();
             span.log(t);
         }
@@ -159,8 +159,8 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
 
     private String showBatchCommands(CommandsData commandsData) {
         return commandsData.getCommands()
-                        .stream()
-                        .map(data -> data.getCommand().getName())
-                        .collect(Collectors.joining(";"));
+                           .stream()
+                           .map(data -> data.getCommand().getName())
+                           .collect(Collectors.joining(";"));
     }
 }

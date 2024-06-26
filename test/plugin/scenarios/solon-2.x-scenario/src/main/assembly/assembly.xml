@@ -29,13 +29,13 @@
             <directory>./bin</directory>
             <fileMode>0775</fileMode>
         </fileSet>
-    </fileSets>
-
-    <files>
-        <file>
-            <source>${project.build.directory}/solon-2.x-scenario.jar</source>
+        <fileSet>
+            <directory>${project.build.directory}</directory>
             <outputDirectory>./libs</outputDirectory>
+            <includes>
+                <include>solon-2.x-scenario.jar</include>
+            </includes>
             <fileMode>0775</fileMode>
-        </file>
-    </files>
+        </fileSet>
+    </fileSets>
 </assembly>

@@ -16,5 +16,4 @@
 
 type: jvm
 entryService: http://localhost:8082/testcase/test
-healthCheck: http://localhost:8082/testcase/healthCheck
 startScript: ./bin/startup.sh

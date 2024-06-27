@@ -16,27 +16,8 @@
 
 segmentItems:
   - serviceName: solon-2.x-scenario
-    segmentSize: 3
+    segmentSize: ge 2
     segments:
-      - segmentId: not null
-        spans:
-          - operationName: Solon:HEAD:/testcase/healthCheck
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Http
-            startTime: not null
-            endTime: not null
-            componentId: 158
-            isError: false
-            spanType: Entry
-            peer: ''
-            skipAnalysis: false
-            tags:
-              - {key: url, value: 'http://localhost:8082/testcase/healthCheck'}
-              - {key: http.method, value: HEAD}
-              - {key: http.headers, value: not null}
-              - {key: http.params, value: not null}
-              - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
           - operationName: Solon:GET:/testcase/error

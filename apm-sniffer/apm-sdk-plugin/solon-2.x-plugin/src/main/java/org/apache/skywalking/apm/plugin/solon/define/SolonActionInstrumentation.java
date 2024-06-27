@@ -52,7 +52,7 @@ public class SolonActionInstrumentation extends ClassInstanceMethodsEnhancePlugi
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("invoke");
+                        return named(System.getProperty("skywalking.agent.solon.method", "invoke"));
                     }
 
                     @Override

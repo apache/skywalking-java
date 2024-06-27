@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-solon=org.apache.skywalking.apm.plugin.solon.define.SolonActionInstrumentation
+solon-2.x=org.apache.skywalking.apm.plugin.solon.define.SolonActionInstrumentation

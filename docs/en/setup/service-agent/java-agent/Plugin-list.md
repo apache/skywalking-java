@@ -177,3 +177,4 @@
 - spring-webflux-6.x-webclient
 - activemq-artemis-jakarta-client-2.x
 - c3p0-0.9.x
+- solon-2.x

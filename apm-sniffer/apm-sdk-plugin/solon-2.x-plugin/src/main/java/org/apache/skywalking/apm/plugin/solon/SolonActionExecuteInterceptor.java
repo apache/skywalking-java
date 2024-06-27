@@ -30,9 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
-import org.noear.solon.annotation.Mapping;
 import org.noear.solon.core.handle.Context;
-import org.noear.solon.core.mvc.ActionDefault;
 
 import java.lang.reflect.Method;
 
@@ -72,26 +70,12 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
             param = param.substring(0, 1024);
         }
         Tags.HTTP.PARAMS.set(span, param);
-        span.tag("http.path", ctx.path());
-        span.tag("framework", "solon");
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) {
         Context ctx = (Context) allArguments[0];
-        Object action = ctx.attr("action");
-        if (action instanceof ActionDefault) {
-            ActionDefault actionDefault = (ActionDefault) action;
-            Mapping mapping = actionDefault.mapping();
-            if (mapping != null) {
-                ContextManager.activeSpan().tag("http.mapping", mapping.value());
-            }
-        }
-        Object controller = ctx.attr("controller");
-        if (controller != null) {
-            ContextManager.activeSpan().tag("http.controller", controller.getClass().getName());
-        }
         if (ctx.errors != null) {
             Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), 500);
         } else {

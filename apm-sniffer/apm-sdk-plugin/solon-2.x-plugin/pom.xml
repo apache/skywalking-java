@@ -28,7 +28,7 @@
     <artifactId>solon-2.x-plugin</artifactId>
     <packaging>jar</packaging>
 
-    <name>solon-plugin</name>
+    <name>solon-2.x-plugin</name>
     <url>http://maven.apache.org</url>
 
     <properties>

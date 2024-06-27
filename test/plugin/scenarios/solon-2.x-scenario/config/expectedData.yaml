@@ -34,8 +34,6 @@ segmentItems:
             tags:
               - {key: url, value: not null}
               - {key: http.method, value: GET}
-              - {key: http.headers, value: not null}
-              - {key: http.params, value: not null}
               - {key: http.status_code, value: '500'}
             logs:
               - logEvent:
@@ -94,6 +92,4 @@ segmentItems:
             tags:
               - {key: url, value: 'http://localhost:8082/testcase/test'}
               - {key: http.method, value: GET}
-              - {key: http.headers, value: not null}
-              - {key: http.params, value: '{}'}
               - {key: http.status_code, value: '200'}

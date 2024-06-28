@@ -39,7 +39,7 @@ public class SolonPluginConfig {
              */
             public static int HTTP_BODY_LENGTH_THRESHOLD = 0;
             /**
-             * It controls what header data should be collected, values must be in lower case, if empty, collect all. default is empty.
+             * It controls what header data should be collected, values must be in lower case, if empty, no header data will be collected. default is empty.
              */
             public static List<String> INCLUDE_HTTP_HEADERS ;
         }

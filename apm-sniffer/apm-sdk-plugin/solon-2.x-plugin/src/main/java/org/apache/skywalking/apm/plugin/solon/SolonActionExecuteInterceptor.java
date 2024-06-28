@@ -95,22 +95,11 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) {
         Context ctx = (Context) allArguments[0];
-        if (SolonPluginConfig.Plugin.Solon.AFTER_EXCEPTION_HANDLING) {
-            // after exception handling, use the status code of the response
-            Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), ctx.status());
-            if (ctx.errors != null && ctx.status() != 200 && ContextManager.getRuntimeContext().get("solon.exception") == null) {
-                // if there is an error and the status code is not 200, record the error
-                AbstractSpan activeSpan = ContextManager.activeSpan();
-                activeSpan.errorOccurred();
-                activeSpan.log(ctx.errors);
-            }
-        } else {
-            // before exception handling, use 500 as the status code
-            if (ctx.errors != null) {
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), 500);
-            } else {
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), ctx.status());
-            }
+        Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), ctx.status());
+        if (ctx.errors != null && ContextManager.getRuntimeContext().get("solon.exception") == null) {
+            AbstractSpan activeSpan = ContextManager.activeSpan();
+            activeSpan.errorOccurred();
+            activeSpan.log(ctx.errors);
         }
         ContextManager.stopSpan();
         return ret;

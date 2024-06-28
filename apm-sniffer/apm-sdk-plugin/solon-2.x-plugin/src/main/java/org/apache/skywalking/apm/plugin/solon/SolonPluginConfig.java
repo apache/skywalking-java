@@ -31,10 +31,6 @@ public class SolonPluginConfig {
              */
             public static int HTTP_PARAMS_LENGTH_THRESHOLD = 0;
             /**
-             * Define the max length of collected HTTP header. The default value(=0) means not collecting.
-             */
-            public static int HTTP_HEADERS_LENGTH_THRESHOLD = 0;
-            /**
              * Define the max length of collected HTTP body. The default value(=0) means not collecting.
              */
             public static int HTTP_BODY_LENGTH_THRESHOLD = 0;

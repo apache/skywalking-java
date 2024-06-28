@@ -20,7 +20,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: Solon:GET:/testcase/error
+          - operationName: GET:/testcase/error
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -44,7 +44,7 @@ segmentItems:
                   - {key: message, value: this is Error}
                   - {key: stack, value: not null}
             refs:
-              - {parentEndpoint: 'Solon:GET:/testcase/test', networkAddress: 'localhost:8082',
+              - {parentEndpoint: 'GET:/testcase/test', networkAddress: 'localhost:8082',
                  refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: solon-2.x-scenario,
                  traceId: not null}
@@ -80,7 +80,7 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: url, value: 'http://localhost:8082/testcase/error'}
               - {key: http.status_code, value: '500'}
-          - operationName: Solon:GET:/testcase/test
+          - operationName: GET:/testcase/test
             parentSpanId: -1
             spanId: 0
             spanLayer: Http

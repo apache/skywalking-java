@@ -94,7 +94,7 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret, MethodInvocationContext context) {
         Context ctx = (Context) allArguments[0];
         Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), ctx.status());
-        if (ctx.errors != null && context.getContext() != null && context.getContext() instanceof Boolean && (boolean) context.getContext()) {
+        if (ctx.errors != null && context.getContext() == null) {
             AbstractSpan activeSpan = ContextManager.activeSpan();
             activeSpan.errorOccurred();
             activeSpan.log(ctx.errors);

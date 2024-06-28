@@ -30,6 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.util.StringUtil;
+import org.noear.solon.core.NvMap;
 import org.noear.solon.core.handle.Context;
 
 import java.lang.reflect.Method;
@@ -54,7 +55,19 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
         Tags.URL.set(span, ctx.url());
         Tags.HTTP.METHOD.set(span, ctx.method());
         if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD != 0) {
-            String headerStr = ctx.headerMap().toString();
+            String headerStr;
+            if (SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS != null && !SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS.isEmpty()) {
+                NvMap includeHeaders = new NvMap();
+                for (String header : SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS) {
+                    String value = ctx.header(header);
+                    if (StringUtil.isNotBlank(value)) {
+                        includeHeaders.put(header, value);
+                    }
+                }
+                headerStr = includeHeaders.toString();
+            } else {
+                headerStr = ctx.headerMap().toString();
+            }
             if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD > 0 && headerStr.length() > SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD) {
                 headerStr = headerStr.substring(0, SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD);
             }

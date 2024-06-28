@@ -20,20 +20,22 @@ package org.apache.skywalking.apm.plugin.solon;
 
 import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
 
+import java.util.List;
+
 public class SolonPluginConfig {
     public static class Plugin {
         @PluginConfig(root = SolonPluginConfig.class)
         public static class Solon {
             /**
-             * save parameter string length, -1 save all, 0 save nothing, >0 save specified length of parameter string to the tag. default is 0
+             * Define the max length of collected HTTP parameters. The default value(=0) means not collecting.
              */
             public static int HTTP_PARAMS_LENGTH_THRESHOLD = 0;
             /**
-             * save header string length, -1 save all, 0 save nothing, >0 save specified length of header string to the tag. default is 0
+             * Define the max length of collected HTTP header. The default value(=0) means not collecting.
              */
             public static int HTTP_HEADERS_LENGTH_THRESHOLD = 0;
             /**
-             * save body string length, -1 save all, 0 save nothing, >0 save specified length of body string to the tag. default is 0
+             * Define the max length of collected HTTP body. The default value(=0) means not collecting.
              */
             public static int HTTP_BODY_LENGTH_THRESHOLD = 0;
             /**
@@ -48,6 +50,10 @@ public class SolonPluginConfig {
              * is after exception handling, default is false, if true, the plugin will intercept the method after the exception handling
              */
             public static boolean AFTER_EXCEPTION_HANDLING = false;
+            /**
+             * It controls what header data should be collected, values must be in lower case, if empty, collect all. default is empty.
+             */
+            public static List<String> INCLUDE_HTTP_HEADERS ;
         }
     }
 }

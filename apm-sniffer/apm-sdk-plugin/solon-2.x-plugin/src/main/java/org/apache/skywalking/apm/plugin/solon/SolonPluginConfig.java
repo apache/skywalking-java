@@ -39,18 +39,6 @@ public class SolonPluginConfig {
              */
             public static int HTTP_BODY_LENGTH_THRESHOLD = 0;
             /**
-             * intercept class name, default is org.noear.solon.core.mvc.ActionDefault
-             */
-            public static String INTERCEPT_CLASS_NAME = "org.noear.solon.core.mvc.ActionDefault";
-            /**
-             * intercept method name, default is invoke
-             */
-            public static String INTERCEPT_METHOD_NAME = "invoke";
-            /**
-             * is after exception handling, default is false, if true, the plugin will intercept the method after the exception handling
-             */
-            public static boolean AFTER_EXCEPTION_HANDLING = false;
-            /**
              * It controls what header data should be collected, values must be in lower case, if empty, collect all. default is empty.
              */
             public static List<String> INCLUDE_HTTP_HEADERS ;

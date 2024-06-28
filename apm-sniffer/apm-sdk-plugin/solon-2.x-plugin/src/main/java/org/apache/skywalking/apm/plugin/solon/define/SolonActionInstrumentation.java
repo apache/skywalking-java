@@ -25,6 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+import org.apache.skywalking.apm.plugin.solon.SolonPluginConfig;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
@@ -43,7 +44,7 @@ public class SolonActionInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     @Override
     public ClassMatch enhanceClass() {
-        return NameMatch.byName(System.getProperty("skywalking.agent.solon.enhanceClass", "org.noear.solon.core.mvc.ActionDefault"));
+        return NameMatch.byName(SolonPluginConfig.Plugin.Solon.INTERCEPT_CLASS_NAME);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class SolonActionInstrumentation extends ClassInstanceMethodsEnhancePlugi
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(System.getProperty("skywalking.agent.solon.method", "invoke"));
+                        return named(SolonPluginConfig.Plugin.Solon.INTERCEPT_METHOD_NAME);
                     }
 
                     @Override

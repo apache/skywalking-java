@@ -37,21 +37,6 @@ import java.lang.reflect.Method;
 @Slf4j
 public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInterceptor {
 
-    private final boolean saveHeaders;
-
-    private final boolean saveBody;
-
-    private final boolean saveParams;
-
-    private final boolean afterExceptionHandling;
-
-    public SolonActionExecuteInterceptor() {
-        this.saveHeaders = "true".equalsIgnoreCase(System.getProperty("skywalking.agent.solon.headers", "false"));
-        this.saveBody = "true".equalsIgnoreCase(System.getProperty("skywalking.agent.solon.body", "false"));
-        this.saveParams = "true".equalsIgnoreCase(System.getProperty("skywalking.agent.solon.body", "false"));
-        this.afterExceptionHandling = "true".equalsIgnoreCase(System.getProperty("skywalking.agent.solon.afterExceptionHandling", "false"));
-    }
-
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
@@ -68,26 +53,26 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
         SpanLayer.asHttp(span);
         Tags.URL.set(span, ctx.url());
         Tags.HTTP.METHOD.set(span, ctx.method());
-        if (saveHeaders) {
+        if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD != 0) {
             String headerStr = ctx.headerMap().toString();
-            if (headerStr.length() > 1024) {
-                headerStr = headerStr.substring(0, 1024);
+            if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD > 0 && headerStr.length() > SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD) {
+                headerStr = headerStr.substring(0, SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD);
             }
             Tags.HTTP.HEADERS.set(span, headerStr);
         }
-        if (saveBody) {
+        if (SolonPluginConfig.Plugin.Solon.HTTP_BODY_LENGTH_THRESHOLD != 0) {
             String body = ctx.body();
             if (StringUtil.isNotBlank(body)) {
-                if (body.length() > 1024) {
-                    body = body.substring(0, 1024);
+                if (SolonPluginConfig.Plugin.Solon.HTTP_BODY_LENGTH_THRESHOLD > 0 && body.length() > SolonPluginConfig.Plugin.Solon.HTTP_BODY_LENGTH_THRESHOLD) {
+                    body = body.substring(0, SolonPluginConfig.Plugin.Solon.HTTP_BODY_LENGTH_THRESHOLD);
                 }
                 Tags.HTTP.BODY.set(span, body);
             }
         }
-        if (saveParams) {
+        if (SolonPluginConfig.Plugin.Solon.HTTP_PARAMS_LENGTH_THRESHOLD != 0) {
             String param = ctx.paramMap().toString();
-            if (param.length() > 1024) {
-                param = param.substring(0, 1024);
+            if (SolonPluginConfig.Plugin.Solon.HTTP_PARAMS_LENGTH_THRESHOLD > 0 && param.length() > SolonPluginConfig.Plugin.Solon.HTTP_PARAMS_LENGTH_THRESHOLD) {
+                param = param.substring(0, SolonPluginConfig.Plugin.Solon.HTTP_PARAMS_LENGTH_THRESHOLD);
             }
             Tags.HTTP.PARAMS.set(span, param);
         }
@@ -97,7 +82,7 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) {
         Context ctx = (Context) allArguments[0];
-        if (afterExceptionHandling) {
+        if (SolonPluginConfig.Plugin.Solon.AFTER_EXCEPTION_HANDLING) {
             // after exception handling, use the status code of the response
             Tags.HTTP_RESPONSE_STATUS_CODE.set(ContextManager.activeSpan(), ctx.status());
             if (ctx.errors != null && ctx.status() != 200 && ContextManager.getRuntimeContext().get("solon.exception") == null) {

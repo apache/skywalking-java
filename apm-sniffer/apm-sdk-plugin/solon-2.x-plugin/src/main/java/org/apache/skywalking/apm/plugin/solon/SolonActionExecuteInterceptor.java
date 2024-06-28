@@ -47,28 +47,21 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
             next = next.next();
             next.setHeadValue(ctx.header(next.getHeadKey()));
         }
-        String operationName = "Solon:" + ctx.method() + ":" + ctx.path();
+        String operationName = ctx.method() + ":" + ctx.path();
         AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
         span.setComponent(ComponentsDefine.SOLON_MVC);
         SpanLayer.asHttp(span);
         Tags.URL.set(span, ctx.url());
         Tags.HTTP.METHOD.set(span, ctx.method());
-        if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD != 0) {
-            String headerStr = "{}";
-            if (SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS != null && !SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS.isEmpty()) {
-                NvMap includeHeaders = new NvMap();
-                for (String header : SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS) {
-                    String value = ctx.header(header);
-                    if (StringUtil.isNotBlank(value)) {
-                        includeHeaders.put(header, value);
-                    }
+        if (SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS != null && !SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS.isEmpty()) {
+            NvMap includeHeaders = new NvMap();
+            for (String header : SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS) {
+                String value = ctx.header(header);
+                if (StringUtil.isNotBlank(value)) {
+                    includeHeaders.put(header, value);
                 }
-                headerStr = includeHeaders.toString();
             }
-            if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD > 0 && headerStr.length() > SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD) {
-                headerStr = headerStr.substring(0, SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD);
-            }
-            Tags.HTTP.HEADERS.set(span, headerStr);
+            Tags.HTTP.HEADERS.set(span, includeHeaders.toString());
         }
         if (SolonPluginConfig.Plugin.Solon.HTTP_BODY_LENGTH_THRESHOLD != 0) {
             String body = ctx.body();

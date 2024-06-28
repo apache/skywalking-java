@@ -54,7 +54,7 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
         Tags.URL.set(span, ctx.url());
         Tags.HTTP.METHOD.set(span, ctx.method());
         if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD != 0) {
-            String headerStr;
+            String headerStr = "{}";
             if (SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS != null && !SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS.isEmpty()) {
                 NvMap includeHeaders = new NvMap();
                 for (String header : SolonPluginConfig.Plugin.Solon.INCLUDE_HTTP_HEADERS) {
@@ -64,8 +64,6 @@ public class SolonActionExecuteInterceptor implements InstanceMethodsAroundInter
                     }
                 }
                 headerStr = includeHeaders.toString();
-            } else {
-                headerStr = ctx.headerMap().toString();
             }
             if (SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD > 0 && headerStr.length() > SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD) {
                 headerStr = headerStr.substring(0, SolonPluginConfig.Plugin.Solon.HTTP_HEADERS_LENGTH_THRESHOLD);

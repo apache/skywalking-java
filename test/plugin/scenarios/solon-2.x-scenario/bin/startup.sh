@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -jar ${agent_opts} ${home}/../libs/solon-2.x-scenario.jar &
+java -jar ${agent_opts} "-Dskywalking.plugin.solon.http_params_length_threshold=1024" "-Dskywalking.plugin.solon.http_headers_length_threshold=1024" ${home}/../libs/solon-2.x-scenario.jar &

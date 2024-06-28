@@ -18,5 +18,3 @@ type: jvm
 entryService: http://localhost:8082/testcase/test
 healthCheck: http://localhost:8082/testcase/healthCheck
 startScript: ./bin/startup.sh
-environment:
-  - CATALINA_OPTS="-Dskywalking.plugin.solon.http_params_length_threshold=1024 -Dskywalking.plugin.solon.http_headers_length_threshold=1024"

@@ -137,6 +137,7 @@
         <module>rocketMQ-client-java-5.x-plugin</module>
         <module>activemq-artemis-jakarta-client-2.x-plugin</module>
         <module>c3p0-0.9.x-plugin</module>
+        <module>solon-2.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

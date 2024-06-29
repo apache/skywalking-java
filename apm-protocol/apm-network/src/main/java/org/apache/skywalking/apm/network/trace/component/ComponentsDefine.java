@@ -257,5 +257,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent OCEANBASE_JDBC_DRIVER = new OfficialComponent(157, "OceanBase-jdbc-driver");
 
+    public static final OfficialComponent SOLON_MVC = new OfficialComponent(158, "SolonMVC");
 
 }

@@ -72,13 +72,32 @@ public class StatementExecuteMethodsInterceptorTest {
         JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH = 2048;
         serviceMethodInterceptor = new StatementExecuteMethodsInterceptor();
 
-        enhanceRequireCacheObject = new StatementEnhanceInfos(connectionInfo, "SELECT * FROM test", "CallableStatement");
+        enhanceRequireCacheObject = new StatementEnhanceInfos(connectionInfo, SQL, "CallableStatement");
+
         when(objectInstance.getSkyWalkingDynamicField()).thenReturn(enhanceRequireCacheObject);
         when(method.getName()).thenReturn("executeQuery");
         when(connectionInfo.getComponent()).thenReturn(ComponentsDefine.H2_JDBC_DRIVER);
         when(connectionInfo.getDBType()).thenReturn("H2");
         when(connectionInfo.getDatabaseName()).thenReturn("test");
         when(connectionInfo.getDatabasePeer()).thenReturn("localhost:3307");
+    }
+
+    @Test
+    public void testCreateDatabaseSpanWithNoMethodParamButWithCache() throws Throwable {
+        JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH = 2048;
+
+        serviceMethodInterceptor.beforeMethod(objectInstance, method, new Object[0], null, null);
+        serviceMethodInterceptor.afterMethod(objectInstance, method, new Object[0], null, null);
+
+        assertThat(segmentStorage.getTraceSegments().size(), is(1));
+        TraceSegment segment = segmentStorage.getTraceSegments().get(0);
+        assertThat(SegmentHelper.getSpans(segment).size(), is(1));
+        AbstractTracingSpan span = SegmentHelper.getSpans(segment).get(0);
+        SpanAssert.assertLayer(span, SpanLayer.DB);
+        assertThat(span.getOperationName(), is("H2/JDBC/CallableStatement/executeQuery"));
+        SpanAssert.assertTag(span, 0, "H2");
+        SpanAssert.assertTag(span, 1, "test");
+        SpanAssert.assertTag(span, 2, SQL);
     }
 
     @Test

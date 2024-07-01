@@ -28,6 +28,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
+import org.apache.skywalking.apm.util.StringUtil;
 
 import java.lang.reflect.Method;
 
@@ -52,14 +53,17 @@ public class StatementExecuteMethodsInterceptor implements InstanceMethodsAround
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
 
             /**
-             * The first argument of all intercept method in `com.mysql.jdbc.StatementImpl` class is SQL, except the
-             * `executeBatch` method that the jdbc plugin need to trace, because of this method argument size is zero.
+             * Except for the `executeBatch` method, the first parameter of all enhanced methods in `com.mysql.jdbc.StatementImpl` is the SQL statement.
+             * Therefore, executeBatch will attempt to obtain the SQL from `cacheObject`.
              */
             String sql = "";
             if (allArguments.length > 0) {
                 sql = (String) allArguments[0];
                 sql = SqlBodyUtil.limitSqlBodySize(sql);
+            } else if (StringUtil.isNotBlank(cacheObject.getSql())) {
+                sql = SqlBodyUtil.limitSqlBodySize(cacheObject.getSql());
             }
+
             Tags.DB_STATEMENT.set(span, sql);
             span.setComponent(connectInfo.getComponent());
 

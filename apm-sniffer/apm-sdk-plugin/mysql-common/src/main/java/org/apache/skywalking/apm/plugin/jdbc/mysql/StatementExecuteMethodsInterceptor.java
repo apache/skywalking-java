@@ -25,8 +25,6 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.apache.skywalking.apm.plugin.jdbc.JDBCPluginConfig;
-import org.apache.skywalking.apm.plugin.jdbc.PreparedStatementParameterBuilder;
 import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
@@ -67,14 +65,6 @@ public class StatementExecuteMethodsInterceptor implements InstanceMethodsAround
             }
 
             Tags.DB_STATEMENT.set(span, sql);
-            if (JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS) {
-                final Object[] parameters = cacheObject.getParameters();
-                if (parameters != null && parameters.length > 0) {
-                    int maxIndex = cacheObject.getMaxIndex();
-                    String parameterString = getParameterString(parameters, maxIndex);
-                    Tags.SQL_PARAMETERS.set(span, parameterString);
-                }
-            }
             span.setComponent(connectInfo.getComponent());
 
             SpanLayer.asDB(span);
@@ -102,12 +92,5 @@ public class StatementExecuteMethodsInterceptor implements InstanceMethodsAround
 
     private String buildOperationName(ConnectionInfo connectionInfo, String methodName, String statementName) {
         return connectionInfo.getDBType() + "/JDBC/" + statementName + "/" + methodName;
-    }
-
-    private String getParameterString(Object[] parameters, int maxIndex) {
-        return new PreparedStatementParameterBuilder()
-                .setParameters(parameters)
-                .setMaxIndex(maxIndex)
-                .build();
     }
 }

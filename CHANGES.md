@@ -21,6 +21,7 @@ Release Notes.
 * Fix the opentracing toolkit SPI config
 * Improve 4x performance of ContextManagerExtendService.createTraceContext()
 * Add a plugin that supports the Solon framework.
+* Fixed issues in the MySQL component where the executeBatch method could result in empty SQL statements and missing SQL parameters in certain scenarios.
 
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)

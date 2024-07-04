@@ -25,9 +25,17 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
+import org.eclipse.jetty.http.HttpField;
+import org.eclipse.jetty.util.Callback;
 
-public class CompleteListenerWrapper implements Response.CompleteListener  {
+import java.nio.ByteBuffer;
+
+public class CompleteListenerWrapper implements
+    Response.BeginListener, Response.HeaderListener, Response.HeadersListener, Response.ContentListener,
+    Response.SuccessListener, Response.FailureListener, Response.CompleteListener, Response.AsyncContentListener {
+
     private Response.CompleteListener callback;
+
     private ContextSnapshot context;
 
     public CompleteListenerWrapper(Response.CompleteListener callback, ContextSnapshot context) {
@@ -47,5 +55,41 @@ public class CompleteListenerWrapper implements Response.CompleteListener  {
             callback.onComplete(result);
         }
         ContextManager.stopSpan();
+    }
+
+    @Override
+    public void onContent(Response response, ByteBuffer content) {
+        ((Response.ContentListener) callback).onContent(response, content);
+    }
+
+    @Override
+    public void onFailure(Response response, Throwable failure) {
+        ((Response.FailureListener) callback).onFailure(response, failure);
+    }
+
+    @Override
+    public void onSuccess(Response response) {
+        ((Response.SuccessListener) callback).onSuccess(response);
+    }
+
+    @Override
+    public void onBegin(Response response) {
+        ((Response.BeginListener) callback).onBegin(response);
+    }
+
+    @Override
+    public boolean onHeader(Response response, HttpField field) {
+        return ((Response.HeaderListener) callback).onHeader(response, field);
+
+    }
+
+    @Override
+    public void onHeaders(Response response) {
+        ((Response.HeadersListener) callback).onHeaders(response);
+    }
+
+    @Override
+    public void onContent(Response response, ByteBuffer content, Callback originalCallback) {
+        ((Response.AsyncContentListener) this.callback).onContent(response, content, originalCallback);
     }
 }

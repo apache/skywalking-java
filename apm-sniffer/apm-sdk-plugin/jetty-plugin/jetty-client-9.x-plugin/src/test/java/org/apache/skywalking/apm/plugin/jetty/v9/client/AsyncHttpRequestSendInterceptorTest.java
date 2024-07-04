@@ -33,6 +33,7 @@ import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.HttpConversation;
 import org.eclipse.jetty.client.HttpRequest;
 import org.eclipse.jetty.client.ResponseNotifier;
 import org.eclipse.jetty.client.api.Response;
@@ -147,7 +148,7 @@ public class AsyncHttpRequestSendInterceptorTest {
 
     private class MockHttpRequest extends HttpRequest implements EnhancedInstance {
         public MockHttpRequest(HttpClient httpClient, URI uri) {
-            super(httpClient, uri);
+            super(httpClient, new HttpConversation(), uri);
         }
 
         @Override
@@ -173,7 +174,7 @@ public class AsyncHttpRequestSendInterceptorTest {
 
     private class MockResponseNotifier extends ResponseNotifier implements EnhancedInstance {
         public MockResponseNotifier(HttpClient client) {
-            super(client);
+            super();
         }
 
         @Override

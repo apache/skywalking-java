@@ -47,7 +47,7 @@ public class TomcatInstrumentation extends ClassInstanceMethodsEnhancePluginDefi
 
     @Override
     protected String[] witnessClasses() {
-        return new String[]{"javax.servlet.http.HttpServletResponse"};
+        return new String[]{"javax.security.auth.message.AuthException"};
     }
 
     @Override

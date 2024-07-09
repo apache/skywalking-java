@@ -39,9 +39,17 @@ public class WitnessTest {
 
     private final WitnessFinder finder = WitnessFinder.INSTANCE;
 
+    public static class InnerClazz {
+        public InnerClazz() {
+        }
+        public void foo() {
+        }
+    }
+
     @Test
     public void testWitnessClass() {
         Assert.assertTrue(finder.exist(className, this.getClass().getClassLoader()));
+        Assert.assertTrue(finder.exist(className + "$InnerClazz", this.getClass().getClassLoader()));
     }
 
     @Test

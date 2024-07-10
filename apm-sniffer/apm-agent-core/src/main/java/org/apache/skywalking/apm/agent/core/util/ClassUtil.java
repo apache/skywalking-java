@@ -38,15 +38,12 @@ public class ClassUtil {
     private static Set<String> getAllSuperClassesAndInterfaces(Class<?> clazz) {
         Set<String> result = new HashSet<>();
         while (clazz != null) {
-            // 添加当前类
             result.add(clazz.getName());
 
-            // 添加所有接口
             for (Class<?> iface : clazz.getInterfaces()) {
                 result.addAll(getAllSuperClassesAndInterfaces(iface));
             }
 
-            // 获取超类
             clazz = clazz.getSuperclass();
         }
         return result;

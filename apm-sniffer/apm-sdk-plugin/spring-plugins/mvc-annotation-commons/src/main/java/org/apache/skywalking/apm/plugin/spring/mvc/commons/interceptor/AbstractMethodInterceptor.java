@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.spring.mvc.commons.interceptor;
 
+import com.google.common.collect.Maps;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -25,8 +26,6 @@ import org.apache.skywalking.apm.agent.core.context.RuntimeContext;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
-import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -44,15 +43,22 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static org.apache.skywalking.apm.agent.core.util.ClassUtil.isAssignableFrom;
-import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.*;
+import static org.apache.skywalking.apm.agent.core.util.ClassUtil.getAllSuperClassesAndInterfaces;
+import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.CONTROLLER_METHOD_STACK_DEPTH;
+import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.FORWARD_REQUEST_FLAG;
+import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.REACTIVE_ASYNC_SPAN_IN_RUNTIME_CONTEXT;
+import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.REQUEST_KEY_IN_RUNTIME_CONTEXT;
+import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.RESPONSE_KEY_IN_RUNTIME_CONTEXT;
 
 /**
  * the abstract method interceptor
  */
 public abstract class AbstractMethodInterceptor implements InstanceMethodsAroundInterceptor {
-    private static final ILog LOGGER = LogManager.getLogger(AbstractMethodInterceptor.class);
+
     private static final String SERVLET_RESPONSE_CLASS = "javax.servlet.http.HttpServletResponse";
     private static final String JAKARTA_SERVLET_RESPONSE_CLASS = "jakarta.servlet.http.HttpServletResponse";
     private static final String SPRING_REACTIVE_RESPONSE_CLASS = "org.springframework.http.server.reactive.ServerHttpResponse";
@@ -60,6 +66,8 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
     private static final String JAVAX_SERVLET_REQUEST_CLASS = "javax.servlet.http.HttpServletRequest";
     private static final String JAKARTA_SERVLET_REQUEST_CLASS = "jakarta.servlet.http.HttpServletRequest";
     private static final String SPRING_REACTIVE_REQUEST_CLASS = "org.springframework.http.server.reactive.ServerHttpRequest";
+
+    private static final Map<Map.Entry<String, Class<?>>, Boolean> CACHE = new ConcurrentHashMap<>(10);
 
     public abstract String getRequestURL(Method method);
 
@@ -284,5 +292,23 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
         }
 
         return operationName;
+    }
+
+    private boolean isAssignableFrom(String superClassName, Class<?> subClass) {
+        if (superClassName == null || subClass == null) {
+            return false;
+        }
+
+        Map.Entry<String, Class<?>> key = Maps.immutableEntry(superClassName, subClass);
+        if (CACHE.containsKey(key)) {
+            return CACHE.get(key);
+        }
+
+        Set<String> allSuperClassesAndInterfaces = getAllSuperClassesAndInterfaces(subClass);
+        if (allSuperClassesAndInterfaces.contains(superClassName)) {
+            CACHE.put(key, true);
+            return true;
+        }
+        return false;
     }
 }

@@ -21,21 +21,9 @@ package org.apache.skywalking.apm.agent.core.util;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author honganan
- */
 public class ClassUtil {
 
-    public static boolean isAssignableFrom(String superClassName, Class<?> subClass) {
-        if (superClassName == null || subClass == null) {
-            return false;
-        }
-
-        Set<String> allSuperClassesAndInterfaces = getAllSuperClassesAndInterfaces(subClass);
-        return allSuperClassesAndInterfaces.contains(superClassName);
-    }
-
-    private static Set<String> getAllSuperClassesAndInterfaces(Class<?> clazz) {
+    public static Set<String> getAllSuperClassesAndInterfaces(Class<?> clazz) {
         Set<String> result = new HashSet<>();
         while (clazz != null) {
             result.add(clazz.getName());

@@ -42,6 +42,7 @@ public class WitnessTest {
     public static class InnerClazz {
         public InnerClazz() {
         }
+
         public void foo() {
         }
     }

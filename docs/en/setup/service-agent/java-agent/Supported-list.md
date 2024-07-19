@@ -84,6 +84,7 @@ metrics based on the tracing data.
   * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.15.x
   * [ActiveMQ-Artemis](https://github.com/apache/activemq) 2.30.0 -> 2.31.2
   * Aliyun ONS 1.x (Optional¹)
+  * Spring Jms 5.x
 * NoSQL
   * [aerospike](https://github.com/aerospike/aerospike-client-java) 3.x -> 6.x
   * Redis

@@ -108,6 +108,7 @@ jobs:
           - shenyu-2.4.x-grpc-scenario
           - shenyu-2.4.x-sofarpc-scenario
           - solon-2.x-scenario
+          - spring-jms-5.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

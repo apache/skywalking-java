@@ -22,7 +22,7 @@ Release Notes.
 * Improve 4x performance of ContextManagerExtendService.createTraceContext()
 * Add a plugin that supports the Solon framework.
 * Fixed issues in the MySQL component where the executeBatch method could result in empty SQL statements .
-
+* Add a plugin that supports the spring jms 5.x.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/213?closed=1)
 

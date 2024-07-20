@@ -24,9 +24,9 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class MessageListenerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
@@ -63,6 +63,6 @@ public class MessageListenerInstrumentation extends ClassInstanceMethodsEnhanceP
 
     @Override
     protected ClassMatch enhanceClass() {
-        return MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS);
+        return byName(ENHANCE_CLASS);
     }
 }

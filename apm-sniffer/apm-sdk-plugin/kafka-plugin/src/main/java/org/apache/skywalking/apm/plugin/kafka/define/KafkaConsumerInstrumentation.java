@@ -51,7 +51,7 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
     public static final String INTERCEPTOR_CLASS_KAFKA3_2 = "org.apache.skywalking.apm.plugin.kafka.Kafka3ConsumerInterceptor";
     public static final String ENHANCE_METHOD = "pollOnce";
     public static final String ENHANCE_METHOD_KAFKA3_7 = "poll";
-    public static final String INTERCEPTOR_CLASS_KAFKA3_7 = "org.apache.skywalking.apm.plugin.kafka.Kafka37ConsumerInterceptor";
+    public static final String INTERCEPTOR_CLASS_KAFKA3_7 = "org.apache.skywalking.apm.plugin.kafka.Kafka3_7ConsumerInterceptor";
     public static final String ENHANCE_COMPATIBLE_METHOD = "pollForFetches";
     public static final String ENHANCE_CLASS = "org.apache.kafka.clients.consumer.KafkaConsumer";
     public static final String SUBSCRIBE_METHOD = "subscribe";

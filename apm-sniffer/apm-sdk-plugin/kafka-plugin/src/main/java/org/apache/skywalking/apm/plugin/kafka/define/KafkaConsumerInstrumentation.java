@@ -63,28 +63,28 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[] {
-            new ConstructorInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return takesArgumentWithType(0, CONSTRUCTOR_INTERCEPT_TYPE);
-                }
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return takesArgumentWithType(0, CONSTRUCTOR_INTERCEPT_TYPE);
+                    }
 
-                @Override
-                public String getConstructorInterceptor() {
-                    return CONSUMER_CONFIG_CONSTRUCTOR_INTERCEPTOR_CLASS;
-                }
-            },
-              new ConstructorInterceptPoint() {
-                  @Override
-                  public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                      return takesArgumentWithType(0, CONSTRUCTOR_INTERCEPT_MAP_TYPE);
-                  }
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return CONSUMER_CONFIG_CONSTRUCTOR_INTERCEPTOR_CLASS;
+                    }
+                },
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return takesArgumentWithType(0, CONSTRUCTOR_INTERCEPT_MAP_TYPE);
+                    }
 
-                @Override
-                public String getConstructorInterceptor() {
-                    return MAP_CONSTRUCTOR_INTERCEPTOR_CLASS;
-                }
-            },
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return MAP_CONSTRUCTOR_INTERCEPTOR_CLASS;
+                    }
+                },
 
         };
     }
@@ -92,74 +92,74 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[] {
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    // targeting Kafka Client < 3.2
-                    return named(ENHANCE_METHOD).or(named(ENHANCE_COMPATIBLE_METHOD).and(returns(Map.class)));
-                }
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        // targeting Kafka Client < 3.2
+                        return named(ENHANCE_METHOD).or(named(ENHANCE_COMPATIBLE_METHOD).and(returns(Map.class)));
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return INTERCEPTOR_CLASS;
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPTOR_CLASS;
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            },
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    // targeting Kafka Client >= 3.2
-                    return named(ENHANCE_COMPATIBLE_METHOD).and(returns(named("org.apache.kafka.clients.consumer.internals.Fetch")));
-                }
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        // targeting Kafka Client >= 3.2
+                        return named(ENHANCE_COMPATIBLE_METHOD).and(returns(named("org.apache.kafka.clients.consumer.internals.Fetch")));
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return INTERCEPTOR_CLASS_KAFKA3_2;
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPTOR_CLASS_KAFKA3_2;
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            },
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(SUBSCRIBE_METHOD)
-                      .and(takesArgumentWithType(0, SUBSCRIBE_INTERCEPT_TYPE_NAME));
-                }
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named(SUBSCRIBE_METHOD)
+                                .and(takesArgumentWithType(0, SUBSCRIBE_INTERCEPT_TYPE_NAME));
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return SUBSCRIBE_INTERCEPT_CLASS;
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return SUBSCRIBE_INTERCEPT_CLASS;
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            },
-            new InstanceMethodsInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(SUBSCRIBE_METHOD)
-                      .and(takesArgumentWithType(0, SUBSCRIBE_INTERCEPT_TYPE_PATTERN));
-                }
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named(SUBSCRIBE_METHOD)
+                                .and(takesArgumentWithType(0, SUBSCRIBE_INTERCEPT_TYPE_PATTERN));
+                    }
 
-                @Override
-                public String getMethodsInterceptor() {
-                    return SUBSCRIBE_INTERCEPT_CLASS;
-                }
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return SUBSCRIBE_INTERCEPT_CLASS;
+                    }
 
-                @Override
-                public boolean isOverrideArgs() {
-                    return false;
-                }
-            },
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {

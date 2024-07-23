@@ -114,7 +114,7 @@ public class Kafka37ConsumerInterceptorTest {
     public void testConsumerWithoutMessage() throws Throwable {
         consumerInterceptor.beforeMethod(consumerInstance, null, new Object[0], new Class[0], null);
         consumerInterceptor.afterMethod(
-                consumerInstance, null, new Object[0], new Class[0], new ConsumerRecords(null));
+                consumerInstance, null, new Object[0], new Class[0], new ConsumerRecords(new HashMap<>()));
 
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         assertThat(traceSegments.size(), is(0));

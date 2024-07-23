@@ -49,6 +49,15 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
     public static final String MAP_CONSTRUCTOR_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.kafka.ConstructorWithMapInterceptPoint";
     public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.kafka.KafkaConsumerInterceptor";
     public static final String INTERCEPTOR_CLASS_KAFKA3_2 = "org.apache.skywalking.apm.plugin.kafka.Kafka3ConsumerInterceptor";
+
+    public static final String INTERCEPTOR_CLASS_37 = "org.apache.skywalking.apm.plugin.kafka.Kafka37ConsumerInterceptor";
+
+    // Kafka 3.7.x's pull message method's name is "poll"
+    public static final String ENHANCE_METHOD_37 = "poll";
+
+    // Kafka 3.7.x's pull message method's return type is "ConsumerRecords"
+    public static final String ENHANCE_RETURN_TYPE_37 = "org.apache.kafka.clients.consumer.ConsumerRecords";
+
     public static final String ENHANCE_METHOD = "pollOnce";
     public static final String ENHANCE_COMPATIBLE_METHOD = "pollForFetches";
     public static final String ENHANCE_CLASS = "org.apache.kafka.clients.consumer.KafkaConsumer";
@@ -112,13 +121,29 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        // targeting Kafka Client >= 3.2
+                        // targeting Kafka Client >= 3.2 and < 3.7.x
                         return named(ENHANCE_COMPATIBLE_METHOD).and(returns(named("org.apache.kafka.clients.consumer.internals.Fetch")));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
                         return INTERCEPTOR_CLASS_KAFKA3_2;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named(ENHANCE_METHOD_37).and(returns(named(ENHANCE_RETURN_TYPE_37)));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPTOR_CLASS_37;
                     }
 
                     @Override

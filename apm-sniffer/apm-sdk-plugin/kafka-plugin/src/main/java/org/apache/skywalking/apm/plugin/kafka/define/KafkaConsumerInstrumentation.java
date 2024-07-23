@@ -55,6 +55,8 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
     // Kafka 3.7.x's pull message method's name is "poll"
     public static final String ENHANCE_METHOD_37 = "poll";
 
+    public static final String ENHANCE_PARAM_TYPE_0_37 = "java.time.Duration";
+
     // Kafka 3.7.x's pull message method's return type is "ConsumerRecords"
     public static final String ENHANCE_RETURN_TYPE_37 = "org.apache.kafka.clients.consumer.ConsumerRecords";
 
@@ -121,7 +123,7 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        // targeting Kafka Client >= 3.2 and < 3.7.x
+                        // targeting Kafka Client >= 3.2 and < 3.7.0
                         return named(ENHANCE_COMPATIBLE_METHOD).and(returns(named("org.apache.kafka.clients.consumer.internals.Fetch")));
                     }
 
@@ -136,9 +138,11 @@ public class KafkaConsumerInstrumentation extends AbstractKafkaInstrumentation {
                     }
                 },
                 new InstanceMethodsInterceptPoint() {
+                    // targeting Kafka Client >= 3.7.0
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(ENHANCE_METHOD_37).and(returns(named(ENHANCE_RETURN_TYPE_37)));
+                        return named(ENHANCE_METHOD_37).and(returns(named(ENHANCE_RETURN_TYPE_37)))
+                                .and(takesArgumentWithType(0, ENHANCE_PARAM_TYPE_0_37));
                     }
 
                     @Override

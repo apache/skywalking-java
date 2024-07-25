@@ -24,6 +24,7 @@ import java.util.Properties;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.List;
 import java.util.ArrayList;
@@ -32,10 +33,10 @@ import javax.annotation.PostConstruct;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.consumer.internals.NoOpConsumerRebalanceListener;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -270,7 +271,17 @@ public class CaseController {
             consumerProperties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
             consumerProperties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
             KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties);
-            consumer.subscribe(topicPattern, new NoOpConsumerRebalanceListener());
+            consumer.subscribe(topicPattern, new ConsumerRebalanceListener() {
+                @Override
+                public void onPartitionsRevoked(Collection<TopicPartition> collection) {
+
+                }
+
+                @Override
+                public void onPartitionsAssigned(Collection<TopicPartition> collection) {
+
+                }
+            });
             while (true) {
                 if (pollAndInvoke(consumer)) break;
             }

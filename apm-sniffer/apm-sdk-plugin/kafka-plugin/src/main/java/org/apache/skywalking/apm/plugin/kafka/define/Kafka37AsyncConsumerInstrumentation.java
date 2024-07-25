@@ -22,13 +22,11 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 /**
- * Here is the intercept process steps.
+ * For Kafka 3.7.x change
  *
  * <pre>
- *  1. Record the topic when the client invoke <code>subscribed</code> method
- *  2. Create the entry span when the client invoke the method <code>pollOnce</code>.
- *  3. Extract all the <code>Trace Context</code> by iterate all <code>ConsumerRecord</code>
- *  4. Stop the entry span when <code>pollOnce</code> method finished.
+ *  1. The method named pollForFetchs was removed from KafkaConsumer to <code>AsyncKafkaConsumer</code> and <code>LegacyKafkaConsumer</code>
+ *  2. Because of the enhance class was changed, so we should create new Instrumentation to intercept the method
  * </pre>
  */
 public class Kafka37AsyncConsumerInstrumentation extends KafkaConsumerInstrumentation {

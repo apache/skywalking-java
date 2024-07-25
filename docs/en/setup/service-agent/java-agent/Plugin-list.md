@@ -54,6 +54,7 @@
 - jetty-client-9.x
 - jetty-server-9.x
 - kafka-0.11.x/1.x/2.x
+- kafka-3.7.x
 - kotlin-coroutine
 - lettuce-5.x
 - light4j

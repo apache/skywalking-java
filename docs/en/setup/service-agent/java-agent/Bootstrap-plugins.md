@@ -19,4 +19,3 @@ The plugin of JDK HttpURLConnection depended on `sun.net.*`. When using Java 9+,
 
 For more information 
 1. [JEP 403: Strongly Encapsulate JDK Internals](https://openjdk.org/jeps/403)
-2. [A peek into Java 17: Encapsulating the Java runtime internals](https://blogs.oracle.com/javamagazine/post/a-peek-into-java-17-continuing-the-drive-to-encapsulate-the-java-runtime-internals)

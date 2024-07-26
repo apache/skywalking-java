@@ -26,7 +26,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>nats-2.14.x-2.15.x-plugin</artifactId>
+    <artifactId>nats-2.14.x-2.16.5-plugin</artifactId>
     <packaging>jar</packaging>
 
     <properties>

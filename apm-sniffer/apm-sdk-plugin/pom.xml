@@ -123,7 +123,7 @@
         <module>guava-eventbus-plugin</module>
         <module>hutool-plugins</module>
         <module>micronaut-plugins</module>
-        <module>nats-2.14.x-2.15.x-plugin</module>
+        <module>nats-2.14.x-2.16.5-plugin</module>
         <module>jedis-plugins</module>
         <module>apm-armeria-plugins</module>
         <module>jetty-thread-pool-plugin</module>

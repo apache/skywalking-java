@@ -21,14 +21,13 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class NatsSubscriptionInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class NatsSubscriptionInstrumentation extends AbstractWitnessInstrumentation {
 
     private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsSubscription";
     private static final String NEXT_MSG_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.SubscriptionNextMsgInterceptor";

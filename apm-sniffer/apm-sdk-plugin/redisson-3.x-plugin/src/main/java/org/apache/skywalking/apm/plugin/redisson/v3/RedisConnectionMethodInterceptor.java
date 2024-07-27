@@ -140,6 +140,9 @@ public class RedisConnectionMethodInterceptor implements InstanceMethodsAroundIn
             return Optional.empty();
         }
         Object argument = allArguments[0];
+        if (argument instanceof byte[]) {
+            return Optional.of(new String((byte[]) argument));
+        }
         // include null
         if (!(argument instanceof String)) {
             return Optional.empty();

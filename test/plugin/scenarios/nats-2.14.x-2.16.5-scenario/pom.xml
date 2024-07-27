@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>org.apache.skywalking.apm.testcase</groupId>
-    <artifactId>nats-2.14.x-2.15.x-scenario</artifactId>
+    <artifactId>nats-2.14.x-2.16.5-scenario</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -75,7 +75,7 @@
     </dependencies>
 
     <build>
-        <finalName>nats-2.14.x-2.15.x-scenario</finalName>
+        <finalName>nats-2.14.x-2.16.5-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

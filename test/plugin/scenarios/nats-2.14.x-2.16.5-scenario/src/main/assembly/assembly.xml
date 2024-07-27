@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>${project.build.directory}/nats-2.14.x-2.15.x-scenario.jar</source>
+            <source>${project.build.directory}/nats-2.14.x-2.16.5-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>

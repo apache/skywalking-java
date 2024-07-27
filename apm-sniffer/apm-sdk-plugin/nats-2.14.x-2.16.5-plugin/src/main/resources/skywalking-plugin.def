@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsMessageInstrumentation
-nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsConnectionInstrumentation
-nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsConnectionWriterInstrumentation
-nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsSubscriptionInstrumentation
-nats-client-2.14.x-2.15.x=org.apache.skywalking.apm.plugin.nats.client.define.NatsJetStreamInstrumentation
+nats-client-2.14.x-2.16.5=org.apache.skywalking.apm.plugin.nats.client.define.NatsMessageInstrumentation
+nats-client-2.14.x-2.16.5=org.apache.skywalking.apm.plugin.nats.client.define.NatsConnectionInstrumentation
+nats-client-2.14.x-2.16.5=org.apache.skywalking.apm.plugin.nats.client.define.NatsConnectionWriterInstrumentation
+nats-client-2.14.x-2.16.5=org.apache.skywalking.apm.plugin.nats.client.define.NatsSubscriptionInstrumentation
+nats-client-2.14.x-2.16.5=org.apache.skywalking.apm.plugin.nats.client.define.NatsJetStreamInstrumentation

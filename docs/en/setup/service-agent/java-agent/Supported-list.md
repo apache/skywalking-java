@@ -81,7 +81,7 @@ metrics based on the tracing data.
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 3.x-> 5.x
   * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.9.x
-  * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.15.x
+  * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.16.5
   * [ActiveMQ-Artemis](https://github.com/apache/activemq) 2.30.0 -> 2.31.2
   * Aliyun ONS 1.x (Optional¹)
 * NoSQL

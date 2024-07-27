@@ -21,4 +21,4 @@ home="$(cd "$(dirname $0)"; pwd)"
 java -jar ${agent_opts} -Dserver.port=8080 \
   -Dskywalking.agent.service_name=scenario-8080- \
   -Dnats.server=nats-server \
-  ${home}/../libs/nats-2.14.x-2.15.x-scenario.jar &
+  ${home}/../libs/nats-2.14.x-2.16.5-scenario.jar &

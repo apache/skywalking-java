@@ -54,6 +54,7 @@
 - jetty-client-9.x
 - jetty-server-9.x
 - kafka-0.11.x/1.x/2.x
+- kafka-3.7.x
 - kotlin-coroutine
 - lettuce-5.x
 - light4j
@@ -161,7 +162,7 @@
 - hutool-http-5.x
 - micronaut-http-client-3.2.x-3.6.x
 - micronaut-http-server-3.2.x-3.6.x
-- nats-client-2.14.x-2.15.x
+- nats-client-2.14.x-2.16.5
 - impala-jdbc-2.6.x
 - jdk-forkjoinpool-plugin
 - jetty-thread-pool

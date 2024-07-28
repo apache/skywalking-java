@@ -76,12 +76,12 @@ metrics based on the tracing data.
 * MQ
   * [RocketMQ](https://github.com/apache/rocketmq) 3.x-> 5.x
   * [RocketMQ-gRPC](http://github.com/apache/rocketmq-clients) 5.x
-  * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 3.2.3
+  * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 3.7.1
   * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 2.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 3.x-> 5.x
   * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.9.x
-  * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.15.x
+  * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.16.5
   * [ActiveMQ-Artemis](https://github.com/apache/activemq) 2.30.0 -> 2.31.2
   * Aliyun ONS 1.x (Optional¹)
   * Spring JMS 5.x

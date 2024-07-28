@@ -21,18 +21,18 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class NatsSubscriptionInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class NatsConnectionInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsSubscription";
-    private static final String NEXT_MSG_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.SubscriptionNextMsgInterceptor";
-    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.NatsSubscriptionConstructorInterceptor";
+    private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsConnection";
+
+    private static final String CREATE_DISPATCHER_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.CreateDispatcherInterceptor";
+    private static final String REPLY_MSG_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.DeliverReplyInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -41,19 +41,7 @@ public class NatsSubscriptionInstrumentation extends ClassInstanceMethodsEnhance
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
-            new ConstructorInterceptPoint() {
-                @Override
-                public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return takesArguments(5);
-                }
-
-                @Override
-                public String getConstructorInterceptor() {
-                    return CONSTRUCTOR_INTERCEPTOR;
-                }
-            }
-        };
+        return new ConstructorInterceptPoint[0];
     }
 
     @Override
@@ -62,12 +50,28 @@ public class NatsSubscriptionInstrumentation extends ClassInstanceMethodsEnhance
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("nextMessageInternal").and(takesArguments(1));
+                        return named("createDispatcher").and(takesArguments(1));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return NEXT_MSG_INTERCEPTOR;
+                        return CREATE_DISPATCHER_INTERCEPTOR;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return true;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("deliverReply").and(takesArguments(1));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return REPLY_MSG_INTERCEPTOR;
                     }
 
                     @Override

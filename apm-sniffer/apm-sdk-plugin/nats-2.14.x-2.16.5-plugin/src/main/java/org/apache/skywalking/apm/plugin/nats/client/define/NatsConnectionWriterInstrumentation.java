@@ -21,18 +21,18 @@ import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
-public class NatsJetStreamInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class NatsConnectionWriterInstrumentation extends AbstractWitnessInstrumentation {
 
-    private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsJetStream";
-    private static final String CREATE_SUB_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.CreateSubInterceptor";
-    private static final String CONSTRUCTOR_INTERCEPTOR = "org.apache.skywalking.apm.plugin.nats.client.NatsJetStreamConstructorInterceptor";
+    private static final String ENHANCE_CLASS = "io.nats.client.impl.NatsConnectionWriter";
+    private static final String PUBLISH_INTERCEPTOR_CLASS_NAME = "org.apache.skywalking.apm.plugin.nats.client.WriterSendMessageBatchInterceptor";
+    private static final String QUEUE_INTERCEPTOR_CLASS_NAME = "org.apache.skywalking.apm.plugin.nats.client.WriterQueueInterceptor";
+    private static final String CONSTRUCTOR_INTERCEPTOR_CLASS_NAME = "org.apache.skywalking.apm.plugin.nats.client.NatsConnectionWriterConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -45,12 +45,12 @@ public class NatsJetStreamInstrumentation extends ClassInstanceMethodsEnhancePlu
             new ConstructorInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                    return takesArguments(2);
+                    return takesArguments(1);
                 }
 
                 @Override
                 public String getConstructorInterceptor() {
-                    return CONSTRUCTOR_INTERCEPTOR;
+                    return CONSTRUCTOR_INTERCEPTOR_CLASS_NAME;
                 }
             }
         };
@@ -62,17 +62,33 @@ public class NatsJetStreamInstrumentation extends ClassInstanceMethodsEnhancePlu
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named("createSubscription").and(takesArguments(7));
+                        return named("queue").and(takesArguments(1));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return CREATE_SUB_INTERCEPTOR;
+                        return QUEUE_INTERCEPTOR_CLASS_NAME;
                     }
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return true;
+                        return false;
+                    }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return named("sendMessageBatch").and(takesArguments(3));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return PUBLISH_INTERCEPTOR_CLASS_NAME;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
                     }
                 }
         };

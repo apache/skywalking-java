@@ -32,7 +32,7 @@
         <compiler.version>1.8</compiler.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <test.framework.version>5.3.37</test.framework.version>
-        <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
+        <spring.boot.version>2.0.9.RELEASE</spring.boot.version>
         <lombok.version>1.18.20</lombok.version>
     </properties>
 
@@ -47,6 +47,10 @@
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -71,6 +75,11 @@
                     <artifactId>spring-jms</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${test.framework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

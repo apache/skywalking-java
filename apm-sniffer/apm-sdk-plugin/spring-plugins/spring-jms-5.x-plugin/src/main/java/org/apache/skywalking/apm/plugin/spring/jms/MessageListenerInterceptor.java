@@ -32,14 +32,17 @@ import java.lang.reflect.Method;
 
 public class MessageListenerInterceptor implements InstanceMethodsAroundInterceptor {
 
-    private static final String OPERATION_NAME_PREFIX = "Jms/";
-    private static final String OPERATION_NAME_SUFFIX = "/Execute";
+    private static final String OPERATION_NAME_PREFIX = "JMS/";
+    private static final String OPERATION_NAME_SUFFIX = "/execute";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst,
                              Method method,
                              Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
+        if (allArguments[1] == null) {
+            return;
+        }
         Message message = (Message) allArguments[1];
         ContextCarrier contextCarrier = new ContextCarrier();
         CarrierItem next = contextCarrier.items();
@@ -50,7 +53,7 @@ public class MessageListenerInterceptor implements InstanceMethodsAroundIntercep
                 next.setHeadValue(propertyValue.toString());
             }
         }
-        AbstractSpan activeSpan = ContextManager.createEntrySpan(OPERATION_NAME_PREFIX + message.getJMSDestination() + OPERATION_NAME_SUFFIX, null);
+        AbstractSpan activeSpan = ContextManager.createLocalSpan(OPERATION_NAME_PREFIX + message.getJMSDestination() + OPERATION_NAME_SUFFIX);
         activeSpan.setComponent(ComponentsDefine.SPRING_ASYNC);
         ContextManager.extract(contextCarrier);
     }

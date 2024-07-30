@@ -71,7 +71,7 @@ segmentItems:
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
-          - operationName: Jms/queue://test/Execute
+          - operationName: JMS/queue://test/execute
             parentSpanId: -1
             spanId: 0
             spanLayer: Unknown
@@ -79,12 +79,7 @@ segmentItems:
             endTime: nq 0
             componentId: 65
             isError: false
-            spanType: Entry
+            spanType: Local
             peer: ''
             tags:
               - { key: transmission.latency, value: ge 0 }
-            refs:
-              - { parentEndpoint: GET:/spring-jms-5.x-scenario/case/spring-jms-scenario, networkAddress: not null,
-                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
-                  parentServiceInstance: not null, parentService: not null, traceId: not null }
-            skipAnalysis: 'false'

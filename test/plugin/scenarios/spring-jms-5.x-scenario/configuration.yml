@@ -17,7 +17,6 @@
 type: jvm
 entryService: http://localhost:8080/spring-jms-5.x-scenario/case/spring-jms-scenario
 healthCheck: http://localhost:8080/spring-jms-5.x-scenario/case/healthCheck
-withPlugins: apm-activemq-5.x-plugin-*.jar
 startScript: ./bin/startup.sh
 environment:
   - activemq.server=tcp://activemq-server:61616

@@ -15,60 +15,8 @@
 # limitations under the License.
 segmentItems:
   - serviceName: spring-jms-5.x-scenario
-    segmentSize: ge 2
+    segmentSize: ge 1
     segments:
-      - segmentId: not null
-        spans:
-          - operationName: ActiveMQ/Queue/test/Producer
-            parentSpanId: 0
-            spanId: 1
-            spanLayer: MQ
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 45
-            isError: false
-            spanType: Exit
-            peer: not blank
-            tags:
-              - { key: mq.broker, value: not blank }
-              - { key: mq.queue, value: test }
-            skipAnalysis: 'false'
-          - operationName: GET:/spring-jms-5.x-scenario/case/spring-jms-scenario
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Http
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 1
-            isError: false
-            spanType: Entry
-            peer: ''
-            tags:
-              - { key: url, value: 'http://localhost:8080/spring-jms-5.x-scenario/case/spring-jms-scenario' }
-              - { key: http.method, value: GET }
-              - { key: http.status_code, value: '200' }
-            skipAnalysis: 'false'
-      - segmentId: not null
-        spans:
-          - operationName: ActiveMQ/Queue/test/Consumer
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: MQ
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 46
-            isError: false
-            spanType: Entry
-            peer: not blank
-            tags:
-              - { key: mq.broker, value: not blank }
-              - { key: mq.queue, value: test }
-              - { key: transmission.latency, value: ge 0 }
-            refs:
-              - { parentEndpoint: GET:/spring-jms-5.x-scenario/case/spring-jms-scenario, networkAddress: not null,
-                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null,
-                  parentServiceInstance: not null, parentService: not null, traceId: not null }
-            skipAnalysis: 'false'
       - segmentId: not null
         spans:
           - operationName: JMS/queue://test/execute
@@ -81,5 +29,4 @@ segmentItems:
             isError: false
             spanType: Local
             peer: ''
-            tags:
-              - { key: transmission.latency, value: ge 0 }
+            skipAnalysis: 'false'

@@ -18,9 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.spring.jms;
 
-import org.apache.skywalking.apm.agent.core.context.CarrierItem;
-import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -44,18 +43,19 @@ public class MessageListenerInterceptor implements InstanceMethodsAroundIntercep
             return;
         }
         Message message = (Message) allArguments[1];
-        ContextCarrier contextCarrier = new ContextCarrier();
-        CarrierItem next = contextCarrier.items();
-        while (next.hasNext()) {
-            next = next.next();
-            Object propertyValue = message.getStringProperty(next.getHeadKey());
-            if (propertyValue != null) {
-                next.setHeadValue(propertyValue.toString());
+
+        AbstractSpan activeSpan = ContextManager.createLocalSpan(OPERATION_NAME_PREFIX
+                + message.getJMSDestination()
+                + OPERATION_NAME_SUFFIX);
+        activeSpan.setComponent(ComponentsDefine.SPRING_ASYNC);
+
+        if (EnhancedInstance.class.isAssignableFrom(allArguments[1].getClass())) {
+            EnhancedInstance messageInstance = (EnhancedInstance) allArguments[1];
+            ContextSnapshot snapshot = (ContextSnapshot) messageInstance.getSkyWalkingDynamicField();
+            if (null != snapshot) {
+                ContextManager.continued(snapshot);
             }
         }
-        AbstractSpan activeSpan = ContextManager.createLocalSpan(OPERATION_NAME_PREFIX + message.getJMSDestination() + OPERATION_NAME_SUFFIX);
-        activeSpan.setComponent(ComponentsDefine.SPRING_ASYNC);
-        ContextManager.extract(contextCarrier);
     }
 
     @Override

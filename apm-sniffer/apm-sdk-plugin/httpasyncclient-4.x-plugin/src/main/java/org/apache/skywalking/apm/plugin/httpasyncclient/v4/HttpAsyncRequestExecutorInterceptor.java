@@ -64,7 +64,13 @@ public class HttpAsyncRequestExecutorInterceptor implements InstanceMethodsAroun
         int port = httpHost.getPort();
         AbstractSpan span = ContextManager.createExitSpan(operationName, contextCarrier, httpHost.getHostName() + ":" + (port == -1 ? 80 : port));
         span.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
-        Tags.URL.set(span, requestWrapper.getOriginal().getRequestLine().getUri());
+        if (uri.startsWith("http")) {
+            Tags.URL.set(span, requestWrapper.getOriginal().getRequestLine().getUri());
+        } else if (uri.startsWith("/")) {
+            Tags.URL.set(span, httpHost.toURI() + requestWrapper.getOriginal().getRequestLine().getUri());
+        } else {
+            Tags.URL.set(span, httpHost.toURI() + "/" + requestWrapper.getOriginal().getRequestLine().getUri());
+        }
         Tags.HTTP.METHOD.set(span, requestLine.getMethod());
         SpanLayer.asHttp(span);
         CarrierItem next = contextCarrier.items();

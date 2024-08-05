@@ -17,14 +17,6 @@
 
 package org.apache.skywalking.apm.plugin.httpasyncclient.v4;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import java.net.URI;
-import java.util.List;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
@@ -66,14 +58,25 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.net.URI;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(TracingSegmentRunner.class)
-public class HttpAsyncClientInterceptorTest {
+public class HttpAsyncClientInterceptorTest2 {
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
 
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();
+
     @Rule
     public MockitoRule rule = MockitoJUnit.rule();
 
@@ -149,7 +152,7 @@ public class HttpAsyncClientInterceptorTest {
 
             @Override
             public String getUri() {
-                return "http://127.0.0.1:8080/test-web/test";
+                return "/test-web/test";
             }
         };
 
@@ -171,8 +174,9 @@ public class HttpAsyncClientInterceptorTest {
         });
 
         when(requestWrapper.getRequestLine()).thenReturn(requestLine);
-        when(requestWrapper.getOriginal()).thenReturn(new HttpGet("http://localhost:8081/original/test"));
-        when(requestWrapper.getURI()).thenReturn(new URI("http://localhost:8081/original/test?a=1&b=test"));
+        when(requestWrapper.getOriginal()).thenReturn(new HttpGet("/original/test"));
+        when(requestWrapper.getURI()).thenReturn(new URI("/original/test?a=1&b=test"));
+        when(httpHost.toURI()).thenReturn("http://localhost:8081");
         when(httpHost.getPort()).thenReturn(8080);
 
         enhancedInstance = new EnhancedInstance() {
@@ -207,7 +211,7 @@ public class HttpAsyncClientInterceptorTest {
         thread.join();
         Assert.assertThat(segmentStorage.getTraceSegments().size(), is(2));
 
-        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(findNeedSegemnt());
+        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(findNeedSegment());
         assertHttpSpan(spans.get(0));
         verify(requestWrapper, times(3)).setHeader(anyString(), anyString());
 
@@ -226,7 +230,7 @@ public class HttpAsyncClientInterceptorTest {
         thread.join();
         Assert.assertThat(segmentStorage.getTraceSegments().size(), is(2));
 
-        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(findNeedSegemnt());
+        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(findNeedSegment());
         assertHttpSpan(spans.get(0));
         verify(requestWrapper, times(3)).setHeader(anyString(), anyString());
 
@@ -332,7 +336,7 @@ public class HttpAsyncClientInterceptorTest {
         return thread;
     }
 
-    private TraceSegment findNeedSegemnt() {
+    private TraceSegment findNeedSegment() {
         for (TraceSegment traceSegment : segmentStorage.getTraceSegments()) {
             if (SegmentHelper.getSpans(traceSegment).size() > 1) {
                 return traceSegment;

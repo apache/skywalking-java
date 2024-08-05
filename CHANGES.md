@@ -5,6 +5,7 @@ Release Notes.
 9.4.0
 ------------------
 
+* bugfix for httpasyncclient
 * Upgrade nats plugin to support 2.16.5
 
 

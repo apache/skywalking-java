@@ -62,9 +62,9 @@ public class SendCallbackInterceptor implements InstanceMethodsAroundInterceptor
         Object ret) throws Throwable {
         SendCallbackEnhanceRequiredInfo requiredInfo = (SendCallbackEnhanceRequiredInfo) objInst.getSkyWalkingDynamicField();
         if (null != requiredInfo.getContextSnapshot()) {
-            Exception exceptions = (Exception) allArguments[0];
-            if (exceptions != null) {
-                ContextManager.activeSpan().log(exceptions);
+            Throwable t = (Throwable) allArguments[0];
+            if (t != null) {
+                ContextManager.activeSpan().log(t);
             }
             ContextManager.stopSpan();
         }

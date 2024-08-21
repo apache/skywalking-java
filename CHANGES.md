@@ -6,7 +6,7 @@ Release Notes.
 ------------------
 
 * Upgrade nats plugin to support 2.16.5
-* [pulsar] Handle the SendCallback class method signature change.
+* Support newer Pulsar versions to adopt SendCallback class method signature change.
 
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)

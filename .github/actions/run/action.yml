@@ -53,7 +53,7 @@ runs:
         echo "::group::Run Plugin Test ${{ inputs.test_case }}"
         bash test/plugin/run.sh ${{ inputs.test_case }}
         echo "::endgroup::"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       name: Upload Agent
       if: always()
       with:

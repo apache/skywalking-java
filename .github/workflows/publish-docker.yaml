@@ -47,7 +47,7 @@ jobs:
           java-version: 17
       - name: Build Agent
         run: make build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         name: Upload Agent
         with:
           name: skywalking-agent

@@ -33,6 +33,7 @@ import org.apache.skywalking.apm.agent.core.remote.GRPCChannelListener;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 import org.apache.skywalking.apm.util.StringUtil;
 
 @DefaultImplementor
@@ -81,17 +82,22 @@ public class ContextManagerExtendService implements BootService, GRPCChannelList
          * Don't trace anything if the backend is not available.
          */
         if (!Config.Agent.KEEP_TRACING && GRPCChannelStatus.DISCONNECT.equals(status)) {
+            AgentSO11Y.recordTracingContextCreate(forceSampling, true);
             return new IgnoredTracerContext();
         }
 
         int suffixIdx = operationName.lastIndexOf(".");
         if (suffixIdx > -1 && ignoreSuffixSet.contains(operationName.substring(suffixIdx))) {
+            AgentSO11Y.recordTracingContextCreate(forceSampling, true);
             context = new IgnoredTracerContext();
         } else {
             SamplingService samplingService = ServiceManager.INSTANCE.findService(SamplingService.class);
             if (forceSampling || samplingService.trySampling(operationName)) {
+                AgentSO11Y.recordTracingContextCreate(forceSampling, false);
                 context = new TracingContext(operationName, spanLimitWatcher);
             } else {
+                AgentSO11Y.recordTracingContextCreate(false, true);
+                AgentSO11Y.recordLeakedTracingContext(true);
                 context = new IgnoredTracerContext();
             }
         }

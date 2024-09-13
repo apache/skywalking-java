@@ -206,7 +206,7 @@ segmentItems:
       - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: druid-1.x-scenario
-  meterSize: 13
+  meterSize: ge 13
   meters:
   - meterId:
       name: datasource

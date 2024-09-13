@@ -30,11 +30,17 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y;
 
 /**
  * This class wouldn't be loaded in real env. This is a class template for dynamic class generation.
  */
 public class InstanceMethodInterV2WithOverrideArgsTemplate {
+
+    /**
+     * This field is never set in the template, but has value in the runtime.
+     */
+    private static String PLUGIN_NAME;
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -42,6 +48,9 @@ public class InstanceMethodInterV2WithOverrideArgsTemplate {
 
     private static InstanceMethodsAroundInterceptorV2 INTERCEPTOR;
     private static IBootstrapLog LOGGER;
+    private static BootstrapPluginSO11Y PLUGIN_SO11Y;
+
+    private static final String INTERCEPTOR_TYPE = "inst";
 
     /**
      * Intercept the target instance method.
@@ -61,6 +70,8 @@ public class InstanceMethodInterV2WithOverrideArgsTemplate {
 
         prepare();
 
+        long interceptorTimeCost = 0L;
+        long beforeStartTime = System.nanoTime();
         MethodInvocationContext context = new MethodInvocationContext();
         try {
             if (INTERCEPTOR != null) {
@@ -70,7 +81,9 @@ public class InstanceMethodInterV2WithOverrideArgsTemplate {
             if (LOGGER != null) {
                 LOGGER.error(t, "class[{}] before method[{}] intercept failure", obj.getClass(), method.getName());
             }
+            PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - beforeStartTime;
 
         Object ret = null;
         try {
@@ -80,6 +93,7 @@ public class InstanceMethodInterV2WithOverrideArgsTemplate {
                 ret = zuper.call(allArguments);
             }
         } catch (Throwable t) {
+            long handleExceptionStartTime = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     INTERCEPTOR.handleMethodException(targetObject, method, allArguments, method.getParameterTypes(), t, context);
@@ -88,9 +102,12 @@ public class InstanceMethodInterV2WithOverrideArgsTemplate {
                 if (LOGGER != null) {
                     LOGGER.error(t2, "class[{}] handle method[{}] exception failure", obj.getClass(), method.getName());
                 }
+                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
             throw t;
         } finally {
+            long afterStartTime = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     ret = INTERCEPTOR.afterMethod(targetObject, method, allArguments, method.getParameterTypes(), ret, context);
@@ -99,8 +116,11 @@ public class InstanceMethodInterV2WithOverrideArgsTemplate {
                 if (LOGGER != null) {
                     LOGGER.error(t, "class[{}] after method[{}] intercept failure", obj.getClass(), method.getName());
                 }
+                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - afterStartTime;
         }
+        PLUGIN_SO11Y.recordInterceptorTimeCost(interceptorTimeCost);
 
         return ret;
     }
@@ -117,6 +137,7 @@ public class InstanceMethodInterV2WithOverrideArgsTemplate {
                 if (logger != null) {
                     LOGGER = logger;
 
+                    PLUGIN_SO11Y = BootstrapInterRuntimeAssist.getSO11Y(loader);
                     INTERCEPTOR = BootstrapInterRuntimeAssist.createInterceptor(loader, TARGET_INTERCEPTOR, LOGGER);
                 }
             } else {

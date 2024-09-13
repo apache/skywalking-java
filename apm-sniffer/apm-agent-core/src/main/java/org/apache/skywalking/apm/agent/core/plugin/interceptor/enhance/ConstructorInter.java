@@ -25,6 +25,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 
 /**
  * The actual byte-buddy's interceptor to intercept constructor methods. In this class, it provides a bridge between
@@ -33,6 +34,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 public class ConstructorInter {
     private static final ILog LOGGER = LogManager.getLogger(ConstructorInter.class);
 
+    private String pluginName;
     /**
      * An {@link InstanceConstructorInterceptor} This name should only stay in {@link String}, the real {@link Class}
      * type will trigger classloader failure. If you want to know more, please check on books about Classloader or
@@ -40,10 +42,13 @@ public class ConstructorInter {
      */
     private InstanceConstructorInterceptor interceptor;
 
+    private static final String INTERCEPTOR_TYPE = "constructor";
+
     /**
      * @param constructorInterceptorClassName class full name.
      */
-    public ConstructorInter(String constructorInterceptorClassName, ClassLoader classLoader) throws PluginException {
+    public ConstructorInter(String pluginName, String constructorInterceptorClassName, ClassLoader classLoader) throws PluginException {
+        this.pluginName = pluginName;
         try {
             interceptor = InterceptorInstanceLoader.load(constructorInterceptorClassName, classLoader);
         } catch (Throwable t) {
@@ -59,13 +64,17 @@ public class ConstructorInter {
      */
     @RuntimeType
     public void intercept(@This Object obj, @AllArguments Object[] allArguments) {
+        long interceptorTimeCost = 0L;
+        long startTime = System.nanoTime();
         try {
             EnhancedInstance targetObject = (EnhancedInstance) obj;
 
             interceptor.onConstruct(targetObject, allArguments);
         } catch (Throwable t) {
             LOGGER.error("ConstructorInter failure.", t);
+            AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
         }
-
+        interceptorTimeCost += System.nanoTime() - startTime;
+        AgentSO11Y.recordInterceptorTimeCost(interceptorTimeCost);
     }
 }

@@ -28,6 +28,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.Bootstrap
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y;
 
 /**
  * --------CLASS TEMPLATE---------
@@ -40,6 +41,11 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMet
  * This class wouldn't be loaded in real env. This is a class template for dynamic class generation.
  */
 public class StaticMethodInterWithOverrideArgsTemplate {
+
+    /**
+     * This field is never set in the template, but has value in the runtime.
+     */
+    private static String PLUGIN_NAME;
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -47,6 +53,9 @@ public class StaticMethodInterWithOverrideArgsTemplate {
 
     private static StaticMethodsAroundInterceptor INTERCEPTOR;
     private static IBootstrapLog LOGGER;
+    private static BootstrapPluginSO11Y PLUGIN_SO11Y;
+
+    private static final String INTERCEPTOR_TYPE = "static";
 
     /**
      * Intercept the target static method.
@@ -64,6 +73,8 @@ public class StaticMethodInterWithOverrideArgsTemplate {
         @Morph OverrideCallable zuper) throws Throwable {
         prepare();
 
+        long interceptorTimeCost = 0L;
+        long beforeStartTime = System.nanoTime();
         MethodInterceptResult result = new MethodInterceptResult();
         try {
             if (INTERCEPTOR != null) {
@@ -71,7 +82,9 @@ public class StaticMethodInterWithOverrideArgsTemplate {
             }
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before static method[{}] intercept failure", clazz, method.getName());
+            PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - beforeStartTime;
 
         Object ret = null;
         try {
@@ -81,23 +94,31 @@ public class StaticMethodInterWithOverrideArgsTemplate {
                 ret = zuper.call(allArguments);
             }
         } catch (Throwable t) {
+            long handleExceptionStartTime = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     INTERCEPTOR.handleMethodException(clazz, method, allArguments, method.getParameterTypes(), t);
                 }
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle static method[{}] exception failure", clazz, method.getName(), t2.getMessage());
+                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
             throw t;
         } finally {
+            long afterStartTime = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     ret = INTERCEPTOR.afterMethod(clazz, method, allArguments, method.getParameterTypes(), ret);
                 }
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after static method[{}] intercept failure:{}", clazz, method.getName(), t.getMessage());
+                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - afterStartTime;
         }
+        PLUGIN_SO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+
         return ret;
     }
 
@@ -113,6 +134,7 @@ public class StaticMethodInterWithOverrideArgsTemplate {
                 if (logger != null) {
                     LOGGER = logger;
 
+                    PLUGIN_SO11Y = BootstrapInterRuntimeAssist.getSO11Y(loader);
                     INTERCEPTOR = BootstrapInterRuntimeAssist.createInterceptor(loader, TARGET_INTERCEPTOR, LOGGER);
                 }
             } else {

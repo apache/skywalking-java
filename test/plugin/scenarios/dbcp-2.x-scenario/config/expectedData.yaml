@@ -224,7 +224,7 @@ segmentItems:
         - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: dbcp-2.x-scenario
-  meterSize: 12
+  meterSize: ge 12
   meters:
   - meterId:
       name: datasource

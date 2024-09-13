@@ -30,6 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 
 /**
  * The actual byte-buddy's interceptor to intercept class instance methods. In this class, it provides a bridge between
@@ -38,6 +39,7 @@ import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoa
 public class InstMethodsInterV2WithOverrideArgs {
     private static final ILog LOGGER = LogManager.getLogger(InstMethodsInterV2WithOverrideArgs.class);
 
+    private String pluginName;
     /**
      * An {@link InstanceMethodsAroundInterceptorV2} This name should only stay in {@link String}, the real {@link Class}
      * type will trigger classloader failure. If you want to know more, please check on books about Classloader or
@@ -45,10 +47,13 @@ public class InstMethodsInterV2WithOverrideArgs {
      */
     private InstanceMethodsAroundInterceptorV2 interceptor;
 
+    private static final String INTERCEPTOR_TYPE = "inst";
+
     /**
      * @param instanceMethodsAroundInterceptorClassName class full name.
      */
-    public InstMethodsInterV2WithOverrideArgs(String instanceMethodsAroundInterceptorClassName, ClassLoader classLoader) {
+    public InstMethodsInterV2WithOverrideArgs(String pluginName, String instanceMethodsAroundInterceptorClassName, ClassLoader classLoader) {
+        this.pluginName = pluginName;
         try {
             interceptor = InterceptorInstanceLoader.load(instanceMethodsAroundInterceptorClassName, classLoader);
         } catch (Throwable t) {
@@ -72,12 +77,16 @@ public class InstMethodsInterV2WithOverrideArgs {
         @Morph OverrideCallable zuper) throws Throwable {
         EnhancedInstance targetObject = (EnhancedInstance) obj;
 
+        long interceptorTimeCost = 0L;
+        long beforeStartTime = System.nanoTime();
         MethodInvocationContext context = new MethodInvocationContext();
         try {
             interceptor.beforeMethod(targetObject, method, allArguments, method.getParameterTypes(), context);
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before method[{}] intercept failure", obj.getClass(), method.getName());
+            AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - beforeStartTime;
 
         Object ret = null;
         try {
@@ -87,19 +96,27 @@ public class InstMethodsInterV2WithOverrideArgs {
                 ret = zuper.call(allArguments);
             }
         } catch (Throwable t) {
+            long handleExceptionStartTime = System.nanoTime();
             try {
                 interceptor.handleMethodException(targetObject, method, allArguments, method.getParameterTypes(), t, context);
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle method[{}] exception failure", obj.getClass(), method.getName());
+                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
             throw t;
         } finally {
+            long afterStartTime = System.nanoTime();
             try {
                 ret = interceptor.afterMethod(targetObject, method, allArguments, method.getParameterTypes(), ret, context);
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after method[{}] intercept failure", obj.getClass(), method.getName());
+                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - afterStartTime;
         }
+        AgentSO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+
         return ret;
     }
 }

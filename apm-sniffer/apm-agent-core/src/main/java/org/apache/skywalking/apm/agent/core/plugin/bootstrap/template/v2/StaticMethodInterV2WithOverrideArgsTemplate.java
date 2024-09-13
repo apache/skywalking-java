@@ -28,11 +28,17 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.Bootstrap
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.StaticMethodsAroundInterceptorV2;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y;
 
 /**
  * This class wouldn't be loaded in real env. This is a class template for dynamic class generation.
  */
 public class StaticMethodInterV2WithOverrideArgsTemplate {
+
+    /**
+     * This field is never set in the template, but has value in the runtime.
+     */
+    private static String PLUGIN_NAME;
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -40,6 +46,9 @@ public class StaticMethodInterV2WithOverrideArgsTemplate {
 
     private static StaticMethodsAroundInterceptorV2 INTERCEPTOR;
     private static IBootstrapLog LOGGER;
+    private static BootstrapPluginSO11Y PLUGIN_SO11Y;
+
+    private static final String INTERCEPTOR_TYPE = "static";
 
     /**
      * Intercept the target static method.
@@ -57,6 +66,8 @@ public class StaticMethodInterV2WithOverrideArgsTemplate {
         @Morph OverrideCallable zuper) throws Throwable {
         prepare();
 
+        long interceptorTimeCost = 0L;
+        long beforeStartTime = System.nanoTime();
         MethodInvocationContext context = new MethodInvocationContext();
         try {
             if (INTERCEPTOR != null) {
@@ -64,7 +75,9 @@ public class StaticMethodInterV2WithOverrideArgsTemplate {
             }
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before static method[{}] intercept failure", clazz, method.getName());
+            PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - beforeStartTime;
 
         Object ret = null;
         try {
@@ -74,23 +87,31 @@ public class StaticMethodInterV2WithOverrideArgsTemplate {
                 ret = zuper.call(allArguments);
             }
         } catch (Throwable t) {
+            long handleExceptionStartTime = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     INTERCEPTOR.handleMethodException(clazz, method, allArguments, method.getParameterTypes(), t, context);
                 }
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle static method[{}] exception failure", clazz, method.getName(), t2.getMessage());
+                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
             throw t;
         } finally {
+            long afterStartTime = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     ret = INTERCEPTOR.afterMethod(clazz, method, allArguments, method.getParameterTypes(), ret, context);
                 }
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after static method[{}] intercept failure:{}", clazz, method.getName(), t.getMessage());
+                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - afterStartTime;
         }
+        PLUGIN_SO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+
         return ret;
     }
 
@@ -106,6 +127,7 @@ public class StaticMethodInterV2WithOverrideArgsTemplate {
                 if (logger != null) {
                     LOGGER = logger;
 
+                    PLUGIN_SO11Y = BootstrapInterRuntimeAssist.getSO11Y(loader);
                     INTERCEPTOR = BootstrapInterRuntimeAssist.createInterceptor(loader, TARGET_INTERCEPTOR, LOGGER);
                 }
             } else {

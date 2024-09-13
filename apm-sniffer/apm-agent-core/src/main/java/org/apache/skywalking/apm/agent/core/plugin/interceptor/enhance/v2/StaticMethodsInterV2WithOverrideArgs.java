@@ -27,6 +27,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 
 /**
  * The actual byte-buddy's interceptor to intercept class instance methods. In this class, it provides a bridge between
@@ -35,6 +36,7 @@ import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoa
 public class StaticMethodsInterV2WithOverrideArgs {
     private static final ILog LOGGER = LogManager.getLogger(StaticMethodsInterV2WithOverrideArgs.class);
 
+    private String pluginName;
     /**
      * A class full name, and instanceof {@link StaticMethodsAroundInterceptorV2} This name should only stay in {@link
      * String}, the real {@link Class} type will trigger classloader failure. If you want to know more, please check on
@@ -42,12 +44,15 @@ public class StaticMethodsInterV2WithOverrideArgs {
      */
     private String staticMethodsAroundInterceptorClassName;
 
+    private static final String INTERCEPTOR_TYPE = "static";
+
     /**
      * Set the name of {@link StaticMethodsInterV2WithOverrideArgs#staticMethodsAroundInterceptorClassName}
      *
      * @param staticMethodsAroundInterceptorClassName class full name.
      */
-    public StaticMethodsInterV2WithOverrideArgs(String staticMethodsAroundInterceptorClassName) {
+    public StaticMethodsInterV2WithOverrideArgs(String pluginName, String staticMethodsAroundInterceptorClassName) {
+        this.pluginName = pluginName;
         this.staticMethodsAroundInterceptorClassName = staticMethodsAroundInterceptorClassName;
     }
 
@@ -68,12 +73,16 @@ public class StaticMethodsInterV2WithOverrideArgs {
         StaticMethodsAroundInterceptorV2 interceptor = InterceptorInstanceLoader.load(staticMethodsAroundInterceptorClassName,
                                                                                       clazz.getClassLoader());
 
+        long interceptorTimeCost = 0L;
+        long beforeStartTime = System.nanoTime();
         MethodInvocationContext context = new MethodInvocationContext();
         try {
             interceptor.beforeMethod(clazz, method, allArguments, method.getParameterTypes(), context);
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before static method[{}] intercept failure", clazz, method.getName());
+            AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - beforeStartTime;
 
         Object ret = null;
         try {
@@ -83,19 +92,27 @@ public class StaticMethodsInterV2WithOverrideArgs {
                 ret = zuper.call(allArguments);
             }
         } catch (Throwable t) {
+            long handleExceptionStartTime = System.nanoTime();
             try {
                 interceptor.handleMethodException(clazz, method, allArguments, method.getParameterTypes(), t, context);
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle static method[{}] exception failure", clazz, method.getName(), t2.getMessage());
+                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
             throw t;
         } finally {
+            long afterStartTime = System.nanoTime();
             try {
                 ret = interceptor.afterMethod(clazz, method, allArguments, method.getParameterTypes(), ret, context);
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after static method[{}] intercept failure:{}", clazz, method.getName(), t.getMessage());
+                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - afterStartTime;
         }
+        AgentSO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+
         return ret;
     }
 }

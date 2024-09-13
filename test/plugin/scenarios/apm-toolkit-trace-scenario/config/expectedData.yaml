@@ -492,7 +492,7 @@ segmentItems:
       skipAnalysis: 'true'
 meterItems:
 - serviceName: apm-toolkit-trace-scenario
-  meterSize: 8
+  meterSize: ge 8
   meters:
     - meterId:
         name: test_counter

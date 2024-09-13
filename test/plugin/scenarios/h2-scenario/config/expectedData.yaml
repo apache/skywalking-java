@@ -98,7 +98,7 @@ segmentItems:
       skipAnalysis: 'false'
 meterItems:
   - serviceName: h2-scenario
-    meterSize: 5
+    meterSize: ge 5
     meters:
       - meterId:
           name: thread_pool

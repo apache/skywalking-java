@@ -44,6 +44,10 @@ public abstract class AbstractClassEnhancePluginDefine {
     private static final ILog LOGGER = LogManager.getLogger(AbstractClassEnhancePluginDefine.class);
 
     /**
+     * plugin name defined in skywalking-plugin.def
+     */
+    private String pluginName;
+    /**
      * New field name.
      */
     public static final String CONTEXT_ATTR_NAME = "_$EnhancedClassField_ws";
@@ -199,4 +203,17 @@ public abstract class AbstractClassEnhancePluginDefine {
      * @return collections of {@link InstanceMethodsInterceptV2Point}
      */
     public abstract StaticMethodsInterceptV2Point[] getStaticMethodsInterceptV2Points();
+
+    /**
+     * plugin name should be set after create PluginDefine instance
+     *
+     * @param pluginName key defined in skywalking-plugin.def
+     */
+    protected void setPluginName(final String pluginName) {
+        this.pluginName = pluginName;
+    }
+
+    public String getPluginName() {
+        return pluginName;
+    }
 }

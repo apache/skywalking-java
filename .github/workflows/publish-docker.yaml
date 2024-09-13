@@ -47,7 +47,7 @@ jobs:
           java-version: 17
       - name: Build Agent
         run: make build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         name: Upload Agent
         with:
           name: skywalking-agent
@@ -71,7 +71,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: skywalking-agent
           path: skywalking-agent

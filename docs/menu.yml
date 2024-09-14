@@ -90,6 +90,8 @@ catalog:
         path: "/en/setup/service-agent/java-agent/advanced-reporters"
       - name: "Plugin development guide"
         path: "/en/setup/service-agent/java-agent/java-plugin-development-guide/"
+      - name: "Java Agent self-observability"
+        path: "/en/setup/service-agent/java-agent/Java-Agent-self-observability"
       - name: "Java Agent Performance Test"
         path: "https://skyapmtest.github.io/Agent-Benchmarks/"
   - name: "FAQs"

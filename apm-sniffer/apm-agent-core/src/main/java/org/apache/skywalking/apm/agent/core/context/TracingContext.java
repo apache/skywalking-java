@@ -43,7 +43,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.profile.ProfileStatusContext;
 import org.apache.skywalking.apm.agent.core.profile.ProfileTaskExecutionService;
-import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import static org.apache.skywalking.apm.agent.core.conf.Config.Agent.CLUSTER;
@@ -463,9 +463,9 @@ public class TracingContext implements AbstractTracerContext {
             if (isFinishedInMainThread && (!isRunningInAsyncMode || asyncSpanCounter == 0)) {
                 boolean limitMechanismWorking = isLimitMechanismWorking();
                 if (limitMechanismWorking) {
-                    AgentSO11Y.recordLeakedTracingContext(false);
+                    AgentSo11y.measureLeakedTracingContext(false);
                 }
-                AgentSO11Y.recordTracingContextFinish(false);
+                AgentSo11y.measureTracingContextCompletion(false);
                 TraceSegment finishedSegment = segment.finish(limitMechanismWorking);
                 TracingContext.ListenerManager.notifyFinish(finishedSegment);
                 running = false;

@@ -30,7 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
-import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 
 /**
  * The actual byte-buddy's interceptor to intercept class instance methods. In this class, it provides a bridge between
@@ -39,6 +39,8 @@ import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 public class InstMethodsInterV2WithOverrideArgs {
     private static final ILog LOGGER = LogManager.getLogger(InstMethodsInterV2WithOverrideArgs.class);
 
+    private static final String INTERCEPTOR_TYPE = "inst";
+
     private String pluginName;
     /**
      * An {@link InstanceMethodsAroundInterceptorV2} This name should only stay in {@link String}, the real {@link Class}
@@ -46,8 +48,6 @@ public class InstMethodsInterV2WithOverrideArgs {
      * Classloader appointment mechanism.
      */
     private InstanceMethodsAroundInterceptorV2 interceptor;
-
-    private static final String INTERCEPTOR_TYPE = "inst";
 
     /**
      * @param instanceMethodsAroundInterceptorClassName class full name.
@@ -78,15 +78,15 @@ public class InstMethodsInterV2WithOverrideArgs {
         EnhancedInstance targetObject = (EnhancedInstance) obj;
 
         long interceptorTimeCost = 0L;
-        long beforeStartTime = System.nanoTime();
+        long startTimeOfMethodBeforeInter = System.nanoTime();
         MethodInvocationContext context = new MethodInvocationContext();
         try {
             interceptor.beforeMethod(targetObject, method, allArguments, method.getParameterTypes(), context);
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before method[{}] intercept failure", obj.getClass(), method.getName());
-            AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+            AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
         }
-        interceptorTimeCost += System.nanoTime() - beforeStartTime;
+        interceptorTimeCost += System.nanoTime() - startTimeOfMethodBeforeInter;
 
         Object ret = null;
         try {
@@ -96,26 +96,26 @@ public class InstMethodsInterV2WithOverrideArgs {
                 ret = zuper.call(allArguments);
             }
         } catch (Throwable t) {
-            long handleExceptionStartTime = System.nanoTime();
+            long startTimeOfMethodHandleExceptionInter = System.nanoTime();
             try {
                 interceptor.handleMethodException(targetObject, method, allArguments, method.getParameterTypes(), t, context);
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle method[{}] exception failure", obj.getClass(), method.getName());
-                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodHandleExceptionInter;
             throw t;
         } finally {
-            long afterStartTime = System.nanoTime();
+            long startTimeOfMethodAfterInter = System.nanoTime();
             try {
                 ret = interceptor.afterMethod(targetObject, method, allArguments, method.getParameterTypes(), ret, context);
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after method[{}] intercept failure", obj.getClass(), method.getName());
-                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - afterStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodAfterInter;
         }
-        AgentSO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+        AgentSo11y.durationOfInterceptor(interceptorTimeCost);
 
         return ret;
     }

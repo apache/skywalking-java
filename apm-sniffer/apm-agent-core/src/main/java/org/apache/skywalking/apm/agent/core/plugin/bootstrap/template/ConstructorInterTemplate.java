@@ -25,7 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.bootstrap.IBootstrapLog;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.BootstrapInterRuntimeAssist;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y;
 
 /**
  * --------CLASS TEMPLATE---------
@@ -39,6 +39,7 @@ import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y
  */
 public class ConstructorInterTemplate {
 
+    private static final String INTERCEPTOR_TYPE = "constructor";
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -50,9 +51,7 @@ public class ConstructorInterTemplate {
 
     private static InstanceConstructorInterceptor INTERCEPTOR;
     private static IBootstrapLog LOGGER;
-    private static BootstrapPluginSO11Y PLUGIN_SO11Y;
-
-    private static final String INTERCEPTOR_TYPE = "constructor";
+    private static BootstrapPluginSo11y PLUGIN_SO11Y;
 
     /**
      * Intercept the target constructor.
@@ -75,10 +74,10 @@ public class ConstructorInterTemplate {
             INTERCEPTOR.onConstruct(targetObject, allArguments);
         } catch (Throwable t) {
             LOGGER.error("ConstructorInter failure.", t);
-            PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
+            PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
         interceptorTimeCost += System.nanoTime() - startTime;
-        PLUGIN_SO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+        PLUGIN_SO11Y.duration(interceptorTimeCost);
     }
 
     /**

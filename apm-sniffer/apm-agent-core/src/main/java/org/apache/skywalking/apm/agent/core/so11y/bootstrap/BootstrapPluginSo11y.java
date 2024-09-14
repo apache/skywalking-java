@@ -18,8 +18,8 @@
 
 package org.apache.skywalking.apm.agent.core.so11y.bootstrap;
 
-public interface BootstrapPluginSO11Y {
-    void recordInterceptorTimeCost(double timeCostInNanos);
+public interface BootstrapPluginSo11y {
+    void duration(double timeCostInNanos);
 
-    void recordInterceptorError(String pluginName, String interType);
+    void error(String pluginName, String interType);
 }

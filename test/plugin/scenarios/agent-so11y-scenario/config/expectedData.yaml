@@ -175,8 +175,3 @@ meterItems:
       tags:
       - {name: source, value: tracing}
     singleValue: 1.0
-  - meterId:
-      name: possible_leaked_context_counter
-      tags:
-      - {name: source, value: ignore}
-    singleValue: 0.0

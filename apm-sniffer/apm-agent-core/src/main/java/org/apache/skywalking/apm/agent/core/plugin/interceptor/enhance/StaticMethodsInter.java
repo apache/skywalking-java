@@ -27,7 +27,7 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 
 /**
  * The actual byte-buddy's interceptor to intercept class static methods. In this class, it provides a bridge between
@@ -36,6 +36,8 @@ import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 public class StaticMethodsInter {
     private static final ILog LOGGER = LogManager.getLogger(StaticMethodsInter.class);
 
+    private static final String INTERCEPTOR_TYPE = "static";
+
     private String pluginName;
     /**
      * A class full name, and instanceof {@link StaticMethodsAroundInterceptor} This name should only stay in {@link
@@ -43,8 +45,6 @@ public class StaticMethodsInter {
      * books about Classloader or Classloader appointment mechanism.
      */
     private String staticMethodsAroundInterceptorClassName;
-
-    private static final String INTERCEPTOR_TYPE = "static";
 
     /**
      * Set the name of {@link StaticMethodsInter#staticMethodsAroundInterceptorClassName}
@@ -74,15 +74,15 @@ public class StaticMethodsInter {
             .getClassLoader());
 
         long interceptorTimeCost = 0L;
-        long beforeStartTime = System.nanoTime();
+        long startTimeOfMethodBeforeInter = System.nanoTime();
         MethodInterceptResult result = new MethodInterceptResult();
         try {
             interceptor.beforeMethod(clazz, method, allArguments, method.getParameterTypes(), result);
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before static method[{}] intercept failure", clazz, method.getName());
-            AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+            AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
         }
-        interceptorTimeCost += System.nanoTime() - beforeStartTime;
+        interceptorTimeCost += System.nanoTime() - startTimeOfMethodBeforeInter;
 
         Object ret = null;
         try {
@@ -92,26 +92,26 @@ public class StaticMethodsInter {
                 ret = zuper.call();
             }
         } catch (Throwable t) {
-            long handleExceptionStartTime = System.nanoTime();
+            long startTimeOfMethodHandleExceptionInter = System.nanoTime();
             try {
                 interceptor.handleMethodException(clazz, method, allArguments, method.getParameterTypes(), t);
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle static method[{}] exception failure", clazz, method.getName(), t2.getMessage());
-                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodHandleExceptionInter;
             throw t;
         } finally {
-            long afterStartTime = System.nanoTime();
+            long startTimeOfMethodAfterInter = System.nanoTime();
             try {
                 ret = interceptor.afterMethod(clazz, method, allArguments, method.getParameterTypes(), ret);
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after static method[{}] intercept failure:{}", clazz, method.getName(), t.getMessage());
-                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - afterStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodAfterInter;
         }
-        AgentSO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+        AgentSo11y.durationOfInterceptor(interceptorTimeCost);
 
         return ret;
     }

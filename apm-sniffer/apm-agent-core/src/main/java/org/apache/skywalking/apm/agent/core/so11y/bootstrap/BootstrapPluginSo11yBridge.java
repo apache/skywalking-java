@@ -19,28 +19,28 @@
 package org.apache.skywalking.apm.agent.core.so11y.bootstrap;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.BootstrapInterRuntimeAssist;
-import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 
 /**
  * used by {@link BootstrapInterRuntimeAssist}
  */
 @SuppressWarnings("unused")
-public class BootstrapPluginSO11YBridge implements BootstrapPluginSO11Y {
+public class BootstrapPluginSo11yBridge implements BootstrapPluginSo11y {
 
-    public static BootstrapPluginSO11Y getSO11Y() {
-        return new BootstrapPluginSO11YBridge();
+    public static BootstrapPluginSo11y getSo11y() {
+        return new BootstrapPluginSo11yBridge();
     }
 
-    private BootstrapPluginSO11YBridge() {
-    }
-
-    @Override
-    public void recordInterceptorTimeCost(final double timeCostInNanos) {
-        AgentSO11Y.recordInterceptorTimeCost(timeCostInNanos);
+    private BootstrapPluginSo11yBridge() {
     }
 
     @Override
-    public void recordInterceptorError(final String pluginName, final String interType) {
-        AgentSO11Y.recordInterceptorError(pluginName, interType);
+    public void duration(final double timeCostInNanos) {
+        AgentSo11y.durationOfInterceptor(timeCostInNanos);
+    }
+
+    @Override
+    public void error(final String pluginName, final String interType) {
+        AgentSo11y.errorOfPlugin(pluginName, interType);
     }
 }

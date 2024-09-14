@@ -29,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
-import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 
 /**
  * The actual byte-buddy's interceptor to intercept class instance methods. In this class, it provides a bridge between
@@ -38,10 +38,10 @@ import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 public class InstMethodsInterV2 {
     private static final ILog LOGGER = LogManager.getLogger(InstMethodsInterV2.class);
 
+    private static final String INTERCEPTOR_TYPE = "inst";
+
     private String pluginName;
     private InstanceMethodsAroundInterceptorV2 interceptor;
-
-    private static final String INTERCEPTOR_TYPE = "inst";
 
     public InstMethodsInterV2(String pluginName, String instanceMethodsAroundInterceptorClassName, ClassLoader classLoader) {
         this.pluginName = pluginName;
@@ -58,15 +58,15 @@ public class InstMethodsInterV2 {
         EnhancedInstance targetObject = (EnhancedInstance) obj;
 
         long interceptorTimeCost = 0L;
-        long beforeStartTime = System.nanoTime();
+        long startTimeOfMethodBeforeInter = System.nanoTime();
         MethodInvocationContext context = new MethodInvocationContext();
         try {
             interceptor.beforeMethod(targetObject, method, allArguments, method.getParameterTypes(), context);
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before method[{}] intercept failure", obj.getClass(), method.getName());
-            AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+            AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
         }
-        interceptorTimeCost += System.nanoTime() - beforeStartTime;
+        interceptorTimeCost += System.nanoTime() - startTimeOfMethodBeforeInter;
 
         Object ret = null;
         try {
@@ -76,26 +76,26 @@ public class InstMethodsInterV2 {
                 ret = zuper.call();
             }
         } catch (Throwable t) {
-            long handleExceptionStartTime = System.nanoTime();
+            long startTimeOfMethodHandleExceptionInter = System.nanoTime();
             try {
                 interceptor.handleMethodException(targetObject, method, allArguments, method.getParameterTypes(), t, context);
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle method[{}] exception failure", obj.getClass(), method.getName());
-                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodHandleExceptionInter;
             throw t;
         } finally {
-            long afterStartTime = System.nanoTime();
+            long startTimeOfMethodAfterInter = System.nanoTime();
             try {
                 ret = interceptor.afterMethod(targetObject, method, allArguments, method.getParameterTypes(), ret, context);
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after method[{}] intercept failure", obj.getClass(), method.getName());
-                AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - afterStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodAfterInter;
         }
-        AgentSO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+        AgentSo11y.durationOfInterceptor(interceptorTimeCost);
 
         return ret;
     }

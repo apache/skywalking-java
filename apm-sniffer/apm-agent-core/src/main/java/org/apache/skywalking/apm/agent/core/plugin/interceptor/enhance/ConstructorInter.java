@@ -25,7 +25,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.PluginException;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
-import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 
 /**
  * The actual byte-buddy's interceptor to intercept constructor methods. In this class, it provides a bridge between
@@ -34,6 +34,8 @@ import org.apache.skywalking.apm.agent.core.so11y.AgentSO11Y;
 public class ConstructorInter {
     private static final ILog LOGGER = LogManager.getLogger(ConstructorInter.class);
 
+    private static final String INTERCEPTOR_TYPE = "constructor";
+
     private String pluginName;
     /**
      * An {@link InstanceConstructorInterceptor} This name should only stay in {@link String}, the real {@link Class}
@@ -41,8 +43,6 @@ public class ConstructorInter {
      * Classloader appointment mechanism.
      */
     private InstanceConstructorInterceptor interceptor;
-
-    private static final String INTERCEPTOR_TYPE = "constructor";
 
     /**
      * @param constructorInterceptorClassName class full name.
@@ -72,9 +72,9 @@ public class ConstructorInter {
             interceptor.onConstruct(targetObject, allArguments);
         } catch (Throwable t) {
             LOGGER.error("ConstructorInter failure.", t);
-            AgentSO11Y.recordInterceptorError(pluginName, INTERCEPTOR_TYPE);
+            AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
         }
         interceptorTimeCost += System.nanoTime() - startTime;
-        AgentSO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+        AgentSo11y.durationOfInterceptor(interceptorTimeCost);
     }
 }

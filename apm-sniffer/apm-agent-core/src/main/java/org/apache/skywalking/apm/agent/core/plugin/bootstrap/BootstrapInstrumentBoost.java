@@ -73,7 +73,7 @@ public class BootstrapInstrumentBoost {
         "org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext",
 
         //SO11Y
-        "org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y"
+        "org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y"
     };
 
     private static String INSTANCE_METHOD_DELEGATE_TEMPLATE = "org.apache.skywalking.apm.agent.core.plugin.bootstrap.template.InstanceMethodInterTemplate";

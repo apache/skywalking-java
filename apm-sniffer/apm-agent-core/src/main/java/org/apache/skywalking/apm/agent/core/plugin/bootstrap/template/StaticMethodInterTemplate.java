@@ -28,7 +28,7 @@ import org.apache.skywalking.apm.agent.core.plugin.bootstrap.IBootstrapLog;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.BootstrapInterRuntimeAssist;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.StaticMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y;
 
 /**
  * --------CLASS TEMPLATE---------
@@ -42,6 +42,7 @@ import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y
  */
 public class StaticMethodInterTemplate {
 
+    private static final String INTERCEPTOR_TYPE = "static";
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -53,9 +54,7 @@ public class StaticMethodInterTemplate {
 
     private static StaticMethodsAroundInterceptor INTERCEPTOR;
     private static IBootstrapLog LOGGER;
-    private static BootstrapPluginSO11Y PLUGIN_SO11Y;
-
-    private static final String INTERCEPTOR_TYPE = "static";
+    private static BootstrapPluginSo11y PLUGIN_SO11Y;
 
     /**
      * Intercept the target static method.
@@ -74,7 +73,7 @@ public class StaticMethodInterTemplate {
         prepare();
 
         long interceptorTimeCost = 0L;
-        long beforeStartTime = System.nanoTime();
+        long startTimeOfMethodBeforeInter = System.nanoTime();
         MethodInterceptResult result = new MethodInterceptResult();
         try {
             if (INTERCEPTOR != null) {
@@ -82,9 +81,9 @@ public class StaticMethodInterTemplate {
             }
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before static method[{}] intercept failure", clazz, method.getName());
-            PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
+            PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
-        interceptorTimeCost += System.nanoTime() - beforeStartTime;
+        interceptorTimeCost += System.nanoTime() - startTimeOfMethodBeforeInter;
 
         Object ret = null;
         try {
@@ -94,30 +93,30 @@ public class StaticMethodInterTemplate {
                 ret = zuper.call();
             }
         } catch (Throwable t) {
-            long handleExceptionStartTime = System.nanoTime();
+            long startTimeOfMethodHandleExceptionInter = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     INTERCEPTOR.handleMethodException(clazz, method, allArguments, method.getParameterTypes(), t);
                 }
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle static method[{}] exception failure", clazz, method.getName(), t2.getMessage());
-                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
+                PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodHandleExceptionInter;
             throw t;
         } finally {
-            long afterStartTime = System.nanoTime();
+            long startTimeOfMethodAfterInter = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     ret = INTERCEPTOR.afterMethod(clazz, method, allArguments, method.getParameterTypes(), ret);
                 }
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after static method[{}] intercept failure:{}", clazz, method.getName(), t.getMessage());
-                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
+                PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - afterStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodAfterInter;
         }
-        PLUGIN_SO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+        PLUGIN_SO11Y.duration(interceptorTimeCost);
 
         return ret;
     }

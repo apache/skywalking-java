@@ -30,7 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.OverrideCallable;
-import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y;
 
 /**
  * --------CLASS TEMPLATE---------
@@ -44,6 +44,7 @@ import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSO11Y
  */
 public class InstanceMethodInterWithOverrideArgsTemplate {
 
+    private static final String INTERCEPTOR_TYPE = "inst";
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -55,9 +56,7 @@ public class InstanceMethodInterWithOverrideArgsTemplate {
 
     private static InstanceMethodsAroundInterceptor INTERCEPTOR;
     private static IBootstrapLog LOGGER;
-    private static BootstrapPluginSO11Y PLUGIN_SO11Y;
-
-    private static final String INTERCEPTOR_TYPE = "inst";
+    private static BootstrapPluginSo11y PLUGIN_SO11Y;
 
     /**
      * Intercept the target instance method.
@@ -78,7 +77,7 @@ public class InstanceMethodInterWithOverrideArgsTemplate {
         prepare();
 
         long interceptorTimeCost = 0L;
-        long beforeStartTime = System.nanoTime();
+        long startTimeOfMethodBeforeInter = System.nanoTime();
         MethodInterceptResult result = new MethodInterceptResult();
         try {
             if (INTERCEPTOR != null) {
@@ -88,9 +87,9 @@ public class InstanceMethodInterWithOverrideArgsTemplate {
             if (LOGGER != null) {
                 LOGGER.error(t, "class[{}] before method[{}] intercept failure", obj.getClass(), method.getName());
             }
-            PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
+            PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
-        interceptorTimeCost += System.nanoTime() - beforeStartTime;
+        interceptorTimeCost += System.nanoTime() - startTimeOfMethodBeforeInter;
 
         Object ret = null;
         try {
@@ -100,7 +99,7 @@ public class InstanceMethodInterWithOverrideArgsTemplate {
                 ret = zuper.call(allArguments);
             }
         } catch (Throwable t) {
-            long handleExceptionStartTime = System.nanoTime();
+            long startTimeOfMethodHandleExceptionInter = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     INTERCEPTOR.handleMethodException(targetObject, method, allArguments, method.getParameterTypes(), t);
@@ -109,12 +108,12 @@ public class InstanceMethodInterWithOverrideArgsTemplate {
                 if (LOGGER != null) {
                     LOGGER.error(t2, "class[{}] handle method[{}] exception failure", obj.getClass(), method.getName());
                 }
-                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
+                PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - handleExceptionStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodHandleExceptionInter;
             throw t;
         } finally {
-            long afterStartTime = System.nanoTime();
+            long startTimeOfMethodAfterInter = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     ret = INTERCEPTOR.afterMethod(targetObject, method, allArguments, method.getParameterTypes(), ret);
@@ -123,11 +122,11 @@ public class InstanceMethodInterWithOverrideArgsTemplate {
                 if (LOGGER != null) {
                     LOGGER.error(t, "class[{}] after method[{}] intercept failure", obj.getClass(), method.getName());
                 }
-                PLUGIN_SO11Y.recordInterceptorError(PLUGIN_NAME, INTERCEPTOR_TYPE);
+                PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
-            interceptorTimeCost += System.nanoTime() - afterStartTime;
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodAfterInter;
         }
-        PLUGIN_SO11Y.recordInterceptorTimeCost(interceptorTimeCost);
+        PLUGIN_SO11Y.duration(interceptorTimeCost);
 
         return ret;
     }

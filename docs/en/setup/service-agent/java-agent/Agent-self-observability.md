@@ -1,4 +1,4 @@
-# Agent self-observability
+# Agent Self Observability
 The Java Agent self-observability feature is built-in and used to measure the tracing performance and error statistics of plugins.
 
 It reports meters to SkyWalking oap through native meter protocol, OAP receives and analyzes meters, 

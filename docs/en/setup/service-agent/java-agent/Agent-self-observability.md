@@ -1,8 +1,10 @@
-# Java Agent self-observability
+# Agent self-observability
 The Java Agent self-observability feature is built-in and used to measure the tracing performance and error statistics of plugins.
 
 It reports meters to SkyWalking oap through native meter protocol, OAP receives and analyzes meters, 
 which are ultimately presented on the [Java Agent self-observability dashboard](https://skywalking.apache.org/docs/main/next/en/setup/backend/dashboards-so11y-java-agent/).
+
+***Note: Java Agent self-observability dashboard is available since OAP 10.1.0***
 
 # Details of agent so11y meters
 - `created_tracing_context_counter` - Counter. The number of created tracing contexts. This includes a label=created_by(value=sampler,propagated). `created_by=propagated` means the agent created the context due to downstream service added sw8 header to trigger force sampling. `created_by=sampler` means the agent created this context by local sampler no matter which policy it uses.

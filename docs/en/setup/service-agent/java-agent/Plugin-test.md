@@ -107,7 +107,7 @@ File Name | Descriptions
 | startScript | Path of the start up script. Required in `type: jvm` only.
 | runningMode | Running mode with the optional plugin, options, `default`(default), `with_optional`, or `with_bootstrap`.
 | withPlugins | Plugin selector rule, e.g.:`apm-spring-annotation-plugin-*.jar`. Required for `runningMode=with_optional` or `runningMode=with_bootstrap`.
-| environment | Same as `docker-compose#environment`.
+| environment | Same as `docker-compose#environment` and also used as `docker run` environment variables.
 | depends_on | Same as `docker-compose#depends_on`.
 | dependencies | Same as `docker-compose#services`, `image`, `links`, `hostname`, `command`, `environment` and `depends_on` are supported.
 

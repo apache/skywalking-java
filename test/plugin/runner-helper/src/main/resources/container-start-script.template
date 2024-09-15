@@ -33,6 +33,11 @@ docker run -d \
         <#if debug_mode??>
         --env DEBUG_MODE=${debug_mode} \
         </#if>
+        <#if environments??>
+        <#list environments as env>
+        --env ${env} \
+        </#list>
+        </#if>
         -v ${agent_home}:/usr/local/skywalking/scenario/agent \
         -v ${scenario_home}:/usr/local/skywalking/scenario \
         -v ${jacoco_home}:/jacoco \

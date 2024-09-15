@@ -1,0 +1,177 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+segmentItems:
+- serviceName: agent-so11y-scenario
+  segmentSize: gt 1
+  segments:
+  - segmentId: not null
+    spans:
+    - operationName: H2/JDBC/PreparedStatement/execute
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: Database
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 32
+      isError: false
+      spanType: Exit
+      peer: localhost:-1
+      tags:
+      - {key: db.type, value: H2}
+      - {key: db.instance, value: test}
+      - key: db.statement
+        value: "CREATE TABLE test_007(\nid VARCHAR(1) PRIMARY KEY, \nvalue VARCHAR(1)\
+          \ NOT NULL)"
+      skipAnalysis: 'false'
+    - operationName: H2/JDBC/CallableStatement/execute
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: Database
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 32
+      isError: false
+      spanType: Exit
+      peer: localhost:-1
+      tags:
+      - {key: db.type, value: H2}
+      - {key: db.instance, value: test}
+      - {key: db.statement, value: 'INSERT INTO test_007(id, value) VALUES(?,?)'}
+      skipAnalysis: 'false'
+    - operationName: H2/JDBC/Statement/execute
+      parentSpanId: 0
+      spanId: 3
+      spanLayer: Database
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 32
+      isError: false
+      spanType: Exit
+      peer: localhost:-1
+      tags:
+      - {key: db.type, value: H2}
+      - {key: db.instance, value: test}
+      - {key: db.statement, value: DROP table test_007}
+      skipAnalysis: 'false'
+    - operationName: /agent-so11y-scenario/case/ignore.html
+      parentSpanId: 0
+      spanId: 4
+      spanLayer: Http
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 66
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+        - {key: http.method, value: GET}
+        - {key: url, value: 'http://localhost:8080/agent-so11y-scenario/case/ignore.html'}
+        - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: /agent-so11y-scenario/case/propagated
+      parentSpanId: 0
+      spanId: 5
+      spanLayer: Http
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 66
+      isError: false
+      spanType: Exit
+      peer: localhost:8080
+      tags:
+        - {key: http.method, value: GET}
+        - {key: url, value: 'http://localhost:8080/agent-so11y-scenario/case/propagated'}
+        - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+    - operationName: GET:/agent-so11y-scenario/case/agent-so11y-scenario
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 1
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/agent-so11y-scenario/case/agent-so11y-scenario'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: GET:/agent-so11y-scenario/case/propagated
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: gt 0
+      endTime: gt 0
+      componentId: 1
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/agent-so11y-scenario/case/propagated'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+      refs:
+      - {parentEndpoint: 'GET:/agent-so11y-scenario/case/agent-so11y-scenario', networkAddress: 'localhost:8080',
+        refType: CrossProcess, parentSpanId: 5, parentTraceSegmentId: not null,
+        parentServiceInstance: not null, parentService: agent-so11y-scenario,
+        traceId: not null}
+
+meterItems:
+- serviceName: agent-so11y-scenario
+  meterSize: ge 9
+  meters:
+  - meterId:
+      name: created_tracing_context_counter
+      tags:
+      - {name: created_by, value: propagated}
+    singleValue: 1.0
+  - meterId:
+      name: created_tracing_context_counter
+      tags:
+      - {name: created_by, value: sampler}
+    singleValue: 1.0
+  - meterId:
+      name: finished_tracing_context_counter
+      tags: []
+    singleValue: 2.0
+  - meterId:
+      name: created_ignored_context_counter
+      tags:
+      - {name: created_by, value: propagated}
+    singleValue: 1.0
+  - meterId:
+      name: created_ignored_context_counter
+      tags:
+      - {name: created_by, value: sampler}
+    singleValue: 1.0
+  - meterId:
+      name: finished_ignored_context_counter
+      tags: []
+    singleValue: 2.0
+  - meterId:
+      name: tracing_context_performance
+      tags: []
+    histogramBuckets: [0.0, 1000.0, 10000.0, 50000.0, 100000.0, 300000.0, 500000.0, 1000000.0, 5000000.0, 1.0E7, 2.0E7, 5.0E7, 1.0E8]
+  - meterId:
+      name: possible_leaked_context_counter
+      tags:
+      - {name: source, value: tracing}
+    singleValue: 1.0

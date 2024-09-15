@@ -53,6 +53,7 @@ jobs:
       matrix:
         case:
           - activemq-scenario
+          - agent-so11y-scenario
           - apm-toolkit-trace-scenario
           - apm-toolkit-tracer-scenario
           - armeria-0.96minus-scenario

@@ -212,7 +212,7 @@ segmentItems:
         - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: c3p0-0.9.0.x-0.9.1.x-scenario
-  meterSize: 12
+  meterSize: ge 12
   meters:
   - meterId:
       name: datasource

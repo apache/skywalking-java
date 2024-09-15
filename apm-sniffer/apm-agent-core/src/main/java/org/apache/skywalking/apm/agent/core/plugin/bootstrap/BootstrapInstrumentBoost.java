@@ -71,6 +71,9 @@ public class BootstrapInstrumentBoost {
         "org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2",
         "org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.StaticMethodsAroundInterceptorV2",
         "org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext",
+
+        //SO11Y
+        "org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y"
     };
 
     private static String INSTANCE_METHOD_DELEGATE_TEMPLATE = "org.apache.skywalking.apm.agent.core.plugin.bootstrap.template.InstanceMethodInterTemplate";
@@ -162,11 +165,14 @@ public class BootstrapInstrumentBoost {
                 for (InstanceMethodsInterceptPoint point : define.getInstanceMethodsInterceptPoints()) {
                     if (point.isOverrideArgs()) {
                         generateDelegator(
-                            classesTypeMap, typePool, INSTANCE_METHOD_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE, point
-                                .getMethodsInterceptor());
+                            classesTypeMap, typePool, define.getPluginName(),
+                            INSTANCE_METHOD_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE, point.getMethodsInterceptor()
+                        );
                     } else {
                         generateDelegator(
-                            classesTypeMap, typePool, INSTANCE_METHOD_DELEGATE_TEMPLATE, point.getMethodsInterceptor());
+                            classesTypeMap, typePool, define.getPluginName(),
+                            INSTANCE_METHOD_DELEGATE_TEMPLATE, point.getMethodsInterceptor()
+                        );
                     }
                 }
             }
@@ -174,7 +180,9 @@ public class BootstrapInstrumentBoost {
             if (Objects.nonNull(define.getConstructorsInterceptPoints())) {
                 for (ConstructorInterceptPoint point : define.getConstructorsInterceptPoints()) {
                     generateDelegator(
-                        classesTypeMap, typePool, CONSTRUCTOR_DELEGATE_TEMPLATE, point.getConstructorInterceptor());
+                        classesTypeMap, typePool, define.getPluginName(),
+                        CONSTRUCTOR_DELEGATE_TEMPLATE, point.getConstructorInterceptor()
+                    );
                 }
             }
 
@@ -182,11 +190,14 @@ public class BootstrapInstrumentBoost {
                 for (StaticMethodsInterceptPoint point : define.getStaticMethodsInterceptPoints()) {
                     if (point.isOverrideArgs()) {
                         generateDelegator(
-                            classesTypeMap, typePool, STATIC_METHOD_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE, point
-                                .getMethodsInterceptor());
+                            classesTypeMap, typePool, define.getPluginName(),
+                            STATIC_METHOD_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE, point.getMethodsInterceptor()
+                        );
                     } else {
                         generateDelegator(
-                            classesTypeMap, typePool, STATIC_METHOD_DELEGATE_TEMPLATE, point.getMethodsInterceptor());
+                            classesTypeMap, typePool, define.getPluginName(),
+                            STATIC_METHOD_DELEGATE_TEMPLATE, point.getMethodsInterceptor()
+                        );
                     }
                 }
             }
@@ -202,14 +213,14 @@ public class BootstrapInstrumentBoost {
             if (Objects.nonNull(define.getInstanceMethodsInterceptV2Points())) {
                 for (InstanceMethodsInterceptV2Point point : define.getInstanceMethodsInterceptV2Points()) {
                     if (point.isOverrideArgs()) {
-                        generateDelegator(classesTypeMap, typePool,
-                                          INSTANCE_METHOD_V2_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE,
-                                          point.getMethodsInterceptorV2()
+                        generateDelegator(
+                            classesTypeMap, typePool, define.getPluginName(),
+                            INSTANCE_METHOD_V2_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE, point.getMethodsInterceptorV2()
                         );
                     } else {
                         generateDelegator(
-                            classesTypeMap, typePool, INSTANCE_METHOD_V2_DELEGATE_TEMPLATE,
-                            point.getMethodsInterceptorV2()
+                            classesTypeMap, typePool, define.getPluginName(),
+                            INSTANCE_METHOD_V2_DELEGATE_TEMPLATE, point.getMethodsInterceptorV2()
                         );
                     }
                 }
@@ -218,14 +229,14 @@ public class BootstrapInstrumentBoost {
             if (Objects.nonNull(define.getStaticMethodsInterceptV2Points())) {
                 for (StaticMethodsInterceptV2Point point : define.getStaticMethodsInterceptV2Points()) {
                     if (point.isOverrideArgs()) {
-                        generateDelegator(classesTypeMap, typePool,
-                                          STATIC_METHOD_V2_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE,
-                                          point.getMethodsInterceptorV2()
+                        generateDelegator(
+                            classesTypeMap, typePool, define.getPluginName(),
+                            STATIC_METHOD_V2_WITH_OVERRIDE_ARGS_DELEGATE_TEMPLATE, point.getMethodsInterceptorV2()
                         );
                     } else {
                         generateDelegator(
-                            classesTypeMap, typePool, STATIC_METHOD_V2_DELEGATE_TEMPLATE,
-                            point.getMethodsInterceptorV2()
+                            classesTypeMap, typePool, define.getPluginName(),
+                            STATIC_METHOD_V2_DELEGATE_TEMPLATE, point.getMethodsInterceptorV2()
                         );
                     }
                 }
@@ -245,7 +256,7 @@ public class BootstrapInstrumentBoost {
      *                          pre-defined in SkyWalking agent core.
      */
     private static void generateDelegator(Map<String, byte[]> classesTypeMap, TypePool typePool,
-        String templateClassName, String methodsInterceptor) {
+        String pluginName, String templateClassName, String methodsInterceptor) {
         String internalInterceptorName = internalDelegate(methodsInterceptor);
         try {
             TypeDescription templateTypeDescription = typePool.describe(templateClassName).resolve();
@@ -253,6 +264,8 @@ public class BootstrapInstrumentBoost {
             DynamicType.Unloaded interceptorType = new ByteBuddy().redefine(templateTypeDescription, ClassFileLocator.ForClassLoader
                 .of(BootstrapInstrumentBoost.class.getClassLoader()))
                                                                   .name(internalInterceptorName)
+                                                                  .field(named("PLUGIN_NAME"))
+                                                                  .value(pluginName)
                                                                   .field(named("TARGET_INTERCEPTOR"))
                                                                   .value(methodsInterceptor)
                                                                   .make();

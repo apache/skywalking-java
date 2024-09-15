@@ -30,6 +30,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.Bootstrap
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y;
 
 /**
  * --------CLASS TEMPLATE---------
@@ -42,6 +43,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
  * This class wouldn't be loaded in real env. This is a class template for dynamic class generation.
  */
 public class InstanceMethodInterTemplate {
+
+    private static final String INTERCEPTOR_TYPE = "inst";
+    /**
+     * This field is never set in the template, but has value in the runtime.
+     */
+    private static String PLUGIN_NAME;
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -49,6 +56,7 @@ public class InstanceMethodInterTemplate {
 
     private static InstanceMethodsAroundInterceptor INTERCEPTOR;
     private static IBootstrapLog LOGGER;
+    private static BootstrapPluginSo11y PLUGIN_SO11Y;
 
     /**
      * Intercept the target instance method.
@@ -68,6 +76,8 @@ public class InstanceMethodInterTemplate {
 
         prepare();
 
+        long interceptorTimeCost = 0L;
+        long startTimeOfMethodBeforeInter = System.nanoTime();
         MethodInterceptResult result = new MethodInterceptResult();
         try {
             if (INTERCEPTOR != null) {
@@ -77,7 +87,9 @@ public class InstanceMethodInterTemplate {
             if (LOGGER != null) {
                 LOGGER.error(t, "class[{}] before method[{}] intercept failure", obj.getClass(), method.getName());
             }
+            PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - startTimeOfMethodBeforeInter;
 
         Object ret = null;
         try {
@@ -87,6 +99,7 @@ public class InstanceMethodInterTemplate {
                 ret = zuper.call();
             }
         } catch (Throwable t) {
+            long startTimeOfMethodHandleExceptionInter = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     INTERCEPTOR.handleMethodException(targetObject, method, allArguments, method.getParameterTypes(), t);
@@ -95,9 +108,12 @@ public class InstanceMethodInterTemplate {
                 if (LOGGER != null) {
                     LOGGER.error(t2, "class[{}] handle method[{}] exception failure", obj.getClass(), method.getName());
                 }
+                PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodHandleExceptionInter;
             throw t;
         } finally {
+            long startTimeOfMethodAfterInter = System.nanoTime();
             try {
                 if (INTERCEPTOR != null) {
                     ret = INTERCEPTOR.afterMethod(targetObject, method, allArguments, method.getParameterTypes(), ret);
@@ -106,8 +122,11 @@ public class InstanceMethodInterTemplate {
                 if (LOGGER != null) {
                     LOGGER.error(t, "class[{}] after method[{}] intercept failure", obj.getClass(), method.getName());
                 }
+                PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodAfterInter;
         }
+        PLUGIN_SO11Y.duration(interceptorTimeCost);
 
         return ret;
     }
@@ -124,6 +143,7 @@ public class InstanceMethodInterTemplate {
                 if (logger != null) {
                     LOGGER = logger;
 
+                    PLUGIN_SO11Y = BootstrapInterRuntimeAssist.getSO11Y(loader);
                     INTERCEPTOR = BootstrapInterRuntimeAssist.createInterceptor(loader, TARGET_INTERCEPTOR, LOGGER);
                 }
             } else {

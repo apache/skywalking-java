@@ -15,7 +15,7 @@
 # limitations under the License.
 meterItems:
   - serviceName: grizzly-2.3.x-4.x-workthreadpool-scenario
-    meterSize: 4
+    meterSize: ge 4
     meters:
       - meterId:
           name: thread_pool

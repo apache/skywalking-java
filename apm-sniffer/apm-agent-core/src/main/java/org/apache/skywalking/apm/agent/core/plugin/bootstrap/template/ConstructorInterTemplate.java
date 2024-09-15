@@ -25,6 +25,7 @@ import org.apache.skywalking.apm.agent.core.plugin.bootstrap.IBootstrapLog;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.BootstrapInterRuntimeAssist;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y;
 
 /**
  * --------CLASS TEMPLATE---------
@@ -37,6 +38,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
  * This class wouldn't be loaded in real env. This is a class template for dynamic class generation.
  */
 public class ConstructorInterTemplate {
+
+    private static final String INTERCEPTOR_TYPE = "constructor";
+    /**
+     * This field is never set in the template, but has value in the runtime.
+     */
+    private static String PLUGIN_NAME;
     /**
      * This field is never set in the template, but has value in the runtime.
      */
@@ -44,6 +51,7 @@ public class ConstructorInterTemplate {
 
     private static InstanceConstructorInterceptor INTERCEPTOR;
     private static IBootstrapLog LOGGER;
+    private static BootstrapPluginSo11y PLUGIN_SO11Y;
 
     /**
      * Intercept the target constructor.
@@ -53,6 +61,8 @@ public class ConstructorInterTemplate {
      */
     @RuntimeType
     public static void intercept(@This Object obj, @AllArguments Object[] allArguments) {
+        long interceptorTimeCost = 0L;
+        long startTime = System.nanoTime();
         try {
             prepare();
 
@@ -64,7 +74,10 @@ public class ConstructorInterTemplate {
             INTERCEPTOR.onConstruct(targetObject, allArguments);
         } catch (Throwable t) {
             LOGGER.error("ConstructorInter failure.", t);
+            PLUGIN_SO11Y.error(PLUGIN_NAME, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - startTime;
+        PLUGIN_SO11Y.duration(interceptorTimeCost);
     }
 
     /**
@@ -79,6 +92,7 @@ public class ConstructorInterTemplate {
                 if (logger != null) {
                     LOGGER = logger;
 
+                    PLUGIN_SO11Y = BootstrapInterRuntimeAssist.getSO11Y(loader);
                     INTERCEPTOR = BootstrapInterRuntimeAssist.createInterceptor(loader, TARGET_INTERCEPTOR, LOGGER);
                 }
             } else {

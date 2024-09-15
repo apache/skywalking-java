@@ -22,6 +22,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import org.apache.skywalking.apm.agent.core.plugin.bootstrap.IBootstrapLog;
+import org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11y;
 
 /**
  * This assist help all bootstrap class core interceptor.
@@ -29,6 +30,8 @@ import org.apache.skywalking.apm.agent.core.plugin.bootstrap.IBootstrapLog;
 public class BootstrapInterRuntimeAssist {
     private static final String AGENT_CLASSLOADER_DEFAULT = "org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader";
     private static final String DEFAULT_AGENT_CLASSLOADER_INSTANCE = "DEFAULT_LOADER";
+    private static final String SO11Y_BRIDGE_CLASS = "org.apache.skywalking.apm.agent.core.so11y.bootstrap.BootstrapPluginSo11yBridge";
+    private static final String SO11Y_BRIDGE_GET_SO11Y_METHOD = "getSo11y";
     private static final String LOG_MANAGER_CLASS = "org.apache.skywalking.apm.agent.core.plugin.bootstrap.BootstrapPluginLogBridge";
     private static final String LOG_MANAGER_GET_LOGGER_METHOD = "getLogger";
     private static final PrintStream OUT = System.out;
@@ -56,6 +59,17 @@ public class BootstrapInterRuntimeAssist {
             Class<?> logManagerClass = Class.forName(LOG_MANAGER_CLASS, true, defaultAgentClassLoader);
             Method getLogger = logManagerClass.getMethod(LOG_MANAGER_GET_LOGGER_METHOD, String.class);
             return (IBootstrapLog) getLogger.invoke(null, interceptor + "_internal");
+        } catch (Exception e) {
+            e.printStackTrace(OUT);
+            return null;
+        }
+    }
+
+    public static BootstrapPluginSo11y getSO11Y(ClassLoader defaultAgentClassLoader) {
+        try {
+            Class<?> logManagerClass = Class.forName(SO11Y_BRIDGE_CLASS, true, defaultAgentClassLoader);
+            Method getLogger = logManagerClass.getMethod(SO11Y_BRIDGE_GET_SO11Y_METHOD);
+            return (BootstrapPluginSo11y) getLogger.invoke(null);
         } catch (Exception e) {
             e.printStackTrace(OUT);
             return null;

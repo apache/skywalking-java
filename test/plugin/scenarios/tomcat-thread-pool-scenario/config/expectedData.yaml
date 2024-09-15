@@ -15,7 +15,7 @@
 # limitations under the License.
 meterItems:
   - serviceName: tomcat-thread-pool-scenario
-    meterSize: 5
+    meterSize: ge 5
     meters:
       - meterId:
           name: thread_pool

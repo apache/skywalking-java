@@ -56,7 +56,7 @@ runs:
         ./mvnw -q --batch-mode clean package -Dmaven.test.skip || \
         ./mvnw -q --batch-mode clean package -Dmaven.test.skip
         echo "::endgroup::"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       name: Upload Agent
       with:
         name: skywalking-agent
@@ -89,7 +89,7 @@ runs:
         docker save -o test-containers/skywalking-agent-test-jvm-1.0.0.tgz skywalking/agent-test-jvm:1.0.0
         docker save -o test-containers/skywalking-agent-test-tomcat-1.0.0.tgz skywalking/agent-test-tomcat:1.0.0
         echo "::endgroup::"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       name: Upload Test Containers
       with:
         name: test-tools

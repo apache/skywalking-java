@@ -27,6 +27,7 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.apache.skywalking.apm.agent.core.plugin.loader.InterceptorInstanceLoader;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 
 /**
  * The actual byte-buddy's interceptor to intercept class static methods. In this class, it provides a bridge between
@@ -35,6 +36,9 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 public class StaticMethodsInter {
     private static final ILog LOGGER = LogManager.getLogger(StaticMethodsInter.class);
 
+    private static final String INTERCEPTOR_TYPE = "static";
+
+    private String pluginName;
     /**
      * A class full name, and instanceof {@link StaticMethodsAroundInterceptor} This name should only stay in {@link
      * String}, the real {@link Class} type will trigger classloader failure. If you want to know more, please check on
@@ -47,7 +51,8 @@ public class StaticMethodsInter {
      *
      * @param staticMethodsAroundInterceptorClassName class full name.
      */
-    public StaticMethodsInter(String staticMethodsAroundInterceptorClassName) {
+    public StaticMethodsInter(String pluginName, String staticMethodsAroundInterceptorClassName) {
+        this.pluginName = pluginName;
         this.staticMethodsAroundInterceptorClassName = staticMethodsAroundInterceptorClassName;
     }
 
@@ -68,12 +73,16 @@ public class StaticMethodsInter {
         StaticMethodsAroundInterceptor interceptor = InterceptorInstanceLoader.load(staticMethodsAroundInterceptorClassName, clazz
             .getClassLoader());
 
+        long interceptorTimeCost = 0L;
+        long startTimeOfMethodBeforeInter = System.nanoTime();
         MethodInterceptResult result = new MethodInterceptResult();
         try {
             interceptor.beforeMethod(clazz, method, allArguments, method.getParameterTypes(), result);
         } catch (Throwable t) {
             LOGGER.error(t, "class[{}] before static method[{}] intercept failure", clazz, method.getName());
+            AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
         }
+        interceptorTimeCost += System.nanoTime() - startTimeOfMethodBeforeInter;
 
         Object ret = null;
         try {
@@ -83,19 +92,27 @@ public class StaticMethodsInter {
                 ret = zuper.call();
             }
         } catch (Throwable t) {
+            long startTimeOfMethodHandleExceptionInter = System.nanoTime();
             try {
                 interceptor.handleMethodException(clazz, method, allArguments, method.getParameterTypes(), t);
             } catch (Throwable t2) {
                 LOGGER.error(t2, "class[{}] handle static method[{}] exception failure", clazz, method.getName(), t2.getMessage());
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodHandleExceptionInter;
             throw t;
         } finally {
+            long startTimeOfMethodAfterInter = System.nanoTime();
             try {
                 ret = interceptor.afterMethod(clazz, method, allArguments, method.getParameterTypes(), ret);
             } catch (Throwable t) {
                 LOGGER.error(t, "class[{}] after static method[{}] intercept failure:{}", clazz, method.getName(), t.getMessage());
+                AgentSo11y.errorOfPlugin(pluginName, INTERCEPTOR_TYPE);
             }
+            interceptorTimeCost += System.nanoTime() - startTimeOfMethodAfterInter;
         }
+        AgentSo11y.durationOfInterceptor(interceptorTimeCost);
+
         return ret;
     }
 }

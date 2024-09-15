@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
+import org.apache.skywalking.apm.agent.core.so11y.AgentSo11y;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import static org.apache.skywalking.apm.agent.core.conf.Config.Agent.OPERATION_NAME_THRESHOLD;
@@ -52,6 +53,7 @@ public class ContextManager implements BootService {
                 if (LOGGER.isDebugEnable()) {
                     LOGGER.debug("No operation name, ignore this trace.");
                 }
+                AgentSo11y.measureTracingContextCreation(forceSampling, true);
                 context = new IgnoredTracerContext();
             } else {
                 if (EXTEND_SERVICE == null) {

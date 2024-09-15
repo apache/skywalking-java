@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.agent.core.so11y;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.skywalking.apm.agent.core.meter.Counter;
@@ -32,6 +33,12 @@ public class AgentSo11y {
 
     // A map to cache meter obj(s) for plugins. The key is the plugin name.
     private static final Map<String, Counter> ERROR_COUNTER_CACHE = new ConcurrentHashMap<>();
+
+    // Steps of interceptor time cost histogram
+    private static final List<Double> TIME_COST_HISTOGRAM_STEPS = Arrays.asList(
+        1000d, 10000d, 50000d, 100000d, 300000d, 500000d,
+        1000000d, 5000000d, 10000000d, 20000000d, 50000000d, 100000000d
+    );
 
     // context counter
     private static Counter PROPAGATED_CONTEXT_COUNTER;
@@ -128,10 +135,10 @@ public class AgentSo11y {
         if (INTERCEPTOR_TIME_COST == null) {
             INTERCEPTOR_TIME_COST = MeterFactory
                 .histogram("tracing_context_performance")
-                .steps(Arrays.asList(0.01d, 0.1d, 0.5d, 1d, 3d, 5d, 10d, 50d, 100d, 200d, 500d, 1000d))
+                .steps(TIME_COST_HISTOGRAM_STEPS)
                 .build();
         }
-        INTERCEPTOR_TIME_COST.addValue(timeCostInNanos / 1000000);
+        INTERCEPTOR_TIME_COST.addValue(timeCostInNanos);
     }
 
     public static void errorOfPlugin(String pluginName, String interType) {

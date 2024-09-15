@@ -169,7 +169,7 @@ meterItems:
   - meterId:
       name: tracing_context_performance
       tags: []
-    histogramBuckets: [0.0, 0.01, 0.1, 0.5, 1.0, 3.0, 5.0, 10.0, 50.0, 100.0, 200.0, 500.0, 1000.0]
+    histogramBuckets: [0.0, 1000.0, 10000.0, 50000.0, 100000.0, 300000.0, 500000.0, 1000000.0, 5000000.0, 1.0E7, 2.0E7, 5.0E7, 1.0E8]
   - meterId:
       name: possible_leaked_context_counter
       tags:

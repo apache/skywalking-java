@@ -33,6 +33,15 @@ import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 public class PluginBootstrap {
     private static final ILog LOGGER = LogManager.getLogger(PluginBootstrap.class);
 
+    // Preload ThreadLocalRandom in case of intermittent ClassCircularityError since ByteBuddy 1.12.11
+    static {
+        try {
+            Class.forName("java.util.concurrent.ThreadLocalRandom");
+        } catch (Exception e) {
+            LOGGER.warn(e, "Preload ThreadLocalRandom failure.");
+        }
+    }
+
     /**
      * load all plugins.
      *

@@ -69,6 +69,25 @@ import static org.apache.skywalking.apm.agent.core.conf.Constants.NAME_TRAIT;
 public class SkyWalkingAgent {
     private static ILog LOGGER = LogManager.getLogger(SkyWalkingAgent.class);
 
+    static {
+        circularityErrorWorkaround();
+    }
+
+    /**
+     * <a href="https://github.com/DataDog/dd-trace-java/pull/4865">Follow the idea from dd-trace-java</a> to resolve
+     * the ClassCircularityError introduced in ByteBuddy >= 1.12.11.
+     *
+     * @see <a href="https://github.com/apache/skywalking/discussions/12572">Occational ClassCircularityError</a>
+     */
+    private static void circularityErrorWorkaround() {
+        // these classes have been involved in intermittent ClassCircularityErrors during startup
+        // they don't need context storage, so it's safe to load them before installing the agent
+        try {
+            Class.forName("java.util.concurrent.ThreadLocalRandom");
+        } catch (Throwable ignore) {
+        }
+    }
+
     /**
      * Main entrance. Use byte-buddy transform to enhance all classes, which define in plugins.
      */
@@ -114,22 +133,22 @@ public class SkyWalkingAgent {
         }
 
         Runtime.getRuntime()
-               .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
+                .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
     }
 
     static void installClassTransformer(Instrumentation instrumentation, PluginFinder pluginFinder) throws Exception {
         LOGGER.info("Skywalking agent begin to install transformer ...");
 
         AgentBuilder agentBuilder = newAgentBuilder().ignore(
-            nameStartsWith("net.bytebuddy.")
-                .or(nameStartsWith("org.slf4j."))
-                .or(nameStartsWith("org.groovy."))
-                .or(nameContains("javassist"))
-                .or(nameContains(".asm."))
-                .or(nameContains(".reflectasm."))
-                .or(nameStartsWith("sun.reflect"))
-                .or(allSkyWalkingAgentExcludeToolkit())
-                .or(ElementMatchers.isSynthetic()));
+                nameStartsWith("net.bytebuddy.")
+                        .or(nameStartsWith("org.slf4j."))
+                        .or(nameStartsWith("org.groovy."))
+                        .or(nameContains("javassist"))
+                        .or(nameContains(".asm."))
+                        .or(nameContains(".reflectasm."))
+                        .or(nameStartsWith("sun.reflect"))
+                        .or(allSkyWalkingAgentExcludeToolkit())
+                        .or(ElementMatchers.isSynthetic()));
 
         JDK9ModuleExporter.EdgeClasses edgeClasses = new JDK9ModuleExporter.EdgeClasses();
         try {
@@ -145,11 +164,11 @@ public class SkyWalkingAgent {
         }
 
         agentBuilder.type(pluginFinder.buildMatch())
-                    .transform(new Transformer(pluginFinder))
-                    .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
-                    .with(new RedefinitionListener())
-                    .with(new Listener())
-                    .installOn(instrumentation);
+                .transform(new Transformer(pluginFinder))
+                .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
+                .with(new RedefinitionListener())
+                .with(new Listener())
+                .installOn(instrumentation);
 
         PluginFinder.pluginInitCompleted();
 
@@ -191,7 +210,7 @@ public class SkyWalkingAgent {
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
                     DynamicType.Builder<?> possibleNewBuilder = define.define(
-                        typeDescription, newBuilder, classLoader, context);
+                            typeDescription, newBuilder, classLoader, context);
                     if (possibleNewBuilder != null) {
                         newBuilder = possibleNewBuilder;
                     }

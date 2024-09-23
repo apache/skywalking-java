@@ -133,22 +133,22 @@ public class SkyWalkingAgent {
         }
 
         Runtime.getRuntime()
-                .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
+               .addShutdownHook(new Thread(ServiceManager.INSTANCE::shutdown, "skywalking service shutdown thread"));
     }
 
     static void installClassTransformer(Instrumentation instrumentation, PluginFinder pluginFinder) throws Exception {
         LOGGER.info("Skywalking agent begin to install transformer ...");
 
         AgentBuilder agentBuilder = newAgentBuilder().ignore(
-                nameStartsWith("net.bytebuddy.")
-                        .or(nameStartsWith("org.slf4j."))
-                        .or(nameStartsWith("org.groovy."))
-                        .or(nameContains("javassist"))
-                        .or(nameContains(".asm."))
-                        .or(nameContains(".reflectasm."))
-                        .or(nameStartsWith("sun.reflect"))
-                        .or(allSkyWalkingAgentExcludeToolkit())
-                        .or(ElementMatchers.isSynthetic()));
+            nameStartsWith("net.bytebuddy.")
+                .or(nameStartsWith("org.slf4j."))
+                .or(nameStartsWith("org.groovy."))
+                .or(nameContains("javassist"))
+                .or(nameContains(".asm."))
+                .or(nameContains(".reflectasm."))
+                .or(nameStartsWith("sun.reflect"))
+                .or(allSkyWalkingAgentExcludeToolkit())
+                .or(ElementMatchers.isSynthetic()));
 
         JDK9ModuleExporter.EdgeClasses edgeClasses = new JDK9ModuleExporter.EdgeClasses();
         try {
@@ -164,11 +164,11 @@ public class SkyWalkingAgent {
         }
 
         agentBuilder.type(pluginFinder.buildMatch())
-                .transform(new Transformer(pluginFinder))
-                .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
-                .with(new RedefinitionListener())
-                .with(new Listener())
-                .installOn(instrumentation);
+                    .transform(new Transformer(pluginFinder))
+                    .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
+                    .with(new RedefinitionListener())
+                    .with(new Listener())
+                    .installOn(instrumentation);
 
         PluginFinder.pluginInitCompleted();
 
@@ -210,7 +210,7 @@ public class SkyWalkingAgent {
                 EnhanceContext context = new EnhanceContext();
                 for (AbstractClassEnhancePluginDefine define : pluginDefines) {
                     DynamicType.Builder<?> possibleNewBuilder = define.define(
-                            typeDescription, newBuilder, classLoader, context);
+                        typeDescription, newBuilder, classLoader, context);
                     if (possibleNewBuilder != null) {
                         newBuilder = possibleNewBuilder;
                     }

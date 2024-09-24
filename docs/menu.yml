@@ -74,6 +74,8 @@ catalog:
             path: "/en/setup/service-agent/java-agent/application-toolkit-logback-1.x/"
       - name: "Logic Endpoint"
         path: "/en/setup/service-agent/java-agent/logic-endpoint"
+      - name: "Agent Self Observability"
+        path: "/en/setup/service-agent/java-agent/Agent-self-observability"
   - name: "Plugins"
     catalog:
       - name: "Supported middleware, framework and library"
@@ -88,8 +90,6 @@ catalog:
         path: "/en/setup/service-agent/java-agent/configuration-discovery"
       - name: "Advanced reporters"
         path: "/en/setup/service-agent/java-agent/advanced-reporters"
-      - name: "Agent Self Observability"
-        path: "/en/setup/service-agent/java-agent/Agent-self-observability"
       - name: "Plugin Test Guide"
         path: "/en/setup/service-agent/java-agent/Plugin-test/"
       - name: "Plugin Development Guide"

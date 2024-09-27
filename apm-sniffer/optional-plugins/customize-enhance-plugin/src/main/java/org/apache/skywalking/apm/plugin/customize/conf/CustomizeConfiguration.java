@@ -67,6 +67,8 @@ public enum CustomizeConfiguration {
     private static final Map<String, ElementMatcher> CONTEXT_ENHANCE_CLASSES = new HashMap<>();
     private static final AtomicBoolean LOAD_FOR_CONFIGURATION = new AtomicBoolean(false);
 
+    private static List<Map<String, Object>> RESOLVED_FILE_CONFIGURATIONS;
+
     /**
      * The loadForEnhance method is resolver configuration file, and parse it
      */
@@ -106,14 +108,18 @@ public enum CustomizeConfiguration {
      * @throws IOException                  link {@link IOException}
      * @throws SAXException                 link {@link SAXException}
      */
-    private List<Map<String, Object>> resolver() throws ParserConfigurationException, IOException, SAXException {
+    private synchronized List<Map<String, Object>> resolver() throws ParserConfigurationException, IOException, SAXException {
+        if (RESOLVED_FILE_CONFIGURATIONS != null) {
+            return RESOLVED_FILE_CONFIGURATIONS;
+        }
         List<Map<String, Object>> customizeMethods = new ArrayList<Map<String, Object>>();
         File file = new File(CustomizePluginConfig.Plugin.Customize.ENHANCE_FILE);
         if (file.exists() && file.isFile()) {
             NodeList classNodeList = resolverFileClassDesc(file);
             resolverClassNodeList(classNodeList, customizeMethods);
         }
-        return customizeMethods;
+        RESOLVED_FILE_CONFIGURATIONS = customizeMethods;
+        return RESOLVED_FILE_CONFIGURATIONS;
     }
 
     /**

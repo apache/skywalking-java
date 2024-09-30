@@ -78,6 +78,10 @@
             <version>${org.apache.tomcat.annotations-api.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.pyroscope</groupId>
+            <artifactId>async-profiler-context</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

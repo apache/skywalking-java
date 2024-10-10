@@ -8,7 +8,7 @@ Release Notes.
 * Upgrade nats plugin to support 2.16.5
 * Add agent self-observability.
 * Fix intermittent ClassCircularityError by preloading ThreadLocalRandom since ByteBuddy 1.12.11
-* Upgrade netty-codec-http2 to 4.1.100.Final
+* Upgrade protobuf-java to 3.25.5
 
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)

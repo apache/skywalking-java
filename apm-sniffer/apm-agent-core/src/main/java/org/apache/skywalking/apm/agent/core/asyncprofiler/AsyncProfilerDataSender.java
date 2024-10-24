@@ -33,12 +33,14 @@ import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus;
 import org.apache.skywalking.apm.agent.core.remote.GRPCStreamServiceStatus;
 import org.apache.skywalking.apm.network.common.v3.Commands;
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerData;
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerMetaData;
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerTaskGrpc;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerCollectType;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerData;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerMetaData;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerTaskGrpc;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -84,16 +86,20 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         this.status = status;
     }
 
-    public void send(AsyncProfilerTask task, InputStream fileDataInputStream) throws IOException {
-        if (status != GRPCChannelStatus.CONNECTED || Objects.isNull(fileDataInputStream)) {
+    public void sendData(AsyncProfilerTask task, FileChannel channel) throws IOException {
+        if (status != GRPCChannelStatus.CONNECTED || Objects.isNull(channel) || !channel.isOpen()) {
             return;
         }
+
+        int size = Math.toIntExact(channel.size());
+
         final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
         StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
                 GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
         ).collect(new StreamObserver<Commands>() {
             @Override
             public void onNext(Commands value) {
+
             }
 
             @Override
@@ -115,20 +121,64 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         AsyncProfilerMetaData metaData = AsyncProfilerMetaData.newBuilder()
                 .setService(Config.Agent.SERVICE_NAME)
                 .setServiceInstance(Config.Agent.INSTANCE_NAME)
-                .setUploadTime(System.currentTimeMillis())
+                .setType(AsyncProfilerCollectType.PROFILING_SUCCESS)
+                .setContentSize(size)
                 .setTaskId(task.getTaskId())
                 .build();
         AsyncProfilerData asyncProfilerData = AsyncProfilerData.newBuilder().setMetaData(metaData).build();
         dataStreamObserver.onNext(asyncProfilerData);
-        // send bin data
-        byte[] data = new byte[DATA_CHUNK_SIZE];
-        int byteRead;
-        while ((byteRead = fileDataInputStream.read(data)) != -1) {
+        // todo wait for server ?
+        // Is it possible to upload jfr?
+        ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
+        while (channel.read(buf) > 0) {
+            buf.flip();
             asyncProfilerData = AsyncProfilerData.newBuilder()
-                    .setContent(ByteString.copyFrom(data, 0, byteRead))
+                    .setContent(ByteString.copyFrom(buf))
                     .build();
             dataStreamObserver.onNext(asyncProfilerData);
+            buf.clear();
         }
+        dataStreamObserver.onCompleted();
+
+        status.wait4Finish();
+    }
+
+    public void sendError(AsyncProfilerTask task, String errorMessage) {
+        if (status != GRPCChannelStatus.CONNECTED) {
+            return;
+        }
+        final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
+
+        StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
+                GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
+        ).collect(new StreamObserver<Commands>() {
+            @Override
+            public void onNext(Commands value) {
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                status.finished();
+                ServiceManager.INSTANCE.findService(GRPCChannelManager.class).reportError(t);
+            }
+
+            @Override
+            public void onCompleted() {
+                status.finished();
+            }
+        });
+        AsyncProfilerMetaData metaData = AsyncProfilerMetaData.newBuilder()
+                .setService(Config.Agent.SERVICE_NAME)
+                .setServiceInstance(Config.Agent.INSTANCE_NAME)
+                .setTaskId(task.getTaskId())
+                .setType(AsyncProfilerCollectType.EXECUTION_TASK_ERROR)
+                .setContentSize(0)
+                .build();
+        AsyncProfilerData asyncProfilerData = AsyncProfilerData.newBuilder()
+                .setMetaData(metaData)
+                .setErrorMessage(errorMessage)
+                .build();
+        dataStreamObserver.onNext(asyncProfilerData);
         dataStreamObserver.onCompleted();
         status.wait4Finish();
     }

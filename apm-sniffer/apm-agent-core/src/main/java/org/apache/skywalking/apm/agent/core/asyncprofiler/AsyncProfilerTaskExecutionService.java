@@ -18,8 +18,7 @@
 
 package org.apache.skywalking.apm.agent.core.asyncprofiler;
 
-import io.pyroscope.labels.io.pyroscope.PyroscopeAsyncProfiler;
-import io.pyroscope.one.profiler.AsyncProfiler;
+import one.profiler.AsyncProfiler;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
 import org.apache.skywalking.apm.agent.core.boot.DefaultNamedThreadFactory;
@@ -28,9 +27,9 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.nio.channels.FileChannel;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,7 +41,7 @@ public class AsyncProfilerTaskExecutionService implements BootService {
 
     private static final ILog LOGGER = LogManager.getLogger(AsyncProfilerTaskChannelService.class);
 
-    private static final AsyncProfiler ASYNC_PROFILER = PyroscopeAsyncProfiler.getAsyncProfiler();
+    private static final AsyncProfiler ASYNC_PROFILER = AsyncProfiler.getInstance();
 
     private static final String SUCCESS_RESULT = "Profiling started";
 
@@ -70,13 +69,14 @@ public class AsyncProfilerTaskExecutionService implements BootService {
                     LOGGER.info("AsyncProfilerTask already running");
                     return;
                 }
+
                 String result = task.start(ASYNC_PROFILER);
                 if (!SUCCESS_RESULT.equals(result)) {
-                    LOGGER.error("AsyncProfilerTask start fail result:" + result);
+                    stopWhenError(task, result);
                     return;
                 }
                 scheduledFuture = ASYNC_PROFILER_EXECUTOR.schedule(
-                        () -> stopAsyncProfile(task), task.getDuration(), TimeUnit.SECONDS
+                        () -> stopWhenSuccess(task), task.getDuration(), TimeUnit.SECONDS
                 );
             } catch (IOException e) {
                 LOGGER.error("AsyncProfilerTask executor error:" + e.getMessage(), e);
@@ -84,16 +84,25 @@ public class AsyncProfilerTaskExecutionService implements BootService {
         });
     }
 
-    private void stopAsyncProfile(AsyncProfilerTask task) {
+    private void stopWhenError(AsyncProfilerTask task, String errorMessage) {
+        LOGGER.error("AsyncProfilerTask start fail result:" + errorMessage);
+        AsyncProfilerDataSender dataSender = ServiceManager.INSTANCE.findService(AsyncProfilerDataSender.class);
+        dataSender.sendError(task, errorMessage);
+    }
+
+    private void stopWhenSuccess(AsyncProfilerTask task) {
+
         try {
-            // execute stop task
             File dumpFile = task.stop(ASYNC_PROFILER);
-            InputStream fileDataInputStream = Files.newInputStream(dumpFile.toPath());
-            // upload file
-            AsyncProfilerDataSender dataSender = ServiceManager.INSTANCE.findService(AsyncProfilerDataSender.class);
-            dataSender.send(task, fileDataInputStream);
-            // close inputStream
-            fileDataInputStream.close();
+            // stop task
+            try (FileInputStream fileInputStream = new FileInputStream(dumpFile)) {
+                // upload file
+                FileChannel channel = fileInputStream.getChannel();
+
+                AsyncProfilerDataSender dataSender = ServiceManager.INSTANCE.findService(AsyncProfilerDataSender.class);
+                dataSender.sendData(task, channel);
+            }
+
             if (!dumpFile.delete()) {
                 LOGGER.warn("delete async profiler dump file failed");
             }

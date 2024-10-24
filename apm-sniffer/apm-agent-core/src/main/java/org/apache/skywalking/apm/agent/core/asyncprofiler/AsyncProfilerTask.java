@@ -18,7 +18,7 @@
 
 package org.apache.skywalking.apm.agent.core.asyncprofiler;
 
-import io.pyroscope.one.profiler.AsyncProfiler;
+import one.profiler.AsyncProfiler;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
@@ -91,7 +91,7 @@ public class AsyncProfilerTask {
             Path tempFilePath = Paths.get(Config.AsyncProfiler.OUTPUT_PATH, taskId + getFileExtension());
             return Files.createFile(tempFilePath.toAbsolutePath());
         } else {
-            return Files.createTempFile(taskId + getFileExtension(), taskId + getFileExtension());
+            return Files.createTempFile(taskId, getFileExtension());
         }
     }
 

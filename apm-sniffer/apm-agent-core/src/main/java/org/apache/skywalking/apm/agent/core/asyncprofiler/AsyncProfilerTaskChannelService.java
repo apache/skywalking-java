@@ -31,8 +31,8 @@ import org.apache.skywalking.apm.agent.core.remote.GRPCChannelListener;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus;
 import org.apache.skywalking.apm.network.common.v3.Commands;
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfileTaskCommandQuery;
-import org.apache.skywalking.apm.network.language.asyncprofile.v3.AsyncProfilerTaskGrpc;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerTaskCommandQuery;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerTaskGrpc;
 import org.apache.skywalking.apm.util.RunnableWithExceptionProtection;
 
 import java.util.concurrent.Executors;
@@ -58,13 +58,14 @@ public class AsyncProfilerTaskChannelService implements BootService, Runnable, G
             // test start command and 10s after put stop command
             long lastCommandCreateTime = ServiceManager.INSTANCE
                     .findService(AsyncProfilerTaskExecutionService.class).getLastCommandCreateTime();
-            AsyncProfileTaskCommandQuery query = AsyncProfileTaskCommandQuery.newBuilder()
+
+            AsyncProfilerTaskCommandQuery query = AsyncProfilerTaskCommandQuery.newBuilder()
                     .setServiceInstance(Config.Agent.INSTANCE_NAME)
                     .setService(Config.Agent.SERVICE_NAME)
                     .setLastCommandTime(lastCommandCreateTime)
                     .build();
             Commands commands = asyncProfilerTaskBlockingStub.withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS)
-                    .getAsyncProfileTaskCommands(query);
+                    .getAsyncProfilerTaskCommands(query);
             ServiceManager.INSTANCE.findService(CommandService.class).receiveCommand(commands);
         }
     }

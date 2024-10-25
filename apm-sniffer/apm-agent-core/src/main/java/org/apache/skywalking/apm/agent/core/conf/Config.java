@@ -254,7 +254,7 @@ public class Config {
 
     public static class AsyncProfiler {
         /**
-         * If true, skywalking agent will enable profile when user create a new async profiler task.
+         * If true, Async Profiler will be enabled when user creates a new async profiler task.
          * Otherwise disable it.
          */
         public static boolean ACTIVE = true;

@@ -255,12 +255,12 @@ public class Config {
     public static class AsyncProfiler {
         /**
          * If true, Async Profiler will be enabled when user creates a new async profiler task.
-         * Otherwise disable it.
+         * Otherwise it is disabled.
          */
         public static boolean ACTIVE = true;
 
         /**
-         * Max monitor time(second), if async profiler monitor time out of limit, then stop it.
+         * Max execution time(second) for the Async Profiler. The task will be stopped even if a longer time is specified.
          * default 1h.
          */
         public static int MAX_DURATION = 600;

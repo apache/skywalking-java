@@ -136,7 +136,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
 
         // Is it possible to upload jfr?
         ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
-        while (isAbort[0] && channel.read(buf) > 0) {
+        while (!isAbort[0] && channel.read(buf) > 0) {
             buf.flip();
             asyncProfilerData = AsyncProfilerData.newBuilder()
                     .setContent(ByteString.copyFrom(buf))

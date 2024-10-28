@@ -83,4 +83,9 @@ public class SynchronousDispatcherInstrumentation extends ClassInstanceMethodsEn
     protected ClassMatch enhanceClass() {
         return NameMatch.byName(ENHANCE_CLASS);
     }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[]{"org.jboss.resteasy.core.Dispatcher"};
+    }
 }

@@ -86,7 +86,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         this.status = status;
     }
 
-    public void sendData(AsyncProfilerTask task, FileChannel channel) throws IOException {
+    public void sendData(AsyncProfilerTask task, FileChannel channel) throws IOException, InterruptedException {
         if (status != GRPCChannelStatus.CONNECTED || Objects.isNull(channel) || !channel.isOpen()) {
             return;
         }
@@ -128,7 +128,12 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
                 .build();
         AsyncProfilerData asyncProfilerData = AsyncProfilerData.newBuilder().setMetaData(metaData).build();
         dataStreamObserver.onNext(asyncProfilerData);
-        // todo wait for server ?
+        /**
+         * Wait briefly to see if the server can receive the jfr. If the server cannot receive it, onError will be triggered.
+         * Then we wait for a while (waiting for the server to send onError) and then decide whether to send the jfr file.
+         */
+        Thread.sleep(500);
+
         // Is it possible to upload jfr?
         ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
         while (isAbort[0] && channel.read(buf) > 0) {

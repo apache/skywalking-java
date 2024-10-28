@@ -92,7 +92,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         }
 
         int size = Math.toIntExact(channel.size());
-
+        boolean[] isAbort = new boolean[]{false};
         final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
         StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
                 GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
@@ -104,6 +104,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
 
             @Override
             public void onError(Throwable t) {
+                isAbort[0] = true;
                 status.finished();
                 if (LOGGER.isErrorEnable()) {
                     LOGGER.error(
@@ -130,7 +131,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         // todo wait for server ?
         // Is it possible to upload jfr?
         ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
-        while (channel.read(buf) > 0) {
+        while (isAbort[0] && channel.read(buf) > 0) {
             buf.flip();
             asyncProfilerData = AsyncProfilerData.newBuilder()
                     .setContent(ByteString.copyFrom(buf))
@@ -148,7 +149,6 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
             return;
         }
         final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
-
         StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
                 GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
         ).collect(new StreamObserver<Commands>() {

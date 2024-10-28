@@ -261,12 +261,14 @@ public class Config {
 
         /**
          * Max execution time(second) for the Async Profiler. The task will be stopped even if a longer time is specified.
-         * default 1h.
+         * default 10min.
          */
         public static int MAX_DURATION = 600;
 
         /**
-         * Path for the JFR outputs from the Async profiler
+         * Path for the JFR outputs from the Async Profiler.
+         * If the parameter is not empty, the file will be created in the specified directory,
+         * otherwise the Files.createTemp method will be used to create the file.
          */
         public static String OUTPUT_PATH = "";
     }

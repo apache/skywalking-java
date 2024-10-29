@@ -20,6 +20,8 @@ package org.apache.skywalking.apm.agent.core.asyncprofiler;
 
 import com.google.protobuf.ByteString;
 import io.grpc.Channel;
+import io.grpc.stub.ClientCallStreamObserver;
+import io.grpc.stub.ClientResponseObserver;
 import io.grpc.stub.StreamObserver;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
@@ -32,7 +34,7 @@ import org.apache.skywalking.apm.agent.core.remote.GRPCChannelListener;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus;
 import org.apache.skywalking.apm.agent.core.remote.GRPCStreamServiceStatus;
-import org.apache.skywalking.apm.network.common.v3.Commands;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerCollectMessage;
 import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerCollectType;
 import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerData;
 import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerMetaData;
@@ -92,25 +94,44 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         }
 
         int size = Math.toIntExact(channel.size());
-        boolean[] isAbort = new boolean[]{false};
         final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
         StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
                 GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
-        ).collect(new StreamObserver<Commands>() {
-            @Override
-            public void onNext(Commands value) {
+        ).collect(new ClientResponseObserver<AsyncProfilerData, AsyncProfilerCollectMessage>() {
+            ClientCallStreamObserver<AsyncProfilerData> requestStream;
 
+            @Override
+            public void beforeStart(ClientCallStreamObserver<AsyncProfilerData> requestStream) {
+                this.requestStream = requestStream;
+            }
+
+            @Override
+            public void onNext(AsyncProfilerCollectMessage value) {
+                if (!AsyncProfilerCollectType.TERMINATED_BY_OVERSIZE.equals(value.getType())) {
+                    ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
+                    try {
+                        while (channel.read(buf) > 0) {
+                            buf.flip();
+                            AsyncProfilerData asyncProfilerData = AsyncProfilerData.newBuilder()
+                                    .setContent(ByteString.copyFrom(buf))
+                                    .build();
+                            requestStream.onNext(asyncProfilerData);
+                            buf.clear();
+                        }
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to read JFR file and failed to upload to oap", e);
+                    }
+                } else {
+                    LOGGER.warn("JFR is too large to be received by the oap server");
+                }
+
+                requestStream.onCompleted();
             }
 
             @Override
             public void onError(Throwable t) {
-                isAbort[0] = true;
                 status.finished();
-                if (LOGGER.isErrorEnable()) {
-                    LOGGER.error(
-                            t, "Send async profiler task data to collector fail with a grpc internal exception."
-                    );
-                }
+                LOGGER.error(t, "Send async profiler task data to collector fail with a grpc internal exception.");
                 ServiceManager.INSTANCE.findService(GRPCChannelManager.class).reportError(t);
             }
 
@@ -128,23 +149,6 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
                 .build();
         AsyncProfilerData asyncProfilerData = AsyncProfilerData.newBuilder().setMetaData(metaData).build();
         dataStreamObserver.onNext(asyncProfilerData);
-        /**
-         * Wait briefly to see if the server can receive the jfr. If the server cannot receive it, onError will be triggered.
-         * Then we wait for a while (waiting for the server to send onError) and then decide whether to send the jfr file.
-         */
-        Thread.sleep(500);
-
-        // Is it possible to upload jfr?
-        ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
-        while (!isAbort[0] && channel.read(buf) > 0) {
-            buf.flip();
-            asyncProfilerData = AsyncProfilerData.newBuilder()
-                    .setContent(ByteString.copyFrom(buf))
-                    .build();
-            dataStreamObserver.onNext(asyncProfilerData);
-            buf.clear();
-        }
-        dataStreamObserver.onCompleted();
 
         status.wait4Finish();
     }
@@ -156,9 +160,9 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
         StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
                 GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
-        ).collect(new StreamObserver<Commands>() {
+        ).collect(new StreamObserver<AsyncProfilerCollectMessage>() {
             @Override
-            public void onNext(Commands value) {
+            public void onNext(AsyncProfilerCollectMessage value) {
             }
 
             @Override

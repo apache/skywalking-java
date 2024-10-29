@@ -34,11 +34,11 @@ import org.apache.skywalking.apm.agent.core.remote.GRPCChannelListener;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus;
 import org.apache.skywalking.apm.agent.core.remote.GRPCStreamServiceStatus;
-import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerCollectMessage;
-import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerCollectType;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerCollectionResponse;
 import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerData;
 import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerMetaData;
 import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilerTaskGrpc;
+import org.apache.skywalking.apm.network.language.asyncprofiler.v10.AsyncProfilingStatus;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -97,7 +97,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
         StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
                 GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
-        ).collect(new ClientResponseObserver<AsyncProfilerData, AsyncProfilerCollectMessage>() {
+        ).collect(new ClientResponseObserver<AsyncProfilerData, AsyncProfilerCollectionResponse>() {
             ClientCallStreamObserver<AsyncProfilerData> requestStream;
 
             @Override
@@ -106,8 +106,8 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
             }
 
             @Override
-            public void onNext(AsyncProfilerCollectMessage value) {
-                if (!AsyncProfilerCollectType.TERMINATED_BY_OVERSIZE.equals(value.getType())) {
+            public void onNext(AsyncProfilerCollectionResponse value) {
+                if (!AsyncProfilingStatus.TERMINATED_BY_OVERSIZE.equals(value.getType())) {
                     ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
                     try {
                         while (channel.read(buf) > 0) {
@@ -143,7 +143,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         AsyncProfilerMetaData metaData = AsyncProfilerMetaData.newBuilder()
                 .setService(Config.Agent.SERVICE_NAME)
                 .setServiceInstance(Config.Agent.INSTANCE_NAME)
-                .setType(AsyncProfilerCollectType.PROFILING_SUCCESS)
+                .setType(AsyncProfilingStatus.PROFILING_SUCCESS)
                 .setContentSize(size)
                 .setTaskId(task.getTaskId())
                 .build();
@@ -160,9 +160,9 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
         final GRPCStreamServiceStatus status = new GRPCStreamServiceStatus(false);
         StreamObserver<AsyncProfilerData> dataStreamObserver = asyncProfilerTaskStub.withDeadlineAfter(
                 GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS
-        ).collect(new StreamObserver<AsyncProfilerCollectMessage>() {
+        ).collect(new StreamObserver<AsyncProfilerCollectionResponse>() {
             @Override
-            public void onNext(AsyncProfilerCollectMessage value) {
+            public void onNext(AsyncProfilerCollectionResponse value) {
             }
 
             @Override
@@ -180,7 +180,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
                 .setService(Config.Agent.SERVICE_NAME)
                 .setServiceInstance(Config.Agent.INSTANCE_NAME)
                 .setTaskId(task.getTaskId())
-                .setType(AsyncProfilerCollectType.EXECUTION_TASK_ERROR)
+                .setType(AsyncProfilingStatus.EXECUTION_TASK_ERROR)
                 .setContentSize(0)
                 .build();
         AsyncProfilerData asyncProfilerData = AsyncProfilerData.newBuilder()

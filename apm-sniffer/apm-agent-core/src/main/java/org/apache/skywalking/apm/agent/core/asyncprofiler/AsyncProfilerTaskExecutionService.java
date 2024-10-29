@@ -133,6 +133,8 @@ public class AsyncProfilerTaskExecutionService implements BootService {
 
     @Override
     public void shutdown() throws Throwable {
+        scheduledFuture.cancel(true);
         ASYNC_PROFILER_EXECUTOR.shutdown();
+        scheduledFuture = null;
     }
 }

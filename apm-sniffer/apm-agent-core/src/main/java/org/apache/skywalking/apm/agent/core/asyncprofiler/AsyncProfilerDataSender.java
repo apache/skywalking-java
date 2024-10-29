@@ -107,7 +107,9 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
 
             @Override
             public void onNext(AsyncProfilerCollectionResponse value) {
-                if (!AsyncProfilingStatus.TERMINATED_BY_OVERSIZE.equals(value.getType())) {
+                if (AsyncProfilingStatus.TERMINATED_BY_OVERSIZE.equals(value.getType())) {
+                    LOGGER.warn("JFR is too large to be received by the oap server");
+                } else {
                     ByteBuffer buf = ByteBuffer.allocateDirect(DATA_CHUNK_SIZE);
                     try {
                         while (channel.read(buf) > 0) {
@@ -121,8 +123,6 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
                     } catch (IOException e) {
                         LOGGER.error("Failed to read JFR file and failed to upload to oap", e);
                     }
-                } else {
-                    LOGGER.warn("JFR is too large to be received by the oap server");
                 }
 
                 requestStream.onCompleted();

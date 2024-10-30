@@ -9,6 +9,7 @@ Release Notes.
 * Add agent self-observability.
 * Fix intermittent ClassCircularityError by preloading ThreadLocalRandom since ByteBuddy 1.12.11
 * Add witness class/method for resteasy-server plugin(v3/v4/v6)
+* Add async-profiler feature for performance analysis 
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

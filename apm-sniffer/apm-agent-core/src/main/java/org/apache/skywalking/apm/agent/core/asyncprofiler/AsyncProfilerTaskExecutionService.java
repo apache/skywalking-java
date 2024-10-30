@@ -43,7 +43,7 @@ public class AsyncProfilerTaskExecutionService implements BootService {
 
     private static final AsyncProfiler ASYNC_PROFILER = AsyncProfiler.getInstance();
 
-    private static final String SUCCESS_RESULT = "Profiling started";
+    private static final String SUCCESS_RESULT = "Profiling started\n";
 
     // profile executor thread pool, only running one thread
     private static final ScheduledExecutorService ASYNC_PROFILER_EXECUTOR = Executors.newSingleThreadScheduledExecutor(
@@ -133,8 +133,10 @@ public class AsyncProfilerTaskExecutionService implements BootService {
 
     @Override
     public void shutdown() throws Throwable {
-        scheduledFuture.cancel(true);
         ASYNC_PROFILER_EXECUTOR.shutdown();
-        scheduledFuture = null;
+        if (Objects.nonNull(scheduledFuture)) {
+            scheduledFuture.cancel(true);
+            scheduledFuture = null;
+        }
     }
 }

@@ -58,8 +58,7 @@ public class AsyncProfilerTask {
     private static String execute(AsyncProfiler asyncProfiler, String args)
             throws IllegalArgumentException, IOException {
         LOGGER.info("async profiler execute args:{}", args);
-        String result = asyncProfiler.execute(args);
-        return result.trim();
+        return asyncProfiler.execute(args);
     }
 
     /**

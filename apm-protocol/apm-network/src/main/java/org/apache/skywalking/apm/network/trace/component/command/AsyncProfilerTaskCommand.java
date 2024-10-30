@@ -28,9 +28,22 @@ public class AsyncProfilerTaskCommand extends BaseCommand implements Serializabl
     public static final Deserializable<AsyncProfilerTaskCommand> DESERIALIZER = new AsyncProfilerTaskCommand("", "", 0, null, "", 0);
     public static final String NAME = "AsyncProfilerTaskQuery";
 
+    /**
+     * async-profiler taskId
+     */
     private final String taskId;
+    /**
+     * run profiling for duration (second)
+     */
     private final int duration;
+    /**
+     * User input parameters
+     * @see <a href="https://github.com/async-profiler/async-profiler/blob/master/src/arguments.cpp#L44">async-profiler argument</a>
+     */
     private final String execArgs;
+    /**
+     * task create time
+     */
     private final long createTime;
 
     public AsyncProfilerTaskCommand(String serialNumber, String taskId, int duration,

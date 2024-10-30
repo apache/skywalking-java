@@ -19,6 +19,8 @@
 package org.apache.skywalking.apm.agent.core.asyncprofiler;
 
 import io.grpc.Channel;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
 import org.apache.skywalking.apm.agent.core.boot.DefaultNamedThreadFactory;
@@ -49,24 +51,38 @@ public class AsyncProfilerTaskChannelService implements BootService, Runnable, G
     private volatile GRPCChannelStatus status = GRPCChannelStatus.DISCONNECT;
     private volatile AsyncProfilerTaskGrpc.AsyncProfilerTaskBlockingStub asyncProfilerTaskBlockingStub;
 
-    // query task list schedule
-    private volatile ScheduledFuture<?> getTaskListFuture;
+    // query task schedule
+    private volatile ScheduledFuture<?> getTaskFuture;
 
     @Override
     public void run() {
         if (status == GRPCChannelStatus.CONNECTED) {
-            // test start command and 10s after put stop command
-            long lastCommandCreateTime = ServiceManager.INSTANCE
-                    .findService(AsyncProfilerTaskExecutionService.class).getLastCommandCreateTime();
+            try {
+                // test start command and 10s after put stop command
+                long lastCommandCreateTime = ServiceManager.INSTANCE
+                        .findService(AsyncProfilerTaskExecutionService.class).getLastCommandCreateTime();
 
-            AsyncProfilerTaskCommandQuery query = AsyncProfilerTaskCommandQuery.newBuilder()
-                    .setServiceInstance(Config.Agent.INSTANCE_NAME)
-                    .setService(Config.Agent.SERVICE_NAME)
-                    .setLastCommandTime(lastCommandCreateTime)
-                    .build();
-            Commands commands = asyncProfilerTaskBlockingStub.withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS)
-                    .getAsyncProfilerTaskCommands(query);
-            ServiceManager.INSTANCE.findService(CommandService.class).receiveCommand(commands);
+                AsyncProfilerTaskCommandQuery query = AsyncProfilerTaskCommandQuery.newBuilder()
+                        .setServiceInstance(Config.Agent.INSTANCE_NAME)
+                        .setService(Config.Agent.SERVICE_NAME)
+                        .setLastCommandTime(lastCommandCreateTime)
+                        .build();
+                Commands commands = asyncProfilerTaskBlockingStub.withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS)
+                        .getAsyncProfilerTaskCommands(query);
+                ServiceManager.INSTANCE.findService(CommandService.class).receiveCommand(commands);
+            } catch (Throwable t) {
+                if (!(t instanceof StatusRuntimeException)) {
+                    LOGGER.error(t, "Query async-profiler task from backend fail.");
+                    return;
+                }
+                final StatusRuntimeException statusRuntimeException = (StatusRuntimeException) t;
+                if (statusRuntimeException.getStatus().getCode() == Status.Code.UNIMPLEMENTED) {
+                    LOGGER.warn("Backend doesn't support async-profiler, async-profiler will be disabled");
+                    if (getTaskFuture != null) {
+                        getTaskFuture.cancel(true);
+                    }
+                }
+            }
         }
     }
 
@@ -90,7 +106,7 @@ public class AsyncProfilerTaskChannelService implements BootService, Runnable, G
     public void boot() throws Throwable {
 
         if (Config.AsyncProfiler.ACTIVE) {
-            getTaskListFuture = Executors.newSingleThreadScheduledExecutor(
+            getTaskFuture = Executors.newSingleThreadScheduledExecutor(
                     new DefaultNamedThreadFactory("AsyncProfilerGetTaskService")
             ).scheduleWithFixedDelay(
                     new RunnableWithExceptionProtection(
@@ -108,8 +124,8 @@ public class AsyncProfilerTaskChannelService implements BootService, Runnable, G
 
     @Override
     public void shutdown() throws Throwable {
-        if (getTaskListFuture != null) {
-            getTaskListFuture.cancel(true);
+        if (getTaskFuture != null) {
+            getTaskFuture.cancel(true);
         }
     }
 }

@@ -39,7 +39,7 @@ public class AsyncProfilerTask {
     private String taskId;
     /**
      * User input parameters
-     * @see <a href="https://github.com/async-profiler/async-profiler/blob/v1.8.4/src/arguments.cpp#L49">async-profiler argument</a>
+     * @see <a href="https://github.com/async-profiler/async-profiler/blob/master/src/arguments.cpp#L44">async-profiler argument</a>
      */
     private String execArgs;
     /**

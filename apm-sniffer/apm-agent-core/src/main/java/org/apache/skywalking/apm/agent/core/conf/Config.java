@@ -254,8 +254,9 @@ public class Config {
 
     public static class AsyncProfiler {
         /**
-         * If true, Async Profiler will be enabled when user creates a new async profiler task.
-         * Otherwise it is disabled.
+         * If true, async profiler will be enabled when user creates a new async profiler task.
+         * If false, it will be disabled.
+         * The default value is true.
          */
         public static boolean ACTIVE = true;
 

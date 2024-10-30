@@ -46,7 +46,7 @@ public class AsyncProfilerTaskExecutionService implements BootService {
     private static final String SUCCESS_RESULT = "Profiling started\n";
 
     // profile executor thread pool, only running one thread
-    private ScheduledExecutorService asyncProfilerExecutor;
+    private volatile ScheduledExecutorService asyncProfilerExecutor;
 
     // last command create time, use to next query task list
     private volatile long lastCommandCreateTime = -1;

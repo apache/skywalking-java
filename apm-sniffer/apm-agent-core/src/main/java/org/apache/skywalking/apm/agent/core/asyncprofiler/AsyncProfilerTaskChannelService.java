@@ -72,7 +72,7 @@ public class AsyncProfilerTaskChannelService implements BootService, Runnable, G
                 ServiceManager.INSTANCE.findService(CommandService.class).receiveCommand(commands);
             } catch (Throwable t) {
                 if (!(t instanceof StatusRuntimeException)) {
-                    LOGGER.error(t, "Query async-profiler task from backend fail.");
+                    LOGGER.error(t, "fail to query async-profiler task from backend");
                     return;
                 }
                 final StatusRuntimeException statusRuntimeException = (StatusRuntimeException) t;

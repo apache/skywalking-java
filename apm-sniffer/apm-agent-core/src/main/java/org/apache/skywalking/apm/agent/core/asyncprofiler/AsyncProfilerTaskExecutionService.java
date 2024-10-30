@@ -84,7 +84,7 @@ public class AsyncProfilerTaskExecutionService implements BootService {
     }
 
     private void stopWhenError(AsyncProfilerTask task, String errorMessage) {
-        LOGGER.error("AsyncProfilerTask fails to start: {}"， errorMessage);
+        LOGGER.error("AsyncProfilerTask fails to start: " + errorMessage);
         AsyncProfilerDataSender dataSender = ServiceManager.INSTANCE.findService(AsyncProfilerDataSender.class);
         dataSender.sendError(task, errorMessage);
     }

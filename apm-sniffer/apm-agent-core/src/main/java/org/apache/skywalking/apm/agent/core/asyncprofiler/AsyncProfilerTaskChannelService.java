@@ -76,7 +76,7 @@ public class AsyncProfilerTaskChannelService implements BootService, Runnable, G
                     return;
                 }
                 final StatusRuntimeException statusRuntimeException = (StatusRuntimeException) t;
-                if (statusRuntimeException.getStatus().getCode() == Status.Code.UNIMPLEMENTED) {
+                if (Status.Code.UNIMPLEMENTED.equals(statusRuntimeException.getStatus().getCode())) {
                     LOGGER.warn("Backend doesn't support async-profiler, async-profiler will be disabled");
                     if (getTaskFuture != null) {
                         getTaskFuture.cancel(true);

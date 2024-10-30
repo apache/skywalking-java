@@ -272,6 +272,11 @@ public class Config {
          * otherwise the Files.createTemp method will be used to create the file.
          */
         public static String OUTPUT_PATH = "";
+
+        /**
+         * The size of the chunk when uploading jfr
+         */
+        public static final int DATA_CHUNK_SIZE = 1024 * 1024;
     }
 
     public static class Meter {

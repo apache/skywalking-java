@@ -41,13 +41,12 @@ public class AsyncProfilerTaskExecutionService implements BootService {
 
     private static final ILog LOGGER = LogManager.getLogger(AsyncProfilerTaskChannelService.class);
 
-    private static final AsyncProfiler ASYNC_PROFILER = AsyncProfiler.getInstance();
+    private AsyncProfiler asyncProfilerInstance;
 
     private static final String SUCCESS_RESULT = "Profiling started\n";
 
     // profile executor thread pool, only running one thread
-    private static final ScheduledExecutorService ASYNC_PROFILER_EXECUTOR = Executors.newSingleThreadScheduledExecutor(
-            new DefaultNamedThreadFactory("ASYNC-PROFILING-TASK"));
+    private ScheduledExecutorService asyncProfilerExecutor;
 
     // last command create time, use to next query task list
     private volatile long lastCommandCreateTime = -1;
@@ -63,19 +62,19 @@ public class AsyncProfilerTaskExecutionService implements BootService {
         lastCommandCreateTime = task.getCreateTime();
         LOGGER.info("add async profiler task: {}", task.getTaskId());
         // add task to list
-        ASYNC_PROFILER_EXECUTOR.execute(() -> {
+        getAsyncProfilerExecutor().execute(() -> {
             try {
                 if (Objects.nonNull(scheduledFuture) && !scheduledFuture.isDone()) {
                     LOGGER.info("AsyncProfilerTask already running");
                     return;
                 }
 
-                String result = task.start(ASYNC_PROFILER);
+                String result = task.start(getAsyncProfiler());
                 if (!SUCCESS_RESULT.equals(result)) {
                     stopWhenError(task, result);
                     return;
                 }
-                scheduledFuture = ASYNC_PROFILER_EXECUTOR.schedule(
+                scheduledFuture = getAsyncProfilerExecutor().schedule(
                         () -> stopWhenSuccess(task), task.getDuration(), TimeUnit.SECONDS
                 );
             } catch (IOException e) {
@@ -93,7 +92,7 @@ public class AsyncProfilerTaskExecutionService implements BootService {
     private void stopWhenSuccess(AsyncProfilerTask task) {
 
         try {
-            File dumpFile = task.stop(ASYNC_PROFILER);
+            File dumpFile = task.stop(getAsyncProfiler());
             // stop task
             try (FileInputStream fileInputStream = new FileInputStream(dumpFile)) {
                 // upload file
@@ -133,10 +132,29 @@ public class AsyncProfilerTaskExecutionService implements BootService {
 
     @Override
     public void shutdown() throws Throwable {
-        ASYNC_PROFILER_EXECUTOR.shutdown();
+        getAsyncProfilerExecutor().shutdown();
         if (Objects.nonNull(scheduledFuture)) {
             scheduledFuture.cancel(true);
             scheduledFuture = null;
         }
+    }
+
+    private AsyncProfiler getAsyncProfiler() {
+        if (asyncProfilerInstance == null) {
+            asyncProfilerInstance = AsyncProfiler.getInstance();
+        }
+        return asyncProfilerInstance;
+    }
+
+    private ScheduledExecutorService getAsyncProfilerExecutor() {
+        if (asyncProfilerExecutor == null) {
+            synchronized (this) {
+                if (asyncProfilerExecutor == null) {
+                    asyncProfilerExecutor = Executors.newSingleThreadScheduledExecutor(
+                            new DefaultNamedThreadFactory("ASYNC-PROFILING-TASK"));
+                }
+            }
+        }
+        return asyncProfilerExecutor;
     }
 }

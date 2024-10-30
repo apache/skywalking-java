@@ -29,7 +29,6 @@ import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
-import org.apache.skywalking.apm.agent.core.profile.ProfileSnapshotSender;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelListener;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.agent.core.remote.GRPCChannelStatus;
@@ -46,12 +45,12 @@ import java.nio.channels.FileChannel;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import static org.apache.skywalking.apm.agent.core.conf.Config.AsyncProfiler.DATA_CHUNK_SIZE;
 import static org.apache.skywalking.apm.agent.core.conf.Config.Collector.GRPC_UPSTREAM_TIMEOUT;
 
 @DefaultImplementor
 public class AsyncProfilerDataSender implements BootService, GRPCChannelListener {
-    private static final ILog LOGGER = LogManager.getLogger(ProfileSnapshotSender.class);
-    private static final int DATA_CHUNK_SIZE = 1024 * 1024;
+    private static final ILog LOGGER = LogManager.getLogger(AsyncProfilerDataSender.class);
 
     private volatile GRPCChannelStatus status = GRPCChannelStatus.DISCONNECT;
 
@@ -168,6 +167,7 @@ public class AsyncProfilerDataSender implements BootService, GRPCChannelListener
             @Override
             public void onError(Throwable t) {
                 status.finished();
+                LOGGER.error(t, "Send async profiler task execute error fail with a grpc internal exception.");
                 ServiceManager.INSTANCE.findService(GRPCChannelManager.class).reportError(t);
             }
 

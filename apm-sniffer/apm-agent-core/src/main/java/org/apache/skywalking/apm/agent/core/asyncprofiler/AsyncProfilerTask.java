@@ -38,8 +38,8 @@ public class AsyncProfilerTask {
      */
     private String taskId;
     /**
-     * User input parameters
-     * @see <a href="https://github.com/async-profiler/async-profiler/blob/master/src/arguments.cpp#L44">async-profiler argument</a>
+     * async profiler optional extended parameters
+     * @see org.apache.skywalking.apm.network.trace.component.command.AsyncProfilerTaskCommand
      */
     private String execArgs;
     /**

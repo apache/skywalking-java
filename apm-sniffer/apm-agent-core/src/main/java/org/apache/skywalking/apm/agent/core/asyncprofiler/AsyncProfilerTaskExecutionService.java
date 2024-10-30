@@ -103,7 +103,7 @@ public class AsyncProfilerTaskExecutionService implements BootService {
             }
 
             if (!dumpFile.delete()) {
-                LOGGER.warn("delete async profiler dump file failed");
+                LOGGER.warn("Fail to delete the dump file of async profiler.");
             }
         } catch (Exception e) {
             LOGGER.error("stop async profiler task error", e);

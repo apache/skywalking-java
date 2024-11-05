@@ -53,6 +53,8 @@
         <shade.org.slf4j.target>${shade.package}.${shade.org.slf4j.source}</shade.org.slf4j.target>
         <ststem-rules.version>1.18.0</ststem-rules.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <shade.one.profiler.source>one.profiler</shade.one.profiler.source>
+        <shade.one.profiler.target>${shade.package}.${shade.one.profiler.source}</shade.one.profiler.target>
     </properties>
 
     <dependencies>
@@ -226,6 +228,7 @@
                                     <exclude>org.checkerframework:checker-compat-qual:jar:</exclude>
                                     <exclude>org.checkerframework:checker-qual:jar:</exclude>
                                     <exclude>org.codehaus.mojo:animal-sniffer-annotations:jar:</exclude>
+<!--                                    <exclude>tools.profiler:async-profiler:jar:</exclude>-->
                                 </excludes>
                             </artifactSet>
                             <relocations>
@@ -252,6 +255,10 @@
                                 <relocation>
                                     <pattern>${shade.org.slf4j.source}</pattern>
                                     <shadedPattern>${shade.org.slf4j.target}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>${shade.one.profiler.source}</pattern>
+                                    <shadedPattern>${shade.one.profiler.target}</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>

@@ -38,8 +38,6 @@
         <can.retransform.classes>true</can.retransform.classes>
         <shade.net.bytebuddy.source>net.bytebuddy</shade.net.bytebuddy.source>
         <shade.net.bytebuddy.target>${shade.package}.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
-        <shade.one.profiler.source>one.profiler</shade.one.profiler.source>
-        <shade.one.profiler.target>${shade.package}.${shade.one.profiler.source}</shade.one.profiler.target>
     </properties>
 
     <dependencies>
@@ -94,16 +92,13 @@
                                     <exclude>org.codehaus.mojo:animal-sniffer-annotations</exclude>
                                     <exclude>io.perfmark:*</exclude>
                                     <exclude>org.slf4j:*</exclude>
+                                    <exclude>tools.profiler:async-profiler</exclude>
                                 </excludes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>${shade.net.bytebuddy.source}</pattern>
                                     <shadedPattern>${shade.net.bytebuddy.target}</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>${shade.one.profiler.source}</pattern>
-                                    <shadedPattern>${shade.one.profiler.target}</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>

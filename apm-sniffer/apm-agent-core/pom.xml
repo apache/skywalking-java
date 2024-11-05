@@ -228,7 +228,6 @@
                                     <exclude>org.checkerframework:checker-compat-qual:jar:</exclude>
                                     <exclude>org.checkerframework:checker-qual:jar:</exclude>
                                     <exclude>org.codehaus.mojo:animal-sniffer-annotations:jar:</exclude>
-<!--                                    <exclude>tools.profiler:async-profiler:jar:</exclude>-->
                                 </excludes>
                             </artifactSet>
                             <relocations>

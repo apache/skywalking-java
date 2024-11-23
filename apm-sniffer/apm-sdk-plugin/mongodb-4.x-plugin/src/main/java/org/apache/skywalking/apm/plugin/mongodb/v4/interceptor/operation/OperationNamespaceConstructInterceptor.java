@@ -27,8 +27,7 @@ public class OperationNamespaceConstructInterceptor implements InstanceConstruct
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         MongoNamespace mongoNamespace = (MongoNamespace) allArguments[0];
-        String databaseName = mongoNamespace.getDatabaseName();
-        objInst.setSkyWalkingDynamicField(databaseName);
+        objInst.setSkyWalkingDynamicField(mongoNamespace);
     }
 
 }

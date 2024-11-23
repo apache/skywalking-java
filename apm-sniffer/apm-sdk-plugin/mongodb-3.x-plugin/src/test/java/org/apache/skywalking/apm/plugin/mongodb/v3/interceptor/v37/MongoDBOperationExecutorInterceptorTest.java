@@ -149,9 +149,10 @@ public class MongoDBOperationExecutorInterceptorTest {
         assertThat(span.getOperationName(), is("MongoDB/AggregateOperation"));
         assertThat(SpanHelper.getComponentId(span), is(42));
         List<TagValuePair> tags = SpanHelper.getTags(span);
-        assertThat(tags.get(1).getValue(), is("test.user"));
-        assertThat(tags.get(2).getValue(), is("{\"$match\": {\"name\": \"by\"}},"));
         assertThat(tags.get(0).getValue(), is("MongoDB"));
+        assertThat(tags.get(1).getValue(), is("test"));
+        assertThat(tags.get(2).getValue(), is("user"));
+        assertThat(tags.get(3).getValue(), is("{\"$match\": {\"name\": \"by\"}},"));
         assertThat(span.isExit(), is(true));
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.DB));
     }
@@ -160,9 +161,10 @@ public class MongoDBOperationExecutorInterceptorTest {
         assertThat(span.getOperationName(), is("MongoDB/FindOperation"));
         assertThat(SpanHelper.getComponentId(span), is(42));
         List<TagValuePair> tags = SpanHelper.getTags(span);
-        assertThat(tags.get(1).getValue(), is("test.user"));
-        assertThat(tags.get(2).getValue(), is("{\"name\": \"by\"}"));
         assertThat(tags.get(0).getValue(), is("MongoDB"));
+        assertThat(tags.get(1).getValue(), is("test"));
+        assertThat(tags.get(2).getValue(), is("user"));
+        assertThat(tags.get(3).getValue(), is("{\"name\": \"by\"}"));
         assertThat(span.isExit(), is(true));
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.DB));
     }

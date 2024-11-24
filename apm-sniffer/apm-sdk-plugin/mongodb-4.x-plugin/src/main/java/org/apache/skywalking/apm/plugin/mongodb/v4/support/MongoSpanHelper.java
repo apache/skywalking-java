@@ -38,9 +38,10 @@ public class MongoSpanHelper {
 
     /**
      * createExitSpan
+     *
      * @param executeMethod executeMethod
-     * @param remotePeer remotePeer
-     * @param operation operation
+     * @param remotePeer    remotePeer
+     * @param operation     operation
      */
     public static void createExitSpan(String executeMethod, String remotePeer, Object operation) {
         AbstractSpan span = ContextManager.createExitSpan(
@@ -50,13 +51,15 @@ public class MongoSpanHelper {
         SpanLayer.asDB(span);
 
         if (operation instanceof EnhancedInstance) {
-            Object namespaceObj = ((EnhancedInstance) operation).getSkyWalkingDynamicField();
-            if (namespaceObj != null) {
-                MongoNamespace namespace = (MongoNamespace) namespaceObj;
+            Object dynamicFieldValue = ((EnhancedInstance) operation).getSkyWalkingDynamicField();
+            if (dynamicFieldValue != null && dynamicFieldValue instanceof MongoNamespace) {
+                MongoNamespace namespace = (MongoNamespace) dynamicFieldValue;
                 Tags.DB_INSTANCE.set(span, namespace.getDatabaseName());
                 if (StringUtil.isNotEmpty(namespace.getCollectionName())) {
                     span.tag(DB_COLLECTION_TAG, namespace.getCollectionName());
                 }
+            } else if (dynamicFieldValue != null && dynamicFieldValue instanceof String) {
+                Tags.DB_INSTANCE.set(span, (String) dynamicFieldValue);
             }
         }
 

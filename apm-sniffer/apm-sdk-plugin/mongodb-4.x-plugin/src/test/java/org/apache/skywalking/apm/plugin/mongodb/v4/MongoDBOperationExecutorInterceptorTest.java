@@ -18,15 +18,13 @@
 
 package org.apache.skywalking.apm.plugin.mongodb.v4;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-
+import com.mongodb.MongoNamespace;
+import com.mongodb.ReadConcern;
+import com.mongodb.client.internal.OperationExecutor;
 import com.mongodb.internal.operation.AggregateOperation;
+import com.mongodb.internal.operation.CreateCollectionOperation;
+import com.mongodb.internal.operation.FindOperation;
+import com.mongodb.internal.operation.WriteOperation;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -58,11 +56,16 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import com.mongodb.MongoNamespace;
-import com.mongodb.ReadConcern;
-import com.mongodb.client.internal.OperationExecutor;
-import com.mongodb.internal.operation.FindOperation;
-import com.mongodb.internal.operation.WriteOperation;
+
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(TracingSegmentRunner.class)
 public class MongoDBOperationExecutorInterceptorTest {
@@ -137,6 +140,24 @@ public class MongoDBOperationExecutorInterceptorTest {
     }
 
     @Test
+    public void testCreateCollectionOperationIntercept() throws Throwable {
+        CreateCollectionOperation createCollectionOperation = new CreateCollectionOperation("test", "user");
+        CreateCollectionOperation enhancedInstanceForCreateCollectionOperation = mock(CreateCollectionOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
+        when(((EnhancedInstance) enhancedInstanceForCreateCollectionOperation).getSkyWalkingDynamicField()).thenReturn("test");
+        when(enhancedInstanceForCreateCollectionOperation.getCollectionName()).thenReturn("user");
+
+        Object[] arguments = {enhancedInstanceForCreateCollectionOperation};
+        Class[] argumentTypes = {createCollectionOperation.getClass()};
+        interceptor.beforeMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
+        interceptor.afterMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
+
+        MatcherAssert.assertThat(segmentStorage.getTraceSegments().size(), is(1));
+        TraceSegment traceSegment = segmentStorage.getTraceSegments().get(0);
+        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(traceSegment);
+        assertMongoCreateCollectionOperationSpan(spans.get(0));
+    }
+
+    @Test
     public void testIntercept() throws Throwable {
         interceptor.beforeMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
         interceptor.afterMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
@@ -185,7 +206,7 @@ public class MongoDBOperationExecutorInterceptorTest {
     }
 
     private void assertMongoFindOperationSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is("MongoDB/FindOperation"));
+        assertThat(span.getOperationName(), startsWith("MongoDB/FindOperation"));
         assertThat(SpanHelper.getComponentId(span), is(42));
         List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.get(0).getValue(), is("MongoDB"));
@@ -196,8 +217,19 @@ public class MongoDBOperationExecutorInterceptorTest {
         assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.DB));
     }
 
+    private void assertMongoCreateCollectionOperationSpan(AbstractTracingSpan span) {
+        assertThat(span.getOperationName(), startsWith("MongoDB/CreateCollectionOperation"));
+        assertThat(SpanHelper.getComponentId(span), is(42));
+        List<TagValuePair> tags = SpanHelper.getTags(span);
+        assertThat(tags.get(0).getValue(), is("MongoDB"));
+        assertThat(tags.get(1).getValue(), is("test"));
+        assertThat(tags.get(2).getValue(), is("user"));
+        assertThat(span.isExit(), is(true));
+        assertThat(SpanHelper.getLayer(span), CoreMatchers.is(SpanLayer.DB));
+    }
+
     private void assertMongoAggregateOperationSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is("MongoDB/AggregateOperation"));
+        assertThat(span.getOperationName(), startsWith("MongoDB/AggregateOperation"));
         assertThat(SpanHelper.getComponentId(span), is(42));
         List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.get(0).getValue(), is("MongoDB"));

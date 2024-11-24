@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.mongodb.v3.support;
 
 import com.mongodb.MongoNamespace;
+import lombok.SneakyThrows;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
@@ -38,26 +39,18 @@ public class MongoSpanHelper {
     private MongoSpanHelper() {
     }
 
+    @SneakyThrows
     public static void createExitSpan(String executeMethod, String remotePeer, Object operation) {
         AbstractSpan span = ContextManager.createExitSpan(
-            MongoConstants.MONGO_DB_OP_PREFIX + executeMethod, new ContextCarrier(), remotePeer);
+                MongoConstants.MONGO_DB_OP_PREFIX + executeMethod, new ContextCarrier(), remotePeer);
         span.setComponent(ComponentsDefine.MONGO_DRIVER);
         Tags.DB_TYPE.set(span, MongoConstants.DB_TYPE);
         SpanLayer.asDB(span);
 
-        try {
-            MongoNamespace namespace = tryToGetMongoNamespace(operation);
+        Field[] declaredFields = operation.getClass().getDeclaredFields();
+        MongoNamespace namespace = tryToGetMongoNamespace(operation, declaredFields);
+        if (namespace != null) {
             extractTagsFromNamespace(span, namespace);
-        } catch (Exception e) {
-            try {
-                Field wrappedField = operation.getClass().getDeclaredField("wrapped");
-                Field.setAccessible(new Field[]{wrappedField}, true);
-                Object wrappedOperation = wrappedField.get(operation);
-                MongoNamespace namespace = tryToGetMongoNamespace(wrappedOperation);
-                extractTagsFromNamespace(span, namespace);
-            } catch (Exception e2) {
-
-            }
         }
 
         if (MongoPluginConfig.Plugin.MongoDB.TRACE_PARAM) {
@@ -72,9 +65,54 @@ public class MongoSpanHelper {
         }
     }
 
-    private static MongoNamespace tryToGetMongoNamespace(Object operation) throws IllegalAccessException, NoSuchFieldException {
-        Field namespaceField = operation.getClass().getDeclaredField("namespace");
-        Field.setAccessible(new Field[]{namespaceField}, true);
-        return (MongoNamespace) namespaceField.get(operation);
+    private static MongoNamespace tryToGetMongoNamespace(Object operation, Field[] declaredFields) throws IllegalAccessException {
+        Field namespaceField = null;
+        Field wrappedField = null;
+        Field databaseField = null;
+        Field collectionField = null;
+        for (Field field : declaredFields) {
+            if ("namespace".equals(field.getName())) {
+                namespaceField = field;
+                Field.setAccessible(new Field[]{field}, true);
+            }
+            if ("wrapped".equals(field.getName())) {
+                wrappedField = field;
+                Field.setAccessible(new Field[]{field}, true);
+            }
+            if ("databaseName".equals(field.getName())) {
+                databaseField = field;
+                Field.setAccessible(new Field[]{field}, true);
+            }
+            if ("collectionName".equals(field.getName())) {
+                collectionField = field;
+                Field.setAccessible(new Field[]{field}, true);
+            }
+        }
+        if (namespaceField != null) {
+            return (MongoNamespace) namespaceField.get(operation);
+        }
+        String database = null;
+        String collection = null;
+        if (databaseField != null) {
+            database = (String) databaseField.get(operation);
+        }
+        if (collectionField != null) {
+            collection = (String) collectionField.get(operation);
+        }
+        if (database != null && collection == null) {
+            return new MongoNamespace(database);
+        }
+        if (database != null && collection != null) {
+            return new MongoNamespace(database, collection);
+        }
+        if (wrappedField != null) {
+            Object wrapped = wrappedField.get(operation);
+            if (wrapped != null && wrapped != operation) {
+                Field[] declaredFieldsInWrapped = wrapped.getClass().getDeclaredFields();
+                return tryToGetMongoNamespace(wrapped, declaredFieldsInWrapped);
+            }
+        }
+        return null;
+
     }
 }

@@ -32,6 +32,7 @@ segmentItems:
       tags:
       - {key: db.type, value: MongoDB}
       - {key: db.instance, value: test-database}
+      - {key: db.collection, value: testCollection}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
     - operationName: MongoDB/MixedBulkWriteOperation

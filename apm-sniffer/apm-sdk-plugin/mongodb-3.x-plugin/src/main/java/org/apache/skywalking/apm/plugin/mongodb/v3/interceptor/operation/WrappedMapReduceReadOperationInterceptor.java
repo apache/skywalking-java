@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.mongodb.v4.interceptor.operation;
+package org.apache.skywalking.apm.plugin.mongodb.v3.interceptor.operation;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;

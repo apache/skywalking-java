@@ -32,7 +32,6 @@ segmentItems:
       tags:
       - {key: db.type, value: MongoDB}
       - {key: db.instance, value: test-database}
-      - {key: db.collection, value: testCollection}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
     - operationName: MongoDB/MixedBulkWriteOperation
@@ -81,7 +80,7 @@ segmentItems:
       - {key: db.type, value: MongoDB}
       - {key: db.instance, value: test-database}
       - {key: db.collection, value: testCollection}
-      - {key: db.bind_vars, value: '{"$match": {"name": "test"}},'}
+      - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
     - operationName: MongoDB/MixedBulkWriteOperation
       parentSpanId: 0

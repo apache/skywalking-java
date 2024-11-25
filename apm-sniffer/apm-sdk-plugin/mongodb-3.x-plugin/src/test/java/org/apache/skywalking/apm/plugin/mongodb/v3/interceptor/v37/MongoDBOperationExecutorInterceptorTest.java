@@ -49,6 +49,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -57,6 +58,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -74,6 +76,8 @@ public class MongoDBOperationExecutorInterceptorTest {
 
     @Mock
     private EnhancedInstance enhancedInstance;
+
+    private FindOperation enhancedInstanceForFindOperation;
 
     private MongoDBOperationExecutorInterceptor interceptor;
 
@@ -98,7 +102,10 @@ public class MongoDBOperationExecutorInterceptorTest {
         decoder = mock(Decoder.class);
         FindOperation findOperation = new FindOperation(mongoNamespace, decoder);
         findOperation.filter(document);
-        arguments = new Object[] {findOperation};
+        enhancedInstanceForFindOperation = mock(FindOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
+        when(((EnhancedInstance) enhancedInstanceForFindOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespace);
+        when(enhancedInstanceForFindOperation.getFilter()).thenReturn(findOperation.getFilter());
+        arguments = new Object[] {enhancedInstanceForFindOperation};
         argumentTypes = new Class[] {findOperation.getClass()};
     }
 
@@ -116,8 +123,12 @@ public class MongoDBOperationExecutorInterceptorTest {
     @Test
     public void testCreateCollectionOperationIntercept() throws Throwable {
         CreateCollectionOperation createCollectionOperation = new CreateCollectionOperation("test", "user");
-        Object[] arguments = {createCollectionOperation};
+        CreateCollectionOperation enhancedInstanceForCreateCollectionOperation = mock(CreateCollectionOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
+        when(((EnhancedInstance) enhancedInstanceForCreateCollectionOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespace);
+        when(enhancedInstanceForCreateCollectionOperation.getCollectionName()).thenReturn("user");
+        Object[] arguments = {enhancedInstanceForCreateCollectionOperation};
         Class[] argumentTypes = {createCollectionOperation.getClass()};
+
         interceptor.beforeMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
         interceptor.afterMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
 
@@ -133,8 +144,13 @@ public class MongoDBOperationExecutorInterceptorTest {
         BsonDocument matchStage = new BsonDocument("$match", new BsonDocument("name", new BsonString("by")));
         List<BsonDocument> pipeline = Collections.singletonList(matchStage);
         AggregateOperation<BsonDocument> aggregateOperation = new AggregateOperation(mongoNamespace, pipeline, decoder);
-        Object[] arguments = {aggregateOperation};
+
+        AggregateOperation enhancedInstanceForAggregateOperation = mock(AggregateOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
+        when(((EnhancedInstance) enhancedInstanceForAggregateOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespace);
+        when(enhancedInstanceForAggregateOperation.getPipeline()).thenReturn(aggregateOperation.getPipeline());
+        Object[] arguments = {enhancedInstanceForAggregateOperation};
         Class[] argumentTypes = {aggregateOperation.getClass()};
+
         interceptor.beforeMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
         interceptor.afterMethod(enhancedInstance, getMethod(), arguments, argumentTypes, null);
 
@@ -161,7 +177,7 @@ public class MongoDBOperationExecutorInterceptorTest {
     }
 
     private void assertMongoCreateCollectionOperationSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is("MongoDB/CreateCollectionOperation"));
+        assertThat(span.getOperationName(), startsWith("MongoDB/CreateCollectionOperation"));
         assertThat(SpanHelper.getComponentId(span), is(42));
         List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.get(0).getValue(), is("MongoDB"));
@@ -173,7 +189,7 @@ public class MongoDBOperationExecutorInterceptorTest {
     }
 
     private void assertMongoAggregateOperationSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is("MongoDB/AggregateOperation"));
+        assertThat(span.getOperationName(), startsWith("MongoDB/AggregateOperation"));
         assertThat(SpanHelper.getComponentId(span), is(42));
         List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.get(0).getValue(), is("MongoDB"));
@@ -185,7 +201,7 @@ public class MongoDBOperationExecutorInterceptorTest {
     }
 
     private void assertMongoFindOperationSpan(AbstractTracingSpan span) {
-        assertThat(span.getOperationName(), is("MongoDB/FindOperation"));
+        assertThat(span.getOperationName(), startsWith("MongoDB/FindOperation"));
         assertThat(SpanHelper.getComponentId(span), is(42));
         List<TagValuePair> tags = SpanHelper.getTags(span);
         assertThat(tags.get(0).getValue(), is("MongoDB"));

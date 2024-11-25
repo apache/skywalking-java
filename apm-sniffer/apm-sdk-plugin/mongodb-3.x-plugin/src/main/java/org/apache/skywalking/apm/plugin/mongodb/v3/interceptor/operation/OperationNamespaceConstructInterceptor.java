@@ -16,19 +16,18 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.mongodb.v4.interceptor.operation;
+package org.apache.skywalking.apm.plugin.mongodb.v3.interceptor.operation;
 
+import com.mongodb.MongoNamespace;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 
-public class WrappedMapReduceReadOperationInterceptor implements InstanceConstructorInterceptor {
+public class OperationNamespaceConstructInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        if (allArguments[0] instanceof EnhancedInstance) {
-            EnhancedInstance enhancedInstance = (EnhancedInstance) allArguments[0];
-            objInst.setSkyWalkingDynamicField(enhancedInstance.getSkyWalkingDynamicField());
-        }
+        MongoNamespace mongoNamespace = (MongoNamespace) allArguments[0];
+        objInst.setSkyWalkingDynamicField(mongoNamespace);
     }
 
 }

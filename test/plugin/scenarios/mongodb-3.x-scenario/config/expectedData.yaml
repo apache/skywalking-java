@@ -142,6 +142,7 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
     - operationName: GET:/mongodb-case/case/mongodb

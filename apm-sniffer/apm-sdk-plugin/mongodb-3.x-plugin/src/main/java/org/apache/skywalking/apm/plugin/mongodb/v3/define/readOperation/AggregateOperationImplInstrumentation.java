@@ -26,11 +26,11 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static net.bytebuddy.matcher.ElementMatchers.any;
 
 public class AggregateOperationImplInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "com.mongodb.operation.AggregateOperation";
+    private static final String ENHANCE_CLASS = "com.mongodb.operation.AggregateOperationImpl";
 
     private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.mongodb.v3.interceptor.operation.OperationNamespaceConstructInterceptor";
 
@@ -46,7 +46,7 @@ public class AggregateOperationImplInstrumentation extends ClassInstanceMethodsE
 
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return  takesArguments(4);
+                        return  any();
                     }
 
                     @Override

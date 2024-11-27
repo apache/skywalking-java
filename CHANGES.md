@@ -8,8 +8,9 @@ Release Notes.
 * Upgrade nats plugin to support 2.16.5
 * Add agent self-observability.
 * Fix intermittent ClassCircularityError by preloading ThreadLocalRandom since ByteBuddy 1.12.11
+* Add witness class/method for resteasy-server plugin(v3/v4/v6)
+* Add async-profiler feature for performance analysis
 * Upgrade grpc-protobuf to 1.68.1
-
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

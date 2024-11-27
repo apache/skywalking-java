@@ -252,6 +252,33 @@ public class Config {
         public static int SNAPSHOT_TRANSPORT_BUFFER_SIZE = 500;
     }
 
+    public static class AsyncProfiler {
+        /**
+         * If true, async profiler will be enabled when user creates a new async profiler task.
+         * If false, it will be disabled.
+         * The default value is true.
+         */
+        public static boolean ACTIVE = true;
+
+        /**
+         * Max execution time(second) for the Async Profiler. The task will be stopped even if a longer time is specified.
+         * default 10min.
+         */
+        public static int MAX_DURATION = 600;
+
+        /**
+         * Path for the JFR outputs from the Async Profiler.
+         * If the parameter is not empty, the file will be created in the specified directory,
+         * otherwise the Files.createTemp method will be used to create the file.
+         */
+        public static String OUTPUT_PATH = "";
+
+        /**
+         * The size of the chunk when uploading jfr
+         */
+        public static final int DATA_CHUNK_SIZE = 1024 * 1024;
+    }
+
     public static class Meter {
         /**
          * If true, skywalking agent will enable sending meters. Otherwise disable meter report.

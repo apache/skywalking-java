@@ -21,9 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
+import org.apache.skywalking.apm.agent.core.commands.executor.AsyncProfilerCommandExecutor;
 import org.apache.skywalking.apm.agent.core.commands.executor.ConfigurationDiscoveryCommandExecutor;
 import org.apache.skywalking.apm.agent.core.commands.executor.NoopCommandExecutor;
 import org.apache.skywalking.apm.agent.core.commands.executor.ProfileTaskCommandExecutor;
+import org.apache.skywalking.apm.network.trace.component.command.AsyncProfilerTaskCommand;
 import org.apache.skywalking.apm.network.trace.component.command.BaseCommand;
 import org.apache.skywalking.apm.network.trace.component.command.ConfigurationDiscoveryCommand;
 import org.apache.skywalking.apm.network.trace.component.command.ProfileTaskCommand;
@@ -48,6 +50,9 @@ public class CommandExecutorService implements BootService, CommandExecutor {
 
         //Get ConfigurationDiscoveryCommand executor.
         commandExecutorMap.put(ConfigurationDiscoveryCommand.NAME, new ConfigurationDiscoveryCommandExecutor());
+
+        // AsyncProfiler task executor
+        commandExecutorMap.put(AsyncProfilerTaskCommand.NAME, new AsyncProfilerCommandExecutor());
     }
 
     @Override

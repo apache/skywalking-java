@@ -97,6 +97,7 @@
         <netty-tcnative-boringssl-static.version>2.0.48.Final</netty-tcnative-boringssl-static.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <objenesis.version>3.1</objenesis.version>
+        <async-profiler.version>3.0</async-profiler.version>
         <!-- necessary for Java 9+ -->
         <org.apache.tomcat.annotations-api.version>6.0.53</org.apache.tomcat.annotations-api.version>
 
@@ -259,6 +260,11 @@
                 <artifactId>jmh-generator-annprocess</artifactId>
                 <version>${jmh.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>tools.profiler</groupId>
+                <artifactId>async-profiler</artifactId>
+                <version>${async-profiler.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -92,6 +92,7 @@
                                     <exclude>org.codehaus.mojo:animal-sniffer-annotations</exclude>
                                     <exclude>io.perfmark:*</exclude>
                                     <exclude>org.slf4j:*</exclude>
+                                    <exclude>tools.profiler:async-profiler</exclude>
                                 </excludes>
                             </artifactSet>
                             <relocations>

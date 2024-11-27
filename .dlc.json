@@ -26,6 +26,9 @@
     },
     {
       "pattern": "^https://twitter.com*"
+    },
+    {
+      "pattern": "^ttps://blogs.oracle.com/javamagazine/post/a-peek-into-java-17-continuing-the-drive-to-encapsulate-the-java-runtime-internals"
     }
   ],
   "timeout": "10s",

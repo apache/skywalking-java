@@ -39,6 +39,7 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.plugin.mongodb.v4.interceptor.MongoDBOperationExecutorInterceptor;
+import org.apache.skywalking.apm.plugin.mongodb.v4.support.MongoNamespaceInfo;
 import org.apache.skywalking.apm.plugin.mongodb.v4.interceptor.operation.OperationNamespaceConstructInterceptor;
 import org.apache.skywalking.apm.plugin.mongodb.v4.support.MongoPluginConfig;
 import org.bson.BsonDocument;
@@ -85,7 +86,7 @@ public class MongoDBOperationExecutorInterceptorTest {
 
     @Spy
     private EnhancedInstance enhancedObjInstance = new EnhancedInstance() {
-        private MongoNamespace namespace;
+        private MongoNamespaceInfo namespace;
 
         @Override
         public Object getSkyWalkingDynamicField() {
@@ -94,7 +95,7 @@ public class MongoDBOperationExecutorInterceptorTest {
 
         @Override
         public void setSkyWalkingDynamicField(Object value) {
-            this.namespace = (MongoNamespace) value;
+            this.namespace = (MongoNamespaceInfo) value;
         }
     };
 
@@ -110,6 +111,8 @@ public class MongoDBOperationExecutorInterceptorTest {
 
     private MongoNamespace mongoNamespace;
 
+    private MongoNamespaceInfo mongoNamespaceInfo;
+
     @Before
     public void setUp() {
 
@@ -119,6 +122,7 @@ public class MongoDBOperationExecutorInterceptorTest {
         MongoPluginConfig.Plugin.MongoDB.TRACE_PARAM = true;
         decoder = mock(Decoder.class);
         mongoNamespace = new MongoNamespace("test.user");
+        mongoNamespaceInfo =  new MongoNamespaceInfo(mongoNamespace);
         BsonDocument document = new BsonDocument();
         document.append("name", new BsonString("by"));
 
@@ -127,7 +131,7 @@ public class MongoDBOperationExecutorInterceptorTest {
         decoder = mock(Decoder.class);
         when(enhancedInstance.getSkyWalkingDynamicField()).thenReturn("127.0.0.1:27017");
         enhancedInstanceForFindOperation = mock(FindOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
-        when(((EnhancedInstance) enhancedInstanceForFindOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespace);
+        when(((EnhancedInstance) enhancedInstanceForFindOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespaceInfo);
         when(enhancedInstanceForFindOperation.getFilter()).thenReturn(findOperation.getFilter());
         arguments = new Object[] {enhancedInstanceForFindOperation};
         argumentTypes = new Class[] {findOperation.getClass()};
@@ -136,14 +140,14 @@ public class MongoDBOperationExecutorInterceptorTest {
     @Test
     public void testConstructIntercept() throws Throwable {
         constructInterceptor.onConstruct(enhancedObjInstance, new Object[]{mongoNamespace});
-        MatcherAssert.assertThat(enhancedObjInstance.getSkyWalkingDynamicField(), Is.is(mongoNamespace));
+        MatcherAssert.assertThat(enhancedObjInstance.getSkyWalkingDynamicField(), Is.is(new MongoNamespaceInfo(mongoNamespace)));
     }
 
     @Test
     public void testCreateCollectionOperationIntercept() throws Throwable {
         CreateCollectionOperation createCollectionOperation = new CreateCollectionOperation("test", "user");
         CreateCollectionOperation enhancedInstanceForCreateCollectionOperation = mock(CreateCollectionOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
-        when(((EnhancedInstance) enhancedInstanceForCreateCollectionOperation).getSkyWalkingDynamicField()).thenReturn("test");
+        when(((EnhancedInstance) enhancedInstanceForCreateCollectionOperation).getSkyWalkingDynamicField()).thenReturn(new MongoNamespaceInfo("test"));
         when(enhancedInstanceForCreateCollectionOperation.getCollectionName()).thenReturn("user");
 
         Object[] arguments = {enhancedInstanceForCreateCollectionOperation};
@@ -176,7 +180,7 @@ public class MongoDBOperationExecutorInterceptorTest {
         AggregateOperation<BsonDocument> aggregateOperation = new AggregateOperation(mongoNamespace, pipeline, decoder);
 
         AggregateOperation enhancedInstanceForAggregateOperation = mock(AggregateOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
-        when(((EnhancedInstance) enhancedInstanceForAggregateOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespace);
+        when(((EnhancedInstance) enhancedInstanceForAggregateOperation).getSkyWalkingDynamicField()).thenReturn(new MongoNamespaceInfo(mongoNamespace));
         when(enhancedInstanceForAggregateOperation.getPipeline()).thenReturn(aggregateOperation.getPipeline());
         Object[] arguments = {enhancedInstanceForAggregateOperation};
         Class[] argumentTypes = {aggregateOperation.getClass()};

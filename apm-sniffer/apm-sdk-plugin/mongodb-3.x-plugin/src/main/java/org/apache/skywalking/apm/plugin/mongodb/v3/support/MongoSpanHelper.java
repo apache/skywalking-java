@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.mongodb.v3.support;
 
-import com.mongodb.MongoNamespace;
 import lombok.SneakyThrows;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -47,15 +46,14 @@ public class MongoSpanHelper {
         SpanLayer.asDB(span);
 
         if (operation instanceof EnhancedInstance) {
-            Object dynamicFieldValue = ((EnhancedInstance) operation).getSkyWalkingDynamicField();
-            if (dynamicFieldValue != null && dynamicFieldValue instanceof MongoNamespace) {
-                MongoNamespace namespace = (MongoNamespace) dynamicFieldValue;
-                Tags.DB_INSTANCE.set(span, namespace.getDatabaseName());
-                if (StringUtil.isNotEmpty(namespace.getCollectionName())) {
-                    span.tag(DB_COLLECTION_TAG, namespace.getCollectionName());
+            MongoNamespaceInfo mongoNamespaceInfo = (MongoNamespaceInfo) ((EnhancedInstance) operation).getSkyWalkingDynamicField();
+            if (mongoNamespaceInfo != null) {
+                if (StringUtil.isNotEmpty(mongoNamespaceInfo.getDatabaseName())) {
+                    Tags.DB_INSTANCE.set(span, mongoNamespaceInfo.getDatabaseName());
                 }
-            } else if (dynamicFieldValue != null && dynamicFieldValue instanceof String) {
-                Tags.DB_INSTANCE.set(span, (String) dynamicFieldValue);
+                if (StringUtil.isNotEmpty(mongoNamespaceInfo.getCollectionName())) {
+                    span.tag(DB_COLLECTION_TAG, mongoNamespaceInfo.getCollectionName());
+                }
             }
         }
 
@@ -64,10 +62,4 @@ public class MongoSpanHelper {
         }
     }
 
-    private static void extractTagsFromNamespace(AbstractSpan span, MongoNamespace namespace) {
-        Tags.DB_INSTANCE.set(span, namespace.getDatabaseName());
-        if (StringUtil.isNotEmpty(namespace.getCollectionName())) {
-            span.tag(DB_COLLECTION_TAG, namespace.getCollectionName());
-        }
-    }
 }

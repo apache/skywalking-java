@@ -21,13 +21,14 @@ package org.apache.skywalking.apm.plugin.mongodb.v3.interceptor.operation;
 import com.mongodb.MongoNamespace;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.skywalking.apm.plugin.mongodb.v3.support.MongoNamespaceInfo;
 
 public class OperationNamespaceConstructInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         MongoNamespace mongoNamespace = (MongoNamespace) allArguments[0];
-        objInst.setSkyWalkingDynamicField(mongoNamespace);
+        objInst.setSkyWalkingDynamicField(new MongoNamespaceInfo(mongoNamespace));
     }
 
 }

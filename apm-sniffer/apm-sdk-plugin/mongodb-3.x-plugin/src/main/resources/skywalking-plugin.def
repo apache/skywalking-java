@@ -39,6 +39,9 @@ mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.Lis
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.ListIndexesOperationInstrumentation
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.MapReduceWithInlineResultsOperationInstrumentation
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.WrappedMapReduceReadOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.GroupOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.ParallelCollectionScanOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.UserExistsOperationInstrumentation
 # writeOperation
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.AggregateToCollectionOperationInstrumentation
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.BaseFindAndModifyOperationInstrumentation

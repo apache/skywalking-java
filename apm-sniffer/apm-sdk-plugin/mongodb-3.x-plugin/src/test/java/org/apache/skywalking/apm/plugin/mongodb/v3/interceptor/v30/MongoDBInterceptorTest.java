@@ -36,6 +36,7 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.plugin.mongodb.v3.MongoPluginConfig;
+import org.apache.skywalking.apm.plugin.mongodb.v3.support.MongoNamespaceInfo;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.bson.codecs.Decoder;
@@ -104,7 +105,7 @@ public class MongoDBInterceptorTest {
         FindOperation findOperation = new FindOperation(mongoNamespace, decoder);
         findOperation.filter(document);
         enhancedInstanceForFindOperation = mock(FindOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
-        when(((EnhancedInstance) enhancedInstanceForFindOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespace);
+        when(((EnhancedInstance) enhancedInstanceForFindOperation).getSkyWalkingDynamicField()).thenReturn(new MongoNamespaceInfo(mongoNamespace));
         when(enhancedInstanceForFindOperation.getFilter()).thenReturn(findOperation.getFilter());
         arguments = new Object[] {enhancedInstanceForFindOperation};
         argumentTypes = new Class[] {findOperation.getClass()};
@@ -129,7 +130,7 @@ public class MongoDBInterceptorTest {
         AggregateOperation<BsonDocument> aggregateOperation = new AggregateOperation(mongoNamespace, pipeline, decoder);
 
         AggregateOperation enhancedInstanceForAggregateOperation = mock(AggregateOperation.class, Mockito.withSettings().extraInterfaces(EnhancedInstance.class));
-        when(((EnhancedInstance) enhancedInstanceForAggregateOperation).getSkyWalkingDynamicField()).thenReturn(mongoNamespace);
+        when(((EnhancedInstance) enhancedInstanceForAggregateOperation).getSkyWalkingDynamicField()).thenReturn(new MongoNamespaceInfo(mongoNamespace));
         when(enhancedInstanceForAggregateOperation.getPipeline()).thenReturn(aggregateOperation.getPipeline());
         Object[] arguments = {enhancedInstanceForAggregateOperation};
         Class[] argumentTypes = {aggregateOperation.getClass()};

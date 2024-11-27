@@ -25,10 +25,8 @@ public class WrappedMapReduceReadOperationInterceptor implements InstanceConstru
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        if (allArguments[0] instanceof EnhancedInstance) {
             EnhancedInstance enhancedInstance = (EnhancedInstance) allArguments[0];
             objInst.setSkyWalkingDynamicField(enhancedInstance.getSkyWalkingDynamicField());
-        }
     }
 
 }

@@ -19,10 +19,12 @@
 package org.apache.skywalking.apm.plugin.mongodb.v4.support;
 
 import com.mongodb.MongoNamespace;
-import com.mongodb.annotations.Immutable;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.apache.skywalking.apm.util.StringUtil;
 
-@Immutable
+@EqualsAndHashCode
+@Getter
 public class MongoNamespaceInfo {
 
     private final String databaseName;
@@ -49,46 +51,12 @@ public class MongoNamespaceInfo {
         return collectionName;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        } else if (o != null && this.getClass() == o.getClass()) {
-            MongoNamespaceInfo that = (MongoNamespaceInfo) o;
-            if (!equals(this.databaseName, that.databaseName)) {
-                return false;
-            } else {
-                return equals(this.collectionName, that.collectionName);
-            }
-        } else {
-            return false;
-        }
-    }
-
-    private boolean equals(String src, String tgt) {
-        if (src == null && tgt == null) {
-            return true;
-        }
-        if (src == null && tgt != null) {
-            return false;
-        }
-        if (src != null && tgt == null) {
-            return false;
-        }
-        return src.equals(tgt);
-    }
-
     public String toString() {
         if (StringUtil.isNotBlank(collectionName)) {
             return databaseName + '.' + collectionName;
         } else {
             return databaseName;
         }
-    }
-
-    public int hashCode() {
-        int result = this.databaseName.hashCode();
-        result = 31 * result + this.collectionName.hashCode();
-        return result;
     }
 
 }

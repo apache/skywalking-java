@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -67,6 +68,8 @@ public enum CustomizeConfiguration {
     private static final Map<String, ElementMatcher> CONTEXT_ENHANCE_CLASSES = new HashMap<>();
     private static final AtomicBoolean LOAD_FOR_CONFIGURATION = new AtomicBoolean(false);
 
+    private static volatile List<Map<String, Object>> RESOLVED_FILE_CONFIGURATIONS;
+    private static final ReentrantLock RESOLVED_FILE_LOCK = new ReentrantLock();
     /**
      * The loadForEnhance method is resolver configuration file, and parse it
      */
@@ -107,13 +110,26 @@ public enum CustomizeConfiguration {
      * @throws SAXException                 link {@link SAXException}
      */
     private List<Map<String, Object>> resolver() throws ParserConfigurationException, IOException, SAXException {
-        List<Map<String, Object>> customizeMethods = new ArrayList<Map<String, Object>>();
-        File file = new File(CustomizePluginConfig.Plugin.Customize.ENHANCE_FILE);
-        if (file.exists() && file.isFile()) {
-            NodeList classNodeList = resolverFileClassDesc(file);
-            resolverClassNodeList(classNodeList, customizeMethods);
+        if (RESOLVED_FILE_CONFIGURATIONS != null) {
+            return RESOLVED_FILE_CONFIGURATIONS;
         }
-        return customizeMethods;
+
+        RESOLVED_FILE_LOCK.lock();
+        try {
+            if (RESOLVED_FILE_CONFIGURATIONS != null) {
+                return RESOLVED_FILE_CONFIGURATIONS;
+            }
+            List<Map<String, Object>> customizeMethods = new ArrayList<Map<String, Object>>();
+            File file = new File(CustomizePluginConfig.Plugin.Customize.ENHANCE_FILE);
+            if (file.exists() && file.isFile()) {
+                NodeList classNodeList = resolverFileClassDesc(file);
+                resolverClassNodeList(classNodeList, customizeMethods);
+            }
+            RESOLVED_FILE_CONFIGURATIONS = customizeMethods;
+        } finally {
+            RESOLVED_FILE_LOCK.unlock();
+        }
+        return RESOLVED_FILE_CONFIGURATIONS;
     }
 
     /**

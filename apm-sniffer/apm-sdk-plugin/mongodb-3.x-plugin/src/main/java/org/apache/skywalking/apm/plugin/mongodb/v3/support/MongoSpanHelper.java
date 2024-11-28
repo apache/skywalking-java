@@ -18,28 +18,48 @@
 
 package org.apache.skywalking.apm.plugin.mongodb.v3.support;
 
+import lombok.SneakyThrows;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.tag.AbstractTag;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.mongodb.v3.MongoPluginConfig;
+import org.apache.skywalking.apm.util.StringUtil;
 
 public class MongoSpanHelper {
+
+    private static final AbstractTag<String> DB_COLLECTION_TAG = Tags.ofKey("db.collection");
 
     private MongoSpanHelper() {
     }
 
+    @SneakyThrows
     public static void createExitSpan(String executeMethod, String remotePeer, Object operation) {
         AbstractSpan span = ContextManager.createExitSpan(
-            MongoConstants.MONGO_DB_OP_PREFIX + executeMethod, new ContextCarrier(), remotePeer);
+                MongoConstants.MONGO_DB_OP_PREFIX + executeMethod, new ContextCarrier(), remotePeer);
         span.setComponent(ComponentsDefine.MONGO_DRIVER);
         Tags.DB_TYPE.set(span, MongoConstants.DB_TYPE);
         SpanLayer.asDB(span);
+
+        if (operation instanceof EnhancedInstance) {
+            MongoNamespaceInfo mongoNamespaceInfo = (MongoNamespaceInfo) ((EnhancedInstance) operation).getSkyWalkingDynamicField();
+            if (mongoNamespaceInfo != null) {
+                if (StringUtil.isNotEmpty(mongoNamespaceInfo.getDatabaseName())) {
+                    Tags.DB_INSTANCE.set(span, mongoNamespaceInfo.getDatabaseName());
+                }
+                if (StringUtil.isNotEmpty(mongoNamespaceInfo.getCollectionName())) {
+                    span.tag(DB_COLLECTION_TAG, mongoNamespaceInfo.getCollectionName());
+                }
+            }
+        }
 
         if (MongoPluginConfig.Plugin.MongoDB.TRACE_PARAM) {
             Tags.DB_BIND_VARIABLES.set(span, MongoOperationHelper.getTraceParam(operation));
         }
     }
+
 }

@@ -31,6 +31,7 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
     - operationName: MongoDB/MixedBulkWriteOperation
@@ -45,6 +46,8 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
+      - {key: db.collection, value: testCollection}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
     - operationName: MongoDB/FindOperation
@@ -59,9 +62,11 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
+      - {key: db.collection, value: testCollection}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
-    - operationName: MongoDB/MixedBulkWriteOperation
+    - operationName: MongoDB/AggregateOperation
       parentSpanId: 0
       spanId: 4
       spanLayer: Database
@@ -73,9 +78,11 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
+      - {key: db.collection, value: testCollection}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
-    - operationName: MongoDB/FindOperation
+    - operationName: MongoDB/MixedBulkWriteOperation
       parentSpanId: 0
       spanId: 5
       spanLayer: Database
@@ -87,9 +94,11 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
+      - {key: db.collection, value: testCollection}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
-    - operationName: MongoDB/MixedBulkWriteOperation
+    - operationName: MongoDB/FindOperation
       parentSpanId: 0
       spanId: 6
       spanLayer: Database
@@ -101,9 +110,11 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
+      - {key: db.collection, value: testCollection}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
-    - operationName: MongoDB/DropDatabaseOperation
+    - operationName: MongoDB/MixedBulkWriteOperation
       parentSpanId: 0
       spanId: 7
       spanLayer: Database
@@ -115,6 +126,23 @@ segmentItems:
       peer: mongodb-server:27017
       tags:
       - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
+      - {key: db.collection, value: testCollection}
+      - {key: db.bind_vars, value: not null}
+      skipAnalysis: 'false'
+    - operationName: MongoDB/DropDatabaseOperation
+      parentSpanId: 0
+      spanId: 8
+      spanLayer: Database
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 42
+      isError: false
+      spanType: Exit
+      peer: mongodb-server:27017
+      tags:
+      - {key: db.type, value: MongoDB}
+      - {key: db.instance, value: test-database}
       - {key: db.bind_vars, value: not null}
       skipAnalysis: 'false'
     - operationName: GET:/mongodb-case/case/mongodb

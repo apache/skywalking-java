@@ -47,6 +47,7 @@ segmentItems:
             tags:
               - {key: db.type, value: MongoDB}
               - {key: db.instance, value: test-database}
+              - {key: db.collection, value: testCollection}
               - {key: db.bind_vars, value: not null}
             skipAnalysis: 'false'
           - operationName: MongoDB/FindOperation
@@ -62,9 +63,10 @@ segmentItems:
             tags:
               - {key: db.type, value: MongoDB}
               - {key: db.instance, value: test-database}
+              - {key: db.collection, value: testCollection}
               - {key: db.bind_vars, value: '{"name": "org"}'}
             skipAnalysis: 'false'
-          - operationName: MongoDB/MixedBulkWriteOperation
+          - operationName: MongoDB/AggregateOperation
             parentSpanId: 0
             spanId: 4
             spanLayer: Database
@@ -77,9 +79,10 @@ segmentItems:
             tags:
               - {key: db.type, value: MongoDB}
               - {key: db.instance, value: test-database}
-              - {key: db.bind_vars, value: '{"name": "org"},'}
+              - {key: db.collection, value: testCollection}
+              - {key: db.bind_vars, value: '{"$match": {"name": "test"}},'}
             skipAnalysis: 'false'
-          - operationName: MongoDB/FindOperation
+          - operationName: MongoDB/MixedBulkWriteOperation
             parentSpanId: 0
             spanId: 5
             spanLayer: Database
@@ -92,9 +95,10 @@ segmentItems:
             tags:
               - {key: db.type, value: MongoDB}
               - {key: db.instance, value: test-database}
-              - {key: db.bind_vars, value: '{"name": "testA"}'}
+              - {key: db.collection, value: testCollection}
+              - {key: db.bind_vars, value: '{"name": "org"},'}
             skipAnalysis: 'false'
-          - operationName: MongoDB/MixedBulkWriteOperation
+          - operationName: MongoDB/FindOperation
             parentSpanId: 0
             spanId: 6
             spanLayer: Database
@@ -107,11 +111,28 @@ segmentItems:
             tags:
               - {key: db.type, value: MongoDB}
               - {key: db.instance, value: test-database}
+              - {key: db.collection, value: testCollection}
+              - {key: db.bind_vars, value: '{"name": "testA"}'}
+            skipAnalysis: 'false'
+          - operationName: MongoDB/MixedBulkWriteOperation
+            parentSpanId: 0
+            spanId: 7
+            spanLayer: Database
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 42
+            isError: false
+            spanType: Exit
+            peer: mongodb-server:27017
+            tags:
+              - {key: db.type, value: MongoDB}
+              - {key: db.instance, value: test-database}
+              - {key: db.collection, value: testCollection}
               - {key: db.bind_vars, value: '{"id": "1"},'}
             skipAnalysis: 'false'
           - operationName: MongoDB/DropDatabaseOperation
             parentSpanId: 0
-            spanId: 7
+            spanId: 8
             spanLayer: Database
             startTime: nq 0
             endTime: nq 0

@@ -16,18 +16,19 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.mongodb.v4.interceptor.operation;
+package org.apache.skywalking.apm.plugin.mongodb.v3.interceptor.operation;
 
+import com.mongodb.MongoNamespace;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.apache.skywalking.apm.plugin.mongodb.v4.support.MongoNamespaceInfo;
+import org.apache.skywalking.apm.plugin.mongodb.v3.support.MongoNamespaceInfo;
 
-public class OperationDatabaseConstructInterceptor implements InstanceConstructorInterceptor {
+public class OperationNamespaceConstructInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        String databaseName = (String) allArguments[0];
-        objInst.setSkyWalkingDynamicField(new MongoNamespaceInfo(databaseName));
+        MongoNamespace mongoNamespace = (MongoNamespace) allArguments[0];
+        objInst.setSkyWalkingDynamicField(new MongoNamespaceInfo(mongoNamespace));
     }
 
 }

@@ -19,8 +19,40 @@ mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.v30.MongoDBInstru
 # v3.7.x~
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.v37.MongoDBClientDelegateInstrumentation
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.v37.MongoDBOperationExecutorInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.v36.readOperation.WrappedMapReduceReadOperationInstrumentation
 # v3.8.x~
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.v38.MongoDBOperationExecutorInstrumentation
 # v3.6.x
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.v36.MongoDBInstrumentation
 mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.v36.MongoDBOperationExecutorInstrumentation
+
+# readOperation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.AggregateExplainOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.AggregateOperationImplInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.AggregateOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.ChangeStreamOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.CommandReadOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.CountOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.DistinctOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.FindOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.ListCollectionsOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.ListIndexesOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.MapReduceWithInlineResultsOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.WrappedMapReduceReadOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.GroupOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.ParallelCollectionScanOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation.UserExistsOperationInstrumentation
+# writeOperation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.AggregateToCollectionOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.BaseFindAndModifyOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.BaseWriteOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.CommandWriteOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.CreateCollectionOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.CreateIndexesOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.CreateViewOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.DropCollectionOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.DropDatabaseOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.DropIndexOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.MapReduceToCollectionOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.MixedBulkWriteOperationInstrumentation
+mongodb-3.x=org.apache.skywalking.apm.plugin.mongodb.v3.define.writeOperation.RenameCollectionOperationInstrumentation

@@ -11,7 +11,7 @@ We also provide the [plugin test tool](#plugin-test-tool) to verify the data col
 ## Concepts
 ### Span
 The span is an important and recognized concept in the distributed tracing system. Learn about the **span** from the
-[Google Dapper Paper](https://research.google.com/pubs/pub36356.html)  and
+[Google Dapper Paper](https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/)  and
 [OpenTracing](http://opentracing.io)
 
 SkyWalking has supported OpenTracing and OpenTracing-Java API since 2017. Our concepts of the span are similar to that of the Google Dapper Paper and OpenTracing. We have also extended the span.

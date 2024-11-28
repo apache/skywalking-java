@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.mongodb.v4.define.readOperation;
+package org.apache.skywalking.apm.plugin.mongodb.v3.define.readOperation;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -28,18 +28,11 @@ import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.any;
 
-public class AggregateOperationImplInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class WrappedMapReduceReadOperationInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String WITNESS_CLASS = "com.mongodb.internal.connection.Cluster";
+    private static final String ENHANCE_CLASS = "com.mongodb.MapReduceIterableImpl";
 
-    private static final String ENHANCE_CLASS = "com.mongodb.internal.operation.AggregateOperation";
-
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.mongodb.v4.interceptor.operation.OperationNamespaceConstructInterceptor";
-
-    @Override
-    protected String[] witnessClasses() {
-        return new String[] {WITNESS_CLASS};
-    }
+    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.mongodb.v3.interceptor.operation.OperationNamespaceConstructInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -50,7 +43,6 @@ public class AggregateOperationImplInstrumentation extends ClassInstanceMethodsE
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[] {
                 new ConstructorInterceptPoint() {
-
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
                         return  any();
@@ -68,4 +60,5 @@ public class AggregateOperationImplInstrumentation extends ClassInstanceMethodsE
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
         return new InstanceMethodsInterceptPoint[0];
     }
+
 }

@@ -10,6 +10,7 @@ Release Notes.
 * Fix intermittent ClassCircularityError by preloading ThreadLocalRandom since ByteBuddy 1.12.11
 * Add witness class/method for resteasy-server plugin(v3/v4/v6)
 * Add async-profiler feature for performance analysis 
+* Support db.instance tag,db.collection tag and AggregateOperation span for mongodb plugin(3.x/4.x)
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

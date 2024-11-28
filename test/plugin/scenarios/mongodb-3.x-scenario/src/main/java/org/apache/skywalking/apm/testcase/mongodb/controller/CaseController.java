@@ -19,15 +19,22 @@
 package org.apache.skywalking.apm.testcase.mongodb.controller;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import org.bson.BsonDocument;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -64,6 +71,13 @@ public class CaseController {
             // FindOperation
             FindIterable<Document> findIterable = collection.find(eq("name", "org"));
             findIterable.first();
+
+            // AggregateOperation
+            List<Bson> pipeline = Arrays.asList(
+                    Aggregates.match(Filters.eq("name", "test"))
+            );
+            AggregateIterable<Document> aggregateIterable = collection.aggregate(pipeline);
+            aggregateIterable.first();
 
             // MixedBulkWriteOperation
             collection.updateOne(eq("name", "org"), BsonDocument.parse("{ $set : { \"name\": \"testA\"} }"));

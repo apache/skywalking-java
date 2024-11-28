@@ -22,6 +22,7 @@ import com.mongodb.bulk.DeleteRequest;
 import com.mongodb.bulk.InsertRequest;
 import com.mongodb.bulk.UpdateRequest;
 import com.mongodb.bulk.WriteRequest;
+import com.mongodb.operation.AggregateOperation;
 import com.mongodb.operation.CountOperation;
 import com.mongodb.operation.CreateCollectionOperation;
 import com.mongodb.operation.CreateIndexesOperation;
@@ -104,6 +105,9 @@ public class MongoOperationHelper {
         } else if (obj instanceof FindAndUpdateOperation) {
             BsonDocument filter = ((FindAndUpdateOperation) obj).getFilter();
             return limitFilter(filter.toString());
+        } else if (obj instanceof AggregateOperation) {
+            List<BsonDocument> pipelines = ((AggregateOperation) obj).getPipeline();
+            return getPipelines(pipelines);
         } else if (obj instanceof MapReduceToCollectionOperation) {
             BsonDocument filter = ((MapReduceToCollectionOperation) obj).getFilter();
             return limitFilter(filter.toString());
@@ -113,6 +117,18 @@ public class MongoOperationHelper {
         } else {
             return MongoConstants.EMPTY;
         }
+    }
+
+    private static String getPipelines(List<BsonDocument> pipelines) {
+        StringBuilder params = new StringBuilder();
+        for (BsonDocument pipeline : pipelines) {
+            params.append(pipeline.toString()).append(",");
+            final int filterLengthLimit = MongoPluginConfig.Plugin.MongoDB.FILTER_LENGTH_LIMIT;
+            if (filterLengthLimit > 0 && params.length() > filterLengthLimit) {
+                return params.substring(0, filterLengthLimit) + "...";
+            }
+        }
+        return params.toString();
     }
 
     private static String getFilter(List<? extends WriteRequest> writeRequestList) {

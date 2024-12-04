@@ -26,7 +26,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tomcat-10x-plugin</artifactId>
-  <version>8.11.0</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

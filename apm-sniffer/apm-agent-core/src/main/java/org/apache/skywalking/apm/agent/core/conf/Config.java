@@ -262,9 +262,9 @@ public class Config {
 
         /**
          * Max execution time(second) for the Async Profiler. The task will be stopped even if a longer time is specified.
-         * default 10min.
+         * default 20min.
          */
-        public static int MAX_DURATION = 600;
+        public static int MAX_DURATION = 1200;
 
         /**
          * Path for the JFR outputs from the Async Profiler.

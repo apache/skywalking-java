@@ -18,3 +18,4 @@ spring-cloud-gateway-4.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v
 spring-cloud-gateway-4.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v4x.define.NettyRoutingFilterInstrumentation
 spring-cloud-gateway-4.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v4x.define.ServerWebExchangeInstrumentation
 spring-cloud-gateway-4.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v4x.define.DispatcherHandlerInstrumentation
+spring-cloud-gateway-4.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v4x.define.GatewayFilterInstrumentation

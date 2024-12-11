@@ -18,3 +18,4 @@ spring-cloud-gateway-3.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v
 spring-cloud-gateway-3.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define.NettyRoutingFilterInstrumentation
 spring-cloud-gateway-3.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define.ServerWebExchangeInstrumentation
 spring-cloud-gateway-3.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define.DispatcherHandlerInstrumentation
+spring-cloud-gateway-3.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v3x.define.GatewayFilterInstrumentation

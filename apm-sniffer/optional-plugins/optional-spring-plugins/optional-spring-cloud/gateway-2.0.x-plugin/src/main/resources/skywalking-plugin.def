@@ -19,3 +19,4 @@ spring-cloud-gateway-2.0.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway
 spring-cloud-gateway-2.0.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.define.HttpClientRequestInstrumentation
 spring-cloud-gateway-2.0.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.define.ServerWebExchangeInstrumentation
 spring-cloud-gateway-2.0.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.define.DispatcherHandlerInstrumentation
+spring-cloud-gateway-2.0.x=org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.define.GatewayFilterInstrumentation

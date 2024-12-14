@@ -43,8 +43,8 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: SpringCloudGateway/RoutingFilter, networkAddress: 'localhost:18070',
-        refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+      - {parentEndpoint: SpringCloudGateway/GatewayFilter, networkAddress: 'localhost:18070',
+        refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
 - serviceName: gateway-projectA-scenario

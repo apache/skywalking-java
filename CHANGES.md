@@ -15,6 +15,7 @@ Release Notes.
 * Add empty judgment for constructorInterceptPoint
 * Bump up gRPC to 1.68.1
 * Bump up netty to 4.1.115.Final
+* Support Tracing for GlobalFilter and GatewayFilter in Spring Gateway
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

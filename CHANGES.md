@@ -4,7 +4,7 @@ Release Notes.
 
 9.4.0
 ------------------
-
+* Upgrade Kafka clients dependency version to 3.8.0
 * Upgrade nats plugin to support 2.16.5
 * Add agent self-observability.
 * Fix intermittent ClassCircularityError by preloading ThreadLocalRandom since ByteBuddy 1.12.11

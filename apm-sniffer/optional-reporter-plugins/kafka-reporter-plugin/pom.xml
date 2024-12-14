@@ -150,19 +150,19 @@
                                 <artifactItem>
                                     <groupId>org.xerial.snappy</groupId>
                                     <artifactId>snappy-java</artifactId>
-                                    <version>1.1.7.3</version>
+                                    <version>1.1.10.5</version>
                                     <outputDirectory>${optional.reporter.plugins.dest.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.lz4</groupId>
                                     <artifactId>lz4-java</artifactId>
-                                    <version>1.6.0</version>
+                                    <version>1.8.0</version>
                                     <outputDirectory>${optional.reporter.plugins.dest.dir}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>com.github.luben</groupId>
                                     <artifactId>zstd-jni</artifactId>
-                                    <version>1.4.3-1</version>
+                                    <version>1.5.6-3</version>
                                     <outputDirectory>${optional.reporter.plugins.dest.dir}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>

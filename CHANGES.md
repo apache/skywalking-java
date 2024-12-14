@@ -15,6 +15,7 @@ Release Notes.
 * Add empty judgment for constructorInterceptPoint
 * Bump up gRPC to 1.68.1
 * Bump up netty to 4.1.115.Final
+* Upgrade Kafka clients dependency version to 3.8.0
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

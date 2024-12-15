@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.aop.SpringProxy;
 import org.springframework.aop.framework.AdvisedSupport;
 
 import static org.hamcrest.core.Is.is;
@@ -48,18 +49,69 @@ public class CreateAopProxyInterceptorTest {
     }
 
     @Test
-    public void testInterceptNormalObject() throws Throwable {
-        doReturn(Object.class).when(advisedSupport).getTargetClass();
+    public void testInterceptClassImplementsNoInterfaces() throws Throwable {
+        // doReturn(Object.class).when(advisedSupport).getTargetClass();
+        // doReturn(Object.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
+        assertThat(true, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, true)));
+    }
+
+    @Test
+    public void testInterceptClassImplementsUserSuppliedInterface() throws Throwable {
+        doReturn(MockClassImplementsUserSuppliedInterface.class).when(advisedSupport).getTargetClass();
+        doReturn(MockClassImplementsUserSuppliedInterface.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
         assertThat(false, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, false)));
     }
 
     @Test
-    public void testInterceptEnhanceInstanceObject() throws Throwable {
-        doReturn(MockClass.class).when(advisedSupport).getTargetClass();
+    public void testInterceptClassImplementsSpringProxy() throws Throwable {
+        // doReturn(MockClassImplementsSpringProxy.class).when(advisedSupport).getTargetClass();
+        // doReturn(MockClassImplementsSpringProxy.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
+        assertThat(true, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, true)));
+    }
+
+    @Test
+    public void testInterceptClassImplementsEnhancedInstance() throws Throwable {
+        doReturn(MockClassImplementsEnhancedInstance.class).when(advisedSupport).getTargetClass();
+        doReturn(MockClassImplementsEnhancedInstance.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
         assertThat(true, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, false)));
     }
 
-    private class MockClass implements EnhancedInstance {
+    @Test
+    public void testClassImplementsEnhancedInstanceAndUserSuppliedInterface() throws Throwable {
+        doReturn(MockClassImplementsSpringProxyAndUserSuppliedInterface.class).when(advisedSupport).getTargetClass();
+        doReturn(MockClassImplementsSpringProxyAndUserSuppliedInterface.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
+        assertThat(false, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, false)));
+    }
+
+    @Test
+    public void testInterceptClassImplementsSpringProxyAndEnhancedInstance() throws Throwable {
+        doReturn(MockClassImplementsSpringProxyAndEnhancedInstance.class).when(advisedSupport).getTargetClass();
+        doReturn(MockClassImplementsSpringProxyAndEnhancedInstance.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
+        assertThat(true, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, false)));
+    }
+
+    @Test
+    public void testInterceptClassImplementsSpringProxyAndUserSuppliedInterface() throws Throwable {
+        doReturn(MockClassImplementsSpringProxyAndUserSuppliedInterface.class).when(advisedSupport).getTargetClass();
+        doReturn(MockClassImplementsSpringProxyAndUserSuppliedInterface.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
+        assertThat(false, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, false)));
+    }
+
+    @Test
+    public void testInterceptClassImplementsEnhancedInstanceAndUserSuppliedInterface() throws Throwable {
+        doReturn(MockClassImplementsEnhancedInstanceAndUserSuppliedInterface.class).when(advisedSupport).getTargetClass();
+        doReturn(MockClassImplementsEnhancedInstanceAndUserSuppliedInterface.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
+        assertThat(false, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, false)));
+    }
+
+    @Test
+    public void testInterceptClassImplementsSpringProxyAndEnhancedInstanceAndUserSuppliedInterface() throws Throwable {
+        doReturn(MockClassImplementsSpringProxyAndEnhancedInstanceAndUserSuppliedInterface.class).when(advisedSupport).getTargetClass();
+        doReturn(MockClassImplementsSpringProxyAndEnhancedInstanceAndUserSuppliedInterface.class.getInterfaces()).when(advisedSupport).getProxiedInterfaces();
+        assertThat(false, is(interceptor.afterMethod(enhancedInstance, null, new Object[] {advisedSupport}, new Class[] {Object.class}, false)));
+    }
+
+    private class MockClassImplementsEnhancedInstance implements EnhancedInstance {
 
         @Override
         public Object getSkyWalkingDynamicField() {
@@ -70,6 +122,83 @@ public class CreateAopProxyInterceptorTest {
         public void setSkyWalkingDynamicField(Object value) {
 
         }
+    }
+
+    private class MockClassImplementsUserSuppliedInterface implements UserSuppliedInterface {
+
+        @Override
+        public void methodOfUserSuppliedInterface() {
+
+        }
+
+    }
+
+    private class MockClassImplementsSpringProxy implements SpringProxy {
+
+    }
+
+    private class MockClassImplementsSpringProxyAndEnhancedInstance  implements EnhancedInstance, SpringProxy {
+
+        @Override
+        public Object getSkyWalkingDynamicField() {
+            return null;
+        }
+
+        @Override
+        public void setSkyWalkingDynamicField(Object value) {
+
+        }
+
+    }
+
+    private class MockClassImplementsEnhancedInstanceAndUserSuppliedInterface  implements EnhancedInstance, UserSuppliedInterface {
+
+        @Override
+        public Object getSkyWalkingDynamicField() {
+            return null;
+        }
+
+        @Override
+        public void setSkyWalkingDynamicField(Object value) {
+
+        }
+
+        @Override
+        public void methodOfUserSuppliedInterface() {
+        }
+
+    }
+
+    private class MockClassImplementsSpringProxyAndUserSuppliedInterface  implements SpringProxy, UserSuppliedInterface {
+
+        @Override
+        public void methodOfUserSuppliedInterface() {
+        }
+
+    }
+
+    private class MockClassImplementsSpringProxyAndEnhancedInstanceAndUserSuppliedInterface  implements EnhancedInstance, SpringProxy, UserSuppliedInterface {
+
+        @Override
+        public Object getSkyWalkingDynamicField() {
+            return null;
+        }
+
+        @Override
+        public void setSkyWalkingDynamicField(Object value) {
+
+        }
+
+        @Override
+        public void methodOfUserSuppliedInterface() {
+        }
+
+    }
+
+    interface UserSuppliedInterface {
+
+         void methodOfUserSuppliedInterface();
+
     }
 
 }

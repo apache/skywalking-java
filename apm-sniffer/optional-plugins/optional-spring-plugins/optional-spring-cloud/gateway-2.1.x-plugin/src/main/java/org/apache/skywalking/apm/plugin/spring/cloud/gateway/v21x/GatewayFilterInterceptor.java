@@ -39,7 +39,6 @@ public class GatewayFilterInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
-        STACK_DEEP.get().getAndIncrement();
         if (isEntry()) {
             ServerWebExchange exchange = (ServerWebExchange) allArguments[0];
 
@@ -67,10 +66,8 @@ public class GatewayFilterInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
-        STACK_DEEP.get().getAndDecrement();
-        if (ContextManager.isActive()) {
-            if (isExit()) {
-                STACK_DEEP.remove();
+        if (isExit()) {
+            if (ContextManager.isActive()) {
                 ContextManager.stopSpan();
             }
         }
@@ -84,10 +81,14 @@ public class GatewayFilterInterceptor implements InstanceMethodsAroundIntercepto
     }
 
     private boolean isEntry() {
-        return STACK_DEEP.get().intValue() == 1;
+        return STACK_DEEP.get().getAndIncrement() == 0;
     }
 
     private boolean isExit() {
-        return STACK_DEEP.get().intValue() <= 0;
+        boolean isExit = STACK_DEEP.get().decrementAndGet() == 0;
+        if (isExit) {
+            STACK_DEEP.remove();
+        }
+        return isExit;
     }
 }

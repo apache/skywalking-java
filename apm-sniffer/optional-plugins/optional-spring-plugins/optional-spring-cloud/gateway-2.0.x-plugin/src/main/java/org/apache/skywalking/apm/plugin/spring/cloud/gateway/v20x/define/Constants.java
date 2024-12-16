@@ -29,4 +29,8 @@ public interface Constants {
     // HttpClientRequest
     String INTERCEPT_CLASS_HTTP_CLIENT_REQUEST = "reactor.ipc.netty.http.client.HttpClientRequest";
     String HTTPCLIENT_REQUEST_HEADERS_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.HttpclientRequestHeadersInterceptor";
+
+    // GatewayFilter
+    String INTERCEPT_CLASS_GATEWAY_FILTER = "org.springframework.cloud.gateway.filter.GatewayFilter";
+    String GATEWAY_FILTER_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.cloud.gateway.v20x.GatewayFilterInterceptor";
 }

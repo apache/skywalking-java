@@ -54,8 +54,8 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       refs:
-      - {parentEndpoint: SpringCloudGateway/RoutingFilter, networkAddress: 'localhost:18070',
-        refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+      - {parentEndpoint: SpringCloudGateway/GatewayFilter, networkAddress: 'localhost:18070',
+        refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
 - serviceName: gateway-projectA-scenario
@@ -76,8 +76,8 @@ segmentItems:
   - segmentId: not null
     spans:
     - operationName: SpringCloudGateway/sendRequest
-      parentSpanId: 0
-      spanId: 1
+      parentSpanId: 1
+      spanId: 2
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
@@ -95,8 +95,8 @@ segmentItems:
         - { key: message, value: not null }
         - { key: stack, value: not null }
     - operationName: SpringCloudGateway/RoutingFilter
-      parentSpanId: -1
-      spanId: 0
+      parentSpanId: 0
+      spanId: 1
       startTime: nq 0
       endTime: nq 0
       componentId: 61
@@ -106,11 +106,23 @@ segmentItems:
         parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
         null, parentService: not null, traceId: not null }
       skipAnalysis: 'false'
+    - operationName: SpringCloudGateway/GatewayFilter
+      parentSpanId: -1
+      spanId: 0
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 61
+      spanType: Local
+      refs:
+        - { parentEndpoint: '/provider/timeout/error', networkAddress: '', refType: CrossThread,
+            parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+              null, parentService: not null, traceId: not null }
+      skipAnalysis: 'false'
   - segmentId: not null
     spans:
     - operationName: SpringCloudGateway/sendRequest
-      parentSpanId: 0
-      spanId: 1
+      parentSpanId: 1
+      spanId: 2
       spanLayer: Http
       startTime: nq 0
       endTime: nq 0
@@ -123,8 +135,8 @@ segmentItems:
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
     - operationName: SpringCloudGateway/RoutingFilter
-      parentSpanId: -1
-      spanId: 0
+      parentSpanId: 0
+      spanId: 1
       startTime: nq 0
       endTime: nq 0
       componentId: 61
@@ -135,6 +147,20 @@ segmentItems:
       - {parentEndpoint: '/provider/b/testcase', networkAddress: '', refType: CrossThread,
         parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
           null, parentService: not null, traceId: not null}
+      skipAnalysis: 'false'
+    - operationName: SpringCloudGateway/GatewayFilter
+      parentSpanId: -1
+      spanId: 0
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 61
+      isError: false
+      spanType: Local
+      peer: ''
+      refs:
+        - {parentEndpoint: '/provider/b/testcase', networkAddress: '', refType: CrossThread,
+           parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+             null, parentService: not null, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:

@@ -1,4 +1,4 @@
-## Support custom trace ignore
+# Support Custom Trace Ignoring
 Here is an optional plugin `apm-trace-ignore-plugin`
 
 **Notice:**
@@ -18,3 +18,5 @@ There are two ways to configure ignore patterns. Settings through system env has
 trace.ignore_path=/your/path/1/**,/your/path/2/**
 ```
 
+## Conflicts Notice
+Due to the mechanism sharing, this plugin has conflicts with the plugin of **sampler plugin with CPU policy**(`trace-sampler-cpu-policy-plugin-*.jar`) in the optional plugin folder.    

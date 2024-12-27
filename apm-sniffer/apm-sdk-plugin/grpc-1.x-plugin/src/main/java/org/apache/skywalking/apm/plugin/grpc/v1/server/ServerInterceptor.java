@@ -36,9 +36,6 @@ import static org.apache.skywalking.apm.plugin.grpc.v1.OperationNameFormatUtil.f
 
 public class ServerInterceptor implements io.grpc.ServerInterceptor {
 
-    static final Context.Key<ContextSnapshot> CONTEXT_SNAPSHOT_KEY = Context.key("skywalking-grpc-context-snapshot");
-    static final Context.Key<AbstractSpan> ACTIVE_SPAN_KEY = Context.key("skywalking-grpc-active-span");
-
     @Override
     public <REQUEST, RESPONSE> ServerCall.Listener<REQUEST> interceptCall(ServerCall<REQUEST, RESPONSE> call,
         Metadata headers, ServerCallHandler<REQUEST, RESPONSE> handler) {
@@ -59,15 +56,17 @@ public class ServerInterceptor implements io.grpc.ServerInterceptor {
         ContextSnapshot contextSnapshot = ContextManager.capture();
         AbstractSpan asyncSpan = span.prepareForAsync();
 
-        Context context = Context.current().withValues(CONTEXT_SNAPSHOT_KEY, contextSnapshot, ACTIVE_SPAN_KEY, asyncSpan);
+        //Context context = Context.current().withValues(CONTEXT_SNAPSHOT_KEY, contextSnapshot, ACTIVE_SPAN_KEY, asyncSpan);
 
         ServerCall.Listener<REQUEST> listener = Contexts.interceptCall(
-                context,
-                new TracingServerCall<>(call),
+            Context.current(),
+                new TracingServerCall<>(call, contextSnapshot, asyncSpan),
                 headers,
                 (serverCall, metadata) -> new TracingServerCallListener<>(
                         handler.startCall(serverCall, metadata),
-                        serverCall.getMethodDescriptor()
+                        serverCall.getMethodDescriptor(),
+                        contextSnapshot,
+                        asyncSpan
                 )
         );
         ContextManager.stopSpan(asyncSpan);

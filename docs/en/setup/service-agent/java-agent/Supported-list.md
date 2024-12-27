@@ -139,8 +139,9 @@ metrics based on the tracing data.
   * JRE Callable and Runnable (Optional²)
   * JRE ForkJoinPool (Optional²)
 * Cache
-  * [Ehcache](https://www.ehcache.org/) 2.x
+  * [Ehcache](https://www.ehcache.org/) 2.x (Optional²)
   * [GuavaCache](https://github.com/google/guava) 18.x -> 23.x (Optional²)
+  * [Caffeine](https://github.com/ben-manes/caffeine) 3.x (Optional²)
 * Kotlin
   * [Coroutine](https://kotlinlang.org/docs/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
 * GraphQL

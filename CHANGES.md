@@ -23,6 +23,8 @@ Release Notes.
 * [doc] Add Spring Gateway Plugin document
 * [doc] Add 4 menu items guiding users to find important notices for Spring Annotation Plugin, Custom Trace Ignoring
   Plugin, Kotlin Coroutine Plugin, and Spring Gateway Plugin
+* Change context and parent entry span propagation mechanism from gRPC ThreadLocal context to SkyWalking native dynamic
+  field as new propagation mechanism, to better support async scenarios. 
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

@@ -31,10 +31,10 @@ segmentItems:
           spanType: Local
           peer: ''
           tags:
-            - { key: cache.key, value: "1" }
             - { key: cache.type, value: Caffeine }
             - { key: cache.cmd, value: put }
             - { key: cache.op, value: write }
+            - { key: cache.key, value: "1" }
           skipAnalysis: 'false'
         - operationName: Caffeine/putAll
           parentSpanId: 0
@@ -47,10 +47,10 @@ segmentItems:
           spanType: Local
           peer: ''
           tags:
-            - { key: cache.key, value: "2" }
             - { key: cache.type, value: Caffeine }
             - { key: cache.cmd, value: putAll }
             - { key: cache.op, value: write }
+            - { key: cache.key, value: "2" }
           skipAnalysis: 'false'
         - operationName: Caffeine/computeIfAbsent
           parentSpanId: 0
@@ -63,10 +63,10 @@ segmentItems:
           spanType: Local
           peer: ''
           tags:
-            - { key: cache.key, value: "1" }
             - { key: cache.type, value: Caffeine }
             - { key: cache.cmd, value: computeIfAbsent }
             - { key: cache.op, value: read }
+            - { key: cache.key, value: "1" }
         - operationName: Caffeine/getIfPresent
           parentSpanId: 0
           spanId: 4
@@ -78,10 +78,10 @@ segmentItems:
           spanType: Local
           peer: ''
           tags:
-            - { key: cache.key, value: "1" }
             - { key: cache.type, value: Caffeine }
             - { key: cache.cmd, value: getIfPresent }
             - { key: cache.op, value: read }
+            - { key: cache.key, value: "1" }
           skipAnalysis: 'false'
         - operationName: Caffeine/getAllPresent
           parentSpanId: 0
@@ -95,10 +95,10 @@ segmentItems:
           peer: ''
           skipAnalysis: 'false'
           tags:
-            - { key: cache.key, value: '2' }
             - { key: cache.type, value: Caffeine }
             - { key: cache.cmd, value: getAllPresent }
             - { key: cache.op, value: read }
+            - { key: cache.key, value: '2' }
         - operationName: Caffeine/remove
           parentSpanId: 0
           spanId: 6
@@ -111,10 +111,10 @@ segmentItems:
           peer: ''
           skipAnalysis: 'false'
           tags:
-            - { key: cache.key, value: '1' }
             - { key: cache.type, value: Caffeine }
             - { key: cache.cmd, value: remove }
             - { key: cache.op, value: write }
+            - { key: cache.key, value: '1' }
         - operationName: Caffeine/remove
           parentSpanId: 0
           spanId: 7
@@ -127,10 +127,10 @@ segmentItems:
           peer: ''
           skipAnalysis: 'false'
           tags:
-            - { key: cache.key, value: '2' }
             - { key: cache.type, value: Caffeine }
             - { key: cache.cmd, value: remove }
             - { key: cache.op, value: write }
+            - { key: cache.key, value: '2' }
         - operationName: Caffeine/clear
           parentSpanId: 0
           spanId: 8

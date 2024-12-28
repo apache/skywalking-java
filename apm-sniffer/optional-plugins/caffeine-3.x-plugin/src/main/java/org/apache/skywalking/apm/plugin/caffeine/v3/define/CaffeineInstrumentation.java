@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.caffeine.v3.define;
 
+import java.util.Map;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
@@ -26,6 +27,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInst
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch.byMultiClassMatch;
 
@@ -33,7 +35,9 @@ public class CaffeineInstrumentation extends ClassInstanceMethodsEnhancePluginDe
 
     public static final String BOUNDED_LOCAL_INTERCEPT_CLASS = "com.github.benmanes.caffeine.cache.BoundedLocalCache";
     public static final String UNBOUNDED_LOCAL_INTERCEPT_CLASS = "com.github.benmanes.caffeine.cache.UnboundedLocalCache";
-    public static final String CAFFEINE_ENHANCE_CLASS = "org.apache.skywalking.apm.plugin.caffeine.v3.CaffeineInterceptor";
+    public static final String CAFFEINE_ITERABLE_ENHANCE_CLASS = "org.apache.skywalking.apm.plugin.caffeine.v3.CaffeineIterableInterceptor";
+    public static final String CAFFEINE_MAP_ENHANCE_CLASS = "org.apache.skywalking.apm.plugin.caffeine.v3.CaffeineMapInterceptor";
+    public static final String CAFFEINE_STRING_ENHANCE_CLASS = "org.apache.skywalking.apm.plugin.caffeine.v3.CaffeineStringInterceptor";
 
     // read/write operations
     public static final String GET_IF_PRESENT_METHOD = "getIfPresent";
@@ -48,7 +52,7 @@ public class CaffeineInstrumentation extends ClassInstanceMethodsEnhancePluginDe
     protected ClassMatch enhanceClass() {
         return byMultiClassMatch(BOUNDED_LOCAL_INTERCEPT_CLASS, UNBOUNDED_LOCAL_INTERCEPT_CLASS);
     }
- 
+
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[0];
@@ -62,17 +66,47 @@ public class CaffeineInstrumentation extends ClassInstanceMethodsEnhancePluginDe
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
                     return named(GET_IF_PRESENT_METHOD)
                         .and(takesArguments(2))
-                        .or(named(GET_ALL_PRESENT_METHOD).and(takesArguments(1)))
                         .or(named(COMPUTE_IF_ABSENT_METHOD).and(takesArguments(4)))
                         .or(named(PUT_METHOD).and(takesArguments(2)))
                         .or(named(REMOVE_METHOD).and(takesArguments(1)))
-                        .or(named(PUT_ALL_METHOD).and(takesArguments(1)))
                         .or(named(CLEAR_METHOD).and(takesArguments(0)));
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return CAFFEINE_ENHANCE_CLASS;
+                    return CAFFEINE_STRING_ENHANCE_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(GET_ALL_PRESENT_METHOD).and(takesArgument(0, Iterable.class));
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return CAFFEINE_ITERABLE_ENHANCE_CLASS;
+                }
+
+                @Override
+                public boolean isOverrideArgs() {
+                    return false;
+                }
+            },
+            new InstanceMethodsInterceptPoint() {
+                @Override
+                public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                    return named(PUT_ALL_METHOD).and(takesArgument(0, Map.class));
+                }
+
+                @Override
+                public String getMethodsInterceptor() {
+                    return CAFFEINE_MAP_ENHANCE_CLASS;
                 }
 
                 @Override

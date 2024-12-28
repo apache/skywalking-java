@@ -28,10 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CaffeineController {
 
+    Cache<Object, Object> caffeine = Caffeine.newBuilder().build();
+
     @GetMapping("/case/caffeine")
     public void testCase() {
         try {
-            Cache<Object, Object> caffeine = Caffeine.newBuilder().build();
             Map<String, String> data = new HashMap<>();
             data.put("2", "value-2");
 

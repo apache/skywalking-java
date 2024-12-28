@@ -19,9 +19,6 @@
 package org.apache.skywalking.apm.plugin.caffeine.v3;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
@@ -33,7 +30,17 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 
 import static org.apache.skywalking.apm.plugin.caffeine.v3.CaffeineOperationTransform.transformOperation;
 
-public class CaffeineInterceptor implements InstanceMethodsAroundInterceptor {
+abstract public class AbstractCaffeineInterceptor implements InstanceMethodsAroundInterceptor {
+
+    protected AbstractSpan generateSpanInfo(String methodName) {
+        AbstractSpan span = ContextManager.createLocalSpan("Caffeine/" + methodName);
+        span.setComponent(ComponentsDefine.CAFFEINE);
+        Tags.CACHE_TYPE.set(span, ComponentsDefine.CAFFEINE.getName());
+        Tags.CACHE_CMD.set(span, methodName);
+        transformOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
+        SpanLayer.asCache(span);
+        return span;
+    }
 
     @Override
     public void beforeMethod(final EnhancedInstance objInst,
@@ -41,28 +48,6 @@ public class CaffeineInterceptor implements InstanceMethodsAroundInterceptor {
                              final Object[] allArguments,
                              final Class<?>[] argumentsTypes,
                              final MethodInterceptResult result) throws Throwable {
-        String methodName = method.getName();
-        AbstractSpan span = ContextManager.createLocalSpan("Caffeine/" + methodName);
-        span.setComponent(ComponentsDefine.CAFFEINE);
-        if (allArguments != null && allArguments.length > 0 && allArguments[0] != null) {
-            if (allArguments[0] instanceof String) {
-                Tags.CACHE_KEY.set(span, allArguments[0].toString());
-            } else if (allArguments[0] instanceof Map) {
-                String keys = ((Map<?, ?>) allArguments[0])
-                    .keySet().stream().map(String::valueOf)
-                    .collect(Collectors.joining(","));
-                Tags.CACHE_KEY.set(span, keys);
-            } else if (allArguments[0] instanceof Set) {
-                String keys = ((Set<?>) allArguments[0])
-                    .stream().map(String::valueOf)
-                    .collect(Collectors.joining(","));
-                Tags.CACHE_KEY.set(span, keys);
-            }
-        }
-        Tags.CACHE_TYPE.set(span, ComponentsDefine.CAFFEINE.getName());
-        Tags.CACHE_CMD.set(span, methodName);
-        transformOperation(methodName).ifPresent(op -> Tags.CACHE_OP.set(span, op));
-        SpanLayer.asCache(span);
     }
 
     @Override

@@ -44,7 +44,9 @@ public class CaffeineInterceptorTest {
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
 
-    private CaffeineInterceptor caffeineInterceptor;
+    private CaffeineIterableInterceptor caffeineIterableInterceptor;
+    private CaffeineMapInterceptor caffeineMapInterceptor;
+    private CaffeineStringInterceptor caffeineStringInterceptor;
     private Object[] operateObjectArguments;
 
     private Exception exception;
@@ -65,7 +67,9 @@ public class CaffeineInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
-        caffeineInterceptor = new CaffeineInterceptor();
+        caffeineIterableInterceptor = new CaffeineIterableInterceptor();
+        caffeineMapInterceptor = new CaffeineMapInterceptor();
+        caffeineStringInterceptor = new CaffeineStringInterceptor();
         exception = new Exception();
         operateObjectArguments = new Object[] {"dataKey"};
         Class<?> cache = Class.forName("com.github.benmanes.caffeine.cache.BoundedLocalCache");
@@ -81,63 +85,64 @@ public class CaffeineInterceptorTest {
 
     @Test
     public void testGetAllPresentSuccess() throws Throwable {
-        caffeineInterceptor.beforeMethod(null, getAllPresentMethod, null, null, null);
-        caffeineInterceptor.handleMethodException(null, getAllPresentMethod, null, null, exception);
-        caffeineInterceptor.afterMethod(null, getAllPresentMethod, null, null, null);
+        caffeineIterableInterceptor.beforeMethod(null, getAllPresentMethod, null, null, null);
+        caffeineIterableInterceptor.handleMethodException(null, getAllPresentMethod, null, null, exception);
+        caffeineIterableInterceptor.afterMethod(null, getAllPresentMethod, null, null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
 
     @Test
     public void testGetIfPresentSuccess() throws Throwable {
-        caffeineInterceptor.beforeMethod(null, getIfPresentMethod, operateObjectArguments, null, null);
-        caffeineInterceptor.handleMethodException(null, getIfPresentMethod, operateObjectArguments, null, exception);
-        caffeineInterceptor.afterMethod(null, getIfPresentMethod, operateObjectArguments, null, null);
+        caffeineStringInterceptor.beforeMethod(null, getIfPresentMethod, operateObjectArguments, null, null);
+        caffeineStringInterceptor.handleMethodException(
+            null, getIfPresentMethod, operateObjectArguments, null, exception);
+        caffeineStringInterceptor.afterMethod(null, getIfPresentMethod, operateObjectArguments, null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
 
     @Test
     public void testComputeIfAbsentMethodSuccess() throws Throwable {
-        caffeineInterceptor.beforeMethod(null, computeIfAbsentMethod, null, null, null);
-        caffeineInterceptor.handleMethodException(null, computeIfAbsentMethod, null, null, exception);
-        caffeineInterceptor.afterMethod(null, computeIfAbsentMethod, null, null, null);
+        caffeineStringInterceptor.beforeMethod(null, computeIfAbsentMethod, null, null, null);
+        caffeineStringInterceptor.handleMethodException(null, computeIfAbsentMethod, null, null, exception);
+        caffeineStringInterceptor.afterMethod(null, computeIfAbsentMethod, null, null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
 
     @Test
     public void testPutMethodSuccess() throws Throwable {
-        caffeineInterceptor.beforeMethod(null, putMethod, operateObjectArguments, null, null);
-        caffeineInterceptor.handleMethodException(null, putMethod, operateObjectArguments, null, exception);
-        caffeineInterceptor.afterMethod(null, putMethod, operateObjectArguments, null, null);
+        caffeineStringInterceptor.beforeMethod(null, putMethod, operateObjectArguments, null, null);
+        caffeineStringInterceptor.handleMethodException(null, putMethod, operateObjectArguments, null, exception);
+        caffeineStringInterceptor.afterMethod(null, putMethod, operateObjectArguments, null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
 
     @Test
     public void testPutAllMethodSuccess() throws Throwable {
-        caffeineInterceptor.beforeMethod(null, putAllMethod, null, null, null);
-        caffeineInterceptor.handleMethodException(null, putAllMethod, null, null, exception);
-        caffeineInterceptor.afterMethod(null, putAllMethod, null, null, null);
+        caffeineMapInterceptor.beforeMethod(null, putAllMethod, null, null, null);
+        caffeineMapInterceptor.handleMethodException(null, putAllMethod, null, null, exception);
+        caffeineMapInterceptor.afterMethod(null, putAllMethod, null, null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
 
     @Test
     public void testRemoveMethodSuccess() throws Throwable {
-        caffeineInterceptor.beforeMethod(null, removeMethod, operateObjectArguments, null, null);
-        caffeineInterceptor.handleMethodException(null, removeMethod, operateObjectArguments, null, exception);
-        caffeineInterceptor.afterMethod(null, removeMethod, operateObjectArguments, null, null);
+        caffeineStringInterceptor.beforeMethod(null, removeMethod, operateObjectArguments, null, null);
+        caffeineStringInterceptor.handleMethodException(null, removeMethod, operateObjectArguments, null, exception);
+        caffeineStringInterceptor.afterMethod(null, removeMethod, operateObjectArguments, null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
-    
+
     @Test
     public void testClearMethodSuccess() throws Throwable {
-        caffeineInterceptor.beforeMethod(null, cleanMethod, null, null, null);
-        caffeineInterceptor.handleMethodException(null, cleanMethod, null, null, exception);
-        caffeineInterceptor.afterMethod(null, cleanMethod, null, null, null);
+        caffeineStringInterceptor.beforeMethod(null, cleanMethod, null, null, null);
+        caffeineStringInterceptor.handleMethodException(null, cleanMethod, null, null, exception);
+        caffeineStringInterceptor.afterMethod(null, cleanMethod, null, null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }

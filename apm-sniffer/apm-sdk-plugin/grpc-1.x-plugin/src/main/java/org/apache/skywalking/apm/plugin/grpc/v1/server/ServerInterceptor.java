@@ -56,8 +56,6 @@ public class ServerInterceptor implements io.grpc.ServerInterceptor {
         ContextSnapshot contextSnapshot = ContextManager.capture();
         AbstractSpan asyncSpan = span.prepareForAsync();
 
-        //Context context = Context.current().withValues(CONTEXT_SNAPSHOT_KEY, contextSnapshot, ACTIVE_SPAN_KEY, asyncSpan);
-
         ServerCall.Listener<REQUEST> listener = Contexts.interceptCall(
             Context.current(),
                 new TracingServerCall<>(call, contextSnapshot, asyncSpan),

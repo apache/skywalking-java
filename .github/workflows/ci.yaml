@@ -42,7 +42,7 @@ jobs:
   build:
     name: Java ${{ matrix.java-version }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     needs: [ license ]
     strategy:
       fail-fast: true

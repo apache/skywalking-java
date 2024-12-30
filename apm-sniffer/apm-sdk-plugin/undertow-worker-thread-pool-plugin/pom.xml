@@ -29,5 +29,12 @@
     <name>undertow-worker-thread-pool-plugin</name>
     <url>http://maven.apache.org</url>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.xnio</groupId>
+            <artifactId>xnio-api</artifactId>
+            <version>3.8.4.Final</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

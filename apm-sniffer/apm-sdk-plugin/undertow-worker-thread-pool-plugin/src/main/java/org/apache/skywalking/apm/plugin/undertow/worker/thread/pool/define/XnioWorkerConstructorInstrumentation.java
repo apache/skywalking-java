@@ -18,41 +18,35 @@
 
 package org.apache.skywalking.apm.plugin.undertow.worker.thread.pool.define;
 
-import static net.bytebuddy.matcher.ElementMatchers.any;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
-
-import java.util.Collections;
-import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
-import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
+import static net.bytebuddy.matcher.ElementMatchers.any;
+import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+
 /**
- * ThreadPoolExecutor implemented xnio worker task pool before 3.6.0
+ * xnio task pool new implementation since 3.6.0
+ * <a href="https://github.com/xnio/xnio/commit/071800e0a85c9da9b88a976ac7ecb85760924dbf"/>
  */
-public class UndertowWorkerThreadPoolInstrumentation extends ClassEnhancePluginDefine {
+public class XnioWorkerConstructorInstrumentation extends ClassEnhancePluginDefine {
 
-    private static final String THREAD_POOL_EXECUTOR_CLASS = "org.xnio.XnioWorker$TaskPool";
+    private static final String XNIO_WORKER_CLASS = "org.xnio.XnioWorker";
 
-    private static final String UNDERTOW_WORKER_THREAD_POOL_INTERCEPT = "org.apache.skywalking.apm.plugin.undertow.worker.thread.pool.UndertowWorkerThreadPoolConstructorIntercept";
+    private static final String UNDERTOW_WORKER_THREAD_POOL_INTERCEPT = "org.apache.skywalking.apm.plugin.undertow.worker.thread.pool.XnioWorkerConstructorInterceptor";
 
     @Override
-    protected List<WitnessMethod> witnessMethods() {
-        return Collections.singletonList(new WitnessMethod(
-            "org.xnio.XnioWorker$TaskPool",
-            named("terminated")
-        ));
+    protected String[] witnessClasses() {
+        return new String[] {"org.xnio.XnioWorker$EnhancedQueueExecutorTaskPool"};
     }
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(THREAD_POOL_EXECUTOR_CLASS);
+        return byName(XNIO_WORKER_CLASS);
     }
 
     @Override

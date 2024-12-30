@@ -22,29 +22,29 @@ meterItems:
           tags:
             - {name: metric_type, value: core_pool_size}
             - {name: pool_name, value: undertow_worker_pool}
-        singleValue: ge 1
+        singleValue: ge -1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: max_pool_size}
             - {name: pool_name, value: undertow_worker_pool}
-        singleValue: ge 1
+        singleValue: ge -1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: pool_size}
             - {name: pool_name, value: undertow_worker_pool}
-        singleValue: ge 0
+        singleValue: ge -1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: active_size}
             - {name: pool_name, value: undertow_worker_pool}
-        singleValue: ge 0
+        singleValue: ge -1
       - meterId:
           name: thread_pool
           tags:
             - {name: metric_type, value: queue_size}
             - {name: pool_name, value: undertow_worker_pool}
-        singleValue: ge 0
+        singleValue: ge -1
 

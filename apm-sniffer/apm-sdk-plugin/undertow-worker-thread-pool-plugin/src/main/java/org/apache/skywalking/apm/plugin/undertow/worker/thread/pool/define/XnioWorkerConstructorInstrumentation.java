@@ -31,7 +31,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 
 /**
  * xnio task pool new implementation since 3.6.0
- * <a href="https://github.com/xnio/xnio/commit/071800e0a85c9da9b88a976ac7ecb85760924dbf"/>
+ * https://github.com/xnio/xnio/commit/071800e0a85c9da9b88a976ac7ecb85760924dbf
  */
 public class XnioWorkerConstructorInstrumentation extends ClassEnhancePluginDefine {
 

@@ -27,6 +27,7 @@ Release Notes.
   field as new propagation mechanism, to better support async scenarios. 
 * Add Caffeine plugin as optional.
 * Add Undertow 2.1.7.final+ worker thread pool metrics.
+* Upgrade Kafka clients dependency version to 3.8.1
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

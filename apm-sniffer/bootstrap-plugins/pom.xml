@@ -32,10 +32,7 @@
         <shade.net.bytebuddy.target>${shade.package}.${shade.net.bytebuddy.source}</shade.net.bytebuddy.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <sdk.plugin.related.dir />
-        <agent.package.dest.dir>${project.build.directory}${sdk.plugin.related.dir}/../../../../skywalking-agent
-        </agent.package.dest.dir>
-        <bootstrap.plugin.dest.dir>${agent.package.dest.dir}/bootstrap-plugins</bootstrap.plugin.dest.dir>
+        <bootstrap.plugin.dest.dir>${maven.multiModuleProjectDirectory}/skywalking-agent/bootstrap-plugins</bootstrap.plugin.dest.dir>
 
         <ant-contrib.version>1.0b3</ant-contrib.version>
         <ant-nodeps.version>1.8.1</ant-nodeps.version>

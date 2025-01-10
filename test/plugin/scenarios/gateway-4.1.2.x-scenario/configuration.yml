@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-4.0.0
-4.0.8
-4.1.0
-4.1.1
+type: jvm
+entryService: http://localhost:8080/provider/b/testcase
+healthCheck: http://localhost:8080/provider/b/healthCheck
+startScript: ./bin/startup.sh
+runningMode: with_optional
+withPlugins: apm-spring-cloud-gateway-4.x-plugin-*.jar

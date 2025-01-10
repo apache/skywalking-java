@@ -59,7 +59,7 @@ public class GatewayFilterInstrumentation extends AbstractGatewayV3EnhancePlugin
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return true;
+                    return false;
                 }
             }
         };

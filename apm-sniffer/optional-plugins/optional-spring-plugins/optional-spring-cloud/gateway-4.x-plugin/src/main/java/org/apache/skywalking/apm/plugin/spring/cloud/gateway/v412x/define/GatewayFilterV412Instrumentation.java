@@ -59,7 +59,7 @@ public class GatewayFilterV412Instrumentation extends AbstractGatewayV412Enhance
 
                 @Override
                 public boolean isOverrideArgs() {
-                    return true;
+                    return false;
                 }
             }
         };

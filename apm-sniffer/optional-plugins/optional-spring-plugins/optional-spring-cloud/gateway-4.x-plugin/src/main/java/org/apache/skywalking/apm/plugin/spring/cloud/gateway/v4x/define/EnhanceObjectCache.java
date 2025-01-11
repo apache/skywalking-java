@@ -17,6 +17,7 @@
 
 package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v4x.define;
 
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
 /**
@@ -27,6 +28,7 @@ public class EnhanceObjectCache {
     private String url;
     private AbstractSpan span;
     private AbstractSpan span1;
+    private ContextSnapshot contextSnapshot;
 
     public String getUrl() {
         return url;
@@ -51,4 +53,13 @@ public class EnhanceObjectCache {
     public void setSpan1(final AbstractSpan span) {
         span1 = span;
     }
+
+    public ContextSnapshot getContextSnapshot() {
+        return contextSnapshot;
+    }
+
+    public void setContextSnapshot(final ContextSnapshot contextSnapshot) {
+        this.contextSnapshot = contextSnapshot;
+    }
+
 }

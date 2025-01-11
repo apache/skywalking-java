@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v21x.define;
+package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v412x.define;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
@@ -27,11 +27,14 @@ import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentTypeNameMatch.takesArgumentWithType;
 
-public class GatewayFilterInstrumentation extends AbstractGateway210EnhancePluginDefine {
+public class GatewayFilterV412Instrumentation extends AbstractGatewayV412EnhancePluginDefine {
+
+    private static final String INTERCEPT_CLASS_GATEWAY_FILTER = "org.springframework.cloud.gateway.filter.GatewayFilter";
+    private static final String GATEWAY_FILTER_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.cloud.gateway.v412x.GatewayFilterV412Interceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
-        return HierarchyMatch.byHierarchyMatch(Constants.INTERCEPT_CLASS_GATEWAY_FILTER);
+        return HierarchyMatch.byHierarchyMatch(INTERCEPT_CLASS_GATEWAY_FILTER);
     }
 
     @Override
@@ -51,7 +54,7 @@ public class GatewayFilterInstrumentation extends AbstractGateway210EnhancePlugi
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return Constants.GATEWAY_FILTER_INTERCEPTOR;
+                    return GATEWAY_FILTER_INTERCEPTOR;
                 }
 
                 @Override

@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,7 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-4.0.0
-4.0.8
-4.1.0
-4.1.1
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=gateway-projectA-scenario" ${home}/../libs/gateway-projectA-scenario.jar &
+sleep 1
+
+java -jar ${agent_opts} "-Dskywalking.agent.service_name=gateway-projectB-scenario" ${home}/../libs/gateway-projectB-scenario.jar &

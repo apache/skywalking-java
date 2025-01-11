@@ -53,6 +53,9 @@ jobs:
           - os: ubuntu
             java-version: 21
     steps:
+      - if: matrix.os == 'windows'
+        name: Support longpaths
+        run: git config --system core.longpaths true
       - uses: actions/checkout@v2
         with:
           submodules: true

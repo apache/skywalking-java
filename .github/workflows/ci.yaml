@@ -54,7 +54,7 @@ jobs:
             java-version: 21
     steps:
       - name: Support longpaths
-        run: git config core.longpaths true
+        run: sudo git config --system core.longpaths true
       - uses: actions/checkout@v2
         with:
           submodules: true

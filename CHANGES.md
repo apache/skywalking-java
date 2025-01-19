@@ -28,6 +28,7 @@ Release Notes.
 * Add Caffeine plugin as optional.
 * Add Undertow 2.1.7.final+ worker thread pool metrics.
 * Support for tracking in spring gateway versions 4.1.2 and above.
+* Fix `ConsumeDriver` running status concurrency issues.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/222?closed=1)
 

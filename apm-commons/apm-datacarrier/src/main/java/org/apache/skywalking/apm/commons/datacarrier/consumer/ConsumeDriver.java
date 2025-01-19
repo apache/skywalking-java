@@ -27,7 +27,7 @@ import org.apache.skywalking.apm.commons.datacarrier.buffer.Channels;
  * Pool of consumers <p> Created by wusheng on 2016/10/25.
  */
 public class ConsumeDriver<T> implements IDriver {
-    private boolean running;
+    private volatile boolean running;
     private ConsumerThread[] consumerThreads;
     private Channels<T> channels;
     private ReentrantLock lock;
@@ -88,6 +88,9 @@ public class ConsumeDriver<T> implements IDriver {
         }
         lock.lock();
         try {
+            if (running) {
+                return;
+            }
             this.allocateBuffer2Thread();
             for (ConsumerThread consumerThread : consumerThreads) {
                 consumerThread.start();
@@ -124,8 +127,14 @@ public class ConsumeDriver<T> implements IDriver {
 
     @Override
     public void close(Channels channels) {
+        if (!running) {
+            return;
+        }
         lock.lock();
         try {
+            if (!running) {
+                return;
+            }
             this.running = false;
             for (ConsumerThread consumerThread : consumerThreads) {
                 consumerThread.shutdown();

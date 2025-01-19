@@ -88,7 +88,7 @@ public class ConsumeDriver<T> implements IDriver {
         }
         lock.lock();
         try {
-            if (running){
+            if (running) {
                 return;
             }
             this.allocateBuffer2Thread();

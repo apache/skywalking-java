@@ -61,7 +61,7 @@ segmentItems:
             spanType: Local
             skipAnalysis: false
             tags:
-              - { key: carrier.thread, value: not null }
+              - { key: thread.carrier, value: not null }
             refs:
               - { parentEndpoint: 'GET:/case', networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -94,7 +94,7 @@ segmentItems:
             spanType: Local
             skipAnalysis: false
             tags:
-              - { key: carrier.thread, value: not null }
+              - { key: thread.carrier, value: not null }
             refs:
               - { parentEndpoint: 'GET:/case', networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not

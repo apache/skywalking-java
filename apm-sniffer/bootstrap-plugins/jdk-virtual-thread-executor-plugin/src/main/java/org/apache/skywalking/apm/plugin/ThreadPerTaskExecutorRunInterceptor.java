@@ -74,7 +74,7 @@ public class ThreadPerTaskExecutorRunInterceptor implements InstanceMethodsAroun
         if (threadInfo.startsWith("VirtualThread")) {
             String[] parts = threadInfo.split("@");
             if (parts.length >= 1) {
-                Tags.CARRIER_THREAD.set(span, parts[1]);
+                Tags.THREAD_CARRIER.set(span, parts[1]);
             }
         }
     }

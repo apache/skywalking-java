@@ -58,11 +58,11 @@ public class Application {
 
         @GetMapping("/case")
         public String testCase() throws ExecutionException, InterruptedException {
-            Runnable runnable = () -> restTemplate.getForEntity("http://www.baidu.com", String.class);
+            Runnable runnable = () -> restTemplate.getForEntity("https://github.com/apache/skywalking", String.class);
             executorService.execute(runnable);
 
             Callable callable = () -> {
-                restTemplate.getForEntity("http://www.baidu.com", String.class);
+                restTemplate.getForEntity("https://github.com/apache/skywalking", String.class);
                 return "success";
             };
             executorService.submit(callable).get();

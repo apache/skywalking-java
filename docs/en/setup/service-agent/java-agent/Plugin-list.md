@@ -48,6 +48,7 @@
 - jackson-2.x
 - jdk-http-plugin
 - jdk-threading-plugin
+- jdk-virtual-thread-executor-plugin
 - jedis-2.x-3.x
 - jedis-4.x
 - jetty-client-9.0

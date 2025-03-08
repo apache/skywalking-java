@@ -56,7 +56,7 @@ segmentItems:
             spanId: 0
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 161
             isError: false
             spanType: Local
             skipAnalysis: false
@@ -89,7 +89,7 @@ segmentItems:
             spanId: 0
             startTime: nq 0
             endTime: nq 0
-            componentId: not null
+            componentId: 161
             isError: false
             spanType: Local
             skipAnalysis: false

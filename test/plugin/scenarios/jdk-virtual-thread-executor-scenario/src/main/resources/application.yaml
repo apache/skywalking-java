@@ -15,7 +15,7 @@
 # limitations under the License.
 
 server:
-  port: 8127
+  port: 8080
   servlet:
     context-path: /virtual-thread-executor-scenario
 

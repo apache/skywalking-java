@@ -14,7 +14,7 @@
 log4j.appender.CONSOLE.layout=org.apache.skywalking.apm.toolkit.log.log4j.v1.x.TraceIdPatternLayout
 ```
 
-* set `%T` in `layout.ConversionPattern` ( In 2.0-2016, you should use %x, [Why change?](https://github.com/wu-sheng/sky-walking/issues/77) )
+* set `%T` in `layout.ConversionPattern` ( In 2.0-2016, you should use %x, [Why change?](https://github.com/apache/skywalking/issues/77) )
 ```properties
 log4j.appender.CONSOLE.layout.ConversionPattern=%d [%T] %-5p %c{1}:%L - %m%n
 ```

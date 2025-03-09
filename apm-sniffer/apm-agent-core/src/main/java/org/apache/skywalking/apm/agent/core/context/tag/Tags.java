@@ -156,6 +156,11 @@ public final class Tags {
     public static final StringTag THREAD_ID = new StringTag(23, "thread.id");
 
     /**
+     * THREAD_CARRIER represents the actual operating system thread that carries out the execution of the virtual thread.
+     */
+    public static final StringTag THREAD_CARRIER = new StringTag(24, "thread.carrier");
+
+    /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without
      * creating a new one.
      *

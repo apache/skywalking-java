@@ -260,4 +260,6 @@ public class ComponentsDefine {
     public static final OfficialComponent SOLON_MVC = new OfficialComponent(158, "SolonMVC");
 
     public static final OfficialComponent CAFFEINE = new OfficialComponent(160, "Caffeine");
+
+    public static final OfficialComponent THREAD_PER_TASK_EXECUTOR = new OfficialComponent(161, "ThreadPerTask-executor");
 }

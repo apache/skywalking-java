@@ -43,6 +43,7 @@
         <module>jdk-threading-plugin</module>
         <module>jdk-threadpool-plugin</module>
         <module>jdk-forkjoinpool-plugin</module>
+        <module>jdk-virtual-thread-executor-plugin</module>
     </modules>
 
     <dependencies>

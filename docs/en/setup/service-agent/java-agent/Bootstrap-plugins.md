@@ -7,6 +7,7 @@ Now, we have the following known bootstrap plugins.
 * Plugin of JDK Callable and Runnable. Agent is compatible with JDK 1.8+
 * Plugin of JDK ThreadPoolExecutor. Agent is compatible with JDK 1.8+
 * Plugin of JDK ForkJoinPool. Agent is compatible with JDK 1.8+
+* Plugin of JDK VirtualThreadExecutor. Agent is compatible with JDK 21+
 
 ### HttpURLConnection Plugin Notice
 The plugin of JDK HttpURLConnection depended on `sun.net.*`. When using Java 9+, You should add some JVM options as follows:

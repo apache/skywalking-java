@@ -24,6 +24,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import java.lang.reflect.Method;
+import java.util.concurrent.ForkJoinTask;
 
 public abstract class AbstractThreadingPoolInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
@@ -71,6 +72,8 @@ public abstract class AbstractThreadingPoolInterceptor implements InstanceMethod
         Object argument = allArguments[0];
 
         // Avoid duplicate enhancement, such as the case where it has already been enhanced by RunnableWrapper or CallableWrapper with toolkit.
-        return argument instanceof EnhancedInstance && ((EnhancedInstance) argument).getSkyWalkingDynamicField() instanceof ContextSnapshot;
+        return argument instanceof EnhancedInstance
+                && ((EnhancedInstance) argument).getSkyWalkingDynamicField() instanceof ContextSnapshot
+                && !(argument instanceof ForkJoinTask);
     }
 }

@@ -6,7 +6,7 @@ Release Notes.
 ------------------
 
 * Add the virtual thread executor plugin
-
+* Fix Conflicts apm-jdk-threadpool-plugin conflicts with apm-jdk-forkjoinpool-plugin
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

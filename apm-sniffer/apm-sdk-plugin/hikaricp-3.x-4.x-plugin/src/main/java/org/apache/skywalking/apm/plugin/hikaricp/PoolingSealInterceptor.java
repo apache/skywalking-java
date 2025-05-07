@@ -49,8 +49,13 @@ public class PoolingSealInterceptor implements InstanceMethodsAroundInterceptor 
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) throws Throwable {
 
         HikariDataSource hikariDataSource = (HikariDataSource) objInst;
-        ConnectionInfo connectionInfo = URLParser.parser(hikariDataSource.getJdbcUrl());
-        String tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
+        String tagValue;
+        if (hikariDataSource.getJdbcUrl() != null) {
+            ConnectionInfo connectionInfo = URLParser.parser(hikariDataSource.getJdbcUrl());
+            tagValue = connectionInfo.getDatabaseName() + "_" + connectionInfo.getDatabasePeer();
+        } else {
+            tagValue = hikariDataSource.getPoolName();
+        }
         final Map<String, Function<HikariPoolMXBean, Supplier<Double>>> poolMetricMap = getPoolMetrics();
         final Map<String, Function<HikariConfigMXBean, Supplier<Double>>> metricConfigMap = getConfigMetrics();
         poolMetricMap.forEach((key, value) -> MeterFactory.gauge(METER_NAME, value.apply(hikariDataSource.getHikariPoolMXBean()))

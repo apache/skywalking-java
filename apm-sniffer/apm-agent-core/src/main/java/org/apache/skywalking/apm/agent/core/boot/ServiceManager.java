@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import lombok.Getter;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
@@ -37,6 +38,8 @@ public enum ServiceManager {
 
     private static final ILog LOGGER = LogManager.getLogger(ServiceManager.class);
     private Map<Class, BootService> bootedServices = Collections.emptyMap();
+    @Getter
+    private volatile boolean isBooted = false;
 
     public void boot() {
         bootedServices = loadAllServices();
@@ -127,6 +130,7 @@ public enum ServiceManager {
                 LOGGER.error(e, "Service [{}] AfterBoot process fails.", service.getClass().getName());
             }
         }
+        isBooted = true;
     }
 
     /**

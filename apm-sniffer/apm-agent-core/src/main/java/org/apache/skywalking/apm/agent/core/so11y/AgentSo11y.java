@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.meter.Counter;
 import org.apache.skywalking.apm.agent.core.meter.Histogram;
 import org.apache.skywalking.apm.agent.core.meter.MeterFactory;
@@ -58,6 +59,12 @@ public class AgentSo11y {
     private static Histogram INTERCEPTOR_TIME_COST;
 
     public static void measureTracingContextCreation(boolean forceSampling, boolean ignoredTracingContext) {
+        if (!ServiceManager.INSTANCE.isBooted()) {
+            // Agent kernel services could be not-booted-yet as ServiceManager#INSTANCE#boot executed after agent
+            // transfer initialization.
+            // Skip when the services are not ready to avoid MeterService status is not initialized.
+            return;
+        }
         if (forceSampling) {
             if (ignoredTracingContext) {
                 if (PROPAGATED_IGNORE_CONTEXT_COUNTER == null) {
@@ -98,6 +105,12 @@ public class AgentSo11y {
     }
 
     public static void measureTracingContextCompletion(boolean ignoredTracingContext) {
+        if (!ServiceManager.INSTANCE.isBooted()) {
+            // Agent kernel services could be not-booted-yet as ServiceManager#INSTANCE#boot executed after agent
+            // transfer initialization.
+            // Skip when the services are not ready to avoid MeterService status is not initialized.
+            return;
+        }
         if (ignoredTracingContext) {
             if (FINISH_IGNORE_CONTEXT_COUNTER == null) {
                 FINISH_IGNORE_CONTEXT_COUNTER = MeterFactory.counter("finished_ignored_context_counter").build();
@@ -112,6 +125,12 @@ public class AgentSo11y {
     }
 
     public static void measureLeakedTracingContext(boolean ignoredTracingContext) {
+        if (!ServiceManager.INSTANCE.isBooted()) {
+            // Agent kernel services could be not-booted-yet as ServiceManager#INSTANCE#boot executed after agent
+            // transfer initialization.
+            // Skip when the services are not ready to avoid MeterService status is not initialized.
+            return;
+        }
         if (ignoredTracingContext) {
             if (LEAKED_IGNORE_CONTEXT_COUNTER == null) {
                 LEAKED_IGNORE_CONTEXT_COUNTER = MeterFactory
@@ -132,6 +151,12 @@ public class AgentSo11y {
     }
 
     public static void durationOfInterceptor(double timeCostInNanos) {
+        if (!ServiceManager.INSTANCE.isBooted()) {
+            // Agent kernel services could be not-booted-yet as ServiceManager#INSTANCE#boot executed after agent
+            // transfer initialization.
+            // Skip when the services are not ready to avoid MeterService status is not initialized.
+            return;
+        }
         if (INTERCEPTOR_TIME_COST == null) {
             INTERCEPTOR_TIME_COST = MeterFactory
                 .histogram("tracing_context_performance")
@@ -142,6 +167,12 @@ public class AgentSo11y {
     }
 
     public static void errorOfPlugin(String pluginName, String interType) {
+        if (!ServiceManager.INSTANCE.isBooted()) {
+            // Agent kernel services could be not-booted-yet as ServiceManager#INSTANCE#boot executed after agent
+            // transfer initialization.
+            // Skip when the services are not ready to avoid MeterService status is not initialized.
+            return;
+        }
         Counter counter = ERROR_COUNTER_CACHE.computeIfAbsent(pluginName + interType, key -> MeterFactory
             .counter("interceptor_error_counter")
             .tag("plugin_name", pluginName)

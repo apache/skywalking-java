@@ -145,6 +145,8 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
 
         private TypeDescription delegate;
 
+        private Generic superClass;
+
         public SWTypeDescriptionWrapper(TypeDescription delegate, String nameTrait, ClassLoader classLoader, String typeName) {
             this.delegate = delegate;
             this.nameTrait = nameTrait;
@@ -325,7 +327,17 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
 
         @Override
         public Generic getSuperClass() {
-            return delegate.getSuperClass();
+            if (this.superClass == null) {
+                Generic delegateSuperClass = delegate.getSuperClass();
+                if (delegateSuperClass == null) {
+                    return null;
+                }
+                this.superClass = new ForLoadedSuperClassWrapper(
+                        new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, null, delegateSuperClass.asErasure().getName()),
+                        delegateSuperClass
+                );
+            }
+            return this.superClass;
         }
 
         @Override
@@ -351,6 +363,32 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
         @Override
         public int getModifiers() {
             return delegate.getModifiers();
+        }
+    }
+
+    static class ForLoadedSuperClassWrapper extends TypeDescription.Generic.LazyProjection.ForLoadedSuperClass {
+        private final TypeDescription delegation;
+        private final TypeDescription.Generic superGeneric;
+
+        protected ForLoadedSuperClassWrapper(TypeDescription delegation, TypeDescription.Generic superGeneric) {
+            super(null); // HACK: a trick here since type is not used anywhere in the wrapper
+            this.delegation = delegation;
+            this.superGeneric = superGeneric;
+        }
+
+        @Override
+        protected TypeDescription.Generic resolve() {
+            return this.delegation.asGenericType();
+        }
+
+        @Override
+        public TypeDescription asErasure() {
+            return this.delegation;
+        }
+
+        @Override
+        public AnnotationList getDeclaredAnnotations() {
+            return superGeneric.getDeclaredAnnotations();
         }
     }
 

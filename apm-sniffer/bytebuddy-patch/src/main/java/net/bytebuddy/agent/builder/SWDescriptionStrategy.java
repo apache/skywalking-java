@@ -333,8 +333,8 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
                     return null;
                 }
                 this.superClass = new ForLoadedSuperClassWrapper(
-                        null,
-                        new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, null, delegateSuperClass.asErasure().getName())
+                        new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, null, delegateSuperClass.asErasure().getName()),
+                        delegateSuperClass
                 );
             }
             return this.superClass;
@@ -368,15 +368,12 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
 
     static class ForLoadedSuperClassWrapper extends TypeDescription.Generic.LazyProjection.ForLoadedSuperClass {
         private final TypeDescription delegation;
+        private final TypeDescription.Generic superGeneric;
 
-        /**
-         * Creates a new lazy projection of a type's super class.
-         *
-         * @param type The type of which the super class is represented.
-         */
-        protected ForLoadedSuperClassWrapper(Class<?> type, TypeDescription delegation) {
-            super(type);
+        protected ForLoadedSuperClassWrapper(TypeDescription delegation, TypeDescription.Generic superGeneric) {
+            super(null); // HACK: a trick here since type is not used anywhere in the wrapper
             this.delegation = delegation;
+            this.superGeneric = superGeneric;
         }
 
         @Override
@@ -387,6 +384,11 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
         @Override
         public TypeDescription asErasure() {
             return this.delegation;
+        }
+
+        @Override
+        public AnnotationList getDeclaredAnnotations() {
+            return superGeneric.getDeclaredAnnotations();
         }
     }
 

@@ -145,6 +145,8 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
 
         private TypeDescription delegate;
 
+        private Generic superClass;
+
         public SWTypeDescriptionWrapper(TypeDescription delegate, String nameTrait, ClassLoader classLoader, String typeName) {
             this.delegate = delegate;
             this.nameTrait = nameTrait;
@@ -325,7 +327,14 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
 
         @Override
         public Generic getSuperClass() {
-            return delegate.getSuperClass();
+            if (this.superClass == null) {
+                Generic delegateSuperClass = delegate.getSuperClass();
+                if (delegateSuperClass == null) {
+                    return delegateSuperClass;
+                }
+                this.superClass = new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, this.classLoader, delegateSuperClass.getTypeName()).asGenericType();
+            }
+            return this.superClass;
         }
 
         @Override

@@ -333,8 +333,8 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
                     return null;
                 }
                 this.superClass = new ForLoadedSuperClassWrapper(
-                        this.delegate.getClass(),
-                        new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, delegateSuperClass.getClass().getClassLoader(), delegateSuperClass.getClass().getName())
+                        null,
+                        new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, null, delegateSuperClass.asErasure().getName())
                 );
             }
             return this.superClass;

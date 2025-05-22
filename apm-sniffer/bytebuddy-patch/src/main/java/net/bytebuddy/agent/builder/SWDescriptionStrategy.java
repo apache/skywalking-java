@@ -332,7 +332,10 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
                 if (delegateSuperClass == null) {
                     return null;
                 }
-                this.superClass = new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, delegateSuperClass.getClass().getClassLoader(), delegateSuperClass.getClass().getName()).asGenericType();
+                this.superClass = new ForLoadedSuperClassWrapper(
+                        this.delegate.getClass(),
+                        new SWTypeDescriptionWrapper(delegateSuperClass.asErasure(), this.nameTrait, delegateSuperClass.getClass().getClassLoader(), delegateSuperClass.getClass().getName())
+                );
             }
             return this.superClass;
         }
@@ -360,6 +363,30 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
         @Override
         public int getModifiers() {
             return delegate.getModifiers();
+        }
+    }
+
+    static class ForLoadedSuperClassWrapper extends TypeDescription.Generic.LazyProjection.ForLoadedSuperClass {
+        private final TypeDescription delegation;
+
+        /**
+         * Creates a new lazy projection of a type's super class.
+         *
+         * @param type The type of which the super class is represented.
+         */
+        protected ForLoadedSuperClassWrapper(Class<?> type, TypeDescription delegation) {
+            super(type);
+            this.delegation = delegation;
+        }
+
+        @Override
+        protected TypeDescription.Generic resolve() {
+            return this.delegation.asGenericType();
+        }
+
+        @Override
+        public TypeDescription asErasure() {
+            return this.delegation;
         }
     }
 

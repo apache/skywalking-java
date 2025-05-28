@@ -18,6 +18,7 @@
 package org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2;
 
 import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.FieldAccessor;
@@ -135,6 +136,9 @@ public abstract class ClassEnhancePluginDefineV2 extends AbstractClassEnhancePlu
                 newClassBuilder = newClassBuilder.defineField(
                     CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE | ACC_VOLATILE)
                                                  .implement(EnhancedInstance.class)
+                                                 .defineMethod(CONTEXT_GETTER_NAME, Object.class, Visibility.PUBLIC)
+                                                 .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME))
+                                                 .defineMethod(CONTEXT_SETTER_NAME, void.class, Visibility.PUBLIC).withParameters(Object.class)
                                                  .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
                 context.extendObjectCompleted();
             }

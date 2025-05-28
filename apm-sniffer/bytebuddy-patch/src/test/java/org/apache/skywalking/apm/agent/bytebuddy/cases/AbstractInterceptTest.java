@@ -24,6 +24,7 @@ import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.agent.builder.SWAgentBuilderDefault;
 import net.bytebuddy.agent.builder.SWDescriptionStrategy;
 import net.bytebuddy.agent.builder.SWNativeMethodStrategy;
+import net.bytebuddy.description.modifier.Visibility;
 import net.bytebuddy.implementation.FieldAccessor;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SWImplementationContextFactory;
@@ -38,6 +39,7 @@ import org.apache.skywalking.apm.agent.bytebuddy.SWAsmVisitorWrapper;
 import org.apache.skywalking.apm.agent.bytebuddy.SWAuxiliaryTypeNamingStrategy;
 import org.apache.skywalking.apm.agent.bytebuddy.SWClassFileLocator;
 import org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo;
+import org.apache.skywalking.apm.agent.bytebuddy.biz.ChildBar;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -58,11 +60,15 @@ import java.util.List;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_PRIVATE;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_VOLATILE;
 import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_ATTR_NAME;
+import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_GETTER_NAME;
+import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_SETTER_NAME;
 
 public class AbstractInterceptTest {
     public static final String BIZ_FOO_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo";
     public static final String PROJECT_SERVICE_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.ProjectService";
     public static final String DOC_SERVICE_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.DocService";
+    public static final String PARENT_BAR_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.ParentBar";
+    public static final String CHILD_BAR_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.ChildBar";
     public static final String SAY_HELLO_METHOD = "sayHello";
     public static final int BASE_INT_VALUE = 100;
     public static final String CONSTRUCTOR_INTERCEPTOR_CLASS = "constructorInterceptorClass";
@@ -84,6 +90,20 @@ public class AbstractInterceptTest {
             Log.printToConsole();
         }
     };
+
+    protected static void callBar(int round) {
+        Log.info("-------------");
+        Log.info("callChildBar: " + round);
+        // load target class
+        String strResultChild = new ChildBar().sayHelloChild();
+        Log.info("result: " + strResultChild);
+
+        String strResultParent = new ChildBar().sayHelloParent();
+        Log.info("result: " + strResultParent);
+
+        Assert.assertEquals("String value is unexpected", "John", strResultChild);
+        Assert.assertEquals("String value is unexpected", "John", strResultParent);
+    }
 
     protected static void callBizFoo(int round) {
         Log.info("-------------");
@@ -115,7 +135,7 @@ public class AbstractInterceptTest {
 
     protected static void checkInterface(Class testClass, Class interfaceCls) {
         Assert.assertTrue("Check interface failure, the test class: " + testClass + " does not implement the expected interface: " + interfaceCls,
-                EnhancedInstance.class.isAssignableFrom(BizFoo.class));
+                EnhancedInstance.class.isAssignableFrom(testClass));
     }
 
     protected static void checkErrors() {
@@ -195,6 +215,9 @@ public class AbstractInterceptTest {
                                 builder = builder.defineField(
                                                 CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE | ACC_VOLATILE)
                                         .implement(EnhancedInstance.class)
+                                        .defineMethod(CONTEXT_GETTER_NAME, Object.class, Visibility.PUBLIC)
+                                        .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME))
+                                        .defineMethod(CONTEXT_SETTER_NAME, void.class, Visibility.PUBLIC).withParameters(Object.class)
                                         .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
                             }
                             return builder;
@@ -223,7 +246,7 @@ public class AbstractInterceptTest {
         ClassFileTransformer classFileTransformer = new ClassFileTransformer() {
             @Override
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-                if (className.endsWith("BizFoo") || className.endsWith("ProjectService") || className.endsWith("DocService")) {
+                if (className.endsWith("BizFoo") || className.endsWith("ProjectService") || className.endsWith("DocService") || className.endsWith("ChildBar") || className.endsWith("ParentBar")) {
                     Log.error(msg + className);
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                     ClassReader cr = new ClassReader(classfileBuffer);

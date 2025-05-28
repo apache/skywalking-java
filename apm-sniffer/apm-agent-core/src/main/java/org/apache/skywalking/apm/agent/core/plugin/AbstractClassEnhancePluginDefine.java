@@ -51,6 +51,14 @@ public abstract class AbstractClassEnhancePluginDefine {
      * New field name.
      */
     public static final String CONTEXT_ATTR_NAME = "_$EnhancedClassField_ws";
+    /**
+     * Getter method name.
+     */
+    public static final String CONTEXT_GETTER_NAME = "getSkyWalkingDynamicField";
+    /**
+     * Setter method name.
+     */
+    public static final String CONTEXT_SETTER_NAME = "setSkyWalkingDynamicField";
 
     /**
      * Main entrance of enhancing the class.

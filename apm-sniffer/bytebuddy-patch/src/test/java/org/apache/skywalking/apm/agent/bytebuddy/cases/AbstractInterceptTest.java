@@ -60,6 +60,8 @@ import java.util.List;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_PRIVATE;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_VOLATILE;
 import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_ATTR_NAME;
+import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_GETTER_NAME;
+import static org.apache.skywalking.apm.agent.core.plugin.AbstractClassEnhancePluginDefine.CONTEXT_SETTER_NAME;
 
 public class AbstractInterceptTest {
     public static final String BIZ_FOO_CLASS_NAME = "org.apache.skywalking.apm.agent.bytebuddy.biz.BizFoo";
@@ -213,9 +215,9 @@ public class AbstractInterceptTest {
                                 builder = builder.defineField(
                                                 CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE | ACC_VOLATILE)
                                         .implement(EnhancedInstance.class)
-                                        .defineMethod("getSkyWalkingDynamicField", Object.class, Visibility.PUBLIC)
+                                        .defineMethod(CONTEXT_GETTER_NAME, Object.class, Visibility.PUBLIC)
                                         .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME))
-                                        .defineMethod("setSkyWalkingDynamicField", void.class, Visibility.PUBLIC).withParameters(Object.class)
+                                        .defineMethod(CONTEXT_SETTER_NAME, void.class, Visibility.PUBLIC).withParameters(Object.class)
                                         .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
                             }
                             return builder;

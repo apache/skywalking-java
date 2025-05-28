@@ -103,9 +103,9 @@ public abstract class ClassEnhancePluginDefine extends AbstractClassEnhancePlugi
                 newClassBuilder = newClassBuilder.defineField(
                     CONTEXT_ATTR_NAME, Object.class, ACC_PRIVATE | ACC_VOLATILE)
                                                  .implement(EnhancedInstance.class)
-                                                 .defineMethod("getSkyWalkingDynamicField", Object.class, Visibility.PUBLIC)
+                                                 .defineMethod(CONTEXT_GETTER_NAME, Object.class, Visibility.PUBLIC)
                                                  .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME))
-                                                 .defineMethod("setSkyWalkingDynamicField", void.class, Visibility.PUBLIC).withParameters(Object.class)
+                                                 .defineMethod(CONTEXT_SETTER_NAME, void.class, Visibility.PUBLIC).withParameters(Object.class)
                                                  .intercept(FieldAccessor.ofField(CONTEXT_ATTR_NAME));
                 context.extendObjectCompleted();
             }

@@ -262,4 +262,7 @@ public class ComponentsDefine {
     public static final OfficialComponent CAFFEINE = new OfficialComponent(160, "Caffeine");
 
     public static final OfficialComponent THREAD_PER_TASK_EXECUTOR = new OfficialComponent(161, "ThreadPerTask-executor");
+
+    public static final OfficialComponent DMDB_JDBC_DRIVER = new OfficialComponent(162, "Dmdb-jdbc-driver");
+
 }

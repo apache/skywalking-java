@@ -36,7 +36,7 @@ public class DMURLParser extends AbstractURLParser {
     protected URLLocation fetchDatabaseHostsIndexRange() {
         int hostLabelStartIndex = url.indexOf("//");
         if (hostLabelStartIndex == -1) {
-            return new URLLocation(0, 0); // 格式错误
+            return new URLLocation(0, 0);
         }
         int hostLabelEndIndex = url.indexOf("?", hostLabelStartIndex + 2);
         if (hostLabelEndIndex == -1) {
@@ -71,7 +71,6 @@ public class DMURLParser extends AbstractURLParser {
             }
         }
 
-        // 如果 host 或 port 没有从路径中获取到，则尝试从参数中获取
         if (host.isEmpty()) {
             host = fetchFromUrlParams(URL_PARAMS_HOST_KEY);
         }
@@ -94,9 +93,6 @@ public class DMURLParser extends AbstractURLParser {
         );
     }
 
-    /**
-     * 从 URL 参数中提取指定 key 的值
-     */
     private String fetchFromUrlParams(String key) {
         int paramIndex = url.indexOf("?");
         if (paramIndex == -1) {

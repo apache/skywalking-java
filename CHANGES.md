@@ -12,7 +12,7 @@ Release Notes.
   initialization. Delay so11y metrics#build when the services are not ready to avoid MeterService status is not
   initialized.
 * Fix retransform failure when enhancing both parent and child classes.
-* Add support for `dameng(DM)` jdbc url format in `URLParser`.
+* Add support for `dameng(DM)` JDBC url format in `URLParser`.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

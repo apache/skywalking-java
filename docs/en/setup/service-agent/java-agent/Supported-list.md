@@ -185,6 +185,7 @@ The meter plugin provides the advanced metrics collections, which are not a part
     * [DB2](https://www.ibm.com/products/db2/database)
     * Sybase
     * [OceanBase](https://www.oceanbase.com/)
+    * [DaMeng(DM)](https://www.dameng.com/)
   * Supported Connection Pool Frameworks
     * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
     * [Alibaba Druid](https://github.com/alibaba/druid) 1.x

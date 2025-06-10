@@ -41,6 +41,7 @@ public class URLParser {
     private static final String DB2_JDBC_URL_PREFIIX = "jdbc:db2:";
     private static final String SYBASE_JDBC_URL_PREFIX = "jdbc:sybase:tds:";
     private static final String OCEANBASE_JDBC_URL_PREFIX = "jdbc:oceanbase:";
+    private static final String DM_JDBC_URL_PREFIX = "jdbc:dm:";
 
     public static ConnectionInfo parser(String url) {
         ConnectionURLParser parser = null;
@@ -75,7 +76,10 @@ public class URLParser {
             parser = new SybaseURLParser(url);
         } else if (lowerCaseUrl.startsWith(OCEANBASE_JDBC_URL_PREFIX)) {
             parser = new OceanBaseURLParser(url);
+        } else if (lowerCaseUrl.startsWith(DM_JDBC_URL_PREFIX)) {
+            parser = new DMURLParser(url);
         }
+
         return parser.parse();
     }
 }

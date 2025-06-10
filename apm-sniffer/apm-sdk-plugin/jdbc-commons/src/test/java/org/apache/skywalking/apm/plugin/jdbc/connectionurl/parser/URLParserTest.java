@@ -415,4 +415,49 @@ public class URLParserTest {
         assertThat(connectionInfo.getDatabaseName(), is("mydb"));
         assertThat(connectionInfo.getDatabasePeer(), is("localhost:5000"));
     }
+
+    @Test
+    public void testParseDMJDBCURLWithNamedParams()
+    {
+        ConnectionInfo connectionInfo = URLParser.parser("jdbc:dm://?host=localhost&port=5236");
+        assertThat(connectionInfo.getDBType(), is("DM"));
+        assertThat(connectionInfo.getDatabaseName(), is(""));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5236"));
+    }
+
+    @Test
+    public void testParseDMJDBCURLWithNamedParamsAndScheme()
+    {
+        ConnectionInfo connectionInfo = URLParser.parser("jdbc:dm://?host=localhost&port=5236&schema=dm");
+        assertThat(connectionInfo.getDBType(), is("DM"));
+        assertThat(connectionInfo.getDatabaseName(), is("dm"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5236"));
+    }
+
+    @Test
+    public void testParseDMJDBCURLWithoutHost()
+    {
+        ConnectionInfo connectionInfo = URLParser.parser("jdbc:dm://localhost");
+        assertThat(connectionInfo.getDBType(), is("DM"));
+        assertThat(connectionInfo.getDatabaseName(), is(""));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5236"));
+    }
+
+    @Test
+    public void testParseDMJDBCURLWithoutHostAndScheme()
+    {
+        ConnectionInfo connectionInfo = URLParser.parser("jdbc:dm://localhost?schema=dm");
+        assertThat(connectionInfo.getDBType(), is("DM"));
+        assertThat(connectionInfo.getDatabaseName(), is("dm"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5236"));
+    }
+
+    @Test
+    public void testParseDMJDBCURLWithoutHostPort()
+    {
+        ConnectionInfo connectionInfo = URLParser.parser("jdbc:dm://localhost:5237?schema=dm");
+        assertThat(connectionInfo.getDBType(), is("DM"));
+        assertThat(connectionInfo.getDatabaseName(), is("dm"));
+        assertThat(connectionInfo.getDatabasePeer(), is("localhost:5237"));
+    }
 }

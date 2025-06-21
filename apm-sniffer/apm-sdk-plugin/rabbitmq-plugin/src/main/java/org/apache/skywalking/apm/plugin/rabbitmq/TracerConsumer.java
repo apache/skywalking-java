@@ -50,7 +50,7 @@ public class TracerConsumer implements Consumer {
 
     @Override
     public void handleCancelOk(final String consumerTag) {
-        this.delegate.handleRecoverOk(consumerTag);
+        this.delegate.handleCancelOk(consumerTag);
     }
 
     @Override

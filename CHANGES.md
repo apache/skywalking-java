@@ -13,6 +13,7 @@ Release Notes.
   initialized.
 * Fix retransform failure when enhancing both parent and child classes.
 * Add support for `dameng(DM)` JDBC url format in `URLParser`.
+* Fix RabbitMQ Consumer could not receive handleCancelOk callback.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

@@ -58,6 +58,7 @@
 - kafka-3.7.x
 - kotlin-coroutine
 - lettuce-5.x
+- lettuce-6.5.x
 - light4j
 - mariadb-2.x
 - micrometer-1.10.x

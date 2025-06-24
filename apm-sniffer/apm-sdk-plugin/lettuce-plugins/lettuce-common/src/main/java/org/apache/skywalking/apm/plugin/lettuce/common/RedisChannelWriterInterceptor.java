@@ -96,7 +96,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
     }
 
     private String getArgsKey(RedisCommand<?, ?, ?> redisCommand) {
-        if (AUTH.equalsIgnoreCase(redisCommand.getType().name())) {
+        if (AUTH.equalsIgnoreCase(getCommandName(redisCommand.getType()))) {
             return PASSWORD_MASK;
         }
         CommandArgs<?, ?> args = redisCommand.getArgs();

@@ -37,7 +37,7 @@
         <okhttp.version>3.4.2</okhttp.version>
     </properties>
 
-    <name>skywalking-lettuce-scenario</name>
+    <name>lettuce-6.5.x-scenario</name>
 
     <dependencies>
         <dependency>
@@ -89,7 +89,7 @@
     </dependencies>
 
     <build>
-        <finalName>lettuce-scenario</finalName>
+        <finalName>lettuce-6.5.x-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

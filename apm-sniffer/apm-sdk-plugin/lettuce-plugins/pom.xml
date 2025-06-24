@@ -30,10 +30,6 @@
     <artifactId>lettuce-plugins</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-
-    </properties>
-
     <modules>
         <module>lettuce-common</module>
         <module>lettuce-5.x-plugin</module>

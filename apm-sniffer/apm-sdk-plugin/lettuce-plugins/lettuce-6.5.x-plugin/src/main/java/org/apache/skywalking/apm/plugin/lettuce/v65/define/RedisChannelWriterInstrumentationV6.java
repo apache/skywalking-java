@@ -27,7 +27,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.lettuce.v65.RedisChannelWriterInterceptorV6;
 import org.apache.skywalking.apm.plugin.lettuce.v65.constant.Constants;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
@@ -38,7 +37,7 @@ public class RedisChannelWriterInstrumentationV6 extends ClassInstanceMethodsEnh
 
     private static final String ENHANCE_CLASS = "io.lettuce.core.RedisChannelWriter";
 
-    private static final String REDIS_CHANNEL_WRITER_INTERCEPTOR_CLASS = RedisChannelWriterInterceptorV6.class.getName();
+    private static final String REDIS_CHANNEL_WRITER_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.lettuce.v65.RedisChannelWriterInterceptorV6";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {

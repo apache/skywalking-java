@@ -27,10 +27,10 @@
         <version>9.5.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>apm-lettuce-5.x-plugin</artifactId>
+    <artifactId>apm-lettuce-5.x-6.4.x-plugin</artifactId>
     <packaging>jar</packaging>
 
-    <name>lettuce-5.x-plugin</name>
+    <name>lettuce-5.x-6.4.x-plugin</name>
 
     <properties>
         <lettuce-core.version>5.0.0.RELEASE</lettuce-core.version>

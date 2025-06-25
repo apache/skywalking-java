@@ -16,19 +16,14 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.lettuce.v5.constant;
+package org.apache.skywalking.apm.plugin.lettuce.v65;
 
-import net.bytebuddy.matcher.ElementMatchers;
-import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
+import io.lettuce.core.protocol.ProtocolKeyword;
+import org.apache.skywalking.apm.plugin.lettuce.common.RedisChannelWriterInterceptor;
 
-/**
- * Lettuce 5.x plugin constants
- */
-
-public class Constants {
-
-    public static final WitnessMethod WITNESS_LETTUCE_5X_METHOD = new WitnessMethod(
-        "io.lettuce.core.protocol.ProtocolKeyword",
-        ElementMatchers.named("name")
-    );
+public class RedisChannelWriterInterceptorV65 extends RedisChannelWriterInterceptor {
+    @Override
+    protected String getCommandName(final ProtocolKeyword protocol) {
+        return protocol.toString();
+    }
 }

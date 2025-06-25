@@ -22,22 +22,22 @@ import java.util.Collections;
 import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.lettuce.v65.constant.Constants;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch.byHierarchyMatch;
 
-public class RedisChannelWriterInstrumentationV6 extends ClassInstanceMethodsEnhancePluginDefine {
+public class RedisChannelWriterInstrumentationV65 extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "io.lettuce.core.RedisChannelWriter";
 
-    private static final String REDIS_CHANNEL_WRITER_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.lettuce.v65.RedisChannelWriterInterceptorV6";
+    private static final String REDIS_CHANNEL_WRITER_INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.lettuce.v65.RedisChannelWriterInterceptorV65";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -74,6 +74,9 @@ public class RedisChannelWriterInstrumentationV6 extends ClassInstanceMethodsEnh
 
     @Override
     protected List<WitnessMethod> witnessMethods() {
-        return Collections.singletonList(Constants.WITNESS_LETTUCE_6X_METHOD);
+        return Collections.singletonList(new WitnessMethod(
+            "io.lettuce.core.protocol.ProtocolKeyword",
+            ElementMatchers.named("toString")
+        ));
     }
 }

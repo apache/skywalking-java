@@ -22,12 +22,12 @@ import java.util.Collections;
 import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.skywalking.apm.agent.core.plugin.WitnessMethod;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.plugin.lettuce.v5.constant.Constants;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
@@ -74,6 +74,9 @@ public class RedisChannelWriterInstrumentationV5 extends ClassInstanceMethodsEnh
 
     @Override
     protected List<WitnessMethod> witnessMethods() {
-        return Collections.singletonList(Constants.WITNESS_LETTUCE_5X_METHOD);
+        return Collections.singletonList(new WitnessMethod(
+            "io.lettuce.core.protocol.ProtocolKeyword",
+            ElementMatchers.named("name")
+        ));
     }
 }

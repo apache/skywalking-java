@@ -32,7 +32,7 @@
 
     <modules>
         <module>lettuce-common</module>
-        <module>lettuce-5.x-plugin</module>
+        <module>lettuce-5.x-6.4.x-plugin</module>
         <module>lettuce-6.5.x-plugin</module>
     </modules>
 

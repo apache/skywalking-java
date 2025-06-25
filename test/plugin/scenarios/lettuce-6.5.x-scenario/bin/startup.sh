@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,8 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-5.2.1.RELEASE
-5.1.8.RELEASE
-5.0.5.RELEASE
-6.1.4.RELEASE
-6.4.2.RELEASE
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -Dredis.host=${REDIS_SERVERS} -jar -Dskywalking.plugin.lettuce.trace_redis_parameters=true ${agent_opts} ${home}/../libs/lettuce-6.5.x-scenario.jar &

@@ -15,6 +15,7 @@ Release Notes.
 * Add support for `dameng(DM)` JDBC url format in `URLParser`.
 * Fix RabbitMQ Consumer could not receive handleCancelOk callback.
 * Support for tracking in lettuce versions 6.5.x and above.
+* Upgrade byte-buddy version to 1.17.6.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

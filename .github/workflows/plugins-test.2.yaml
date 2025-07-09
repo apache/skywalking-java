@@ -72,6 +72,7 @@ jobs:
           - spring-cloud-feign-1.2.x-scenario
           - spring-cloud-feign-2.x-scenario
           - spring-tx-scenario
+          - spring-retry-scenario
           - struts2.3-scenario
           - struts2.5-scenario
           - cxf-scenario

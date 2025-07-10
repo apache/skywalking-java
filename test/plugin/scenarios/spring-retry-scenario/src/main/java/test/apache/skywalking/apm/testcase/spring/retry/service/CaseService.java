@@ -16,7 +16,7 @@
  *
  */
 
-package test.org.apache.skywalking.apm.testcase.spring.retry.service;
+package test.apache.skywalking.apm.testcase.spring.retry.service;
 
 import org.apache.skywalking.apm.toolkit.trace.Trace;
 import org.springframework.retry.annotation.Backoff;

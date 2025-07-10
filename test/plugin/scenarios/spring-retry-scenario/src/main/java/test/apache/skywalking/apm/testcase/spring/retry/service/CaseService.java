@@ -29,7 +29,6 @@ public class CaseService {
     @Retryable(value = Exception.class, backoff = @Backoff(delay = 1000, multiplier = 2))
     @Trace
     public void handle() {
-        System.out.println("handle");
     }
 
 }

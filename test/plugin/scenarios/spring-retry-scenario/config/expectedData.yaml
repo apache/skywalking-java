@@ -19,7 +19,7 @@ segmentItems:
     segments:
       - segmentId: not null
         spans:
-          - operationName: test.org.apache.skywalking.apm.testcase.spring.retry.service.CaseService.handle()
+          - operationName: test.apache.skywalking.apm.testcase.spring.retry.service.CaseService.handle()
             parentSpanId: 0
             spanId: 1
             spanLayer: Unknown

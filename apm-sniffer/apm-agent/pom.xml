@@ -106,6 +106,7 @@
                                     <artifact>net.bytebuddy:byte-buddy</artifact>
                                     <excludes>
                                         <exclude>META-INF/versions/9/module-info.class</exclude>
+                                        <exclude>META-INF/versions/24/**</exclude>
                                     </excludes>
                                 </filter>
                                 <filter>

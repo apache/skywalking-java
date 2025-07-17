@@ -108,7 +108,7 @@ metrics based on the tracing data.
     * [hbase-client](https://github.com/apache/hbase) HTable 1.0.0-2.4.2
   * Neo4j
     * [Neo4j-java](https://neo4j.com/docs/java-manual/current/) 4.x
-  * [Couchbase Java SDK](https://docs.couchbase.com/java-sdk/current/hello-world/overview.html) 3.8.3 (Optional¹), See [Couchbase Java Plugin Repository](https://github.com/leralik/skywalking-java-agent-couchbase-plugin)
+  * [Couchbase Java SDK](https://docs.couchbase.com/java-sdk/current/hello-world/overview.html) 3.8.3 (Optional¹), See [leralik's Plugin Repository](https://github.com/leralik/skywalking-java-agent-couchbase-plugin)
 * Service Discovery
   * [Netflix Eureka](https://github.com/Netflix/eureka)
 * Distributed Coordination

@@ -12,10 +12,10 @@ metrics based on the tracing data.
   * Spring MVC 6.x (Optional²)
   * [Nutz Web Framework](https://github.com/nutzam/nutz)  1.x
   * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x
-  * Resin 3 (Optional¹)
-  * Resin 4 (Optional¹)
+  * Resin 3 (Optional¹), see: [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions)
+  * Resin 4 (Optional¹), see: [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions)
   * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 11.x
-  * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional¹) -> 6.x (Optional¹)
+  * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional²) -> 6.x (Optional²)
   * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.0.27.Final
   * [RESTEasy](https://resteasy.dev/)  3.1.0.Final -> 6.2.4.Final
   * [Play Framework](https://www.playframework.com/) 2.6.x -> 2.8.x
@@ -46,7 +46,7 @@ metrics based on the tracing data.
   * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)
 * JDBC
   * Mysql Driver 5.x, 6.x, 8.x
-  * Oracle Driver (Optional¹)
+  * Oracle Driver (Optional¹), see: [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions)
   * H2 Driver 1.3.x -> 1.4.x
   * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0
   * PostgreSQL Driver 8.x, 9.x, 42.x
@@ -83,7 +83,7 @@ metrics based on the tracing data.
   * [Pulsar](http://pulsar.apache.org) 2.2.x -> 2.9.x
   * [NATS](https://github.com/nats-io/nats.java) 2.14.x -> 2.16.5
   * [ActiveMQ-Artemis](https://github.com/apache/activemq) 2.30.0 -> 2.31.2
-  * Aliyun ONS 1.x (Optional¹)
+  * Aliyun ONS 1.x (Optional¹), see: [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions)
 * NoSQL
   * [aerospike](https://github.com/aerospike/aerospike-client-java) 3.x -> 6.x
   * Redis
@@ -108,6 +108,7 @@ metrics based on the tracing data.
     * [hbase-client](https://github.com/apache/hbase) HTable 1.0.0-2.4.2
   * Neo4j
     * [Neo4j-java](https://neo4j.com/docs/java-manual/current/) 4.x
+  * [Couchbase Java SDK](https://docs.couchbase.com/java-sdk/current/hello-world/overview.html) 3.8.3 (Optional¹), see: [SkyWalking java agent couchbase plugin](https://github.com/leralik/skywalking-java-agent-couchbase-plugin)
 * Service Discovery
   * [Netflix Eureka](https://github.com/Netflix/eureka)
 * Distributed Coordination
@@ -194,7 +195,7 @@ The meter plugin provides the advanced metrics collections, which are not a part
   
 ___
 ¹Due to license incompatibilities/restrictions these plugins are hosted and released in 3rd part repository,
- go to [SkyAPM java plugin extension repository](https://github.com/SkyAPM/java-plugin-extensions) to get these.
+ the address following the plugin can help you to get it.
 
 ²These plugins affect the performance or must be used under some conditions, from experiences. So only released in `/optional-plugins` or `/bootstrap-plugins`, copy to `/plugins` in order to make them work.
 

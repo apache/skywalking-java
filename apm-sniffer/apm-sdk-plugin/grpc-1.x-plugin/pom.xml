@@ -35,10 +35,11 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.grpc/grpc-all -->
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-all</artifactId>
-            <version>${grpc-all.version}</version>
+            <version>1.73.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -24,16 +24,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
-
-    public static final String ENHANCE_CLASS = "io.grpc.internal.AbstractServerImplBuilder";
-    public static final String ENHANCE_METHOD = "build";
-    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.grpc.v1.server.AbstractServerImplBuilderInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -46,12 +42,12 @@ public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMetho
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named(ENHANCE_METHOD).and(takesNoArguments());
+                    return named("build").and(takesNoArguments());
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return INTERCEPT_CLASS;
+                    return "org.apache.skywalking.apm.plugin.grpc.v1.server.AbstractServerImplBuilderInterceptor";
                 }
 
                 @Override
@@ -64,6 +60,9 @@ public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMetho
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+        return MultiClassNameMatch.byMultiClassMatch(
+                "io.grpc.internal.AbstractServerImplBuilder",
+                "io.grpc.internal.ServerImplBuilder",
+                "io.grpc.internal.ForwardingServerBuilder");
     }
 }

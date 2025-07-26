@@ -62,7 +62,7 @@ public class CaseController {
         greeterBlockingErrorStub = GreeterBlockingErrorGrpc.newBlockingStub(ClientInterceptors.intercept(channel, new ConsumerInterceptor()));
     }
 
-    @RequestMapping("/grpc-scenario")
+    @RequestMapping("/grpc-1.60.x-1.70.x-scenario")
     @ResponseBody
     public String testcase() {
         greetService();

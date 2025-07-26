@@ -30,7 +30,7 @@ segmentItems:
             spanType: Entry
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '127.0.0.1:18080',
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '127.0.0.1:18080',
                  refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                                            null, parentService: grpc-1.60.x-1.70.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -47,7 +47,7 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '', refType: CrossThread,
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                     null, parentService: not null, traceId: not null}
             skipAnalysis: 'false'
@@ -64,7 +64,7 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '', refType: CrossThread,
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                     null, parentService: grpc-1.60.x-1.70.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -81,7 +81,7 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '', refType: CrossThread,
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                     null, parentService: grpc-1.60.x-1.70.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -98,7 +98,7 @@ segmentItems:
             spanType: Entry
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '127.0.0.1:18080',
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '127.0.0.1:18080',
                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                                            null, parentService: grpc-1.60.x-1.70.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -143,7 +143,7 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '', refType: CrossThread,
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                     null, parentService: not null, traceId: not null}
             skipAnalysis: 'false'
@@ -248,7 +248,7 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '', refType: CrossThread,
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                     null, parentService: grpc-1.60.x-1.70.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -265,7 +265,7 @@ segmentItems:
             spanType: Local
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '', refType: CrossThread,
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '', refType: CrossThread,
                  parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                     null, parentService: grpc-1.60.x-1.70.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -282,7 +282,7 @@ segmentItems:
             spanType: Entry
             peer: ''
             refs:
-              - {parentEndpoint: GET:/grpc-scenario/case/grpc-scenario, networkAddress: '127.0.0.1:18080',
+              - {parentEndpoint: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario, networkAddress: '127.0.0.1:18080',
                  refType: CrossProcess, parentSpanId: 5, parentTraceSegmentId: not null, parentServiceInstance: not
                                                                                            null, parentService: grpc-1.60.x-1.70.x-scenario, traceId: not null}
             skipAnalysis: 'false'
@@ -432,7 +432,7 @@ segmentItems:
                   - {key: message, value: UNKNOWN}
                   - {key: stack, value: not null}
             skipAnalysis: 'false'
-          - operationName: GET:/grpc-scenario/case/grpc-scenario
+          - operationName: GET:/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario
             parentSpanId: -1
             spanId: 0
             spanLayer: Http
@@ -443,7 +443,7 @@ segmentItems:
             spanType: Entry
             peer: ''
             tags:
-              - {key: url, value: 'http://localhost:8080/grpc-scenario/case/grpc-scenario'}
+              - {key: url, value: 'http://localhost:8080/grpc-1.60.x-1.70.x-scenario/case/grpc-1.60.x-1.70.x-scenario'}
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '500'}
             logs:
@@ -454,5 +454,5 @@ segmentItems:
             UNKNOWN'}
                   - {key: stack, value: not null}
               - logEvent:
-                  - {key: forward-url, value: /grpc-scenario/error}
+                  - {key: forward-url, value: /grpc-1.60.x-1.70.x-scenario/error}
             skipAnalysis: 'false'

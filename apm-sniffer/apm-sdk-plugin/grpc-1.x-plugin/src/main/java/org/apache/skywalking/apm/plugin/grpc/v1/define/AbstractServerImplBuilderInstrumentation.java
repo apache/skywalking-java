@@ -31,6 +31,9 @@ import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
 
 public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
+    public static final String ENHANCE_METHOD = "build";
+    public static final String INTERCEPT_CLASS = "org.apache.skywalking.apm.plugin.grpc.v1.server.AbstractServerImplBuilderInterceptor";
+
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
         return new ConstructorInterceptPoint[0];
@@ -42,12 +45,12 @@ public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMetho
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("build").and(takesNoArguments());
+                    return named(ENHANCE_METHOD).and(takesNoArguments());
                 }
 
                 @Override
                 public String getMethodsInterceptor() {
-                    return "org.apache.skywalking.apm.plugin.grpc.v1.server.AbstractServerImplBuilderInterceptor";
+                    return INTERCEPT_CLASS;
                 }
 
                 @Override

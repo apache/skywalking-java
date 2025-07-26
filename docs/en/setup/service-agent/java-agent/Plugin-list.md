@@ -33,7 +33,7 @@
 - graphql-9.x
 - graphql-12.x-15.x
 - graphql-16plus
-- grpc-1.x/1.60.x/1.70.x
+- grpc-1.x
 - gson-2.8.x
 - guava-cache
 - h2-1.x

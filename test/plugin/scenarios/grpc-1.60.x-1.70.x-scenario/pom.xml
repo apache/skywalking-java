@@ -38,7 +38,7 @@
         <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
     </properties>
 
-    <name>grpc-1.60.x-1.70.x-scenario</name>
+    <name>skywalking-grpc-1.60.x-1.70.x-scenario</name>
 
     <dependencyManagement>
         <dependencies>

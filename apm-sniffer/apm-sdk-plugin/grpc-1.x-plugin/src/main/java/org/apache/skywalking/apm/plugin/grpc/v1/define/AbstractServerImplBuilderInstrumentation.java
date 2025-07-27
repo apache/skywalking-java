@@ -64,8 +64,9 @@ public class AbstractServerImplBuilderInstrumentation extends ClassInstanceMetho
     @Override
     protected ClassMatch enhanceClass() {
         return MultiClassNameMatch.byMultiClassMatch(
-                "io.grpc.internal.AbstractServerImplBuilder",
-                "io.grpc.internal.ServerImplBuilder",
-                "io.grpc.internal.ForwardingServerBuilder");
+                "io.grpc.internal.AbstractServerImplBuilder", //grpc version <= 1.58.1
+                "io.grpc.internal.ServerImplBuilder", //grpc version >= 1.59.0
+                "io.grpc.internal.ForwardingServerBuilder" //grpc version >= 1.59.0
+        );
     }
 }

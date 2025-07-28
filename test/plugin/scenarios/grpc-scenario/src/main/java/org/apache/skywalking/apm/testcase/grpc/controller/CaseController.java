@@ -23,6 +23,8 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.ClientCallStreamObserver;
 import io.grpc.stub.ClientResponseObserver;
+
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +37,8 @@ import org.apache.skywalking.apm.testcase.grpc.proto.GreeterBlockingGrpc;
 import org.apache.skywalking.apm.testcase.grpc.proto.GreeterGrpc;
 import org.apache.skywalking.apm.testcase.grpc.proto.HelloRequest;
 import org.apache.skywalking.apm.testcase.grpc.proto.HelloReply;
+import org.springframework.cglib.core.ReflectUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,7 +60,17 @@ public class CaseController {
 
     @PostConstruct
     public void up() {
-        channel = ManagedChannelBuilder.forAddress(grpcProviderHost, grpcProviderPort).usePlaintext(true).build();
+        ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder.forAddress(grpcProviderHost, grpcProviderPort);
+        Method usePlaintext = ReflectionUtils.findMethod(managedChannelBuilder.getClass(), "usePlaintext");
+        if (usePlaintext != null) {
+            int paramCount = usePlaintext.getParameterCount();
+            if (paramCount == 0) {// no parame method usePlaintext()
+                ReflectionUtils.invokeMethod(usePlaintext, managedChannelBuilder);
+            } else if (paramCount == 1 && usePlaintext.getParameterTypes()[0] == boolean.class) {// boolean method usePlaintext(true)
+                ReflectionUtils.invokeMethod(usePlaintext, managedChannelBuilder, true);
+            }
+        }
+        channel = managedChannelBuilder.build();
         greeterStub = GreeterGrpc.newStub(ClientInterceptors.intercept(channel, new ConsumerInterceptor()));
         greeterBlockingStub = GreeterBlockingGrpc.newBlockingStub(ClientInterceptors.intercept(channel, new ConsumerInterceptor()));
         greeterBlockingErrorStub = GreeterBlockingErrorGrpc.newBlockingStub(ClientInterceptors.intercept(channel, new ConsumerInterceptor()));

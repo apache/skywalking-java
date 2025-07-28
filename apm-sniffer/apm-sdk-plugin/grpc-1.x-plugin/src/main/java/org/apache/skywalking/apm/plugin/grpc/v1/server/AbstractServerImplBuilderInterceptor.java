@@ -20,7 +20,9 @@ package org.apache.skywalking.apm.plugin.grpc.v1.server;
 
 import io.grpc.ServerBuilder;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -32,12 +34,23 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 public class AbstractServerImplBuilderInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-        MethodInterceptResult result) {
+                             MethodInterceptResult result) throws Throwable {
         if (objInst.getSkyWalkingDynamicField() == null) {
             ServerBuilder<?> builder = (ServerBuilder) objInst;
-            ServerInterceptor interceptor = new ServerInterceptor();
-            builder.intercept(interceptor);
-            objInst.setSkyWalkingDynamicField(interceptor);
+            Field field = findField(builder.getClass());
+            if (field != null) {
+                field.setAccessible(true);
+                List<?> interceptors = (List<?>) field.get(builder);
+                boolean hasCustomInterceptor = interceptors.stream()
+                        .anyMatch(i -> i.getClass() == ServerInterceptor.class);
+
+                if (!hasCustomInterceptor) {
+                    ServerInterceptor interceptor = new ServerInterceptor();
+                    builder.intercept(interceptor);
+                    objInst.setSkyWalkingDynamicField(interceptor);
+                }
+
+            }
         }
     }
 
@@ -51,5 +64,17 @@ public class AbstractServerImplBuilderInterceptor implements InstanceMethodsArou
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
 
+    }
+
+    private static Field findField(Class<?> clazz) {
+        while (clazz != null) {
+            for (Field f : clazz.getDeclaredFields()) {
+                if (f.getName().equals("interceptors")) {
+                    return f;
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return null;
     }
 }

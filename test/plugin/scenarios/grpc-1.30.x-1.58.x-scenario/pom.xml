@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>org.apache.skywalking.apm.testcase</groupId>
-    <artifactId>grpc-1.30.x-1.58.x-scenario</artifactId>
+    <artifactId>grpc-1.30.x-1.39.x-scenario</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -33,12 +33,12 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <os-maven-plugin.version>1.6.2</os-maven-plugin.version>
 
-        <test.framework.version>1.58.0</test.framework.version>
+        <test.framework.version>1.39.0</test.framework.version>
 
         <spring.boot.version>2.1.6.RELEASE</spring.boot.version>
     </properties>
 
-    <name>skywalking-grpc-1.30.x-1.58.x-scenario</name>
+    <name>skywalking-grpc-1.30.x-1.39.x-scenario</name>
 
     <dependencyManagement>
         <dependencies>
@@ -85,7 +85,7 @@
     </dependencies>
 
     <build>
-        <finalName>grpc-1.30.x-1.58.x-scenario</finalName>
+        <finalName>grpc-1.30.x-1.39.x-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>kr.motd.maven</groupId>

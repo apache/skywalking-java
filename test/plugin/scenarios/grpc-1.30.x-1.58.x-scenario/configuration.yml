@@ -15,8 +15,8 @@
 # limitations under the License.
 
 type: jvm
-entryService: http://localhost:8080/grpc-1.30.x-1.58.x-scenario/case/grpc-1.30.x-1.58.x-scenario
-healthCheck: http://localhost:8080/grpc-1.30.x-1.58.x-scenario/case/healthCheck
+entryService: http://localhost:8080/grpc-1.30.x-1.39.x-scenario/case/grpc-1.30.x-1.39.x-scenario
+healthCheck: http://localhost:8080/grpc-1.30.x-1.39.x-scenario/case/healthCheck
 startScript: ./bin/startup.sh
 environment:
 dependencies:

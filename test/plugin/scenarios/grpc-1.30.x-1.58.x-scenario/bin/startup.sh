@@ -18,4 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -jar ${agent_opts} ${home}/../libs/grpc-1.30.x-1.58.x-scenario.jar &
+java -jar ${agent_opts} ${home}/../libs/grpc-1.30.x-1.39.x-scenario.jar &

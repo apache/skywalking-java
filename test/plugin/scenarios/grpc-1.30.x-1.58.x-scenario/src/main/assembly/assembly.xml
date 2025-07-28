@@ -33,7 +33,7 @@
 
     <files>
         <file>
-            <source>${project.build.directory}/grpc-1.30.x-1.58.x-scenario.jar</source>
+            <source>${project.build.directory}/grpc-1.30.x-1.39.x-scenario.jar</source>
             <outputDirectory>./libs</outputDirectory>
             <fileMode>0775</fileMode>
         </file>

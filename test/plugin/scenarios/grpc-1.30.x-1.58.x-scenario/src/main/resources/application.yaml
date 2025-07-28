@@ -18,6 +18,6 @@
 server:
   port: 8080
   servlet:
-    context-path: /grpc-1.30.x-1.58.x-scenario
+    context-path: /grpc-1.30.x-1.39.x-scenario
 logging:
   config: classpath:log4j2.xml

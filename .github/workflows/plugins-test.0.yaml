@@ -80,7 +80,7 @@ jobs:
           - gateway-2.1.x-scenario
           - gateway-2.0.x-scenario
           - grpc-scenario
-          - grpc-1.50.x-1.70.x-scenario
+          - grpc-1.59.x-1.70.x-scenario
           - gson-scenario
           - guava-cache-scenario
           - elasticjob-3.x-scenario

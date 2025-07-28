@@ -37,7 +37,6 @@ import org.apache.skywalking.apm.testcase.grpc.proto.GreeterBlockingGrpc;
 import org.apache.skywalking.apm.testcase.grpc.proto.GreeterGrpc;
 import org.apache.skywalking.apm.testcase.grpc.proto.HelloRequest;
 import org.apache.skywalking.apm.testcase.grpc.proto.HelloReply;
-import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

@@ -63,9 +63,11 @@ public class CaseController {
         Method usePlaintext = ReflectionUtils.findMethod(managedChannelBuilder.getClass(), "usePlaintext");
         if (usePlaintext != null) {
             int paramCount = usePlaintext.getParameterCount();
-            if (paramCount == 0) {// no parame method usePlaintext()
+            if (paramCount == 0) {
+                // no parame method usePlaintext()
                 ReflectionUtils.invokeMethod(usePlaintext, managedChannelBuilder);
-            } else if (paramCount == 1 && usePlaintext.getParameterTypes()[0] == boolean.class) {// boolean method usePlaintext(true)
+            } else if (paramCount == 1 && usePlaintext.getParameterTypes()[0] == boolean.class) {
+                // boolean method usePlaintext(true)
                 ReflectionUtils.invokeMethod(usePlaintext, managedChannelBuilder, true);
             }
         }

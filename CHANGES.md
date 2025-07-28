@@ -16,7 +16,7 @@ Release Notes.
 * Fix RabbitMQ Consumer could not receive handleCancelOk callback.
 * Support for tracking in lettuce versions 6.5.x and above.
 * Upgrade byte-buddy version to 1.17.6.
-* Support gRPC 1.60.x and 1.70.x server interceptor trace
+* Support gRPC 1.59.x and 1.70.x server interceptor trace
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

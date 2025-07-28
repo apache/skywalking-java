@@ -22,7 +22,9 @@ import io.grpc.ServerBuilder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
@@ -32,6 +34,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
  * {@link AbstractServerImplBuilderInterceptor} add the {@link ServerInterceptor} interceptor for every ServerService.
  */
 public class AbstractServerImplBuilderInterceptor implements InstanceMethodsAroundInterceptor {
+    private final static Map<Class<?>, Field> FIELD_CACHE = new HashMap<>();
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
@@ -39,7 +43,6 @@ public class AbstractServerImplBuilderInterceptor implements InstanceMethodsArou
             ServerBuilder<?> builder = (ServerBuilder) objInst;
             Field field = findField(builder.getClass());
             if (field != null) {
-                field.setAccessible(true);
                 List<?> interceptors = (List<?>) field.get(builder);
                 boolean hasCustomInterceptor = interceptors.stream()
                         .anyMatch(i -> i.getClass() == ServerInterceptor.class);
@@ -67,9 +70,24 @@ public class AbstractServerImplBuilderInterceptor implements InstanceMethodsArou
     }
 
     private static Field findField(Class<?> clazz) {
+        if (FIELD_CACHE.containsKey(clazz)) {
+            return FIELD_CACHE.get(clazz);
+        }
+        synchronized (AbstractServerImplBuilderInterceptor.class) {
+            if (FIELD_CACHE.containsKey(clazz)) {
+                return FIELD_CACHE.get(clazz);
+            }
+            Field field = doFindField(clazz);
+            FIELD_CACHE.put(clazz, field);
+            return field;
+        }
+    }
+
+    private static Field doFindField(Class<?> clazz) {
         while (clazz != null) {
             for (Field f : clazz.getDeclaredFields()) {
                 if (f.getName().equals("interceptors")) {
+                    f.setAccessible(true);
                     return f;
                 }
             }

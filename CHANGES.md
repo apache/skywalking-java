@@ -17,6 +17,8 @@ Release Notes.
 * Support for tracking in lettuce versions 6.5.x and above.
 * Upgrade byte-buddy version to 1.17.6.
 * Support gRPC 1.59.x and 1.70.x server interceptor trace
+* Fix the `CreateAopProxyInterceptor` in the Spring core-patch changes the AOP proxy type when a class is
+  enhanced by both SkyWalking and Spring AOP.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

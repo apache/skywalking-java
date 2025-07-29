@@ -25,8 +25,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import java.lang.reflect.Method;
 
 /**
- * <code>ProxyProcessorSupportInterceptor</code> check that the bean has been implement {@link EnhancedInstance}.
- * if yes, true will be returned.
+ * <code>ProxyProcessorSupportInterceptor</code> determines whether the given interface is {@link EnhancedInstance},
+ * and therefore does not consider it a reasonable proxy interface.
  */
 public class ProxyProcessorSupportInterceptor implements InstanceMethodsAroundInterceptor {
 

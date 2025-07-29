@@ -18,7 +18,10 @@
 
 package test.apache.skywalking.apm.testcase.spring3.service;
 
+import org.apache.skywalking.apm.toolkit.trace.Trace;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import test.apache.skywalking.apm.testcase.spring3.component.TestComponentBean;
 import test.apache.skywalking.apm.testcase.spring3.dao.TestRepositoryBean;
@@ -34,5 +37,11 @@ public class TestServiceBean {
     public void doSomeBusiness(String name) {
         componentBean.componentMethod(name);
         repositoryBean.doSomeStuff(name);
+    }
+
+    // Test the class is enhanced by both SkyWalking and Spring AOP
+    @Retryable(value = Exception.class, backoff = @Backoff(delay = 1000, multiplier = 2))
+    @Trace
+    private void doRetry() {
     }
 }

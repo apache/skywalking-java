@@ -425,7 +425,7 @@
                 <configuration>
                     <configLocation>${maven.multiModuleProjectDirectory}/apm-checkstyle/checkStyle.xml</configLocation>
                     <headerLocation>${maven.multiModuleProjectDirectory}/apm-checkstyle/CHECKSTYLE_HEAD</headerLocation>
-                    <encoding>UTF-8</encoding>
+                    <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
                     <consoleOutput>true</consoleOutput>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <failOnViolation>${checkstyle.fails.on.error}</failOnViolation>

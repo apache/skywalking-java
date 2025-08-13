@@ -165,7 +165,6 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>${bytebuddy.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

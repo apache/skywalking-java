@@ -36,7 +36,6 @@
         <generateGitPropertiesFilename>${project.build.outputDirectory}/skywalking-agent-version.properties</generateGitPropertiesFilename>
         <guava.version>32.0.1-jre</guava.version>
         <wiremock.version>2.6.0</wiremock.version>
-        <netty-tcnative-boringssl-static.version>2.0.7.Final</netty-tcnative-boringssl-static.version>
         <os-maven-plugin.version>1.4.1.Final</os-maven-plugin.version>
         <git-commit-id-plugin.version>4.9.10</git-commit-id-plugin.version>
         <shade.com.google.source>com.google</shade.com.google.source>
@@ -81,7 +80,6 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy-agent</artifactId>
-            <version>${bytebuddy.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -139,11 +137,6 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openjdk.jmh</groupId>
-            <artifactId>jmh-generator-annprocess</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>tools.profiler</groupId>

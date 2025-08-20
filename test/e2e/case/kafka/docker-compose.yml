@@ -89,6 +89,13 @@ services:
       broker-b:
         condition: service_healthy
 
+  banyandb:
+    extends:
+      file: ../../base/base-compose.yml
+      service: banyandb
+    ports:
+      - 17912
+
   kafkaprovider:
     extends:
       file: ../../base/base-compose.yml

@@ -26,7 +26,7 @@ services:
       - e2e
     restart: on-failure
     healthcheck:
-      test: ["CMD", "sh", "-c", "nc -zn 127.0.0.1 11800"]
+      test: [ "CMD", "bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/11800" ]
       interval: 5s
       timeout: 60s
       retries: 120

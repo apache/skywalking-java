@@ -18,7 +18,7 @@ version: '2.1'
 services:
 
   oap:
-    image: ghcr.io/apache/skywalking/oap:1730f2c84bbd4da999ec2c74d1c26db31d5a0d24
+    image: ghcr.io/apache/skywalking/oap:dc8740d4757b35374283c4850a9a080e40f0eb79
     expose:
       - 11800
       - 12800

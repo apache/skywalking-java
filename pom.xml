@@ -79,7 +79,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>8</compiler.version>
-        <maven.compiler.release>8</maven.compiler.release>
         <checkstyle.version>6.18</checkstyle.version>
         <junit.version>4.12</junit.version>
         <mockito-core.version>5.0.0</mockito-core.version>
@@ -91,6 +90,7 @@
         <grpc.version>1.74.0</grpc.version>
         <netty.version>4.1.124.Final</netty.version>
         <gson.version>2.13.1</gson.version>
+        <guava.version>33.4.8-jre</guava.version>
         <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
         <com.google.protobuf.protoc.version>3.25.5</com.google.protobuf.protoc.version>

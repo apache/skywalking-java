@@ -220,7 +220,7 @@ The text of each license is the standard Apache 2.0 license.
     Google: gson 2.13.1: https://github.com/google/gson , Apache 2.0
     Google: proto-google-common-protos 2.59.2: https://github.com/googleapis/googleapis , Apache 2.0
     Google: jsr305 3.0.2: http://central.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.0/jsr305-3.0.0.pom , Apache 2.0
-    Google: guava 33.4.8: https://github.com/google/guava , Apache 2.0
+    Google: guava 32.1.3: https://github.com/google/guava , Apache 2.0
     netty 4.1.124: https://github.com/netty/netty/blob/4.1/LICENSE.txt, Apache 2.0
     async-profiler 3.0: https://github.com/async-profiler/async-profiler/blob/v3.0/LICENSE, Apache 2.0
 

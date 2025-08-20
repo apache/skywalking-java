@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+debuggingtrace: null
 spans:
   {{- contains .spans}}
   - traceid: {{ notEmpty .traceid }}
@@ -40,4 +41,5 @@ spans:
         value: '200'
       {{- end }}
     logs: []
+    attachedevents: []
   {{- end }}

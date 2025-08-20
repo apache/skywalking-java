@@ -79,6 +79,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compiler.version>8</compiler.version>
+        <maven.compiler.release>8</maven.compiler.release>
         <checkstyle.version>6.18</checkstyle.version>
         <junit.version>4.12</junit.version>
         <mockito-core.version>5.0.0</mockito-core.version>

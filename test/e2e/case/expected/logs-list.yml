@@ -36,4 +36,5 @@ logs:
       value: {{ notEmpty .value }}
     {{- end }}
   {{- end }}
-total: {{ gt .total 0 }}
+debuggingtrace: null
+errorreason: null

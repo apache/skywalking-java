@@ -13,17 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+debuggingtrace: null
 traces:
   {{- contains .traces }}
-  - segmentid: {{ notEmpty .segmentid }}
-    endpointnames:
-    {{- contains .endpointnames }}
-      - POST:/info
-    {{- end }}
-    duration: {{ ge .duration 0 }}
-    start: "{{ notEmpty .start}}"
-    iserror: false
-    traceids:
-      - {{ (index .traceids 0) }}
+- segmentid: {{ notEmpty .segmentid }}
+  endpointnames:
+    - POST:/info
+  duration: {{ ge .duration 0 }}
+  start: "{{ notEmpty .start}}"
+  iserror: false
+  traceids:
+    - {{ index .traceids 0 }}
   {{- end }}
-total: {{ gt .total 0 }}

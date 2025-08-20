@@ -30,5 +30,5 @@ events:
   {{- end }}
   starttime: {{ gt .starttime 0 }}
   endtime: {{ gt .endtime 0 }}
+  layer: "GENERAL"
 {{- end }}
-total: {{ gt .total 0 }}

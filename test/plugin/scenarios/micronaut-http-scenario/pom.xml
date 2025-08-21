@@ -29,13 +29,7 @@
     <name>micronaut-scenario</name>
     <properties>
         <packaging>jar</packaging>
-        <jdk.version>1.8</jdk.version>
-        <!-- If you are building with JDK 9 or higher, you can uncomment the lines below to set the release version -->
-        <!-- <release.version>8</release.version> -->
-        <compiler.version>1.8</compiler.version>
         <micronaut.runtime>netty</micronaut.runtime>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <exec.mainClass>org.apache.skywalking.apm.testcase.micronaut.Application</exec.mainClass>
     </properties>
 
@@ -134,7 +128,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.14.0</version>
                 <configuration>
                     <annotationProcessorPaths combine.children="append">
                         <path>

@@ -27,7 +27,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>21</version>
+        <version>35</version>
         <relativePath />
     </parent>
 
@@ -78,6 +78,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.release>8</maven.compiler.release>
         <compiler.version>8</compiler.version>
         <checkstyle.version>6.18</checkstyle.version>
         <junit.version>4.12</junit.version>

@@ -32,6 +32,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Reset this to the blank value to avoid using -release in JDK compiling -->
+        <maven.compiler.release></maven.compiler.release>
     </properties>
 
 

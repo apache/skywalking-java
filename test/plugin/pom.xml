@@ -59,7 +59,7 @@
         <lombok.version>1.18.20</lombok.version>
         <snakeyaml.version>1.24</snakeyaml.version>
 
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <checkstyle.fails.on.error>true</checkstyle.fails.on.error>
     </properties>
 

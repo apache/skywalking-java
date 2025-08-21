@@ -12,6 +12,7 @@ Release Notes.
 * Bump up guava to v32.1.3.
 * Bump up oap to the 10.3-dev.latest(dc8740d4757b35374283c4850a9a080e40f0eb79) in e2e.
 * Bump up cli to the 0.15.0-dev.latest(77b4c49e89c9c000278f44e62729d534f2ec842e) in e2e.
+* Bump up apache parent pom to v35.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 

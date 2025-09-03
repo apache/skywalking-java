@@ -34,10 +34,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -125,9 +127,16 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
 
         /**
          * Original type cache.
-         * classloader hashcode -> ( typeName -> type cache )
+         * ClassLoader -> (typeName -> TypeCache)
+         * Using WeakHashMap to automatically clean up cache when ClassLoader is garbage collected.
          */
-        private static final Map<Integer, Map<String, TypeCache>> CLASS_LOADER_TYPE_CACHE = new ConcurrentHashMap<>();
+        private static final Map<ClassLoader, Map<String, TypeCache>> CLASS_LOADER_TYPE_CACHE = 
+            Collections.synchronizedMap(new WeakHashMap<>());
+
+        /**
+         * Bootstrap ClassLoader cache (null key cannot be stored in WeakHashMap)
+         */
+        private static final Map<String, TypeCache> BOOTSTRAP_TYPE_CACHE = new ConcurrentHashMap<>();
 
         private static final List<String> IGNORED_INTERFACES = Arrays.asList(EnhancedInstance.class.getName());
 
@@ -153,10 +162,15 @@ public class SWDescriptionStrategy implements AgentBuilder.DescriptionStrategy {
         }
 
         private TypeCache getTypeCache() {
-            int classLoaderHashCode = classLoader != null ? classLoader.hashCode() : 0;
-            Map<String, TypeCache> typeCacheMap = CLASS_LOADER_TYPE_CACHE.computeIfAbsent(classLoaderHashCode, k -> new ConcurrentHashMap<>());
-            TypeCache typeCache = typeCacheMap.computeIfAbsent(typeName, k -> new TypeCache(typeName));
-            return typeCache;
+            if (classLoader == null) {
+                // Bootstrap ClassLoader - use separate cache since null key cannot be stored in WeakHashMap
+                return BOOTSTRAP_TYPE_CACHE.computeIfAbsent(typeName, k -> new TypeCache(typeName));
+            } else {
+                // Regular ClassLoader - use WeakHashMap for automatic cleanup
+                Map<String, TypeCache> typeCacheMap = CLASS_LOADER_TYPE_CACHE.computeIfAbsent(
+                    classLoader, k -> new ConcurrentHashMap<>());
+                return typeCacheMap.computeIfAbsent(typeName, k -> new TypeCache(typeName));
+            }
         }
 
         @Override

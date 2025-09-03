@@ -28,7 +28,7 @@ import java.net.URL;
 import java.util.Map;
 
 /**
- * 测试SWDescriptionStrategy中WeakHashMap缓存机制的行为
+ * Tests the behavior of the WeakHashMap caching mechanism in SWDescriptionStrategy.
  */
 public class SWDescriptionStrategyCacheTest {
 

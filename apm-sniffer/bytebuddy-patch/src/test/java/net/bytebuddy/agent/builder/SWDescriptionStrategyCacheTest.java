@@ -34,7 +34,7 @@ public class SWDescriptionStrategyCacheTest {
 
     @Test
     public void testWeakHashMapCacheCleanup() throws Exception {
-        // 获取静态缓存字段
+        // Get static cache field
         Field cacheField = SWDescriptionStrategy.SWTypeDescriptionWrapper.class
             .getDeclaredField("CLASS_LOADER_TYPE_CACHE");
         cacheField.setAccessible(true);
@@ -42,44 +42,44 @@ public class SWDescriptionStrategyCacheTest {
         Map<ClassLoader, Map<String, SWDescriptionStrategy.TypeCache>> cache = 
             (Map<ClassLoader, Map<String, SWDescriptionStrategy.TypeCache>>) cacheField.get(null);
 
-        // 记录初始缓存大小
+        // Record initial cache size
         int initialCacheSize = cache.size();
 
-        // 创建测试用的ClassLoader
+        // Create test ClassLoader
         URLClassLoader testClassLoader = new URLClassLoader(new URL[0], null);
         String testTypeName = "com.test.DynamicClass";
 
-        // 创建SWTypeDescriptionWrapper实例
+        // Create SWTypeDescriptionWrapper instance
         SWDescriptionStrategy.SWTypeDescriptionWrapper wrapper = 
             new SWDescriptionStrategy.SWTypeDescriptionWrapper(
                 null, "test", testClassLoader, testTypeName);
 
-        // 通过反射调用getTypeCache方法触发缓存
+        // Call getTypeCache method via reflection to trigger caching
         Method getTypeCacheMethod = wrapper.getClass()
             .getDeclaredMethod("getTypeCache");
         getTypeCacheMethod.setAccessible(true);
         SWDescriptionStrategy.TypeCache typeCache = 
             (SWDescriptionStrategy.TypeCache) getTypeCacheMethod.invoke(wrapper);
 
-        // 验证缓存中存在该ClassLoader
+        // Verify that the ClassLoader exists in cache
         Assert.assertTrue("Cache should contain the test ClassLoader", 
             cache.containsKey(testClassLoader));
         Assert.assertNotNull("TypeCache should be created", typeCache);
         Assert.assertEquals("Cache size should increase by 1", 
             initialCacheSize + 1, cache.size());
 
-        // 清除ClassLoader引用，准备GC测试
+        // Clear ClassLoader references, prepare for GC test
         testClassLoader = null;
         wrapper = null;
         typeCache = null;
 
-        // 强制垃圾回收
+        // Force garbage collection
         System.gc();
         Thread.sleep(100);
         System.gc();
         Thread.sleep(100);
 
-        // WeakHashMap应该自动清理被回收的ClassLoader条目
+        // WeakHashMap should automatically clean up garbage collected ClassLoader entries
         int attempts = 0;
         int currentCacheSize = cache.size();
         while (currentCacheSize > initialCacheSize && attempts < 20) {
@@ -92,14 +92,14 @@ public class SWDescriptionStrategyCacheTest {
         System.out.println("Cache size after GC: " + currentCacheSize + 
             " (initial: " + initialCacheSize + ", attempts: " + attempts + ")");
         
-        // 验证WeakHashMap的清理机制工作正常
+        // Verify that WeakHashMap cleanup mechanism works properly
         Assert.assertTrue("WeakHashMap should clean up entries or attempts should be reasonable", 
             currentCacheSize <= initialCacheSize + 1 && attempts < 20);
     }
 
     @Test
     public void testBootstrapClassLoaderHandling() throws Exception {
-        // 获取Bootstrap ClassLoader缓存字段
+        // Get Bootstrap ClassLoader cache field
         Field bootstrapCacheField = SWDescriptionStrategy.SWTypeDescriptionWrapper.class
             .getDeclaredField("BOOTSTRAP_TYPE_CACHE");
         bootstrapCacheField.setAccessible(true);
@@ -109,20 +109,20 @@ public class SWDescriptionStrategyCacheTest {
 
         int initialBootstrapCacheSize = bootstrapCache.size();
 
-        // 测试Bootstrap ClassLoader (null) 的处理
+        // Test Bootstrap ClassLoader (null) handling
         String testTypeName = "test.BootstrapClass";
         SWDescriptionStrategy.SWTypeDescriptionWrapper wrapper = 
             new SWDescriptionStrategy.SWTypeDescriptionWrapper(
                 null, "test", null, testTypeName);
 
-        // 通过反射调用getTypeCache方法
+        // Call getTypeCache method via reflection
         Method getTypeCacheMethod = wrapper.getClass()
             .getDeclaredMethod("getTypeCache");
         getTypeCacheMethod.setAccessible(true);
         SWDescriptionStrategy.TypeCache typeCache = 
             (SWDescriptionStrategy.TypeCache) getTypeCacheMethod.invoke(wrapper);
 
-        // 验证Bootstrap ClassLoader的缓存处理
+        // Verify Bootstrap ClassLoader cache handling
         Assert.assertNotNull("TypeCache should be created for bootstrap classloader", typeCache);
         Assert.assertTrue("Bootstrap cache should contain the type", 
             bootstrapCache.containsKey(testTypeName));
@@ -141,12 +141,12 @@ public class SWDescriptionStrategyCacheTest {
 
         int initialCacheSize = cache.size();
 
-        // 创建两个不同的ClassLoader
+        // Create two different ClassLoaders
         URLClassLoader classLoader1 = new URLClassLoader(new URL[0], null);
         URLClassLoader classLoader2 = new URLClassLoader(new URL[0], null);
         String testTypeName = "com.test.SameClassName";
 
-        // 为两个ClassLoader创建相同类名的TypeCache
+        // Create TypeCache with same class name for both ClassLoaders
         SWDescriptionStrategy.SWTypeDescriptionWrapper wrapper1 = 
             new SWDescriptionStrategy.SWTypeDescriptionWrapper(
                 null, "test", classLoader1, testTypeName);
@@ -154,7 +154,7 @@ public class SWDescriptionStrategyCacheTest {
             new SWDescriptionStrategy.SWTypeDescriptionWrapper(
                 null, "test", classLoader2, testTypeName);
 
-        // 通过反射调用getTypeCache方法
+        // Call getTypeCache method via reflection
         Method getTypeCacheMethod = 
             SWDescriptionStrategy.SWTypeDescriptionWrapper.class.getDeclaredMethod("getTypeCache");
         getTypeCacheMethod.setAccessible(true);
@@ -164,18 +164,18 @@ public class SWDescriptionStrategyCacheTest {
         SWDescriptionStrategy.TypeCache typeCache2 = 
             (SWDescriptionStrategy.TypeCache) getTypeCacheMethod.invoke(wrapper2);
 
-        // 验证两个ClassLoader有独立的缓存项
+        // Verify that the two ClassLoaders have independent cache entries
         Assert.assertNotNull("TypeCache1 should be created", typeCache1);
         Assert.assertNotNull("TypeCache2 should be created", typeCache2);
         Assert.assertNotSame("TypeCaches should be different instances", typeCache1, typeCache2);
 
-        // 验证缓存结构
+        // Verify cache structure
         Assert.assertEquals("Cache should contain both classloaders", 
             initialCacheSize + 2, cache.size());
         Assert.assertTrue("Cache should contain classloader1", cache.containsKey(classLoader1));
         Assert.assertTrue("Cache should contain classloader2", cache.containsKey(classLoader2));
 
-        // 验证每个ClassLoader有独立的类型缓存
+        // Verify each ClassLoader has independent type cache
         Map<String, SWDescriptionStrategy.TypeCache> typeCacheMap1 = cache.get(classLoader1);
         Map<String, SWDescriptionStrategy.TypeCache> typeCacheMap2 = cache.get(classLoader2);
         
@@ -191,14 +191,14 @@ public class SWDescriptionStrategyCacheTest {
 
     @Test
     public void testConcurrentAccess() throws Exception {
-        // 测试并发访问场景
+        // Test concurrent access scenario
         final String testTypeName = "com.test.ConcurrentClass";
         final int threadCount = 10;
         final Thread[] threads = new Thread[threadCount];
         final URLClassLoader[] classLoaders = new URLClassLoader[threadCount];
         final SWDescriptionStrategy.TypeCache[] results = new SWDescriptionStrategy.TypeCache[threadCount];
 
-        // 创建多个线程同时访问缓存
+        // Create multiple threads to access cache simultaneously
         for (int i = 0; i < threadCount; i++) {
             final int index = i;
             classLoaders[i] = new URLClassLoader(new URL[0], null);
@@ -219,17 +219,17 @@ public class SWDescriptionStrategyCacheTest {
             });
         }
 
-        // 启动所有线程
+        // Start all threads
         for (Thread thread : threads) {
             thread.start();
         }
 
-        // 等待所有线程完成
+        // Wait for all threads to complete
         for (Thread thread : threads) {
-            thread.join(1000); // 最多等待1秒
+            thread.join(1000); // Wait at most 1 second
         }
 
-        // 验证所有结果
+        // Verify all results
         for (int i = 0; i < threadCount; i++) {
             Assert.assertNotNull("Result " + i + " should not be null", results[i]);
         }

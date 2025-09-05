@@ -175,7 +175,7 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
         if (!errorOccurred && ServiceManager.INSTANCE.findService(StatusCheckService.class).isError(t)) {
             errorOccurred();
         }
-        if(logs.size() >= Config.Agent.LOG_LIMIT_PER_SPAN){
+        if (logs.size() >= Config.Agent.LOG_LIMIT_PER_SPAN) {
             return this;
         }
         logs.add(new LogDataEntity.Builder().add(new KeyValuePair("event", "error"))
@@ -199,7 +199,7 @@ public abstract class AbstractTracingSpan implements AbstractSpan {
         if (logs == null) {
             logs = new LinkedList<>();
         }
-        if(logs.size() >= Config.Agent.LOG_LIMIT_PER_SPAN){
+        if (logs.size() >= Config.Agent.LOG_LIMIT_PER_SPAN) {
             return this;
         }
         LogDataEntity.Builder builder = new LogDataEntity.Builder();

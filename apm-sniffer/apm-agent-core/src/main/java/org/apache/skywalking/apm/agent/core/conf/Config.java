@@ -98,6 +98,11 @@ public class Config {
         public static int TRACE_SEGMENT_REF_LIMIT_PER_SPAN = 500;
 
         /**
+         * The max number of logs in a single span to keep memory cost estimatable.
+         */
+        public static int LOG_LIMIT_PER_SPAN = 300;
+
+        /**
          * The max number of spans in a single segment. Through this config item, SkyWalking keep your application
          * memory cost estimated.
          */

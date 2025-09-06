@@ -30,6 +30,7 @@ import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor {
@@ -60,11 +61,15 @@ public class JedisMethodInterceptor implements InstanceMethodsAroundInterceptor 
             return Optional.empty();
         }
         Object argument = allArguments[0];
-        // include null
-        if (!(argument instanceof String)) {
-            return Optional.empty();
+        if (argument instanceof String) {
+            return Optional.of(StringUtil.cut((String) argument, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH));
         }
-        return Optional.of(StringUtil.cut((String) argument, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH));
+        if (argument instanceof byte[]) {
+            String key = new String((byte[]) argument, StandardCharsets.UTF_8);
+            return Optional.of(StringUtil.cut(key, JedisPluginConfig.Plugin.Jedis.REDIS_PARAMETER_MAX_LENGTH));
+        }
+        return Optional.empty();
+
     }
 
     @Override

@@ -36,6 +36,10 @@ public class RedisCommandExecutor implements AutoCloseable {
         jedis.get(key);
     }
 
+    public void get(byte[] key) {
+        jedis.get(key);
+    }
+
     public void del(String key) {
         jedis.del(key);
     }

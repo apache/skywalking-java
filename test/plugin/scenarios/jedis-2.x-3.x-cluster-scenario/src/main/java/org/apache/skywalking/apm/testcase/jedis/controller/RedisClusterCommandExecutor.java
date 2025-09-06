@@ -48,6 +48,10 @@ public class RedisClusterCommandExecutor implements AutoCloseable {
         jedisCluster.get(key);
     }
 
+    public void get(byte[] key) {
+        jedisCluster.get(key);
+    }
+
     public void del(String key) {
         jedisCluster.del(key);
     }

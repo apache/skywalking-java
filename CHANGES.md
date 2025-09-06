@@ -15,6 +15,8 @@ Release Notes.
 * Bump up apache parent pom to v35.
 * Update Maven to 3.6.3 in mvnw.
 * Support tagging cache keys for `byte[]` type in Jedis commands in jedis-2.x and jedis-3.x
+* Fix OOM due to too many span logs.
+
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 
 ------------------

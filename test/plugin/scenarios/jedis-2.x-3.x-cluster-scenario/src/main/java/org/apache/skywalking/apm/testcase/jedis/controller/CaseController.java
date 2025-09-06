@@ -38,6 +38,7 @@ public class CaseController {
         try (RedisClusterCommandExecutor command = new RedisClusterCommandExecutor(redisCluster)) {
             command.set("a", "a");
             command.get("a");
+            command.get("a".getBytes());
             command.del("a");
         }
 

@@ -41,6 +41,7 @@ public class CaseController {
         try (RedisCommandExecutor command = new RedisCommandExecutor(redisHost, redisPort)) {
             command.set("a", "a");
             command.get("a");
+            command.get("a".getBytes());
             command.del("a");
         }
 

@@ -14,6 +14,7 @@ Release Notes.
 * Bump up cli to the 0.15.0-dev.latest(77b4c49e89c9c000278f44e62729d534f2ec842e) in e2e.
 * Bump up apache parent pom to v35.
 * Update Maven to 3.6.3 in mvnw.
+* Fix OOM due to too many span logs.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 

@@ -33,9 +33,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
 import org.apache.skywalking.apm.agent.core.util.MethodUtil;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.plugin.spring.mvc.commons.EnhanceRequireObjectCache;
-import org.apache.skywalking.apm.plugin.spring.mvc.commons.RequestUtil;
-import org.apache.skywalking.apm.plugin.spring.mvc.commons.SpringMVCPluginConfig;
+import org.apache.skywalking.apm.plugin.spring.mvc.commons.*;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.exception.IllegalMethodStackDepthException;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.exception.ServletResponseNotFoundException;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -113,53 +111,12 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
 
                 if (IN_SERVLET_CONTAINER && IS_JAVAX && HttpServletRequest.class.isAssignableFrom(request.getClass())) {
                     final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-                    CarrierItem next = contextCarrier.items();
-                    while (next.hasNext()) {
-                        next = next.next();
-                        next.setHeadValue(httpServletRequest.getHeader(next.getHeadKey()));
-                    }
+                    handleBeforeMethod(objInst, method, HttpServletRequestWrappers.wrap(httpServletRequest), contextCarrier);
 
-                    String operationName = this.buildOperationName(method, httpServletRequest.getMethod(),
-                                                                   (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField());
-                    AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
-                    Tags.URL.set(span, httpServletRequest.getRequestURL().toString());
-                    Tags.HTTP.METHOD.set(span, httpServletRequest.getMethod());
-                    span.setComponent(ComponentsDefine.SPRING_MVC_ANNOTATION);
-                    SpanLayer.asHttp(span);
-
-                    if (SpringMVCPluginConfig.Plugin.SpringMVC.COLLECT_HTTP_PARAMS) {
-                        RequestUtil.collectHttpParam(httpServletRequest, span);
-                    }
-
-                    if (!CollectionUtil.isEmpty(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS)) {
-                        RequestUtil.collectHttpHeaders(httpServletRequest, span);
-                    }
                 } else if (IN_SERVLET_CONTAINER && IS_JAKARTA && jakarta.servlet.http.HttpServletRequest.class.isAssignableFrom(request.getClass())) {
                     final jakarta.servlet.http.HttpServletRequest httpServletRequest = (jakarta.servlet.http.HttpServletRequest) request;
-                    CarrierItem next = contextCarrier.items();
-                    while (next.hasNext()) {
-                        next = next.next();
-                        next.setHeadValue(httpServletRequest.getHeader(next.getHeadKey()));
-                    }
+                    handleBeforeMethod(objInst, method, HttpServletRequestWrappers.wrap(httpServletRequest), contextCarrier);
 
-                    String operationName =
-                        this.buildOperationName(method, httpServletRequest.getMethod(),
-                            (EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField());
-                    AbstractSpan span =
-                        ContextManager.createEntrySpan(operationName, contextCarrier);
-                    Tags.URL.set(span, httpServletRequest.getRequestURL().toString());
-                    Tags.HTTP.METHOD.set(span, httpServletRequest.getMethod());
-                    span.setComponent(ComponentsDefine.SPRING_MVC_ANNOTATION);
-                    SpanLayer.asHttp(span);
-
-                    if (SpringMVCPluginConfig.Plugin.SpringMVC.COLLECT_HTTP_PARAMS) {
-                        RequestUtil.collectHttpParam(httpServletRequest, span);
-                    }
-
-                    if (!CollectionUtil
-                        .isEmpty(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS)) {
-                        RequestUtil.collectHttpHeaders(httpServletRequest, span);
-                    }
                 } else if (ServerHttpRequest.class.isAssignableFrom(request.getClass())) {
                     final ServerHttpRequest serverHttpRequest = (ServerHttpRequest) request;
                     CarrierItem next = contextCarrier.items();
@@ -195,6 +152,30 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
             }
 
             stackDepth.increment();
+        }
+    }
+
+    private void handleBeforeMethod(EnhancedInstance objInst, Method method,
+                                    HttpServletRequestWrapper httpServletRequest, ContextCarrier contextCarrier){
+        CarrierItem next = contextCarrier.items();
+        while (next.hasNext()) {
+            next = next.next();
+            next.setHeadValue(httpServletRequest.getHeader(next.getHeadKey()));
+        }
+
+        String operationName = this.buildOperationName(method, httpServletRequest.getMethod(),(EnhanceRequireObjectCache) objInst.getSkyWalkingDynamicField());
+        AbstractSpan span = ContextManager.createEntrySpan(operationName, contextCarrier);
+        Tags.URL.set(span, httpServletRequest.getRequestURL().toString());
+        Tags.HTTP.METHOD.set(span, httpServletRequest.getMethod());
+        span.setComponent(ComponentsDefine.SPRING_MVC_ANNOTATION);
+        SpanLayer.asHttp(span);
+
+        if (SpringMVCPluginConfig.Plugin.SpringMVC.COLLECT_HTTP_PARAMS) {
+            RequestUtil.collectHttpParam(httpServletRequest, span);
+        }
+
+        if (!CollectionUtil.isEmpty(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS)) {
+            RequestUtil.collectHttpHeaders(httpServletRequest, span);
         }
     }
 

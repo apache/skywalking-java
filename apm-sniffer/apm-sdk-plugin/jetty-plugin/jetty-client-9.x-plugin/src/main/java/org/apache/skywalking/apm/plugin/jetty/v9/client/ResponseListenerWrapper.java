@@ -26,17 +26,18 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
 import org.eclipse.jetty.http.HttpField;
+import org.eclipse.jetty.util.Callback;
 
 import java.nio.ByteBuffer;
 
 public class ResponseListenerWrapper implements Response.Listener {
 
-    private final Response.Listener callback;
+    private final Response.Listener listener;
 
     private final ContextSnapshot context;
 
-    public ResponseListenerWrapper(Response.Listener callback, ContextSnapshot context) {
-        this.callback = callback;
+    public ResponseListenerWrapper(Response.Listener listener, ContextSnapshot context) {
+        this.listener = listener;
         this.context = context;
     }
 
@@ -48,39 +49,44 @@ public class ResponseListenerWrapper implements Response.Listener {
         if (context != null) {
             ContextManager.continued(context);
         }
-        if (callback != null) {
-            callback.onComplete(result);
+        if (listener != null) {
+            listener.onComplete(result);
         }
         ContextManager.stopSpan();
     }
 
     @Override
     public void onHeaders(Response response) {
-        callback.onHeaders(response);
+        listener.onHeaders(response);
+    }
+
+    @Override
+    public void onContent(Response response, ByteBuffer content, Callback callback) {
+        listener.onContent(response, content, callback);
     }
 
     @Override
     public void onContent(Response response, ByteBuffer content) {
-        callback.onContent(response, content);
+        listener.onContent(response, content);
     }
 
     @Override
     public void onBegin(Response response) {
-        callback.onBegin(response);
+        listener.onBegin(response);
     }
 
     @Override
     public boolean onHeader(Response response, HttpField field) {
-        return callback.onHeader(response, field);
+        return listener.onHeader(response, field);
     }
 
     @Override
     public void onSuccess(Response response) {
-        callback.onSuccess(response);
+        listener.onSuccess(response);
     }
 
     @Override
     public void onFailure(Response response, Throwable failure) {
-        callback.onFailure(response, failure);
+        listener.onFailure(response, failure);
     }
 }

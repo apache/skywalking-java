@@ -57,8 +57,13 @@ public class AsyncHttpRequestSendInterceptor implements InstanceMethodsAroundInt
 
         span.prepareForAsync();
         request.attribute(Constants.SW_JETTY_EXIT_SPAN_KEY, span);
-        Response.CompleteListener callback = (Response.CompleteListener) allArguments[0];
-        allArguments[0] = new CompleteListenerWrapper(callback, ContextManager.capture());
+        if (allArguments[0] instanceof Response.Listener) {
+            Response.Listener callback = (Response.Listener) allArguments[0];
+            allArguments[0] = new ResponseListenerWrapper(callback, ContextManager.capture());
+        } else {
+            Response.CompleteListener callback = (Response.CompleteListener) allArguments[0];
+            allArguments[0] = new CompleteListenerWrapper(callback, ContextManager.capture());
+        }
     }
 
     @Override

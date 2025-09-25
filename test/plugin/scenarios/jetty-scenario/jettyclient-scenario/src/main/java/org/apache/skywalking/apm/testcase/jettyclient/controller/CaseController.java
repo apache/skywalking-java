@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.testcase.jettyclient.contr;
+package org.apache.skywalking.apm.testcase.jettyclient.controller;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -26,6 +26,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Response;
+import org.eclipse.jetty.client.api.Result;
+import org.eclipse.jetty.client.util.BufferingResponseListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -51,13 +53,19 @@ public class CaseController {
     @ResponseBody
     public String jettyClientScenario() throws Exception {
         client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0").send();
-        Response.CompleteListener listener = result -> {
-            CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpGet httpget = new HttpGet("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0");
-            try {
-                httpclient.execute(httpget);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        Response.Listener listener = new BufferingResponseListener() {
+            public void onComplete(Result result) {
+                byte[] bytes = this.getContent();
+                if (bytes == null || bytes.length == 0) {
+                    throw new RuntimeException("content cant be empty");
+                }
+                CloseableHttpClient httpclient = HttpClients.createDefault();
+                HttpGet httpget = new HttpGet("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-0");
+                try {
+                    httpclient.execute(httpget);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
         client.newRequest("http://" + jettyServerHost + ":18080/jettyserver-case/case/receiveContext-1").send(listener);

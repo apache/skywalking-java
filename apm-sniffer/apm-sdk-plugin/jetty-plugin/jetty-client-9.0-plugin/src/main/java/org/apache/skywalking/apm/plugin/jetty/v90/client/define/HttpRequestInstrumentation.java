@@ -41,7 +41,7 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
     private static final String ENHANCE_CLASS = "org.eclipse.jetty.client.HttpRequest";
     private static final String ENHANCE_CLASS_NAME = "send";
     public static final String SYNC_SEND_INTERCEPTOR =
-            "org.apache.skywalking.apm.plugin.jetty.v90.client.SyncHttpRequestSendV90Interceptor";
+            "org.apache.skywalking.apm.plugin.jetty.v90.client.SyncHttpRequestSendInterceptor";
 
     public static final String ASYNC_SEND_INTERCEPTOR =
             "org.apache.skywalking.apm.plugin.jetty.v90.client.AsyncHttpRequestSendInterceptor";

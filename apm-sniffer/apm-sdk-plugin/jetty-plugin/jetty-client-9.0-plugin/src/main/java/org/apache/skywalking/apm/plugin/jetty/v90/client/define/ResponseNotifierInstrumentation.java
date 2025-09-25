@@ -41,10 +41,10 @@ import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
  */
 public class ResponseNotifierInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_CLASS = "org.eclipse.jetty.client.tar";
+    private static final String ENHANCE_CLASS = "org.eclipse.jetty.client.ResponseNotifier";
     private static final String ENHANCE_CLASS_NAME = "notifyComplete";
     public static final String SYNC_SEND_INTERCEPTOR =
-            "org.apache.skywalking.apm.plugin.jetty.v9.client.ResponseNotifierInterceptor";
+            "org.apache.skywalking.apm.plugin.jetty.v90.client.ResponseNotifierInterceptor";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {

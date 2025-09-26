@@ -31,7 +31,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <jetty-client.version>9.1.0.v20131115</jetty-client.version>
+        <jetty-client.version>9.2.23.v20171218</jetty-client.version>
     </properties>
 
     <dependencies>

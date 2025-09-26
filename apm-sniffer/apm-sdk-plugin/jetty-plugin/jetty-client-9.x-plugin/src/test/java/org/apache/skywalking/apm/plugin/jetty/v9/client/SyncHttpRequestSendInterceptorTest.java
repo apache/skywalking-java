@@ -34,6 +34,7 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.HttpConversation;
 import org.eclipse.jetty.client.HttpRequest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -67,7 +68,7 @@ public class SyncHttpRequestSendInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
-        enhancedInstance = new MockHttpRequest(httpClient, uri);
+        enhancedInstance = new MockHttpRequest(httpClient, new HttpConversation(), uri);
         allArguments = new Object[] {
             "OperationKey",
             "OperationValue"
@@ -123,8 +124,8 @@ public class SyncHttpRequestSendInterceptorTest {
     }
 
     private class MockHttpRequest extends HttpRequest implements EnhancedInstance {
-        public MockHttpRequest(HttpClient httpClient, URI uri) {
-            super(httpClient, uri);
+        public MockHttpRequest(HttpClient client, HttpConversation conversation, URI uri) {
+            super(httpClient, conversation, uri);
         }
 
         @Override

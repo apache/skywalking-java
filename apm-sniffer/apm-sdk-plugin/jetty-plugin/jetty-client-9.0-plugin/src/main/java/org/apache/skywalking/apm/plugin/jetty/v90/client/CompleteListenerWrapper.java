@@ -27,11 +27,11 @@ import org.eclipse.jetty.client.api.Response;
 import org.eclipse.jetty.client.api.Result;
 
 public class CompleteListenerWrapper implements Response.CompleteListener  {
-    private Response.CompleteListener callback;
+    private Response.CompleteListener listener;
     private ContextSnapshot context;
 
-    public CompleteListenerWrapper(Response.CompleteListener callback, ContextSnapshot context) {
-        this.callback = callback;
+    public CompleteListenerWrapper(Response.CompleteListener listener, ContextSnapshot context) {
+        this.listener = listener;
         this.context = context;
     }
 
@@ -43,8 +43,8 @@ public class CompleteListenerWrapper implements Response.CompleteListener  {
         if (context != null) {
             ContextManager.continued(context);
         }
-        if (callback != null) {
-            callback.onComplete(result);
+        if (listener != null) {
+            listener.onComplete(result);
         }
         ContextManager.stopSpan();
     }

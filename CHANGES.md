@@ -17,6 +17,7 @@ Release Notes.
 * Fix OOM due to too many span logs.
 * Fix ClassLoader cache OOM issue with WeakHashMap.
 * Fix Jetty client cannot receive the HTTP response body.
+* Eliminate repeated code with HttpServletRequestWrapper in mvc-annotation-commons.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 

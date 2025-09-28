@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.spring.mvc.commons;
 
-
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -70,7 +69,6 @@ public class HttpServletRequestWrappers {
             return jakartaRequest.getHeaders(name);
         }
 
-
     }
 
     public static class JavaxHttpServletRequest implements HttpServletRequestWrapper {
@@ -109,7 +107,6 @@ public class HttpServletRequestWrappers {
         public Enumeration<String> getHeaders(String name) {
             return javaxRequest.getHeaders(name);
         }
-
 
     }
 }

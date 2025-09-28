@@ -15,8 +15,8 @@
  * limitations under the License.
  *
  */
-package org.apache.skywalking.apm.plugin.spring.mvc.commons;
 
+package org.apache.skywalking.apm.plugin.spring.mvc.commons;
 
 import java.util.Enumeration;
 import java.util.Map;

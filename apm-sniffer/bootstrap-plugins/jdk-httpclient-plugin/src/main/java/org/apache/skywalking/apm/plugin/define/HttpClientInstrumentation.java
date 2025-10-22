@@ -40,7 +40,10 @@ public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
     private static final String INTERCEPT_SEND_METHOD = "send";
 
-    private static final String INTERCEPT_SEND_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendInterceptor";
+    private static final String INTERCEPT_SEND_ASYNC_METHOD = "sendAsync";
+
+    private static final String INTERCEPT_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendInterceptor";
+
 
     @Override
     public boolean isBootstrapInstrumentation() {
@@ -66,20 +69,40 @@ public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePlugin
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return ElementMatchers.named(INTERCEPT_SEND_METHOD)
-                                .and(ElementMatchers.takesArguments(2))
-                                .and(ElementMatchers.takesArgument(0, named("java.net.http.HttpRequest")));
+                                .and(ElementMatchers.takesArgument(0, named("java.net.http.HttpRequest")))
+                                .and(ElementMatchers.takesArguments(2));
                     }
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return INTERCEPT_SEND_HANDLE;
+                        return INTERCEPT_HANDLE;
                     }
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return true;
+                        return false;
                     }
-                }
+                },
+                new InstanceMethodsInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
+                        return ElementMatchers.named(INTERCEPT_SEND_ASYNC_METHOD)
+                                .and(ElementMatchers.takesArgument(0, named("java.net.http.HttpRequest")))
+                                .and(ElementMatchers.takesArgument(1, named("java.net.http.HttpResponse$BodyHandler")))
+                                .and(ElementMatchers.takesArgument(2, named("java.net.http.HttpResponse$PushPromiseHandler")))
+                                .and(ElementMatchers.takesArguments(3));
+                    }
+
+                    @Override
+                    public String getMethodsInterceptor() {
+                        return INTERCEPT_HANDLE;
+                    }
+
+                    @Override
+                    public boolean isOverrideArgs() {
+                        return false;
+                    }
+                },
         };
     }
 }

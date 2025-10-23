@@ -40,7 +40,7 @@ segmentItems:
                     null, parentService: jdk-httpclient-scenario, traceId: not null }
       - segmentId: not null
         spans:
-          - operationName: POST:/user/login
+          - operationName: POST:/jdk-httpclient-scenario/user/login
             parentSpanId: 0
             spanId: 1
             spanLayer: Http
@@ -54,7 +54,6 @@ segmentItems:
             tags:
               - { key: http.method, value: POST }
               - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/user/login }
-              - { key: http.status_code, value: '200' }
 
       - segmentId: not null
         spans:

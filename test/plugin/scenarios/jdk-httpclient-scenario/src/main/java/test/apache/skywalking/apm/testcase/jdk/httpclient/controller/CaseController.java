@@ -55,10 +55,7 @@ public class CaseController {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("Status code: " + response.statusCode());
-        System.out.println("Headers: " + response.headers());
-        System.out.println("Response body: " + response.body());
+        client.send(request, HttpResponse.BodyHandlers.ofString());
         return "success";
     }
 }

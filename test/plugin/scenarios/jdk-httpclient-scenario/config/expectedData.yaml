@@ -38,22 +38,6 @@ segmentItems:
               - { parentEndpoint: GET:/case/jdk-httpclient-scenario-case, networkAddress: 'localhost:8080',
                   refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
                     null, parentService: jdk-httpclient-scenario, traceId: not null }
-      - segmentId: not null
-        spans:
-          - operationName: POST:/jdk-httpclient-scenario/user/login
-            parentSpanId: 0
-            spanId: 1
-            spanLayer: Http
-            startTime: not null
-            endTime: not null
-            componentId: 66
-            isError: false
-            spanType: Exit
-            peer: not null
-            skipAnalysis: 'false'
-            tags:
-              - { key: http.method, value: POST }
-              - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/user/login }
 
       - segmentId: not null
         spans:
@@ -72,3 +56,18 @@ segmentItems:
               - { key: http.method, value: GET }
               - { key: http.status_code, value: '200' }
             skipAnalysis: 'false'
+
+          - operationName: POST:/jdk-httpclient-scenario/user/login
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 66
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: 'false'
+            tags:
+              - { key: http.method, value: POST }
+              - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/user/login }

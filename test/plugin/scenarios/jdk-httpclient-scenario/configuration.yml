@@ -15,8 +15,8 @@
 # limitations under the License.
 
 type: jvm
-entryService: http://localhost:8080/jdk-httpclient-scenario/case
-healthCheck: http://localhost:8080/jdk-httpclient-scenario/healthCheck
+entryService: http://localhost:8080/jdk-httpclient-scenario/case/jdk-httpclient-scenario-case
+healthCheck: http://localhost:8080/jdk-httpclient-scenario/case/healthCheck
 runningMode: with_bootstrap
 withPlugins: apm-jdk-httpclient-plugin-*.jar
 startScript: ./bin/startup.sh

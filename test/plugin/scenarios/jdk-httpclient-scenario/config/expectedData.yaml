@@ -52,8 +52,8 @@ segmentItems:
             peer: not null
             skipAnalysis: 'false'
             tags:
-              - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/user/login }
               - { key: http.method, value: POST }
+              - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/user/login }
               - { key: http.status_code, value: '200' }
             refs:
               - { parentEndpoint: GET:/case/jdk-httpclient-scenario-case, networkAddress: '',

@@ -44,7 +44,6 @@ public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
     private static final String INTERCEPT_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendInterceptor";
 
-
     @Override
     public boolean isBootstrapInstrumentation() {
         return true;

@@ -211,6 +211,20 @@ public class Config {
          */
         public static int GRPC_UPSTREAM_TIMEOUT = 30;
         /**
+         * The interval in seconds to send a keepalive ping to the backend.
+         * If this is less than or equal to 0, the keepalive is disabled.
+         *
+         * This maps to `collector.grpc_keepalive_time` in agent.config.
+         */
+        public static long GRPC_KEEPALIVE_TIME = 60L;
+        /**
+         * The timeout in seconds to wait for a keepalive ack from the backend.
+         * If the ack is not received within this time, the connection is considered dead.
+         *
+         * This maps to `collector.grpc_keepalive_timeout` in agent.config.
+         */
+        public static long GRPC_KEEPALIVE_TIMEOUT = 30L;
+        /**
          * Get profile task list interval
          */
         public static int GET_PROFILE_TASK_INTERVAL = 20;

@@ -130,33 +130,26 @@ public class GRPCChannelManager implements BootService, Runnable {
                 String server = "";
                 try {
                     int index = Math.abs(random.nextInt()) % grpcServers.size();
-                    if (index != selectedIdx) {
-                        selectedIdx = index;
+                    selectedIdx = index;
 
-                        server = grpcServers.get(index);
-                        String[] ipAndPort = server.split(":");
+                    server = grpcServers.get(index);
+                    String[] ipAndPort = server.split(":");
 
-                        if (managedChannel != null) {
-                            managedChannel.shutdownNow();
-                        }
-
-                        managedChannel = GRPCChannel.newBuilder(ipAndPort[0], Integer.parseInt(ipAndPort[1]))
-                                                    .addManagedChannelBuilder(new StandardChannelBuilder())
-                                                    .addManagedChannelBuilder(new TLSChannelBuilder())
-                                                    .addChannelDecorator(new AgentIDDecorator())
-                                                    .addChannelDecorator(new AuthenticationDecorator())
-                                                    .build();
-                        reconnectCount = 0;
-                        reconnect = false;
-                        notify(GRPCChannelStatus.CONNECTED);
-                    } else if (managedChannel.isConnected(++reconnectCount > Config.Agent.FORCE_RECONNECTION_PERIOD)) {
-                        // Reconnect to the same server is automatically done by GRPC,
-                        // therefore we are responsible to check the connectivity and
-                        // set the state and notify listeners
-                        reconnectCount = 0;
-                        reconnect = false;
-                        notify(GRPCChannelStatus.CONNECTED);
+                    LOGGER.debug("Attempting to reconnect to gRPC server {}. Shutting down existing channel if any.", server);
+                    if (managedChannel != null) {
+                        managedChannel.shutdownNow();
                     }
+
+                    managedChannel = GRPCChannel.newBuilder(ipAndPort[0], Integer.parseInt(ipAndPort[1]))
+                                                .addManagedChannelBuilder(new StandardChannelBuilder())
+                                                .addManagedChannelBuilder(new TLSChannelBuilder())
+                                                .addChannelDecorator(new AgentIDDecorator())
+                                                .addChannelDecorator(new AuthenticationDecorator())
+                                                .build();
+                    LOGGER.debug("Successfully reconnected to gRPC server {}.", server);
+                    reconnectCount = 0;
+                    reconnect = false;
+                    notify(GRPCChannelStatus.CONNECTED);
 
                     return;
                 } catch (Throwable t) {

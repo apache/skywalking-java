@@ -27,6 +27,8 @@ import io.grpc.internal.DnsNameResolverProvider;
 import io.grpc.netty.NettyChannelBuilder;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.apache.skywalking.apm.agent.core.conf.Config;
 
 public class GRPCChannel {
     /**
@@ -38,6 +40,11 @@ public class GRPCChannel {
     private GRPCChannel(String host, int port, List<ChannelBuilder> channelBuilders,
                         List<ChannelDecorator> decorators) throws Exception {
         ManagedChannelBuilder channelBuilder = NettyChannelBuilder.forAddress(host, port);
+
+        if (Config.Collector.GRPC_KEEPALIVE_TIME > 0) {
+            channelBuilder.keepAliveTime(Config.Collector.GRPC_KEEPALIVE_TIME, TimeUnit.SECONDS)
+                          .keepAliveTimeout(Config.Collector.GRPC_KEEPALIVE_TIMEOUT, TimeUnit.SECONDS);
+        }
 
         NameResolverRegistry.getDefaultRegistry().register(new DnsNameResolverProvider());
 

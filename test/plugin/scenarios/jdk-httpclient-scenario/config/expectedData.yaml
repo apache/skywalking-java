@@ -38,9 +38,45 @@ segmentItems:
               - { parentEndpoint: GET:/case/jdk-httpclient-scenario-case, networkAddress: 'localhost:8080',
                   refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                     null, parentService: jdk-httpclient-scenario, traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: POST:/user/asyncLogin
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 14
+            isError: false
+            spanType: Entry
+            peer: ''
+            skipAnalysis: 'false'
+            tags:
+              - { key: url, value: not null }
+              - { key: http.method, value: POST }
+              - { key: http.status_code, value: '200' }
+            refs:
+              - { parentEndpoint: GET:/case/jdk-httpclient-scenario-case, networkAddress: 'localhost:8080',
+                refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+                    null, parentService: jdk-httpclient-scenario, traceId: not null }
 
       - segmentId: not null
         spans:
+          - operationName: POST:/jdk-httpclient-scenario/user/asyncLogin
+            parentSpanId: 0
+            spanId: 2
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 66
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: 'false'
+            tags:
+              - { key: http.method, value: POST }
+              - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/user/asyncLogin }
+
           - operationName: POST:/jdk-httpclient-scenario/user/login
             parentSpanId: 0
             spanId: 1

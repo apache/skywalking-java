@@ -34,4 +34,12 @@ public class UserController {
         resultJson.put("message", "success");
         return resultJson;
     }
+
+    @PostMapping("/asyncLogin")
+    public JSONObject asyncLogin(@RequestBody UserLoginDTO userLoginDTO) {
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("code", 200);
+        resultJson.put("message", "success");
+        return resultJson;
+    }
 }

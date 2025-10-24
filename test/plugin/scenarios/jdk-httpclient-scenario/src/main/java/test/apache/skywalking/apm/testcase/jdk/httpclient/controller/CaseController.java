@@ -27,6 +27,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/case")
@@ -49,13 +50,16 @@ public class CaseController {
                 "}";
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/jdk-httpclient-scenario/user/login"))
+                .uri(URI.create("http://localhost:8080/jdk-httpclient-scenario/user/asyncLogin"))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        future.join();
         return "success";
     }
 }

@@ -89,8 +89,8 @@ segmentItems:
             peer: not null
             skipAnalysis: 'false'
             tags:
-              - { key: url, value: not null }
               - { key: http.method, value: POST }
+              - { key: url, value: not null }
 
           - operationName: GET:/case/jdk-httpclient-scenario-case
             parentSpanId: -1

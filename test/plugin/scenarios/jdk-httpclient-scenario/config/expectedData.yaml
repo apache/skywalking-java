@@ -36,7 +36,7 @@ segmentItems:
               - { key: http.status_code, value: '200' }
             refs:
               - { parentEndpoint: GET:/case/jdk-httpclient-scenario-case, networkAddress: 'localhost:8080',
-                  refType: CrossProcess, parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                  refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                     null, parentService: jdk-httpclient-scenario, traceId: not null }
 
       - segmentId: not null

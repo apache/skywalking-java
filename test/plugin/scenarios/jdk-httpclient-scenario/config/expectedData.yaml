@@ -64,7 +64,7 @@ segmentItems:
         spans:
           - operationName: POST:/jdk-httpclient-scenario/user/asyncLogin
             parentSpanId: 0
-            spanId: 1
+            spanId: 2
             spanLayer: Http
             startTime: not null
             endTime: not null

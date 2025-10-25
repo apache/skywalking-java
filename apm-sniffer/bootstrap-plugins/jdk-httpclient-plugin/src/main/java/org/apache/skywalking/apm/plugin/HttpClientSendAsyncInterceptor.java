@@ -32,8 +32,9 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
 
-public class HttpClientSendInterceptor implements InstanceMethodsAroundInterceptor {
+public class HttpClientSendAsyncInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
@@ -58,19 +59,32 @@ public class HttpClientSendInterceptor implements InstanceMethodsAroundIntercept
 
         if (ContextManager.isActive()) {
             AbstractSpan span = ContextManager.activeSpan();
-            if (ret != null) {
-                HttpResponse<?> response = (HttpResponse<?>) ret;
-                int statusCode = response.statusCode();
+            span.prepareForAsync();
 
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(span,  response.statusCode());
-                if (statusCode >= 400) {
-                    span.errorOccurred();
-                }
+            if (ret != null) {
+                CompletableFuture<?> future = (CompletableFuture<?>) ret;
+                future.whenComplete((response, throwable) -> {
+                    try {
+                        if (throwable != null) {
+                            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);
+                            span.errorOccurred();
+                            span.log(throwable);
+                        } else if (response instanceof HttpResponse) {
+                            HttpResponse<?> httpResponse = (HttpResponse<?>) response;
+                            int statusCode = httpResponse.statusCode();
+                            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
+                            if (statusCode >= 400) {
+                                span.errorOccurred();
+                            }
+                        }
+                    } finally {
+                        span.asyncFinish();
+                    }
+                });
             } else {
                 Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 404);
                 span.errorOccurred();
             }
-
             ContextManager.stopSpan();
         }
         return ret;

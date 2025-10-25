@@ -42,7 +42,9 @@ public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
     private static final String INTERCEPT_SEND_ASYNC_METHOD = "sendAsync";
 
-    private static final String INTERCEPT_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendInterceptor";
+    private static final String INTERCEPT_SEND_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendInterceptor";
+
+    private static final String INTERCEPT_SEND_ASYNC_HANDLE = "org.apache.skywalking.apm.plugin.HttpClientSendAsyncInterceptor";
 
     @Override
     public boolean isBootstrapInstrumentation() {
@@ -74,7 +76,7 @@ public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return INTERCEPT_HANDLE;
+                        return INTERCEPT_SEND_HANDLE;
                     }
 
                     @Override
@@ -94,7 +96,7 @@ public class HttpClientInstrumentation extends ClassInstanceMethodsEnhancePlugin
 
                     @Override
                     public String getMethodsInterceptor() {
-                        return INTERCEPT_HANDLE;
+                        return INTERCEPT_SEND_ASYNC_HANDLE;
                     }
 
                     @Override

@@ -91,6 +91,7 @@ segmentItems:
             tags:
               - { key: http.method, value: POST }
               - { key: url, value: not null }
+              - { key: http.status_code, value: '200' }
 
           - operationName: GET:/case/jdk-httpclient-scenario-case
             parentSpanId: -1

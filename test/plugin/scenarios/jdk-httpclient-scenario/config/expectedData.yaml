@@ -91,7 +91,7 @@ segmentItems:
             skipAnalysis: 'false'
             tags:
               - { key: http.method, value: POST }
-              - { key: url, value: not null }
+              - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/user/asyncLogin }
               - { key: http.status_code, value: '200' }
 
           - operationName: GET:/case/jdk-httpclient-scenario-case
@@ -105,7 +105,7 @@ segmentItems:
             spanType: Entry
             peer: ''
             tags:
-              - { key: url, value: not null }
+              - { key: url, value: http://localhost:8080/jdk-httpclient-scenario/case/jdk-httpclient-scenario-case }
               - { key: http.method, value: GET }
               - { key: http.status_code, value: '200' }
             skipAnalysis: 'false'

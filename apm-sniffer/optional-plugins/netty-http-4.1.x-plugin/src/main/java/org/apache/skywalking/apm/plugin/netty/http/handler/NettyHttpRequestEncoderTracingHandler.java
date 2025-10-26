@@ -80,7 +80,6 @@ public class NettyHttpRequestEncoderTracingHandler extends ChannelOutboundHandle
             InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
             String peer = address.getHostString() + ":" + address.getPort();
             String url = peer + uri;
-            String method = request.method().toString();
 
             ContextCarrier contextCarrier = new ContextCarrier();
             AbstractSpan span = ContextManager.createExitSpan(NettyConstants.NETTY_HTTP_OPERATION_PREFIX + uri, contextCarrier, peer);

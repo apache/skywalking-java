@@ -30,7 +30,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 
 public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_PARENT_CLASS = "jdk.internal.net.http.ImmutableHttpRequest";
+    private static final String ENHANCE_CLASS = "jdk.internal.net.http.ImmutableHttpRequest";
 
     private static final String INTERCEPT_HEADERS_METHOD = "headers";
 
@@ -48,7 +48,7 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(INTERCEPT_HEADERS_METHOD);
+        return byName(ENHANCE_CLASS);
     }
 
     @Override

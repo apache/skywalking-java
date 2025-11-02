@@ -32,6 +32,8 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpClientSendInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -67,7 +69,9 @@ public class HttpClientSendInterceptor implements InstanceMethodsAroundIntercept
                     span.errorOccurred();
                 }
             } else {
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 404);
+                Map<String, String> eventMap = new HashMap<String, String>();
+                eventMap.put("error", "No response");
+                span.log(System.currentTimeMillis(), eventMap);
                 span.errorOccurred();
             }
 

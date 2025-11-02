@@ -25,11 +25,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterc
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+
+import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_PARENT_CLASS = "java.net.http.HttpRequest";
+    private static final String ENHANCE_CLASS = "jdk.internal.net.http.ImmutableHttpRequest";
 
     private static final String INTERCEPT_HEADERS_METHOD = "headers";
 
@@ -47,7 +48,7 @@ public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePlugi
 
     @Override
     protected ClassMatch enhanceClass() {
-        return HierarchyMatch.byHierarchyMatch(ENHANCE_PARENT_CLASS);
+        return byName(ENHANCE_CLASS);
     }
 
     @Override

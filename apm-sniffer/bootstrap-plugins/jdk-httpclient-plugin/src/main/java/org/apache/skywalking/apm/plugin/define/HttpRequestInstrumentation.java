@@ -29,7 +29,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
 
 public class HttpRequestInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
-    private static final String ENHANCE_PARENT_CLASS = "java.net.http.HttpRequest";
+    private static final String ENHANCE_PARENT_CLASS = "jdk.internal.net.http.ImmutableHttpRequest";
 
     private static final String INTERCEPT_HEADERS_METHOD = "headers";
 

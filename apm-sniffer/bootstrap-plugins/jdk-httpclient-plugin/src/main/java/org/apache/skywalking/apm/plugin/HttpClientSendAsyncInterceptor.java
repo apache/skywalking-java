@@ -32,6 +32,8 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class HttpClientSendAsyncInterceptor implements InstanceMethodsAroundInterceptor {
@@ -66,10 +68,11 @@ public class HttpClientSendAsyncInterceptor implements InstanceMethodsAroundInte
                 ret = future.whenComplete((response, throwable) -> {
                     try {
                         if (throwable != null) {
-                            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);
                             span.errorOccurred();
                             span.log(throwable);
-                        } else if (response instanceof HttpResponse) {
+                            return;
+                        }
+                        if (response instanceof HttpResponse) {
                             HttpResponse<?> httpResponse = (HttpResponse<?>) response;
                             int statusCode = httpResponse.statusCode();
                             Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
@@ -82,7 +85,9 @@ public class HttpClientSendAsyncInterceptor implements InstanceMethodsAroundInte
                     }
                 });
             } else {
-                Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 404);
+                Map<String, String> eventMap = new HashMap<String, String>();
+                eventMap.put("error", "No response");
+                span.log(System.currentTimeMillis(), eventMap);
                 span.errorOccurred();
             }
             ContextManager.stopSpan();

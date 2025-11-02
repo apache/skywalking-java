@@ -63,7 +63,7 @@ public class HttpClientSendAsyncInterceptor implements InstanceMethodsAroundInte
 
             if (ret != null) {
                 CompletableFuture<?> future = (CompletableFuture<?>) ret;
-                future.whenComplete((response, throwable) -> {
+                ret = future.whenComplete((response, throwable) -> {
                     try {
                         if (throwable != null) {
                             Tags.HTTP_RESPONSE_STATUS_CODE.set(span, 500);

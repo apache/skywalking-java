@@ -47,6 +47,7 @@
 - influxdb-2.x
 - jackson-2.x
 - jdk-http-plugin
+- jdk-httpclient-plugin
 - jdk-threading-plugin
 - jdk-virtual-thread-executor-plugin
 - jedis-2.x-3.x

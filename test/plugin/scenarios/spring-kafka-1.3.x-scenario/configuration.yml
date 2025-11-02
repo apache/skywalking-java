@@ -28,7 +28,7 @@ dependencies:
     image: zookeeper:3.4
     hostname: zookeeper-server
   kafka-server:
-    image: bitnami/kafka:2.1.1
+    image: bitnamilegacy/kafka:2.4.1
     hostname: kafka-server
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper-server:2181

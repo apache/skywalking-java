@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.agent.core.remote;
 
 import io.grpc.Channel;
+import io.grpc.ConnectivityState;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
@@ -57,6 +58,8 @@ public class GRPCChannelManager implements BootService, Runnable {
     private volatile List<String> grpcServers;
     private volatile int selectedIdx = -1;
     private volatile int reconnectCount = 0;
+    private volatile int transientFailureCount = 0;
+    private final Object statusLock = new Object();
 
     @Override
     public void prepare() {
@@ -99,7 +102,15 @@ public class GRPCChannelManager implements BootService, Runnable {
 
     @Override
     public void run() {
-        LOGGER.debug("Selected collector grpc service running, reconnect:{}.", reconnect);
+        if (reconnect) {
+            LOGGER.warn("Selected collector grpc service running, reconnect:{}.", reconnect);
+        } else {
+            LOGGER.debug("Selected collector grpc service running, reconnect:{}.", reconnect);
+        }
+
+        // Check channel state even when reconnect is false to detect prolonged failures
+        checkChannelStateAndTriggerReconnectIfNeeded();
+
         if (IS_RESOLVE_DNS_PERIODICALLY && reconnect) {
             grpcServers = Arrays.stream(Config.Collector.BACKEND_SERVICE.split(","))
                     .filter(StringUtil::isNotBlank)
@@ -130,26 +141,34 @@ public class GRPCChannelManager implements BootService, Runnable {
                 String server = "";
                 try {
                     int index = Math.abs(random.nextInt()) % grpcServers.size();
-                    selectedIdx = index;
 
                     server = grpcServers.get(index);
                     String[] ipAndPort = server.split(":");
 
-                    LOGGER.debug("Attempting to reconnect to gRPC server {}. Shutting down existing channel if any.", server);
-                    if (managedChannel != null) {
-                        managedChannel.shutdownNow();
-                    }
+                    if (index != selectedIdx) {
+                        selectedIdx = index;
+                        LOGGER.debug("Connecting to different gRPC server {}. Shutting down existing channel if any.", server);
+                        createNewChannel(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
+                    } else {
+                        // Same server, increment reconnectCount and check state
+                        reconnectCount++;
 
-                    managedChannel = GRPCChannel.newBuilder(ipAndPort[0], Integer.parseInt(ipAndPort[1]))
-                                                .addManagedChannelBuilder(new StandardChannelBuilder())
-                                                .addManagedChannelBuilder(new TLSChannelBuilder())
-                                                .addChannelDecorator(new AgentIDDecorator())
-                                                .addChannelDecorator(new AuthenticationDecorator())
-                                                .build();
-                    LOGGER.debug("Successfully reconnected to gRPC server {}.", server);
-                    reconnectCount = 0;
-                    reconnect = false;
-                    notify(GRPCChannelStatus.CONNECTED);
+                        // Force reconnect if reconnectCount or transientFailureCount exceeds threshold
+                        boolean forceReconnect = reconnectCount > Config.Agent.FORCE_RECONNECTION_PERIOD
+                                              || transientFailureCount > Config.Agent.FORCE_RECONNECTION_PERIOD;
+
+                        if (forceReconnect) {
+                            // Failed to reconnect after multiple attempts, force rebuild channel
+                            LOGGER.warn("Force rebuild channel to {} (reconnectCount={}, transientFailureCount={})",
+                                      server, reconnectCount, transientFailureCount);
+                            createNewChannel(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
+                        } else if (managedChannel.isConnected(false)) {
+                            // Reconnect to the same server is automatically done by GRPC,
+                            // therefore we are responsible to check the connectivity and
+                            // set the state and notify listeners
+                            markAsConnected();
+                        }
+                    }
 
                     return;
                 } catch (Throwable t) {
@@ -177,17 +196,85 @@ public class GRPCChannelManager implements BootService, Runnable {
      */
     public void reportError(Throwable throwable) {
         if (isNetworkError(throwable)) {
+            triggerReconnect();
+        }
+    }
+
+    private void notify(GRPCChannelStatus status) {
+        synchronized (listeners) {
+            for (GRPCChannelListener listener : listeners) {
+                try {
+                    listener.statusChanged(status);
+                } catch (Throwable t) {
+                    LOGGER.error(t, "Fail to notify {} about channel connected.", listener.getClass().getName());
+                }
+            }
+        }
+    }
+
+    /**
+     * Create a new gRPC channel to the specified server and reset connection state.
+     */
+    private void createNewChannel(String host, int port) throws Exception {
+        if (managedChannel != null) {
+            managedChannel.shutdownNow();
+        }
+
+        managedChannel = GRPCChannel.newBuilder(host, port)
+                                    .addManagedChannelBuilder(new StandardChannelBuilder())
+                                    .addManagedChannelBuilder(new TLSChannelBuilder())
+                                    .addChannelDecorator(new AgentIDDecorator())
+                                    .addChannelDecorator(new AuthenticationDecorator())
+                                    .build();
+
+        markAsConnected();
+    }
+
+    /**
+     * Trigger reconnection by setting reconnect flag and notifying listeners.
+     */
+    private void triggerReconnect() {
+        synchronized (statusLock) {
             reconnect = true;
             notify(GRPCChannelStatus.DISCONNECT);
         }
     }
 
-    private void notify(GRPCChannelStatus status) {
-        for (GRPCChannelListener listener : listeners) {
+    /**
+     * Mark connection as successful and reset connection state.
+     */
+    private void markAsConnected() {
+        synchronized (statusLock) {
+            reconnectCount = 0;
+            reconnect = false;
+            notify(GRPCChannelStatus.CONNECTED);
+        }
+    }
+
+    /**
+     * Check the connectivity state of existing channel and trigger reconnect if needed.
+     * This method monitors TRANSIENT_FAILURE state and triggers reconnect if the failure persists too long.
+     */
+    private void checkChannelStateAndTriggerReconnectIfNeeded() {
+        if (managedChannel != null) {
             try {
-                listener.statusChanged(status);
+                ConnectivityState state = managedChannel.getState(false);
+                LOGGER.debug("Current channel state: {}", state);
+
+                if (state == ConnectivityState.TRANSIENT_FAILURE) {
+                    transientFailureCount++;
+                    LOGGER.warn("Channel in TRANSIENT_FAILURE state, count: {}", transientFailureCount);
+                } else if (state == ConnectivityState.SHUTDOWN) {
+                    LOGGER.warn("Channel is SHUTDOWN");
+                    if (!reconnect) {
+                        triggerReconnect();
+                    }
+                } else {
+                    // IDLE, READY, CONNECTING are all normal states
+                    transientFailureCount = 0;
+                }
             } catch (Throwable t) {
-                LOGGER.error(t, "Fail to notify {} about channel connected.", listener.getClass().getName());
+                LOGGER.error(t, "Error checking channel state");
             }
         }
     }

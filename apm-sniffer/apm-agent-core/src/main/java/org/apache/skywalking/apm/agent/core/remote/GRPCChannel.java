@@ -43,7 +43,8 @@ public class GRPCChannel {
 
         if (Config.Collector.GRPC_KEEPALIVE_TIME > 0) {
             channelBuilder.keepAliveTime(Config.Collector.GRPC_KEEPALIVE_TIME, TimeUnit.SECONDS)
-                          .keepAliveTimeout(Config.Collector.GRPC_KEEPALIVE_TIMEOUT, TimeUnit.SECONDS);
+                          .keepAliveTimeout(Config.Collector.GRPC_KEEPALIVE_TIMEOUT, TimeUnit.SECONDS)
+                          .keepAliveWithoutCalls(true);
         }
 
         NameResolverRegistry.getDefaultRegistry().register(new DnsNameResolverProvider());
@@ -88,6 +89,10 @@ public class GRPCChannel {
 
     public boolean isConnected(boolean requestConnection) {
         return originChannel.getState(requestConnection) == ConnectivityState.READY;
+    }
+
+    public ConnectivityState getState(boolean requestConnection) {
+        return originChannel.getState(requestConnection);
     }
 
     public static class Builder {

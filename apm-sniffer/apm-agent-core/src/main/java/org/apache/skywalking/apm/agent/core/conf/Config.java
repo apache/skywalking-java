@@ -216,7 +216,7 @@ public class Config {
          *
          * This maps to `collector.grpc_keepalive_time` in agent.config.
          */
-        public static long GRPC_KEEPALIVE_TIME = 60L;
+        public static long GRPC_KEEPALIVE_TIME = 120L;
         /**
          * The timeout in seconds to wait for a keepalive ack from the backend.
          * If the ack is not received within this time, the connection is considered dead.

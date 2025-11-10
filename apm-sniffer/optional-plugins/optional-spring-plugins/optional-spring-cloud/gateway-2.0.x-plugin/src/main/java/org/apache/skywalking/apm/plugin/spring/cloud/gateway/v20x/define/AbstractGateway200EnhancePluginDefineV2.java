@@ -24,7 +24,7 @@ public abstract class AbstractGateway200EnhancePluginDefineV2 extends ClassInsta
     @Override
     protected String[] witnessClasses() {
         return new String[] {
-            "org.springframework.cloud.gateway.config.GatewayAutoConfiguration$1"
+            "org.springframework.cloud.gateway.config.GatewayAutoConfiguration"
         };
     }
 }

@@ -91,10 +91,6 @@ public class GRPCChannel {
         return originChannel.getState(requestConnection) == ConnectivityState.READY;
     }
 
-    public ConnectivityState getState(boolean requestConnection) {
-        return originChannel.getState(requestConnection);
-    }
-
     public static class Builder {
         private final String host;
         private final int port;

@@ -19,7 +19,6 @@
 package org.apache.skywalking.apm.agent.core.remote;
 
 import io.grpc.Channel;
-import io.grpc.ConnectivityState;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 
@@ -58,7 +57,6 @@ public class GRPCChannelManager implements BootService, Runnable {
     private volatile List<String> grpcServers;
     private volatile int selectedIdx = -1;
     private volatile int reconnectCount = 0;
-    private volatile int transientFailureCount = 0;
     private final Object statusLock = new Object();
 
     @Override
@@ -104,12 +102,7 @@ public class GRPCChannelManager implements BootService, Runnable {
     public void run() {
         if (reconnect) {
             LOGGER.warn("Selected collector grpc service running, reconnect:{}.", reconnect);
-        } else {
-            LOGGER.debug("Selected collector grpc service running, reconnect:{}.", reconnect);
         }
-
-        // Check channel state even when reconnect is false to detect prolonged failures
-        checkChannelStateAndTriggerReconnectIfNeeded();
 
         if (IS_RESOLVE_DNS_PERIODICALLY && reconnect) {
             grpcServers = Arrays.stream(Config.Collector.BACKEND_SERVICE.split(","))
@@ -141,7 +134,6 @@ public class GRPCChannelManager implements BootService, Runnable {
                 String server = "";
                 try {
                     int index = Math.abs(random.nextInt()) % grpcServers.size();
-
                     server = grpcServers.get(index);
                     String[] ipAndPort = server.split(":");
 
@@ -150,24 +142,20 @@ public class GRPCChannelManager implements BootService, Runnable {
                         LOGGER.debug("Connecting to different gRPC server {}. Shutting down existing channel if any.", server);
                         createNewChannel(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
                     } else {
-                        // Same server, increment reconnectCount and check state
+                        // Same server, increment reconnectCount
                         reconnectCount++;
 
-                        // Force reconnect if reconnectCount or transientFailureCount exceeds threshold
-                        boolean forceReconnect = reconnectCount > Config.Agent.FORCE_RECONNECTION_PERIOD
-                                              || transientFailureCount > Config.Agent.FORCE_RECONNECTION_PERIOD;
-
-                        if (forceReconnect) {
-                            // Failed to reconnect after multiple attempts, force rebuild channel
-                            LOGGER.warn("Force rebuild channel to {} (reconnectCount={}, transientFailureCount={})",
-                                      server, reconnectCount, transientFailureCount);
+                        if (reconnectCount > Config.Agent.FORCE_RECONNECTION_PERIOD) {
+                            // Reconnect attempts exceeded threshold, force rebuild channel
+                            LOGGER.warn("Reconnect attempts to {} exceeded threshold ({}), forcing channel rebuild",
+                                      server, Config.Agent.FORCE_RECONNECTION_PERIOD);
                             createNewChannel(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
                         } else if (managedChannel.isConnected(false)) {
-                            // Reconnect to the same server is automatically done by GRPC,
-                            // therefore we are responsible to check the connectivity and
-                            // set the state and notify listeners
-                            markAsConnected();
+                            // Channel appears connected, trust it but keep reconnectCount for monitoring
+                            LOGGER.debug("Channel to {} appears connected (reconnect attempt: {})", server, reconnectCount);
+                            notifyConnected();
                         }
+                        // else: Channel is disconnected and under threshold, wait for next retry
                     }
 
                     return;
@@ -227,7 +215,9 @@ public class GRPCChannelManager implements BootService, Runnable {
                                     .addChannelDecorator(new AuthenticationDecorator())
                                     .build();
 
-        markAsConnected();
+        // Reset reconnectCount after actually rebuilding the channel
+        reconnectCount = 0;
+        notifyConnected();
     }
 
     /**
@@ -241,41 +231,15 @@ public class GRPCChannelManager implements BootService, Runnable {
     }
 
     /**
-     * Mark connection as successful and reset connection state.
+     * Notify listeners that connection is established without resetting reconnectCount.
+     * This is used when the channel appears connected but we want to keep monitoring
+     * reconnect attempts in case it's a false positive (half-open connection).
      */
-    private void markAsConnected() {
+    private void notifyConnected() {
         synchronized (statusLock) {
-            reconnectCount = 0;
+            // Don't reset reconnectCount - connection might still be half-open
             reconnect = false;
             notify(GRPCChannelStatus.CONNECTED);
-        }
-    }
-
-    /**
-     * Check the connectivity state of existing channel and trigger reconnect if needed.
-     * This method monitors TRANSIENT_FAILURE state and triggers reconnect if the failure persists too long.
-     */
-    private void checkChannelStateAndTriggerReconnectIfNeeded() {
-        if (managedChannel != null) {
-            try {
-                ConnectivityState state = managedChannel.getState(false);
-                LOGGER.debug("Current channel state: {}", state);
-
-                if (state == ConnectivityState.TRANSIENT_FAILURE) {
-                    transientFailureCount++;
-                    LOGGER.warn("Channel in TRANSIENT_FAILURE state, count: {}", transientFailureCount);
-                } else if (state == ConnectivityState.SHUTDOWN) {
-                    LOGGER.warn("Channel is SHUTDOWN");
-                    if (!reconnect) {
-                        triggerReconnect();
-                    }
-                } else {
-                    // IDLE, READY, CONNECTING are all normal states
-                    transientFailureCount = 0;
-                }
-            } catch (Throwable t) {
-                LOGGER.error(t, "Error checking channel state");
-            }
         }
     }
 

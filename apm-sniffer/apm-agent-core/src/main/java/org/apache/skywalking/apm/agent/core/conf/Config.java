@@ -214,6 +214,9 @@ public class Config {
          * The interval in seconds to send a keepalive ping to the backend.
          * If this is less than or equal to 0, the keepalive is disabled.
          *
+         * <p>
+         * <b>Note:</b> The minimum safe value is 10 seconds. Values below this may be rejected by the gRPC server.
+         *
          * This maps to `collector.grpc_keepalive_time` in agent.config.
          */
         public static long GRPC_KEEPALIVE_TIME = 120L;

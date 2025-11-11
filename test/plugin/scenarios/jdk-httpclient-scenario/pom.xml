@@ -21,17 +21,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.apache.skywalking</groupId>
-    <artifactId>jdk-virtual-thread-executor-scenario</artifactId>
+    <artifactId>jdk-httpclient-scenario</artifactId>
     <version>5.0.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <compiler.version>21</compiler.version>
+        <compiler.version>11</compiler.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <spring.boot.version>2.7.15</spring.boot.version>
     </properties>
 
-    <name>skywalking-jdk-virtual-thread-executor-scenario</name>
+    <name>skywalking-jdk-httpclient-scenario</name>
 
     <dependencies>
         <dependency>
@@ -41,14 +41,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson</artifactId>
-            <version>3.33.0</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>jdk-virtual-thread-executor-scenario</finalName>
+        <finalName>jdk-httpclient-scenario</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

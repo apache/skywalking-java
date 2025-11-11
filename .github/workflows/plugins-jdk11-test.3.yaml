@@ -55,6 +55,7 @@ jobs:
       matrix:
         case:
           - jdk11-forkjoinpool-scenario
+          - jdk-httpclient-scenario
     steps:
       - uses: actions/checkout@v2
         with:

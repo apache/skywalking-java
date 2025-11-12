@@ -16,3 +16,4 @@
 
 spring-kafka-2.x=org.apache.skywalking.apm.plugin.spring.kafka.define.KafkaTemplateInstrumentation
 spring-kafka-2.x=org.apache.skywalking.apm.plugin.spring.kafka.define.ListenerConsumerInstrumentation
+spring-kafka-3.x=org.apache.skywalking.apm.plugin.spring.kafka.define.ExtendedKafkaConsumerInstrumentation

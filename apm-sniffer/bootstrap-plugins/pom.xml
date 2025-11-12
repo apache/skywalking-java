@@ -44,6 +44,7 @@
         <module>jdk-threadpool-plugin</module>
         <module>jdk-forkjoinpool-plugin</module>
         <module>jdk-virtual-thread-executor-plugin</module>
+        <module>jdk-httpclient-plugin</module>
     </modules>
 
     <dependencies>

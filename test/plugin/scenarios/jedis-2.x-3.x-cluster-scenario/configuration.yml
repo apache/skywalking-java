@@ -23,19 +23,19 @@ environment:
   - SW_PLUGIN_JEDIS_TRACE_REDIS_PARAMETERS=true
 dependencies:
   redis-server1:
-    image: bitnami/redis-cluster:7.0
+    image: bitnamilegacy/redis-cluster:7.0
     hostname: redis-server1
     environment:
       - ALLOW_EMPTY_PASSWORD=true
       - REDIS_NODES=redis-server1 redis-server2 redis-server3
   redis-server2:
-    image: bitnami/redis-cluster:7.0
+    image: bitnamilegacy/redis-cluster:7.0
     hostname: redis-server2
     environment:
       - ALLOW_EMPTY_PASSWORD=true
       - REDIS_NODES=redis-server1 redis-server2 redis-server3
   redis-server3:
-    image: bitnami/redis-cluster:7.0
+    image: bitnamilegacy/redis-cluster:7.0
     hostname: redis-server3
     depends_on:
       - redis-server1

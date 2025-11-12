@@ -189,13 +189,11 @@ public class GRPCChannelManager implements BootService, Runnable {
     }
 
     private void notify(GRPCChannelStatus status) {
-        synchronized (listeners) {
-            for (GRPCChannelListener listener : listeners) {
-                try {
-                    listener.statusChanged(status);
-                } catch (Throwable t) {
-                    LOGGER.error(t, "Fail to notify {} about channel connected.", listener.getClass().getName());
-                }
+        for (GRPCChannelListener listener : listeners) {
+            try {
+                listener.statusChanged(status);
+            } catch (Throwable t) {
+                LOGGER.error(t, "Fail to notify {} about channel connected.", listener.getClass().getName());
             }
         }
     }

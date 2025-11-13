@@ -57,6 +57,7 @@ public class GRPCChannelManager implements BootService, Runnable {
     private volatile List<String> grpcServers;
     private volatile int selectedIdx = -1;
     private volatile int reconnectCount = 0;
+    private final Object statusLock = new Object();
 
     @Override
     public void prepare() {
@@ -99,7 +100,10 @@ public class GRPCChannelManager implements BootService, Runnable {
 
     @Override
     public void run() {
-        LOGGER.debug("Selected collector grpc service running, reconnect:{}.", reconnect);
+        if (reconnect) {
+            LOGGER.warn("Selected collector grpc service running, reconnect:{}.", reconnect);
+        }
+
         if (IS_RESOLVE_DNS_PERIODICALLY && reconnect) {
             grpcServers = Arrays.stream(Config.Collector.BACKEND_SERVICE.split(","))
                     .filter(StringUtil::isNotBlank)
@@ -130,32 +134,28 @@ public class GRPCChannelManager implements BootService, Runnable {
                 String server = "";
                 try {
                     int index = Math.abs(random.nextInt()) % grpcServers.size();
+                    server = grpcServers.get(index);
+                    String[] ipAndPort = server.split(":");
+
                     if (index != selectedIdx) {
                         selectedIdx = index;
+                        LOGGER.debug("Connecting to different gRPC server {}. Shutting down existing channel if any.", server);
+                        createNewChannel(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
+                    } else {
+                        // Same server, increment reconnectCount
+                        reconnectCount++;
 
-                        server = grpcServers.get(index);
-                        String[] ipAndPort = server.split(":");
-
-                        if (managedChannel != null) {
-                            managedChannel.shutdownNow();
+                        if (reconnectCount > Config.Agent.FORCE_RECONNECTION_PERIOD) {
+                            // Reconnect attempts exceeded threshold, force rebuild channel
+                            LOGGER.warn("Reconnect attempts to {} exceeded threshold ({}), forcing channel rebuild",
+                                      server, Config.Agent.FORCE_RECONNECTION_PERIOD);
+                            createNewChannel(ipAndPort[0], Integer.parseInt(ipAndPort[1]));
+                        } else if (managedChannel.isConnected(false)) {
+                            // Channel appears connected, trust it but keep reconnectCount for monitoring
+                            LOGGER.debug("Channel to {} appears connected (reconnect attempt: {})", server, reconnectCount);
+                            notifyConnected();
                         }
-
-                        managedChannel = GRPCChannel.newBuilder(ipAndPort[0], Integer.parseInt(ipAndPort[1]))
-                                                    .addManagedChannelBuilder(new StandardChannelBuilder())
-                                                    .addManagedChannelBuilder(new TLSChannelBuilder())
-                                                    .addChannelDecorator(new AgentIDDecorator())
-                                                    .addChannelDecorator(new AuthenticationDecorator())
-                                                    .build();
-                        reconnectCount = 0;
-                        reconnect = false;
-                        notify(GRPCChannelStatus.CONNECTED);
-                    } else if (managedChannel.isConnected(++reconnectCount > Config.Agent.FORCE_RECONNECTION_PERIOD)) {
-                        // Reconnect to the same server is automatically done by GRPC,
-                        // therefore we are responsible to check the connectivity and
-                        // set the state and notify listeners
-                        reconnectCount = 0;
-                        reconnect = false;
-                        notify(GRPCChannelStatus.CONNECTED);
+                        // else: Channel is disconnected and under threshold, wait for next retry
                     }
 
                     return;
@@ -184,8 +184,7 @@ public class GRPCChannelManager implements BootService, Runnable {
      */
     public void reportError(Throwable throwable) {
         if (isNetworkError(throwable)) {
-            reconnect = true;
-            notify(GRPCChannelStatus.DISCONNECT);
+            triggerReconnect();
         }
     }
 
@@ -196,6 +195,49 @@ public class GRPCChannelManager implements BootService, Runnable {
             } catch (Throwable t) {
                 LOGGER.error(t, "Fail to notify {} about channel connected.", listener.getClass().getName());
             }
+        }
+    }
+
+    /**
+     * Create a new gRPC channel to the specified server and reset connection state.
+     */
+    private void createNewChannel(String host, int port) throws Exception {
+        if (managedChannel != null) {
+            managedChannel.shutdownNow();
+        }
+
+        managedChannel = GRPCChannel.newBuilder(host, port)
+                                    .addManagedChannelBuilder(new StandardChannelBuilder())
+                                    .addManagedChannelBuilder(new TLSChannelBuilder())
+                                    .addChannelDecorator(new AgentIDDecorator())
+                                    .addChannelDecorator(new AuthenticationDecorator())
+                                    .build();
+
+        // Reset reconnectCount after actually rebuilding the channel
+        reconnectCount = 0;
+        notifyConnected();
+    }
+
+    /**
+     * Trigger reconnection by setting reconnect flag and notifying listeners.
+     */
+    private void triggerReconnect() {
+        synchronized (statusLock) {
+            reconnect = true;
+            notify(GRPCChannelStatus.DISCONNECT);
+        }
+    }
+
+    /**
+     * Notify listeners that connection is established without resetting reconnectCount.
+     * This is used when the channel appears connected but we want to keep monitoring
+     * reconnect attempts in case it's a false positive (half-open connection).
+     */
+    private void notifyConnected() {
+        synchronized (statusLock) {
+            // Don't reset reconnectCount - connection might still be half-open
+            reconnect = false;
+            notify(GRPCChannelStatus.CONNECTED);
         }
     }
 

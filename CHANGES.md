@@ -20,7 +20,7 @@ Release Notes.
 * Eliminate repeated code with HttpServletRequestWrapper in mvc-annotation-commons.
 * Add the jdk httpclient plugin.
 * Fix Gateway 2.0.x plugin not activated for spring-cloud-starter-gateway 2.0.0.RELEASE.
-* Enhance spring-kafka plugin to support kafka-clients 3.7.1+ with spring-kafka 3.1.0+
+* Enhance spring-kafka plugin to support spring-kafka 3.1.0+ and rename spring-kafka-2.x-plugin to spring-kafka-2.x-3.x-plugin
 * Upgrade kafka-clients version in optional-reporter-plugins to 3.9.1
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)

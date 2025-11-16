@@ -111,7 +111,7 @@
 - spring-concurrent-util-4.x
 - spring-core-patch
 - spring-kafka-1.x
-- spring-kafka-2.x
+- spring-kafka-2.x/3.x
 - spring-mvc-annotation
 - spring-mvc-annotation-3.x
 - spring-mvc-annotation-4.x

@@ -57,6 +57,7 @@
 - jetty-server-9.x
 - kafka-0.11.x/1.x/2.x
 - kafka-3.7.x
+- kafka-3.9.x
 - kotlin-coroutine
 - lettuce-common
 - lettuce-5.x-6.4.x

@@ -21,3 +21,4 @@ kafka-0.11.x/1.x/2.x=org.apache.skywalking.apm.plugin.kafka.define.KafkaProducer
 kafka-0.11.x/1.x/2.x=org.apache.skywalking.apm.plugin.kafka.define.KafkaTemplateCallbackInstrumentation
 kafka-3.7.x=org.apache.skywalking.apm.plugin.kafka.define.Kafka37AsyncConsumerInstrumentation
 kafka-3.7.x=org.apache.skywalking.apm.plugin.kafka.define.Kafka37LegacyConsumerInstrumentation
+kafka-3.9.x=org.apache.skywalking.apm.plugin.kafka.define.ClassicKafkaConsumerInstrumentation

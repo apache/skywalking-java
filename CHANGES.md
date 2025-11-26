@@ -22,6 +22,7 @@ Release Notes.
 * Fix Gateway 2.0.x plugin not activated for spring-cloud-starter-gateway 2.0.0.RELEASE.
 * Support kafka-clients-3.9.x intercept.
 * Upgrade kafka-clients version in optional-reporter-plugins to 3.9.1.
+* Fix AbstractLogger replaceParam when the replaced string contains a replacement marker.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 

@@ -86,7 +86,7 @@
         <junit.version>4.12</junit.version>
         <mockito-core.version>5.0.0</mockito-core.version>
         <system-stubs-junit4.version>2.0.2</system-stubs-junit4.version>
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.42</lombok.version>
 
         <!-- core lib dependency -->
         <bytebuddy.version>1.17.6</bytebuddy.version>

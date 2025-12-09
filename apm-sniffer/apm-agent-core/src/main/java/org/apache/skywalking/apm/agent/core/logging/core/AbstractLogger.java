@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 /**
  * An abstract class to simplify the real implementation of the loggers.
@@ -189,18 +188,17 @@ public abstract class AbstractLogger implements ILog {
         int startSize = 0;
         int parametersIndex = 0;
         int index;
-        String tmpMessage = message;
-        while ((index = message.indexOf("{}", startSize)) != -1) {
+        StringBuilder sb = new StringBuilder(message);
+        while ((index = sb.indexOf("{}", startSize)) != -1) {
             if (parametersIndex >= parameters.length) {
                 break;
             }
-            /**
-             * @Fix the Illegal group reference issue
-             */
-            tmpMessage = tmpMessage.replaceFirst("\\{\\}", Matcher.quoteReplacement(String.valueOf(parameters[parametersIndex++])));
-            startSize = index + 2;
+
+            String replaced = String.valueOf(parameters[parametersIndex++]);
+            sb.replace(index, index + 2, replaced);
+            startSize = index + replaced.length();
         }
-        return tmpMessage;
+        return sb.toString();
     }
 
     protected void logger(LogLevel level, String message, Throwable e) {

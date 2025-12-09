@@ -682,7 +682,6 @@ You can run `python3 tools/select-group.py` to see which file contains the least
 
 If a test case required to run in JDK 17 environment, please add you test case into file `plugins-jdk17-test.<n>.yaml`.
 If a test case required to run in JDK 21 environment, please add you test case into file `plugins-jdk21-test.<n>.yaml`.
-If a test case required to run in JDK 25 environment, please add you test case into file `plugins-jdk25-test.<n>.yaml`.
 
 ```yaml
 jobs:

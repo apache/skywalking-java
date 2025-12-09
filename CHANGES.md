@@ -24,6 +24,7 @@ Release Notes.
 * Upgrade kafka-clients version in optional-reporter-plugins to 3.9.1.
 * Fix AbstractLogger replaceParam when the replaced string contains a replacement marker.
 * Bump up Lombok to v1.18.42 to adopt JDK25 compiling.
+* Add `eclipse-temurin:25-jre` as another base image.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 

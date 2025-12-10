@@ -29,7 +29,7 @@ on:
       - '!**.md'
 
 concurrency:
-  group: plugins-jdk25-1-${{ github.event.pull_request.number || github.ref }}
+  group: plugins-jdk21-1-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -44,12 +44,12 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          base_image_java: eclipse-temurin:25-jdk
-          base_image_tomcat: tomcat:10.1-jdk25-temurin
+          base_image_java: eclipse-temurin:21-jdk
+          base_image_tomcat: tomcat:10.1-jdk21-temurin
 
   test:
     needs: [ build ]
-    name: ${{ matrix.case }}-jdk25
+    name: ${{ matrix.case }}-jdk21
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '25'
+          java-version: '21'
       - name: Run Test
         uses: ./.github/actions/run
         with:

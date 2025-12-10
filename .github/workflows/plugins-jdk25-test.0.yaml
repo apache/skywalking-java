@@ -29,7 +29,7 @@ on:
       - '!**.md'
 
 concurrency:
-  group: plugins-jdk21-1-${{ github.event.pull_request.number || github.ref }}
+  group: plugins-jdk25-1-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -49,7 +49,7 @@ jobs:
 
   test:
     needs: [ build ]
-    name: ${{ matrix.case }}-jdk21
+    name: ${{ matrix.case }}-jdk25
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:

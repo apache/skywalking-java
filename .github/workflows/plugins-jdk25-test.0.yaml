@@ -44,8 +44,8 @@ jobs:
       - name: Build
         uses: ./.github/actions/build
         with:
-          base_image_java: eclipse-temurin:21-jdk
-          base_image_tomcat: tomcat:10.1-jdk21-temurin
+          base_image_java: eclipse-temurin:25-jdk
+          base_image_tomcat: tomcat:10.1-jdk25-temurin
 
   test:
     needs: [ build ]

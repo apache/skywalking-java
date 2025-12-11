@@ -45,7 +45,7 @@ jobs:
         uses: ./.github/actions/build
         with:
           base_image_java: eclipse-temurin:25-jdk
-          base_image_tomcat: tomcat:11.0.15-jdk25-temurin-noble
+          base_image_tomcat: tomcat:11.0.15-jdk25-temurin-jammy
 
   test:
     needs: [ build ]

@@ -45,7 +45,7 @@ jobs:
         uses: ./.github/actions/build
         with:
           base_image_java: eclipse-temurin:25-jdk
-          base_image_tomcat: tomcat:10.1.50-jdk25-temurin
+          base_image_tomcat: tomcat:10.1.50-jdk21-temurin
 
   test:
     needs: [ build ]
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '25'
       - name: Run Test
         uses: ./.github/actions/run
         with:

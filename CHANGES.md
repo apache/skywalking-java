@@ -23,6 +23,7 @@ Release Notes.
 * Support kafka-clients-3.9.x intercept.
 * Upgrade kafka-clients version in optional-reporter-plugins to 3.9.1.
 * Fix AbstractLogger replaceParam when the replaced string contains a replacement marker.
+* Fix `JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH` was not working in some plugins.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/242?closed=1)
 

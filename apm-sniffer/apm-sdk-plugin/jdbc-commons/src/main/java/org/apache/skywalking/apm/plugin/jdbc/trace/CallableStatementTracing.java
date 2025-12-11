@@ -23,6 +23,7 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 
 /**
  * {@link CallableStatementTracing} create an exit span when the client call the method in the class that extend {@link
@@ -38,7 +39,7 @@ public class CallableStatementTracing {
             Tags.DB_TYPE.set(span, connectInfo.getDBType());
             SpanLayer.asDB(span);
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
-            Tags.DB_STATEMENT.set(span, sql);
+            Tags.DB_STATEMENT.set(span, SqlBodyUtil.limitSqlBodySize(sql));
             span.setComponent(connectInfo.getComponent());
             return exec.exe(realStatement, sql);
         } catch (SQLException e) {

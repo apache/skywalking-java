@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.plugin.jdbc.JDBCPluginConfig;
 import org.apache.skywalking.apm.plugin.jdbc.PreparedStatementParameterBuilder;
+import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 import org.apache.skywalking.apm.plugin.jdbc.define.StatementEnhanceInfos;
 
 /**
@@ -42,7 +43,7 @@ public class PreparedStatementTracing {
         try {
             Tags.DB_TYPE.set(span, connectInfo.getDBType());
             Tags.DB_INSTANCE.set(span, connectInfo.getDatabaseName());
-            Tags.DB_STATEMENT.set(span, sql);
+            Tags.DB_STATEMENT.set(span, SqlBodyUtil.limitSqlBodySize(sql));
             span.setComponent(connectInfo.getComponent());
             SpanLayer.asDB(span);
             if (JDBCPluginConfig.Plugin.JDBC.TRACE_SQL_PARAMETERS && Objects.nonNull(statementEnhanceInfos)) {

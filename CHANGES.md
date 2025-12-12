@@ -23,6 +23,7 @@ Release Notes.
 * Support kafka-clients-3.9.x intercept.
 * Upgrade kafka-clients version in optional-reporter-plugins to 3.9.1.
 * Fix AbstractLogger replaceParam when the replaced string contains a replacement marker.
+* Fix `JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH` was not working in some plugins.
 * Bump up Lombok to v1.18.42 to adopt JDK25 compiling.
 * Add `eclipse-temurin:25-jre` as another base image.
 * Add JDK25 plugin tests for Spring 6.

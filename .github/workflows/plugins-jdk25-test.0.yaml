@@ -44,7 +44,7 @@ jobs:
       - name: Build local tomcat-curl image
         run: |
           docker build -t tomcat-curl:10.1.50-jdk25-temurin \
-            -f Dockerfile .
+            -f ./.github/workflows/Dockerfile .
       - name: Build
         uses: ./.github/actions/build
         with:

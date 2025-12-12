@@ -41,19 +41,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Add curl to tomcat image
-        run: |
-          cat << 'EOF' > Dockerfile.curl
-          FROM tomcat:10.1.50-jdk21-temurin
-          RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-          EOF
-
-          docker build -t tomcat-curl:10.1.50-jdk21-temurin -f Dockerfile.curl .
       - name: Build
         uses: ./.github/actions/build
         with:
           base_image_java: eclipse-temurin:25-jdk
-          base_image_tomcat: tomcat-curl:10.1.50-jdk21-temurin
+          base_image_tomcat: tomcat:11.0.15-jdk25-temurin-jammy
 
   test:
     needs: [ build ]

@@ -1,7 +1,7 @@
 # Compiling project
 This document will help you compile and build a project in your maven and set your IDE.
 
-Prepare JDK 17 or 21.
+Prepare JDK 17, 21 or 25.
 
 * If you clone codes from https://github.com/apache/skywalking-java
 ```shell

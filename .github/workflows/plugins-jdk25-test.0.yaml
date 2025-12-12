@@ -43,7 +43,8 @@ jobs:
           submodules: true
       - name: Build local tomcat-curl image
         run: |
-          docker build -t tomcat-curl:10.1.50-jdk25-temurin -f Dockerfile.
+          docker build -t tomcat-curl:10.1.50-jdk25-temurin \
+            -f Dockerfile .
       - name: Build
         uses: ./.github/actions/build
         with:

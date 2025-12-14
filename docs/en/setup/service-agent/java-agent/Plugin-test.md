@@ -38,6 +38,10 @@ The test case project must be packaged as `project-name.war` by using `mvn packa
 Take the following test project as an example
 * [spring-4.3.x-scenario](../../../../../test/plugin/scenarios/spring-4.3.x-scenario)
 
+Note on `tomcat:10.1.50-jdk25-temurin` image:
+
+Starting from JDK 22, the Tomcat community removed `curl` from the official Tomcat JDK images. Since `curl` is required by our plugin test framework, we provide a custom `tomcat-jdk25` image built with `curl` installed.
+You can refer to the [tomcat-jdk25-dockerFile](../../../../../.github/workflows/Dockerfile-tomcat-jdk25-withCurl) to build the image for local plugin tests.
 
 ## Test project hierarchical structure
 The test case is an independent maven project, and it must be packaged as a war tar ball or zip file, depending on the chosen base image. Also, two external accessible endpoints usually two URLs) are required.

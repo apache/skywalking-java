@@ -128,6 +128,7 @@ public class SkyWalkingAgent {
                 .or(nameContains(".asm."))
                 .or(nameContains(".reflectasm."))
                 .or(nameStartsWith("sun.reflect"))
+                .or(nameStartsWith("sun.nio.cs"))
                 .or(allSkyWalkingAgentExcludeToolkit())
                 .or(ElementMatchers.isSynthetic()));
 

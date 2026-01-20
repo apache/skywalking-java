@@ -5,6 +5,7 @@ Release Notes.
 9.6.0
 ------------------
 
+* Add CLAUDE.md for AI assistant guidance.
 * Bump up agent-oap protocol to latest(16c51358ebcf42629bf4ffdf952253971f20eb25).
 * Bump up gRPC to v1.74.0.
 * Bump up netty to v4.1.124.Final.

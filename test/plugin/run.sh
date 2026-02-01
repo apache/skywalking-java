@@ -159,6 +159,15 @@ remove_dir() {
 start_stamp=`date +%s`
 parse_commandline "$@"
 
+if [[ "$scenario_name" == "gateway-4.3.x-scenario" ]]; then
+    base_image_java="eclipse-temurin:17-jdk-jammy"
+    base_image_tomcat="tomcat:10.1-jdk17"
+fi
+
+echo "Scenario=$scenario_name JavaImage=$base_image_java TomcatImage=$base_image_tomcat"
+
+
+
 if [[ "$cleanup" == "on" ]]; then
     do_cleanup
     [[ -z "${scenario_name}" ]] && exit 0

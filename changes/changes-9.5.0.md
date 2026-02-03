@@ -20,6 +20,7 @@ Release Notes.
 * Fix the `CreateAopProxyInterceptor` in the Spring core-patch changes the AOP proxy type when a class is
   enhanced by both SkyWalking and Spring AOP.
 * Build: Centralized plugin version management in the root POM and remove redundant declarations.
+* Support Spring Cloud Gateway 4.3.x.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

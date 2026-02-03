@@ -42,7 +42,7 @@ metrics based on the tracing data.
   * [Hutool-http](https://www.hutool.cn/) client 5.x
   * [Micronaut HTTP Client](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
 * HTTP Gateway
-  * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 4.1.x (Optional²)
+  * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 4.3.x (Optional²)
   * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)
 * JDBC
   * Mysql Driver 5.x, 6.x, 8.x

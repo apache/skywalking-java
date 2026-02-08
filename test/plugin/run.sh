@@ -159,6 +159,8 @@ remove_dir() {
 start_stamp=`date +%s`
 parse_commandline "$@"
 
+echo "Scenario=$scenario_name JavaImage=$base_image_java TomcatImage=$base_image_tomcat"
+
 if [[ "$cleanup" == "on" ]]; then
     do_cleanup
     [[ -z "${scenario_name}" ]] && exit 0

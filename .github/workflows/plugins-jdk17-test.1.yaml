@@ -65,6 +65,7 @@ jobs:
           - c3p0-0.9.2.x-0.10.x-scenario
           - spring-scheduled-6.x-scenario
           - caffeine-3.x-scenario
+          - lettuce-webflux-6x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

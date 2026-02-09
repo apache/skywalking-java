@@ -37,8 +37,8 @@ segmentItems:
       - segmentId: not null
         spans:
           - operationName: Lettuce/GET
-            parentSpanId: -1
-            spanId: 0
+            parentSpanId: 0
+            spanId: 1
             spanLayer: Cache
             startTime: not null
             endTime: not null
@@ -52,6 +52,11 @@ segmentItems:
               - {key: cache.key, value: key}
               - {key: cache.cmd, value: GET}
               - {key: cache.op, value: read}
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
             refs:
               - { parentEndpoint: /case/lettuce-case, networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -59,8 +64,8 @@ segmentItems:
       - segmentId: not null
         spans:        
           - operationName: Lettuce/SET
-            parentSpanId: -1
-            spanId: 0
+            parentSpanId: 0
+            spanId: 1
             spanLayer: Cache
             startTime: not null
             endTime: not null
@@ -74,6 +79,11 @@ segmentItems:
               - { key: cache.key, value: key0 }
               - { key: cache.cmd, value: SET }
               - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
             refs:
               - { parentEndpoint: /case/lettuce-case, networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
@@ -81,8 +91,8 @@ segmentItems:
       - segmentId: not null
         spans:    
           - operationName: Lettuce/SET
-            parentSpanId: -1
-            spanId: 0
+            parentSpanId: 0
+            spanId: 1
             spanLayer: Cache
             startTime: not null
             endTime: not null
@@ -96,10 +106,15 @@ segmentItems:
               - { key: cache.key, value: key1 }
               - { key: cache.cmd, value: SET }
               - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
             refs:
               - { parentEndpoint: /case/lettuce-case, networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
-                    null, parentService: not null, traceId: not null }
+                    null, parentService: not null, traceId: not null }  
       - segmentId: not null
         spans:    
           - operationName: /case/lettuce-case

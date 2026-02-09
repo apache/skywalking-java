@@ -86,16 +86,16 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
             operationName = operationName + "BATCH_WRITE";
             command = "BATCH_WRITE";
         }
-        AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
 
         if (redisCommandEnhanceInfo.getSnapshot() != null) {
-            if (!ContextManager.isActive()) {
-                AbstractSpan localSpan = ContextManager.createLocalSpan("RedisReactive/local");
-                localSpan.setComponent(ComponentsDefine.LETTUCE);
-            }
+            AbstractSpan localSpan = ContextManager.createLocalSpan("RedisReactive/local");
+            localSpan.setComponent(ComponentsDefine.LETTUCE);
+            SpanLayer.asCache(localSpan);
             ContextManager.continued(redisCommandEnhanceInfo.getSnapshot());
         }
-
+        
+        AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
+        
         span.setComponent(ComponentsDefine.LETTUCE);
         Tags.CACHE_TYPE.set(span, "Redis");
         if (StringUtil.isNotEmpty(key)) {
@@ -106,6 +106,11 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         SpanLayer.asCache(span);
         span.prepareForAsync();
         ContextManager.stopSpan();
+
+        if (redisCommandEnhanceInfo.getSnapshot() != null) {
+            ContextManager.stopSpan();
+        }
+        
         enhancedCommand.setSkyWalkingDynamicField(redisCommandEnhanceInfo.setSpan(span));
     }
 

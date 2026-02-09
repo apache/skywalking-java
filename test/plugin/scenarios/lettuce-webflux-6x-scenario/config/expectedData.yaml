@@ -31,14 +31,14 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: url, value: 'http://localhost:8080/case/healthCheck'}
-              - {key: http.method, value: HEAD}
-              - {key: http.status_code, value: '200'}
+              - { key: url, value: 'http://localhost:8080/case/healthCheck' }
+              - { key: http.method, value: HEAD }
+              - { key: http.status_code, value: '200' }
       - segmentId: not null
         spans:
           - operationName: Lettuce/GET
-            parentSpanId: -1
-            spanId: 0
+            parentSpanId: 0
+            spanId: 1
             spanLayer: Cache
             startTime: not null
             endTime: not null
@@ -48,19 +48,24 @@ segmentItems:
             peer: not null
             skipAnalysis: false
             tags:
-              - {key: cache.type, value: Redis}
-              - {key: cache.key, value: key}
-              - {key: cache.cmd, value: GET}
-              - {key: cache.op, value: read}
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key }
+              - { key: cache.cmd, value: GET }
+              - { key: cache.op, value: read }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
             refs:
               - { parentEndpoint: /case/lettuce-case, networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
                     null, parentService: not null, traceId: not null }
       - segmentId: not null
-        spans:        
+        spans:
           - operationName: Lettuce/SET
-            parentSpanId: -1
-            spanId: 0
+            parentSpanId: 0
+            spanId: 1
             spanLayer: Cache
             startTime: not null
             endTime: not null
@@ -74,15 +79,20 @@ segmentItems:
               - { key: cache.key, value: key0 }
               - { key: cache.cmd, value: SET }
               - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
             refs:
               - { parentEndpoint: /case/lettuce-case, networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
                     null, parentService: not null, traceId: not null }
       - segmentId: not null
-        spans:    
+        spans:
           - operationName: Lettuce/SET
-            parentSpanId: -1
-            spanId: 0
+            parentSpanId: 0
+            spanId: 1
             spanLayer: Cache
             startTime: not null
             endTime: not null
@@ -96,12 +106,17 @@ segmentItems:
               - { key: cache.key, value: key1 }
               - { key: cache.cmd, value: SET }
               - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
             refs:
               - { parentEndpoint: /case/lettuce-case, networkAddress: '', refType: CrossThread,
                 parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
                     null, parentService: not null, traceId: not null }
       - segmentId: not null
-        spans:    
+        spans:
           - operationName: /case/lettuce-case
             parentSpanId: -1
             spanId: 0
@@ -114,6 +129,7 @@ segmentItems:
             peer: ''
             skipAnalysis: false
             tags:
-              - {key: url, value: 'http://localhost:8080/case/lettuce-case'}
-              - {key: http.method, value: GET}
-              - {key: http.status_code, value: '200'}
+              - { key: url, value: 'http://localhost:8080/case/lettuce-case' }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }
+    

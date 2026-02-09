@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.common;
 
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
@@ -43,7 +44,8 @@ public class RedisSubscriptionSubscribeMethodInterceptor implements InstanceMeth
             // such as DispatcherHandlerHandleMethodInterceptor in spring-webflux-5.x-plugin
             Object skywalkingContextSnapshot = subscriber.currentContext().getOrDefault("SKYWALKING_CONTEXT_SNAPSHOT", null);
             if (skywalkingContextSnapshot != null) {
-                ((EnhancedInstance) objInst.getSkyWalkingDynamicField()).setSkyWalkingDynamicField(skywalkingContextSnapshot);
+                ((EnhancedInstance) objInst.getSkyWalkingDynamicField()).setSkyWalkingDynamicField(new RedisCommandEnhanceInfo()
+                        .setSnapshot((ContextSnapshot) skywalkingContextSnapshot));
             }
         }
     }

@@ -25,7 +25,6 @@ import io.lettuce.core.protocol.ProtocolKeyword;
 import io.lettuce.core.protocol.RedisCommand;
 import org.apache.skywalking.apm.agent.core.conf.Constants;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
@@ -58,14 +57,17 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         }
         EnhancedInstance enhancedCommand = (EnhancedInstance) spanCarrierCommand;
 
-        Object skyWalkingDynamicField = enhancedCommand.getSkyWalkingDynamicField();
+        RedisCommandEnhanceInfo redisCommandEnhanceInfo = (RedisCommandEnhanceInfo) enhancedCommand.getSkyWalkingDynamicField();
+        
+        if (redisCommandEnhanceInfo == null) {
+            redisCommandEnhanceInfo = new RedisCommandEnhanceInfo();
+        }
 
         // command has been handle by another channel writer (cluster or sentinel case)
-        if (skyWalkingDynamicField instanceof AbstractSpan) {
+        if (redisCommandEnhanceInfo.getSpan() != null) {
             //set peer in last channel writer (delegate)
             if (peer != null) {
-                AbstractSpan span = (AbstractSpan) enhancedCommand.getSkyWalkingDynamicField();
-                span.setPeer(peer);
+                redisCommandEnhanceInfo.getSpan().setPeer(peer);
             }
             return;
         }
@@ -86,13 +88,12 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         }
         AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
 
-        if (skyWalkingDynamicField instanceof ContextSnapshot) {
-            ContextSnapshot snapshot = (ContextSnapshot) skyWalkingDynamicField;
+        if (redisCommandEnhanceInfo.getSnapshot() != null) {
             if (!ContextManager.isActive()) {
                 AbstractSpan localSpan = ContextManager.createLocalSpan("RedisReactive/local");
                 localSpan.setComponent(ComponentsDefine.LETTUCE);
             }
-            ContextManager.continued(snapshot);
+            ContextManager.continued(redisCommandEnhanceInfo.getSnapshot());
         }
 
         span.setComponent(ComponentsDefine.LETTUCE);
@@ -105,7 +106,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         SpanLayer.asCache(span);
         span.prepareForAsync();
         ContextManager.stopSpan();
-        enhancedCommand.setSkyWalkingDynamicField(span);
+        enhancedCommand.setSkyWalkingDynamicField(redisCommandEnhanceInfo.setSpan(span));
     }
 
     private String getArgsKey(RedisCommand<?, ?, ?> redisCommand) {
@@ -137,7 +138,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         RedisCommand<?, ?, ?> redisCommand = getSpanCarrierCommand(allArguments[0]);
         if (redisCommand instanceof EnhancedInstance && ((EnhancedInstance) redisCommand).getSkyWalkingDynamicField() != null) {
             EnhancedInstance enhancedRedisCommand = (EnhancedInstance) redisCommand;
-            AbstractSpan abstractSpan = (AbstractSpan) enhancedRedisCommand.getSkyWalkingDynamicField();
+            AbstractSpan abstractSpan = ((RedisCommandEnhanceInfo) enhancedRedisCommand.getSkyWalkingDynamicField()).getSpan();
             enhancedRedisCommand.setSkyWalkingDynamicField(null);
             abstractSpan.log(t);
             abstractSpan.asyncFinish();

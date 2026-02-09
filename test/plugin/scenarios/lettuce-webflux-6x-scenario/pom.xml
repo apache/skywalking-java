@@ -31,10 +31,22 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <test.framework.version>6.4.2.RELEASE</test.framework.version>
         <docker.image.version>${test.framework.version}</docker.image.version>
-        <spring.boot.version>3.0.0</spring.boot.version>
+        <spring.boot.version>3.0.13</spring.boot.version>
     </properties>
 
     <name>skywalking-lettuce-webflux-6x-scenario</name>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -49,8 +61,8 @@
             <version>${spring.boot.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

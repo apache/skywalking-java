@@ -14,6 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lettuce-common=org.apache.skywalking.apm.plugin.lettuce.common.define.DefaultEndpointInstrumentation
-lettuce-common=org.apache.skywalking.apm.plugin.lettuce.common.define.RedisCommandInstrumentation
-lettuce-common=org.apache.skywalking.apm.plugin.lettuce.common.define.RedisSubscriptionInstrumentation
+5.1.8.RELEASE
+5.2.1.RELEASE
+6.1.4.RELEASE

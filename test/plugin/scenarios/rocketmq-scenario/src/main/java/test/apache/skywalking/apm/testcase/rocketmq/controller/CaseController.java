@@ -36,6 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/case")
@@ -65,8 +67,9 @@ public class CaseController {
             msg.setKeys("KeyA");
             SendResult sendResult = producer.send(msg);
             System.out.printf("%s send msg: %s%n", new Date(), sendResult);
-            
-            // start consumer
+
+            // start consumer and wait for message to be consumed
+            CountDownLatch latch = new CountDownLatch(1);
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -78,6 +81,7 @@ public class CaseController {
                             @Override
                             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
                                 System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
+                                latch.countDown();
                                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                             }
                         });
@@ -89,6 +93,7 @@ public class CaseController {
                 }
             });
             thread.start();
+            latch.await(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             log.error("testcase error", e);
         }

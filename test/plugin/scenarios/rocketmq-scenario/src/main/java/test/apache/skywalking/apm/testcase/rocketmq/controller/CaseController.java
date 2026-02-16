@@ -36,8 +36,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/case")
@@ -53,13 +51,26 @@ public class CaseController {
     @ResponseBody
     public String testcase() {
         try {
-            // start producer
+            // start consumer first so it is ready to receive
+            DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
+            consumer.setNamesrvAddr(namerServer);
+            consumer.subscribe("TopicTest", "*");
+            consumer.registerMessageListener(new MessageListenerConcurrently() {
+                @Override
+                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+                    System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
+                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
+            });
+            consumer.start();
+            System.out.printf("Consumer Started.%n");
+
+            // start producer and send msg
             DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
             producer.setNamesrvAddr(namerServer);
             producer.start();
             System.out.printf("Provider Started.%n");
 
-            // send msg
             Message msg = new Message("TopicTest",
                     ("Hello RocketMQ sendMsg " + new Date()).getBytes(RemotingHelper.DEFAULT_CHARSET)
             );
@@ -67,35 +78,6 @@ public class CaseController {
             msg.setKeys("KeyA");
             SendResult sendResult = producer.send(msg);
             System.out.printf("%s send msg: %s%n", new Date(), sendResult);
-
-            // start consumer and wait for message to be consumed
-            CountDownLatch latch = new CountDownLatch(1);
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
-                        consumer.setNamesrvAddr(namerServer);
-                        consumer.subscribe("TopicTest", "*");
-                        consumer.registerMessageListener(new MessageListenerConcurrently() {
-                            @Override
-                            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                                System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
-                                latch.countDown();
-                                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-                            }
-                        });
-                        consumer.start();
-                        System.out.printf("Consumer Started.%n");
-                    } catch (Exception e) {
-                        log.error("consumer start error", e);
-                    }
-                }
-            });
-            thread.start();
-            latch.await(30, TimeUnit.SECONDS);
-            // Wait for the agent to flush the consumer segment to the collector
-            Thread.sleep(2000);
         } catch (Exception e) {
             log.error("testcase error", e);
         }

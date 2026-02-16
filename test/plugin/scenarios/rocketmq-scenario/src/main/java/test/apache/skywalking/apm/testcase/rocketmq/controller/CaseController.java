@@ -94,6 +94,8 @@ public class CaseController {
             });
             thread.start();
             latch.await(30, TimeUnit.SECONDS);
+            // Wait for the agent to flush the consumer segment to the collector
+            Thread.sleep(2000);
         } catch (Exception e) {
             log.error("testcase error", e);
         }

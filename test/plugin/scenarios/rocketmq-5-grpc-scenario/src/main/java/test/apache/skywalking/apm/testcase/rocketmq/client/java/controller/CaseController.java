@@ -48,6 +48,8 @@ public class CaseController {
     @Autowired
     private MessageService messageService;
 
+    private volatile boolean consumerStarted = false;
+
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
     public String testcase() {
@@ -76,17 +78,32 @@ public class CaseController {
     @RequestMapping("/healthCheck")
     @ResponseBody
     public String healthCheck() throws Exception {
-        System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
-        messageService.updateNormalTopic(NORMAL_TOPIC);
-        messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
-        messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
-        // Start push consumer early so it has time to complete rebalance
-        messageService.pushConsumes(
-            Collections.singletonList(NORMAL_TOPIC),
-            Collections.singletonList(TAG_NOMARL),
-            GROUP
-        );
-        final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
+        if (!consumerStarted) {
+            System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
+            messageService.updateNormalTopic(NORMAL_TOPIC);
+            messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
+            messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
+            // Start push consumer early so it has time to complete rebalance
+            messageService.pushConsumes(
+                Collections.singletonList(NORMAL_TOPIC),
+                Collections.singletonList(TAG_NOMARL),
+                GROUP
+            );
+            final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
+            consumerStarted = true;
+        }
+
+        // Send probe messages until the consumer receives one, confirming
+        // that rebalance is complete and it can receive messages.
+        if (!MessageService.PUSH_CONSUMER_READY) {
+            try {
+                messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
+            } catch (Exception e) {
+                log.error("Probe message failed", e);
+            }
+            throw new RuntimeException("Consumer rebalance in progress");
+        }
+
         return SUCCESS;
     }
 }

@@ -47,24 +47,12 @@ public class CaseController {
     @Value("${name.server}")
     private String namerServer;
 
+    private volatile boolean consumerStarted = false;
+
     @RequestMapping("/rocketmq-scenario")
     @ResponseBody
     public String testcase() {
         try {
-            // start consumer first so it is ready to receive
-            DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
-            consumer.setNamesrvAddr(namerServer);
-            consumer.subscribe("TopicTest", "*");
-            consumer.registerMessageListener(new MessageListenerConcurrently() {
-                @Override
-                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                    System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
-                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-                }
-            });
-            consumer.start();
-            System.out.printf("Consumer Started.%n");
-
             // start producer and send msg
             DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
             producer.setNamesrvAddr(namerServer);
@@ -87,7 +75,24 @@ public class CaseController {
     @RequestMapping("/healthCheck")
     @ResponseBody
     public String healthCheck() throws Exception {
-        // start producer
+        if (!consumerStarted) {
+            // Start consumer during health check so it has time to complete
+            // rebalance before the entry service is called
+            DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
+            consumer.setNamesrvAddr(namerServer);
+            consumer.subscribe("TopicTest", "*");
+            consumer.registerMessageListener(new MessageListenerConcurrently() {
+                @Override
+                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+                    System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
+                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
+            });
+            consumer.start();
+            consumerStarted = true;
+            System.out.printf("Consumer Started.%n");
+        }
+
         DefaultMQProducer producer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
         producer.setNamesrvAddr(namerServer);
         producer.start();

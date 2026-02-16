@@ -30,6 +30,21 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Disable containerd image store
+      shell: bash
+      run: |
+        DAEMON_JSON="/etc/docker/daemon.json"
+        if [ -f "$DAEMON_JSON" ]; then
+          sudo jq '. + {"features": {"containerd-snapshotter": false}}' "$DAEMON_JSON" \
+            | sudo tee "${DAEMON_JSON}.tmp" > /dev/null
+          sudo mv "${DAEMON_JSON}.tmp" "$DAEMON_JSON"
+        else
+          echo '{"features": {"containerd-snapshotter": false}}' \
+            | sudo tee "$DAEMON_JSON" > /dev/null
+        fi
+        sudo systemctl restart docker
+        docker version
+        docker info
     - name: Check License
       uses: apache/skywalking-eyes@a63f4afcc287dfb3727ecc45a4afc55a5e69c15f
     - name: Add checkstyle-plugin
@@ -65,21 +80,6 @@ runs:
       with:
         distribution: temurin
         java-version: 8
-    - name: Disable containerd image store
-      shell: bash
-      run: |
-        DAEMON_JSON="/etc/docker/daemon.json"
-        if [ -f "$DAEMON_JSON" ]; then
-          sudo jq '. + {"features": {"containerd-snapshotter": false}}' "$DAEMON_JSON" \
-            | sudo tee "${DAEMON_JSON}.tmp" > /dev/null
-          sudo mv "${DAEMON_JSON}.tmp" "$DAEMON_JSON"
-        else
-          echo '{"features": {"containerd-snapshotter": false}}' \
-            | sudo tee "$DAEMON_JSON" > /dev/null
-        fi
-        sudo systemctl restart docker
-        docker version
-        docker info
     - name: Build Docker Image
       shell: bash
       run: |

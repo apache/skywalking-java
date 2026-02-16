@@ -53,30 +53,20 @@ public class CaseController {
     public String testcase() {
         try {
             messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
-            Thread t1 = new Thread(() -> messageService.pushConsumes(
-                Collections.singletonList(NORMAL_TOPIC),
-                Collections.singletonList(TAG_NOMARL),
-                GROUP
-            ));
-            t1.start();
-            t1.join();
 
             messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
             messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
-            Thread t2 = new Thread(() -> messageService.simpleConsumes(Collections.singletonList(ASYNC_PRODUCER_TOPIC),
-                                                           Collections.singletonList(TAG_ASYNC_PRODUCER), GROUP,
-                                                           10, 10
-            ));
-            t2.start();
-            t2.join();
+            new Thread(() -> messageService.simpleConsumes(
+                Collections.singletonList(ASYNC_PRODUCER_TOPIC),
+                Collections.singletonList(TAG_ASYNC_PRODUCER), GROUP,
+                10, 10
+            )).start();
 
             messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
             messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
-            Thread t3 = new Thread(() -> messageService.simpleConsumeAsync(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP, 10,
-                                                               10
-            ));
-            t3.start();
-            t3.join();
+            new Thread(() -> messageService.simpleConsumeAsync(
+                ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP, 10, 10
+            )).start();
         } catch (Exception e) {
             log.error("testcase error", e);
         }
@@ -90,6 +80,12 @@ public class CaseController {
         messageService.updateNormalTopic(NORMAL_TOPIC);
         messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
         messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
+        // Start push consumer early so it has time to complete rebalance
+        messageService.pushConsumes(
+            Collections.singletonList(NORMAL_TOPIC),
+            Collections.singletonList(TAG_NOMARL),
+            GROUP
+        );
         final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
         return SUCCESS;
     }

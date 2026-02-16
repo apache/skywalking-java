@@ -25,6 +25,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
@@ -48,12 +49,12 @@ public class CaseController {
     private String namerServer;
 
     private volatile boolean consumerStarted = false;
+    private volatile boolean consumerReady = false;
 
     @RequestMapping("/rocketmq-scenario")
     @ResponseBody
     public String testcase() {
         try {
-            // start producer and send msg
             DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
             producer.setNamesrvAddr(namerServer);
             producer.start();
@@ -76,14 +77,27 @@ public class CaseController {
     @ResponseBody
     public String healthCheck() throws Exception {
         if (!consumerStarted) {
-            // Start consumer during health check so it has time to complete
-            // rebalance before the entry service is called
+            // Send a probe message to ensure the topic exists before consumer starts.
+            // Without this, the consumer's rebalance finds no queues and it would need
+            // another full rebalance cycle (~20s) after the topic is eventually created.
+            DefaultMQProducer probeProducer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
+            probeProducer.setNamesrvAddr(namerServer);
+            probeProducer.start();
+            Message probeMsg = new Message("TopicTest", "probe".getBytes(StandardCharsets.UTF_8));
+            probeProducer.send(probeMsg);
+            probeProducer.shutdown();
+            System.out.printf("HealthCheck: Topic created via probe message.%n");
+
+            // Start consumer after topic exists. Use CONSUME_FROM_FIRST_OFFSET so
+            // the consumer picks up the probe message once rebalance completes.
             DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
             consumer.setNamesrvAddr(namerServer);
+            consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
             consumer.subscribe("TopicTest", "*");
             consumer.registerMessageListener(new MessageListenerConcurrently() {
                 @Override
                 public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+                    consumerReady = true;
                     System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
                     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                 }
@@ -93,10 +107,12 @@ public class CaseController {
             System.out.printf("Consumer Started.%n");
         }
 
-        DefaultMQProducer producer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
-        producer.setNamesrvAddr(namerServer);
-        producer.start();
-        System.out.printf("HealthCheck Provider Started.%n");
+        // Wait until consumer has received the probe message, confirming
+        // that rebalance is complete and it can receive messages.
+        if (!consumerReady) {
+            throw new RuntimeException("Consumer rebalance in progress");
+        }
+
         return SUCCESS;
     }
 

@@ -32,6 +32,11 @@ runs:
     - uses: actions/download-artifact@v4
       with:
         name: test-tools
+    - name: Docker Version
+      shell: bash
+      run: |
+        docker version
+        docker info
     - name: Load Test Containers
       shell: bash
       run: |
@@ -41,6 +46,7 @@ runs:
         if ls test-containers/skywalking-agent-test-tomcat-1.0.0.tgz; then
           docker load -i test-containers/skywalking-agent-test-tomcat-1.0.0.tgz
         fi
+        docker images
     - name: Cache local Maven repository
       uses: actions/cache@v4
       with:

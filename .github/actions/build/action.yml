@@ -65,6 +65,11 @@ runs:
       with:
         distribution: temurin
         java-version: 8
+    - name: Docker Version
+      shell: bash
+      run: |
+        docker version
+        docker info
     - name: Build Docker Image
       shell: bash
       run: |
@@ -88,6 +93,7 @@ runs:
         mkdir -p test-containers
         docker save -o test-containers/skywalking-agent-test-jvm-1.0.0.tgz skywalking/agent-test-jvm:1.0.0
         docker save -o test-containers/skywalking-agent-test-tomcat-1.0.0.tgz skywalking/agent-test-tomcat:1.0.0
+        ls -la test-containers/
         echo "::endgroup::"
     - uses: actions/upload-artifact@v4
       name: Upload Test Containers

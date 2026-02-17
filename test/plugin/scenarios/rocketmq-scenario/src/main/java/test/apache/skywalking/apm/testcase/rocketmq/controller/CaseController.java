@@ -82,9 +82,13 @@ public class CaseController {
             // take longer than that).
             consumerStarted = true;
             try {
+                // Speed up client-side rebalance from default 20s to 2s so the
+                // consumer discovers topic queues faster after startup.
+                System.setProperty("rocketmq.client.rebalance.waitInterval", "2000");
+
                 // Send a probe message to ensure the topic exists before consumer starts.
                 // Without this, the consumer's rebalance finds no queues and it would need
-                // another full rebalance cycle (~20s) after the topic is eventually created.
+                // another full rebalance cycle after the topic is eventually created.
                 DefaultMQProducer probeProducer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
                 probeProducer.setNamesrvAddr(namerServer);
                 probeProducer.start();
@@ -115,9 +119,9 @@ public class CaseController {
         }
 
         // PushConsumer needs time for initial rebalance with the broker.
-        // Return non-200 to force health check retries (3s each), giving
-        // the consumer enough time before the entry service is called.
-        if (System.currentTimeMillis() - consumerStartTime < 30000) {
+        // With rebalance interval tuned to 2s (default 20s), 8s is enough.
+        // Return non-200 to force health check retries (3s each).
+        if (System.currentTimeMillis() - consumerStartTime < 8000) {
             throw new RuntimeException("Consumer rebalance in progress");
         }
 

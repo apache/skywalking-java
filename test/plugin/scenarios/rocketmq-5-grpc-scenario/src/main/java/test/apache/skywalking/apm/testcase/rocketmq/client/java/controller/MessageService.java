@@ -240,13 +240,10 @@ public class MessageService {
         MQAdminStartup.main(subArgs);
     }
 
-    public static volatile boolean PUSH_CONSUMER_READY = false;
-
     public static class MyConsumer implements MessageListener {
 
         @Override
         public ConsumeResult consume(MessageView messageView) {
-            PUSH_CONSUMER_READY = true;
             log.info("Consume message successfully, messageId={},messageBody={}", messageView.getMessageId(),
                      messageView.getBody().toString()
             );

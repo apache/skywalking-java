@@ -49,7 +49,7 @@ public class CaseController {
     private String namerServer;
 
     private volatile boolean consumerStarted = false;
-    private volatile boolean consumerReady = false;
+    private volatile long consumerStartTime = 0;
 
     @RequestMapping("/rocketmq-scenario")
     @ResponseBody
@@ -93,8 +93,7 @@ public class CaseController {
                 probeProducer.shutdown();
                 System.out.printf("HealthCheck: Topic created via probe message.%n");
 
-                // Start consumer after topic exists. Use CONSUME_FROM_FIRST_OFFSET so
-                // the consumer picks up the probe message once rebalance completes.
+                // Start consumer after topic exists so rebalance finds queues immediately.
                 DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
                 consumer.setNamesrvAddr(namerServer);
                 consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
@@ -102,12 +101,12 @@ public class CaseController {
                 consumer.registerMessageListener(new MessageListenerConcurrently() {
                     @Override
                     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                        consumerReady = true;
                         System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
                         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                     }
                 });
                 consumer.start();
+                consumerStartTime = System.currentTimeMillis();
                 System.out.printf("Consumer Started.%n");
             } catch (Exception e) {
                 consumerStarted = false;
@@ -115,9 +114,10 @@ public class CaseController {
             }
         }
 
-        // Wait until consumer has received the probe message, confirming
-        // that rebalance is complete and it can receive messages.
-        if (!consumerReady) {
+        // PushConsumer needs time for initial rebalance with the broker.
+        // Return non-200 to force health check retries (3s each), giving
+        // the consumer enough time before the entry service is called.
+        if (System.currentTimeMillis() - consumerStartTime < 30000) {
             throw new RuntimeException("Consumer rebalance in progress");
         }
 

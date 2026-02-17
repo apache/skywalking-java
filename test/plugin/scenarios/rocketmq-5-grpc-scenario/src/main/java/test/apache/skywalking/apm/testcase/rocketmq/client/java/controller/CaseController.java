@@ -49,6 +49,7 @@ public class CaseController {
     private MessageService messageService;
 
     private volatile boolean consumerStarted = false;
+    private volatile long consumerStartTime = 0;
 
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
@@ -95,20 +96,17 @@ public class CaseController {
                     GROUP
                 );
                 final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
+                consumerStartTime = System.currentTimeMillis();
             } catch (Exception e) {
                 consumerStarted = false;
                 throw e;
             }
         }
 
-        // Send probe messages until the consumer receives one, confirming
-        // that rebalance is complete and it can receive messages.
-        if (!MessageService.PUSH_CONSUMER_READY) {
-            try {
-                messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
-            } catch (Exception e) {
-                log.error("Probe message failed", e);
-            }
+        // PushConsumer needs time for initial rebalance with the broker.
+        // Return non-200 to force health check retries (3s each), giving
+        // the consumer enough time before the entry service is called.
+        if (System.currentTimeMillis() - consumerStartTime < 30000) {
             throw new RuntimeException("Consumer rebalance in progress");
         }
 

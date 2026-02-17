@@ -24,7 +24,10 @@ exitOnError() {
 }
 
 exitAndClean() {
-    [[ -n $DEBUG_MODE ]] && exit $1;
+    if [[ -n $DEBUG_MODE ]]; then
+        chmod -R a+r ${SCENARIO_HOME} 2>/dev/null
+        exit $1
+    fi
 
     [[ -f ${SCENARIO_HOME}/data/actualData.yaml ]] && rm -rf ${SCENARIO_HOME}/data/actualData.yaml
     [[ -d ${LOGS_HOME} ]] && rm -rf ${LOGS_HOME}

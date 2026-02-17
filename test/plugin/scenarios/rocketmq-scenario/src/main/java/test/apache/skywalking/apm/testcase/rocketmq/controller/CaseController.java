@@ -50,6 +50,7 @@ public class CaseController {
 
     private volatile boolean consumerStarted = false;
     private volatile boolean consumerReady = false;
+    private DefaultMQProducer probeProducer;
 
     @RequestMapping("/rocketmq-scenario")
     @ResponseBody
@@ -86,15 +87,12 @@ public class CaseController {
                 // consumer discovers topic queues faster after startup.
                 System.setProperty("rocketmq.client.rebalance.waitInterval", "2000");
 
-                // Send a probe message to ensure the topic exists before consumer starts.
-                // Without this, the consumer's rebalance finds no queues and it would need
-                // another full rebalance cycle after the topic is eventually created.
-                DefaultMQProducer probeProducer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
+                // Start a producer that stays alive to send probe messages on each retry.
+                probeProducer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
                 probeProducer.setNamesrvAddr(namerServer);
                 probeProducer.start();
                 Message probeMsg = new Message("TopicTest", "probe".getBytes(StandardCharsets.UTF_8));
                 probeProducer.send(probeMsg);
-                probeProducer.shutdown();
                 System.out.printf("HealthCheck: Topic created via probe message.%n");
 
                 // Start consumer after topic exists so rebalance finds queues immediately.
@@ -118,9 +116,18 @@ public class CaseController {
             }
         }
 
-        // Wait until the consumer has actually received the probe message,
+        // Wait until the consumer has actually received a probe message,
         // confirming rebalance is complete and it can consume from the topic.
+        // Send a fresh probe on every retry so the consumer picks it up once
+        // rebalance finishes (messages sent before rebalance may never arrive).
         if (!consumerReady) {
+            try {
+                Message probeMsg = new Message("TopicTest", "probe".getBytes(StandardCharsets.UTF_8));
+                probeProducer.send(probeMsg);
+                System.out.printf("HealthCheck: sent probe message (consumer not ready yet).%n");
+            } catch (Exception e) {
+                System.out.printf("HealthCheck: failed to send probe: %s%n", e.getMessage());
+            }
             throw new RuntimeException("Consumer has not received probe message yet");
         }
 

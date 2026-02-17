@@ -103,9 +103,17 @@ public class CaseController {
             }
         }
 
-        // Wait until the consumer has actually received the probe message,
+        // Wait until the consumer has actually received a probe message,
         // confirming it can consume from the topic.
+        // Send a fresh probe on every retry so the consumer picks it up once
+        // rebalance finishes (messages sent before rebalance may never arrive).
         if (!MessageService.CONSUMER_READY) {
+            try {
+                messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
+                System.out.printf("HealthCheck: sent probe message (consumer not ready yet).%n");
+            } catch (Exception e) {
+                System.out.printf("HealthCheck: failed to send probe: %s%n", e.getMessage());
+            }
             throw new RuntimeException("Consumer has not received probe message yet");
         }
 

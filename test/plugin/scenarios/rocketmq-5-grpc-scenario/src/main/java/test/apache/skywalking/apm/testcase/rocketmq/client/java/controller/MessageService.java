@@ -240,6 +240,8 @@ public class MessageService {
         MQAdminStartup.main(subArgs);
     }
 
+    public static volatile boolean CONSUMER_READY = false;
+
     public static class MyConsumer implements MessageListener {
 
         @Override
@@ -247,6 +249,7 @@ public class MessageService {
             log.info("Consume message successfully, messageId={},messageBody={}", messageView.getMessageId(),
                      messageView.getBody().toString()
             );
+            CONSUMER_READY = true;
             return ConsumeResult.SUCCESS;
         }
     }

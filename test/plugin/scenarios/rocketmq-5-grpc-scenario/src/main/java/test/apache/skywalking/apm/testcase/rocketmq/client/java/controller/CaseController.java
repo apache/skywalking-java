@@ -49,7 +49,6 @@ public class CaseController {
     private MessageService messageService;
 
     private volatile boolean consumerStarted = false;
-    private volatile long consumerStartTime = 0;
 
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
@@ -89,25 +88,25 @@ public class CaseController {
                 messageService.updateNormalTopic(NORMAL_TOPIC);
                 messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
                 messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
-                // Start push consumer early so it has time to complete rebalance
+                // Start push consumer early so it has time to receive messages
                 messageService.pushConsumes(
                     Collections.singletonList(NORMAL_TOPIC),
                     Collections.singletonList(TAG_NOMARL),
                     GROUP
                 );
                 final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
-                consumerStartTime = System.currentTimeMillis();
+                // Send a probe message so the consumer has something to receive
+                messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
             } catch (Exception e) {
                 consumerStarted = false;
                 throw e;
             }
         }
 
-        // PushConsumer needs time for initial rebalance with the broker.
-        // Return non-200 to force health check retries (3s each), giving
-        // the consumer enough time before the entry service is called.
-        if (System.currentTimeMillis() - consumerStartTime < 30000) {
-            throw new RuntimeException("Consumer rebalance in progress");
+        // Wait until the consumer has actually received the probe message,
+        // confirming it can consume from the topic.
+        if (!MessageService.CONSUMER_READY) {
+            throw new RuntimeException("Consumer has not received probe message yet");
         }
 
         return SUCCESS;

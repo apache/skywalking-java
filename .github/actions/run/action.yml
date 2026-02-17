@@ -67,7 +67,7 @@ runs:
       shell: bash
       run: |
         echo "::group::Run Plugin Test ${{ inputs.test_case }}"
-        bash test/plugin/run.sh ${{ inputs.test_case }}
+        bash test/plugin/run.sh --debug ${{ inputs.test_case }}
         echo "::endgroup::"
     - uses: actions/upload-artifact@v4
       name: Upload Agent

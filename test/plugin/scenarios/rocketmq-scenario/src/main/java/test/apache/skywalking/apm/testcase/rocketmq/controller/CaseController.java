@@ -49,7 +49,7 @@ public class CaseController {
     private String namerServer;
 
     private volatile boolean consumerStarted = false;
-    private volatile long consumerStartTime = 0;
+    private volatile boolean consumerReady = false;
 
     @RequestMapping("/rocketmq-scenario")
     @ResponseBody
@@ -106,11 +106,11 @@ public class CaseController {
                     @Override
                     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
                         System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
+                        consumerReady = true;
                         return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                     }
                 });
                 consumer.start();
-                consumerStartTime = System.currentTimeMillis();
                 System.out.printf("Consumer Started.%n");
             } catch (Exception e) {
                 consumerStarted = false;
@@ -118,11 +118,10 @@ public class CaseController {
             }
         }
 
-        // PushConsumer needs time for initial rebalance with the broker.
-        // With rebalance interval tuned to 2s (default 20s), 8s is enough.
-        // Return non-200 to force health check retries (3s each).
-        if (System.currentTimeMillis() - consumerStartTime < 8000) {
-            throw new RuntimeException("Consumer rebalance in progress");
+        // Wait until the consumer has actually received the probe message,
+        // confirming rebalance is complete and it can consume from the topic.
+        if (!consumerReady) {
+            throw new RuntimeException("Consumer has not received probe message yet");
         }
 
         return SUCCESS;

@@ -79,18 +79,26 @@ public class CaseController {
     @ResponseBody
     public String healthCheck() throws Exception {
         if (!consumerStarted) {
-            System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
-            messageService.updateNormalTopic(NORMAL_TOPIC);
-            messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
-            messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
-            // Start push consumer early so it has time to complete rebalance
-            messageService.pushConsumes(
-                Collections.singletonList(NORMAL_TOPIC),
-                Collections.singletonList(TAG_NOMARL),
-                GROUP
-            );
-            final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
+            // Set flag early to prevent re-entry from concurrent healthCheck
+            // requests (each curl has a 3s timeout, and initialization may
+            // take longer than that).
             consumerStarted = true;
+            try {
+                System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
+                messageService.updateNormalTopic(NORMAL_TOPIC);
+                messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
+                messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
+                // Start push consumer early so it has time to complete rebalance
+                messageService.pushConsumes(
+                    Collections.singletonList(NORMAL_TOPIC),
+                    Collections.singletonList(TAG_NOMARL),
+                    GROUP
+                );
+                final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
+            } catch (Exception e) {
+                consumerStarted = false;
+                throw e;
+            }
         }
 
         // Send probe messages until the consumer receives one, confirming

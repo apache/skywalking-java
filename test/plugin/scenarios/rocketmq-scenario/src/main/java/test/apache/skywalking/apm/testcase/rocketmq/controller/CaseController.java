@@ -77,34 +77,42 @@ public class CaseController {
     @ResponseBody
     public String healthCheck() throws Exception {
         if (!consumerStarted) {
-            // Send a probe message to ensure the topic exists before consumer starts.
-            // Without this, the consumer's rebalance finds no queues and it would need
-            // another full rebalance cycle (~20s) after the topic is eventually created.
-            DefaultMQProducer probeProducer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
-            probeProducer.setNamesrvAddr(namerServer);
-            probeProducer.start();
-            Message probeMsg = new Message("TopicTest", "probe".getBytes(StandardCharsets.UTF_8));
-            probeProducer.send(probeMsg);
-            probeProducer.shutdown();
-            System.out.printf("HealthCheck: Topic created via probe message.%n");
-
-            // Start consumer after topic exists. Use CONSUME_FROM_FIRST_OFFSET so
-            // the consumer picks up the probe message once rebalance completes.
-            DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
-            consumer.setNamesrvAddr(namerServer);
-            consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-            consumer.subscribe("TopicTest", "*");
-            consumer.registerMessageListener(new MessageListenerConcurrently() {
-                @Override
-                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
-                    consumerReady = true;
-                    System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
-                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-                }
-            });
-            consumer.start();
+            // Set flag early to prevent re-entry from concurrent healthCheck
+            // requests (each curl has a 3s timeout, and initialization may
+            // take longer than that).
             consumerStarted = true;
-            System.out.printf("Consumer Started.%n");
+            try {
+                // Send a probe message to ensure the topic exists before consumer starts.
+                // Without this, the consumer's rebalance finds no queues and it would need
+                // another full rebalance cycle (~20s) after the topic is eventually created.
+                DefaultMQProducer probeProducer = new DefaultMQProducer("healthCheck_please_rename_unique_group_name");
+                probeProducer.setNamesrvAddr(namerServer);
+                probeProducer.start();
+                Message probeMsg = new Message("TopicTest", "probe".getBytes(StandardCharsets.UTF_8));
+                probeProducer.send(probeMsg);
+                probeProducer.shutdown();
+                System.out.printf("HealthCheck: Topic created via probe message.%n");
+
+                // Start consumer after topic exists. Use CONSUME_FROM_FIRST_OFFSET so
+                // the consumer picks up the probe message once rebalance completes.
+                DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("please_rename_unique_group_name");
+                consumer.setNamesrvAddr(namerServer);
+                consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+                consumer.subscribe("TopicTest", "*");
+                consumer.registerMessageListener(new MessageListenerConcurrently() {
+                    @Override
+                    public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+                        consumerReady = true;
+                        System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), new String(msgs.get(0).getBody(), StandardCharsets.UTF_8));
+                        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                    }
+                });
+                consumer.start();
+                System.out.printf("Consumer Started.%n");
+            } catch (Exception e) {
+                consumerStarted = false;
+                throw e;
+            }
         }
 
         // Wait until consumer has received the probe message, confirming

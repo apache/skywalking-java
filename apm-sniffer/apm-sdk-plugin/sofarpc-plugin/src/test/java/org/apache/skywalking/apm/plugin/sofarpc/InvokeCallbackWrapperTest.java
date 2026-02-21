@@ -141,7 +141,10 @@ public class InvokeCallbackWrapperTest {
         TraceSegment traceSegment2 = segmentStorage.getTraceSegments().get(1);
         List<AbstractTracingSpan> spans2 = SegmentHelper.getSpans(traceSegment2);
         assertThat(spans2.size(), is(1));
-        assertEquals("sofarpc", traceSegment2.getRef().getParentEndpoint());
+
+        // Segment order is non-deterministic; find the child segment (the one with a ref)
+        TraceSegment childSegment = traceSegment.getRef() != null ? traceSegment : traceSegment2;
+        assertEquals("sofarpc", childSegment.getRef().getParentEndpoint());
     }
 
     @Test
@@ -162,7 +165,11 @@ public class InvokeCallbackWrapperTest {
         TraceSegment traceSegment2 = segmentStorage.getTraceSegments().get(1);
         List<AbstractTracingSpan> spans2 = SegmentHelper.getSpans(traceSegment2);
         assertThat(spans2.size(), is(1));
-        assertThat(SpanHelper.getLogs(spans2.get(0)).size(), is(1));
+
+        // Segment order is non-deterministic; find the child segment (the one with a ref)
+        TraceSegment childSegment = traceSegment.getRef() != null ? traceSegment : traceSegment2;
+        List<AbstractTracingSpan> childSpans = SegmentHelper.getSpans(childSegment);
+        assertThat(SpanHelper.getLogs(childSpans.get(0)).size(), is(1));
 
     }
 

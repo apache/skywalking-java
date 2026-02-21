@@ -32,6 +32,22 @@ runs:
     - uses: actions/download-artifact@v4
       with:
         name: test-tools
+    - name: Disable containerd image store
+      shell: bash
+      run: |
+        DAEMON_JSON="/etc/docker/daemon.json"
+        if [ -f "$DAEMON_JSON" ]; then
+          sudo jq '. + {"features": {"containerd-snapshotter": false}}' "$DAEMON_JSON" \
+            | sudo tee "${DAEMON_JSON}.tmp" > /dev/null
+          sudo mv "${DAEMON_JSON}.tmp" "$DAEMON_JSON"
+        else
+          echo '{"features": {"containerd-snapshotter": false}}' \
+            | sudo tee "$DAEMON_JSON" > /dev/null
+        fi
+        sudo systemctl restart docker
+        docker version
+        docker info
+        echo "DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}')" >> "$GITHUB_ENV"
     - name: Load Test Containers
       shell: bash
       run: |
@@ -41,6 +57,7 @@ runs:
         if ls test-containers/skywalking-agent-test-tomcat-1.0.0.tgz; then
           docker load -i test-containers/skywalking-agent-test-tomcat-1.0.0.tgz
         fi
+        docker images
     - name: Cache local Maven repository
       uses: actions/cache@v4
       with:
@@ -51,7 +68,7 @@ runs:
       shell: bash
       run: |
         echo "::group::Run Plugin Test ${{ inputs.test_case }}"
-        bash test/plugin/run.sh ${{ inputs.test_case }}
+        bash test/plugin/run.sh --debug ${{ inputs.test_case }}
         echo "::endgroup::"
     - uses: actions/upload-artifact@v4
       name: Upload Agent

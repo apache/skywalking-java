@@ -26,16 +26,47 @@ docker_container_name="${docker_container_name}_1"
 
 <#noparse>
 container_name="${project_name}_${docker_container_name}"
-docker compose -p ${project_name} -f ${compose_file} up -d
+
+# Diagnostic: log docker compose version
+docker compose version >&2 || true
+
+echo "=== Starting docker compose ===" >&2
+compose_output=$(docker compose -p ${project_name} -f ${compose_file} up -d 2>&1)
+compose_exit=$?
+echo "${compose_output}" >&2
+if [[ ${compose_exit} -ne 0 ]]; then
+    echo "docker compose up exited with code ${compose_exit}" >&2
+fi
 
 container_id=`docker ps -qf "name=${container_name}"`
 if [[ -z "${container_id}" ]]; then
-    echo "docker startup failure!" >&2
+    echo "docker startup failure! container_name=${container_name} not found." >&2
+    echo "=== docker ps -a ===" >&2
+    docker ps -a >&2 || true
+    echo "=== docker compose logs ===" >&2
+    docker compose -p ${project_name} -f ${compose_file} logs 2>&1 >&2 || true
+    # Create container.log with diagnostic info
+    mkdir -p ${SCENARIO_HOME}/logs
+    {
+        echo "=== CONTAINER STARTUP FAILURE ==="
+        echo "container_name=${container_name} was not found by docker ps"
+        echo "compose_exit_code=${compose_exit}"
+        echo "compose_output:"
+        echo "${compose_output}"
+        echo "=== docker ps -a ==="
+        docker ps -a 2>&1 || true
+        echo "=== docker compose logs ==="
+        docker compose -p ${project_name} -f ${compose_file} logs 2>&1 || true
+    } >${SCENARIO_HOME}/logs/container.log
+    docker compose -p ${project_name} -f ${compose_file} kill 2>/dev/null || true
+    docker compose -p ${project_name} -f ${compose_file} rm -f 2>/dev/null || true
     status=1
 else
     status=`docker wait ${container_id}`
 
     [[ $status -ne 0 ]] && docker logs ${container_id} >&2
+    # Recreate logs dir in case the container removed it via volume mount
+    mkdir -p ${SCENARIO_HOME}/logs
     docker logs ${container_id} >${SCENARIO_HOME}/logs/container.log
 
     docker compose -p ${project_name} -f ${compose_file} kill

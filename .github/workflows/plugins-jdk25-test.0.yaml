@@ -53,6 +53,9 @@ jobs:
               | sudo tee "$DAEMON_JSON" > /dev/null
           fi
           sudo systemctl restart docker
+          docker version
+          docker info
+          echo "DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}')" >> "$GITHUB_ENV"
       - name: Build local tomcat-curl image
         run: |
           docker build -t tomcat-curl:10.1.50-jdk25-temurin \

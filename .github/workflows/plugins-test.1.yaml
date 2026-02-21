@@ -53,6 +53,9 @@ jobs:
               | sudo tee "$DAEMON_JSON" > /dev/null
           fi
           sudo systemctl restart docker
+          docker version
+          docker info
+          echo "DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}')" >> "$GITHUB_ENV"
       - name: Build
         uses: ./.github/actions/build
 

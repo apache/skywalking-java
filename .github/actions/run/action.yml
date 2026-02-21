@@ -47,6 +47,7 @@ runs:
         sudo systemctl restart docker
         docker version
         docker info
+        echo "DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}')" >> "$GITHUB_ENV"
     - name: Load Test Containers
       shell: bash
       run: |

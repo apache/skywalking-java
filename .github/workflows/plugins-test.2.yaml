@@ -53,6 +53,9 @@ jobs:
               | sudo tee "$DAEMON_JSON" > /dev/null
           fi
           sudo systemctl restart docker
+          docker version
+          docker info
+          echo "DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}')" >> "$GITHUB_ENV"
       - name: Build
         uses: ./.github/actions/build
 
@@ -92,10 +95,8 @@ jobs:
           - jersey-2.26.x-2.39.x-scenario
           - websphere-liberty-23.x-scenario
           - nacos-client-2.x-scenario
-          # All passed on local, but fail in GHA due to resource scheduling issues.
-          # The RocketMQ consumer never receives messages in the constrained CI environment.
-          # - rocketmq-scenario
-          # - rocketmq-5-grpc-scenario
+          - rocketmq-scenario
+          - rocketmq-5-grpc-scenario
     steps:
       - uses: actions/checkout@v2
         with:

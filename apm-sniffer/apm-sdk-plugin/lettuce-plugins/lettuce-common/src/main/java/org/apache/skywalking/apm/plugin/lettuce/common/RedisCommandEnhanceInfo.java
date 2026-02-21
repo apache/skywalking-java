@@ -43,7 +43,7 @@ class RedisCommandEnhanceInfo {
         return span;
     }
 
-    public RedisCommandEnhanceInfo  setSpan(AbstractSpan span) {
+    public RedisCommandEnhanceInfo setSpan(AbstractSpan span) {
         this.span = span;
         return this;
     }

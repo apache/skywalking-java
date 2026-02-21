@@ -57,12 +57,17 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         }
         EnhancedInstance enhancedCommand = (EnhancedInstance) spanCarrierCommand;
 
+        RedisCommandEnhanceInfo redisCommandEnhanceInfo = (RedisCommandEnhanceInfo) enhancedCommand.getSkyWalkingDynamicField();
+        
+        if (redisCommandEnhanceInfo == null) {
+            redisCommandEnhanceInfo = new RedisCommandEnhanceInfo();
+        }
+
         // command has been handle by another channel writer (cluster or sentinel case)
-        if (enhancedCommand.getSkyWalkingDynamicField() != null) {
+        if (redisCommandEnhanceInfo.getSpan() != null) {
             //set peer in last channel writer (delegate)
             if (peer != null) {
-                AbstractSpan span = (AbstractSpan) enhancedCommand.getSkyWalkingDynamicField();
-                span.setPeer(peer);
+                redisCommandEnhanceInfo.getSpan().setPeer(peer);
             }
             return;
         }
@@ -81,7 +86,16 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
             operationName = operationName + "BATCH_WRITE";
             command = "BATCH_WRITE";
         }
+
+        if (redisCommandEnhanceInfo.getSnapshot() != null) {
+            AbstractSpan localSpan = ContextManager.createLocalSpan("RedisReactive/local");
+            localSpan.setComponent(ComponentsDefine.LETTUCE);
+            SpanLayer.asCache(localSpan);
+            ContextManager.continued(redisCommandEnhanceInfo.getSnapshot());
+        }
+        
         AbstractSpan span = ContextManager.createExitSpan(operationName, peer);
+        
         span.setComponent(ComponentsDefine.LETTUCE);
         Tags.CACHE_TYPE.set(span, "Redis");
         if (StringUtil.isNotEmpty(key)) {
@@ -92,7 +106,12 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         SpanLayer.asCache(span);
         span.prepareForAsync();
         ContextManager.stopSpan();
-        enhancedCommand.setSkyWalkingDynamicField(span);
+
+        if (redisCommandEnhanceInfo.getSnapshot() != null) {
+            ContextManager.stopSpan();
+        }
+        
+        enhancedCommand.setSkyWalkingDynamicField(redisCommandEnhanceInfo.setSpan(span));
     }
 
     private String getArgsKey(RedisCommand<?, ?, ?> redisCommand) {
@@ -124,7 +143,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         RedisCommand<?, ?, ?> redisCommand = getSpanCarrierCommand(allArguments[0]);
         if (redisCommand instanceof EnhancedInstance && ((EnhancedInstance) redisCommand).getSkyWalkingDynamicField() != null) {
             EnhancedInstance enhancedRedisCommand = (EnhancedInstance) redisCommand;
-            AbstractSpan abstractSpan = (AbstractSpan) enhancedRedisCommand.getSkyWalkingDynamicField();
+            AbstractSpan abstractSpan = ((RedisCommandEnhanceInfo) enhancedRedisCommand.getSkyWalkingDynamicField()).getSpan();
             enhancedRedisCommand.setSkyWalkingDynamicField(null);
             abstractSpan.log(t);
             abstractSpan.asyncFinish();

@@ -37,7 +37,7 @@ public class RedisCommandCancelMethodInterceptor implements InstanceMethodsAroun
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
         if (objInst.getSkyWalkingDynamicField() != null) {
-            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            AbstractSpan span = ((RedisCommandEnhanceInfo) objInst.getSkyWalkingDynamicField()).getSpan();
             span.errorOccurred();
             span.tag(new StringTag(CANCEL_SIGNAL_TAG), COMMAND_CANCEL_VALUE);
             span.asyncFinish();
@@ -49,7 +49,7 @@ public class RedisCommandCancelMethodInterceptor implements InstanceMethodsAroun
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         if (objInst.getSkyWalkingDynamicField() != null) {
-            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            AbstractSpan span = ((RedisCommandEnhanceInfo) objInst.getSkyWalkingDynamicField()).getSpan();
             span.log(t);
         }
     }

@@ -35,7 +35,7 @@ public class RedisCommandCompleteExceptionallyMethodInterceptor implements Insta
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
         if (objInst.getSkyWalkingDynamicField() != null) {
             Throwable t = (Throwable) allArguments[0];
-            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            AbstractSpan span = ((RedisCommandEnhanceInfo) objInst.getSkyWalkingDynamicField()).getSpan();
             span.log(t);
             span.asyncFinish();
             objInst.setSkyWalkingDynamicField(null);
@@ -46,7 +46,7 @@ public class RedisCommandCompleteExceptionallyMethodInterceptor implements Insta
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         if (objInst.getSkyWalkingDynamicField() != null) {
-            AbstractSpan span = (AbstractSpan) objInst.getSkyWalkingDynamicField();
+            AbstractSpan span = ((RedisCommandEnhanceInfo) objInst.getSkyWalkingDynamicField()).getSpan();
             span.log(t);
         }
     }

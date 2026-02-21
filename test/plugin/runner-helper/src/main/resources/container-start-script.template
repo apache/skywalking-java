@@ -47,13 +47,25 @@ sleep 3
 
 container_name=`docker ps -aqf "name=${docker_container_name}"`
 <#noparse>
-status=$(docker wait ${container_name})
-
 if [[ -z ${container_name} ]]; then
     echo "docker startup failure!" >&2
+    echo "=== docker ps -a ===" >&2
+    docker ps -a >&2 || true
+    # Create container.log with diagnostic info
+    mkdir -p ${SCENARIO_HOME}/logs
+    {
+        echo "=== CONTAINER STARTUP FAILURE ==="
+        echo "Container not found by docker ps"
+        echo "=== docker ps -a ==="
+        docker ps -a 2>&1 || true
+    } >${SCENARIO_HOME}/logs/container.log
     status=1
 else
+    status=$(docker wait ${container_name})
+
     [[ $status -ne 0 ]] && docker logs ${container_name} >&2
+    # Recreate logs dir in case the container removed it via volume mount
+    mkdir -p ${SCENARIO_HOME}/logs
     docker logs ${container_name} >${SCENARIO_HOME}/logs/container.log
     docker container rm -f $container_name
 fi

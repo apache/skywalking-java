@@ -48,35 +48,27 @@ public class CaseController {
     @Autowired
     private MessageService messageService;
 
+    private volatile boolean consumerStarted = false;
+
     @RequestMapping("/rocketmq-5-grpc-scenario")
     @ResponseBody
     public String testcase() {
         try {
             messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
-            Thread t1 = new Thread(() -> messageService.pushConsumes(
-                Collections.singletonList(NORMAL_TOPIC),
-                Collections.singletonList(TAG_NOMARL),
-                GROUP
-            ));
-            t1.start();
-            t1.join();
 
             messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
             messageService.sendNormalMessageAsync(ASYNC_PRODUCER_TOPIC, TAG_ASYNC_PRODUCER, GROUP);
-            Thread t2 = new Thread(() -> messageService.simpleConsumes(Collections.singletonList(ASYNC_PRODUCER_TOPIC),
-                                                           Collections.singletonList(TAG_ASYNC_PRODUCER), GROUP,
-                                                           10, 10
-            ));
-            t2.start();
-            t2.join();
+            new Thread(() -> messageService.simpleConsumes(
+                Collections.singletonList(ASYNC_PRODUCER_TOPIC),
+                Collections.singletonList(TAG_ASYNC_PRODUCER), GROUP,
+                10, 10
+            )).start();
 
             messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
             messageService.sendNormalMessage(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP);
-            Thread t3 = new Thread(() -> messageService.simpleConsumeAsync(ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP, 10,
-                                                               10
-            ));
-            t3.start();
-            t3.join();
+            new Thread(() -> messageService.simpleConsumeAsync(
+                ASYNC_CONSUMER_TOPIC, TAG_ASYNC_CONSUMER, GROUP, 10, 10
+            )).start();
         } catch (Exception e) {
             log.error("testcase error", e);
         }
@@ -86,11 +78,45 @@ public class CaseController {
     @RequestMapping("/healthCheck")
     @ResponseBody
     public String healthCheck() throws Exception {
-        System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
-        messageService.updateNormalTopic(NORMAL_TOPIC);
-        messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
-        messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
-        final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
+        if (!consumerStarted) {
+            // Set flag early to prevent re-entry from concurrent healthCheck
+            // requests (each curl has a 3s timeout, and initialization may
+            // take longer than that).
+            consumerStarted = true;
+            try {
+                System.setProperty(MixAll.ROCKETMQ_HOME_ENV, this.getClass().getResource("/").getPath());
+                messageService.updateNormalTopic(NORMAL_TOPIC);
+                messageService.updateNormalTopic(ASYNC_PRODUCER_TOPIC);
+                messageService.updateNormalTopic(ASYNC_CONSUMER_TOPIC);
+                // Start push consumer early so it has time to receive messages
+                messageService.pushConsumes(
+                    Collections.singletonList(NORMAL_TOPIC),
+                    Collections.singletonList(TAG_NOMARL),
+                    GROUP
+                );
+                final Producer producer = ProducerSingleton.getInstance(endpoints, NORMAL_TOPIC);
+                // Send a probe message so the consumer has something to receive
+                messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
+            } catch (Exception e) {
+                consumerStarted = false;
+                throw e;
+            }
+        }
+
+        // Wait until the consumer has actually received a probe message,
+        // confirming it can consume from the topic.
+        // Send a fresh probe on every retry so the consumer picks it up once
+        // rebalance finishes (messages sent before rebalance may never arrive).
+        if (!MessageService.CONSUMER_READY) {
+            try {
+                messageService.sendNormalMessage(NORMAL_TOPIC, TAG_NOMARL, GROUP);
+                System.out.printf("HealthCheck: sent probe message (consumer not ready yet).%n");
+            } catch (Exception e) {
+                System.out.printf("HealthCheck: failed to send probe: %s%n", e.getMessage());
+            }
+            throw new RuntimeException("Consumer has not received probe message yet");
+        }
+
         return SUCCESS;
     }
 }

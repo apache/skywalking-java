@@ -60,7 +60,7 @@ jobs:
         with:
           go-version: '1.24'
       - name: Run E2E Tests
-        uses: apache/skywalking-infra-e2e@7e4b5b68716fdb7b79b21fa8908f9db497e1b115
+        uses: apache/skywalking-infra-e2e@8c21e43e241a32a54bdf8eeceb9099eb27e5e9b4
         with:
           e2e-file: ${{ matrix.case.path }}
       - uses: actions/upload-artifact@v4

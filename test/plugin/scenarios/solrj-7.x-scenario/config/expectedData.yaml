@@ -32,7 +32,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Solr}
       - {key: http.status_code, value: '200'}
-      - {key: QTime, value: gt 0}
+      - {key: QTime, value: ge 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/COMMIT
       parentSpanId: 0
@@ -47,7 +47,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Solr}
       - {key: http.status_code, value: '200'}
-      - {key: QTime, value: gt 0}
+      - {key: QTime, value: ge 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/OPTIMIZE
       parentSpanId: 0
@@ -62,7 +62,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Solr}
       - {key: http.status_code, value: '200'}
-      - {key: QTime, value: gt 0}
+      - {key: QTime, value: ge 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/select
       parentSpanId: 0
@@ -111,7 +111,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Solr}
       - {key: http.status_code, value: '200'}
-      - {key: QTime, value: gt 0}
+      - {key: QTime, value: ge 0}
       skipAnalysis: 'false'
     - operationName: solrJ/mycore/update/DELETE_BY_QUERY
       parentSpanId: 0
@@ -126,7 +126,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Solr}
       - {key: http.status_code, value: '200'}
-      - {key: QTime, value: gt 0}
+      - {key: QTime, value: ge 0}
       skipAnalysis: 'false'
     - operationName: GET:/solrj-scenario/case/solrj
       parentSpanId: -1

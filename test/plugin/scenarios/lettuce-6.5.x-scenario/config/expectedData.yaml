@@ -36,6 +36,60 @@ segmentItems:
               - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
+          - operationName: Lettuce/SET
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key0 }
+              - { key: cache.cmd, value: SET }
+              - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
+            refs:
+              - { parentEndpoint: GET:/lettuce-6.5.x-scenario/case/lettuce-case, networkAddress: '', refType: CrossThread,
+                parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                    null, parentService: not null, traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: Lettuce/SET
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key1 }
+              - { key: cache.cmd, value: SET }
+              - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
+            refs:
+              - { parentEndpoint: GET:/lettuce-6.5.x-scenario/case/lettuce-case, networkAddress: '', refType: CrossThread,
+                parentSpanId: 0, parentTraceSegmentId: not null, parentServiceInstance: not
+                    null, parentService: not null, traceId: not null }
+      - segmentId: not null
+        spans:
           - operationName: Lettuce/GET
             parentSpanId: 0
             spanId: 1
@@ -84,6 +138,27 @@ segmentItems:
               - { key: cache.key, value: key1 }
               - { key: cache.cmd, value: SET }
               - { key: cache.op, value: write }
+          - operationName: Lettuce/GET
+            parentSpanId: 4
+            spanId: 5
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key }
+              - { key: cache.cmd, value: GET }
+              - { key: cache.op, value: read }
+          - operationName: RedisReactive/local
+            parentSpanId: 0
+            spanId: 4
+            isError: false
+            spanType: Local
           - operationName: GET:/lettuce-6.5.x-scenario/case/lettuce-case
             parentSpanId: -1
             spanId: 0

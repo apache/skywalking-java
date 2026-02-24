@@ -14,5 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lettuce-5.x-6.4.x=org.apache.skywalking.apm.plugin.lettuce.v5.define.RedisChannelWriterInstrumentationV5
-lettuce-5.x-6.4.x=org.apache.skywalking.apm.plugin.lettuce.v5.define.RedisReactiveCommandsInstrumentationV5
+5.1.8.RELEASE
+5.2.1.RELEASE
+6.1.4.RELEASE

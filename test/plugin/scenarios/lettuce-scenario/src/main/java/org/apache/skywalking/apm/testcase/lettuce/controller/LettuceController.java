@@ -23,6 +23,7 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisFuture;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
+import io.lettuce.core.api.reactive.RedisReactiveCommands;
 import io.lettuce.core.api.sync.RedisCommands;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Controller
 @RequestMapping("/case")
@@ -58,8 +61,21 @@ public class LettuceController {
         asyncCommands.flushCommands();
         LettuceFutures.awaitAll(5, TimeUnit.SECONDS, futures.toArray(new RedisFuture[futures.size()]));
 
+        StatefulRedisConnection<String, String> connection2 = redisClient.connect();
+        RedisReactiveCommands<String, String> reactiveCommands = connection2.reactive();
+
+        Mono<String> result = reactiveCommands.get("key")
+                .then(Flux.concat(
+                        reactiveCommands.set("key0", "value0"),
+                        reactiveCommands.set("key1", "value1")
+                ).then())
+                .thenReturn("Success");
+
+        result.block();
+        
         connection0.close();
         connection1.close();
+        connection2.close();
         redisClient.shutdown();
         return "Success";
     }

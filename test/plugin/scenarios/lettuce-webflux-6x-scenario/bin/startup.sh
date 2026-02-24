@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,5 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lettuce-5.x-6.4.x=org.apache.skywalking.apm.plugin.lettuce.v5.define.RedisChannelWriterInstrumentationV5
-lettuce-5.x-6.4.x=org.apache.skywalking.apm.plugin.lettuce.v5.define.RedisReactiveCommandsInstrumentationV5
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -Dredis.host=${REDIS_SERVERS} -jar -Dskywalking.plugin.lettuce.trace_redis_parameters=true ${agent_opts} ${home}/../libs/lettuce-webflux-6x-scenario.jar &

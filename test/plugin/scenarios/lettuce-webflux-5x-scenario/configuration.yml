@@ -14,5 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lettuce-5.x-6.4.x=org.apache.skywalking.apm.plugin.lettuce.v5.define.RedisChannelWriterInstrumentationV5
-lettuce-5.x-6.4.x=org.apache.skywalking.apm.plugin.lettuce.v5.define.RedisReactiveCommandsInstrumentationV5
+type: jvm
+entryService: http://localhost:8080/case/lettuce-case
+healthCheck: http://localhost:8080/case/healthCheck
+startScript: ./bin/startup.sh
+withPlugins: apm-spring-webflux-5.x-*.jar
+runningMode: with_optional
+environment:
+  - REDIS_SERVERS=redis-server:6379
+depends_on:
+  - redis-server
+dependencies:
+  redis-server:
+    image: redis:3.2.9-alpine
+    hostname: redis-server

@@ -36,6 +36,60 @@ segmentItems:
               - {key: http.status_code, value: '200'}
       - segmentId: not null
         spans:
+          - operationName: Lettuce/SET
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key0 }
+              - { key: cache.cmd, value: SET }
+              - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
+            refs:
+              - { parentEndpoint: GET:/lettuce-scenario/case/lettuce-case, networkAddress: '', refType: CrossThread,
+                parentSpanId: 5, parentTraceSegmentId: not null, parentServiceInstance: not
+                    null, parentService: not null, traceId: not null }
+      - segmentId: not null
+        spans:
+          - operationName: Lettuce/SET
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key1 }
+              - { key: cache.cmd, value: SET }
+              - { key: cache.op, value: write }
+          - operationName: RedisReactive/local
+            parentSpanId: -1
+            spanId: 0
+            isError: false
+            spanType: Local
+            refs:
+              - { parentEndpoint: GET:/lettuce-scenario/case/lettuce-case, networkAddress: '', refType: CrossThread,
+                parentSpanId: 6, parentTraceSegmentId: not null, parentServiceInstance: not
+                    null, parentService: not null, traceId: not null }
+      - segmentId: not null
+        spans:
           - operationName: Lettuce/GET
             parentSpanId: 0
             spanId: 1
@@ -84,6 +138,57 @@ segmentItems:
               - { key: cache.key, value: key1 }
               - { key: cache.cmd, value: SET }
               - { key: cache.op, value: write }
+          - operationName: Lettuce/Reactive/createMono
+            parentSpanId: 0
+            spanId: 4
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Local
+            skipAnalysis: false
+          - operationName: Lettuce/Reactive/createMono
+            parentSpanId: 0
+            spanId: 5
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Local
+            skipAnalysis: false
+          - operationName: Lettuce/Reactive/createMono
+            parentSpanId: 0
+            spanId: 6
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Local
+            skipAnalysis: false
+          - operationName: Lettuce/GET
+            parentSpanId: 7
+            spanId: 8
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key }
+              - { key: cache.cmd, value: GET }
+              - { key: cache.op, value: read }
+          - operationName: RedisReactive/local
+            parentSpanId: 0
+            spanId: 7
+            isError: false
+            spanType: Local
           - operationName: GET:/lettuce-scenario/case/lettuce-case
             parentSpanId: -1
             spanId: 0

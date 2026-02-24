@@ -16,3 +16,4 @@
 
 lettuce-common=org.apache.skywalking.apm.plugin.lettuce.common.define.DefaultEndpointInstrumentation
 lettuce-common=org.apache.skywalking.apm.plugin.lettuce.common.define.RedisCommandInstrumentation
+lettuce-common=org.apache.skywalking.apm.plugin.lettuce.common.define.RedisSubscriptionInstrumentation

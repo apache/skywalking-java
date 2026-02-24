@@ -20,9 +20,12 @@ package org.apache.skywalking.apm.plugin.lettuce.v5;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
+import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.context.Context;
@@ -53,31 +56,34 @@ public class RedisReactiveCreatePublisherMethodInterceptorV5 implements Instance
         if (!(ret instanceof Mono) && !(ret instanceof Flux)) {
             return ret;
         }
+        final AbstractSpan localSpan = ContextManager.createLocalSpan("Lettuce/Reactive/" + method.getName());
+        localSpan.setComponent(ComponentsDefine.LETTUCE);
+        SpanLayer.asCache(localSpan);
 
-        final ContextSnapshot snapshot;
-        if (ContextManager.isActive()) {
-            snapshot = ContextManager.capture();
-        } else {
-            return ret;
-        }
+        try {
+            final ContextSnapshot snapshot = ContextManager.capture();
 
-        Function<Context, Context> contextFunction = ctx -> {
-            if (ctx.hasKey(SNAPSHOT_KEY)) {
-                return ctx;
+            Function<Context, Context> contextFunction = ctx -> {
+                if (ctx.hasKey(SNAPSHOT_KEY)) {
+                    return ctx;
+                }
+                return ctx.put(SNAPSHOT_KEY, snapshot);
+            };
+
+            if (ret instanceof Mono) {
+                Mono<?> original = (Mono<?>) ret;
+                return original.subscriberContext(contextFunction);
+            } else {
+                Flux<?> original = (Flux<?>) ret;
+                return original.subscriberContext(contextFunction);
             }
-            return ctx.put(SNAPSHOT_KEY, snapshot);
-        };
-
-        if (ret instanceof Mono) {
-            Mono<?> original = (Mono<?>) ret;
-            return original.subscriberContext(contextFunction);
-        } else {
-            Flux<?> original = (Flux<?>) ret;
-            return original.subscriberContext(contextFunction);
+        } finally {
+            ContextManager.stopSpan();
         }
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[]
+            argumentsTypes, Throwable t, MethodInvocationContext context) {
     }
 }

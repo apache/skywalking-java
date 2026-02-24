@@ -20,9 +20,12 @@ package org.apache.skywalking.apm.plugin.lettuce.v65;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
+import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -53,14 +56,17 @@ public class RedisReactiveCreatePublisherMethodInterceptorV65 implements Instanc
             return ret;
         }
 
-        final ContextSnapshot snapshot;
-        if (ContextManager.isActive()) {
-            snapshot = ContextManager.capture();
-        } else {
-            return ret;
-        }
+        final AbstractSpan localSpan = ContextManager.createLocalSpan("Lettuce/Reactive/" + method.getName());
+        localSpan.setComponent(ComponentsDefine.LETTUCE);
+        SpanLayer.asCache(localSpan);
 
-        return wrapPublisher((Publisher<?>) ret, snapshot);
+        try {
+            final ContextSnapshot snapshot = ContextManager.capture();
+            
+            return wrapPublisher((Publisher<?>) ret, snapshot);
+        } finally {
+            ContextManager.stopSpan();
+        }
     }
 
     private <T> Publisher<T> wrapPublisher(Publisher<T> original, ContextSnapshot snapshot) {

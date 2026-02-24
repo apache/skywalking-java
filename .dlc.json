@@ -29,12 +29,15 @@
     },
     {
       "pattern": "^https://blogs.oracle.com/javamagazine/post/a-peek-into-java-17-continuing-the-drive-to-encapsulate-the-java-runtime-internals"
+    },
+    {
+      "pattern": "^https://www.oceanbase.com/"
     }
   ],
   "timeout": "10s",
   "retryOn429": true,
   "retryCount": 10,
-  "fallbackRetryDelay": "1000s",
+  "fallbackRetryDelay": "60s",
   "aliveStatusCodes": [
     200,
     301,

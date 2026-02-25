@@ -1,0 +1,156 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+segmentItems:
+  - serviceName: spring-ai-1.x-scenario
+    segmentSize: gt 0
+    segments:
+      - segmentId: not null
+        spans:
+          - operationName: Spring-ai/tool/execute/get_weather
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Unknown
+            startTime: not null
+            endTime: not null
+            componentId: 178
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            tags:
+                - { key: gen_ai.tool.name, value: get_weather }
+                - { key: gen_ai.operation.name, value: execute_tool }
+                - { key: gen_ai.tool.call.arguments, value: '{"arg0":"new york"}' }
+                - { key: gen_ai.tool.call.result, value: '"Sunny, 10°C"' }
+
+          - operationName: Spring-ai/tool/call
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Unknown
+            startTime: not null
+            endTime: not null
+            componentId: 178
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+            refs:
+              - { parentEndpoint: 'GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case',
+                  networkAddress: '', refType: CrossThread, parentSpanId: 4, parentTraceSegmentId: not null,
+                  parentServiceInstance: not null, parentService: spring-ai-1.x-scenario,
+                  traceId: not null }
+
+      - segmentId: not null
+        spans:
+          - operationName: Spring-ai/tool/execute/get_weather
+            parentSpanId: 2
+            spanId: 3
+            spanLayer: Unknown
+            spanType: Local
+            startTime: not null
+            endTime: not null
+            tags:
+              - { key: gen_ai.tool.name, value: get_weather }
+              - { key: gen_ai.operation.name, value: execute_tool }
+              - { key: gen_ai.tool.call.arguments, value: '{"arg0":"new york"}' }
+              - { key: gen_ai.tool.call.result, value: '"Sunny, 10°C"' }
+
+          - operationName: Spring-ai/tool/call
+            parentSpanId: 1
+            spanId: 2
+            spanLayer: Unknown
+            startTime: not null
+            endTime: not null
+            spanType: Local
+
+          - operationName: Spring-ai/openai/call
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: not null
+            startTime: not null
+            endTime: not null
+            componentId: 173
+            spanType: Exit
+            peer: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions
+            tags:
+              - { key: gen_ai.operation.name, value: chat }
+              - { key: gen_ai.provider.name, value: openai }
+              - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.request.temperature, value: '0.7' }
+              - { key: gen_ai.request.top_p, value: '0.9' }
+              - { key: gen_ai.response.id, value: 'chatcmpl-CyJXJt7gxwDgz' }
+              - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.usage.input_tokens, value: '52' }
+              - { key: gen_ai.usage.output_tokens, value: '17' }
+              - { key: gen_ai.client.token.usage, value: '69' }
+              - { key: gen_ai.response.finish_reasons, value: STOP }
+              - { key: gen_ai.input.messages, value: not null }
+              - { key: gen_ai.output.messages, value: not null }
+
+          - operationName: Spring-ai/openai/stream
+            parentSpanId: 0
+            spanId: 4
+            spanLayer: not null
+            startTime: not null
+            endTime: not null
+            componentId: 173
+            spanType: Exit
+            peer: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions
+            tags:
+              - { key: gen_ai.operation.name, value: chat }
+              - { key: gen_ai.provider.name, value: openai }
+              - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.request.temperature, value: '0.7' }
+              - { key: gen_ai.request.top_k, value: null }
+              - { key: gen_ai.request.top_p, value: '0.9' }
+              - { key: gen_ai.stream.ttfr, value: not null }
+              - { key: gen_ai.response.id, value: 'chatcmpl-fc1b64d3' }
+              - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.response.finish_reasons, value: STOP }
+              - { key: gen_ai.usage.input_tokens, value: '104' }
+              - { key: gen_ai.usage.output_tokens, value: '34' }
+              - { key: gen_ai.client.token.usage, value: '138' }
+              - { key: gen_ai.input.messages, value: not null }
+              - { key: gen_ai.output.messages, value: not null }
+
+          - operationName: /spring-ai-1.x-scenario/llm/v1/chat/completions
+            parentSpanId: 0
+            spanId: 5
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            componentId: 99
+            isError: false
+            spanType: Exit
+            peer: localhost:8080
+            skipAnalysis: false
+            tags:
+              - { key: url, value: 'http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions' }
+              - { key: http.method, value: POST }
+              - { key: http.status_code, value: '200' }
+
+          - operationName: GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
+            parentSpanId: -1
+            spanId: 0
+            spanLayer: Http
+            startTime: not null
+            endTime: not null
+            spanType: Entry
+            componentId: 1
+            tags:
+              - { key: url, value: http://localhost:8080/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case }
+              - { key: http.method, value: GET }
+              - { key: http.status_code, value: '200' }

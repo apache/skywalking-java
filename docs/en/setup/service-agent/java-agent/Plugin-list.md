@@ -103,6 +103,7 @@
 - sharding-sphere-5.0.0
 - sofarpc
 - solrj-7.x
+- spring-ai-1.x
 - spring-annotation
 - spring-async-annotation-5.x
 - spring-cloud-feign-1.x

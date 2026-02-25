@@ -265,4 +265,34 @@ public class ComponentsDefine {
 
     public static final OfficialComponent DMDB_JDBC_DRIVER = new OfficialComponent(163, "Dmdb-jdbc-driver");
 
+    public static final OfficialComponent SPRING_AI_UNKNOWN = new OfficialComponent(164, "spring-ai-unknown");
+
+    public static final OfficialComponent SPRING_AI_ANTHROPIC = new OfficialComponent(165, "spring-ai-anthropic");
+
+    public static final OfficialComponent SPRING_AI_BEDROCK = new OfficialComponent(166, "spring-ai-aws-bedrock");
+
+    public static final OfficialComponent SPRING_AI_AZURE_OPENAI = new OfficialComponent(167, "spring-ai-azure-openai");
+
+    public static final OfficialComponent SPRING_AI_COHERE = new OfficialComponent(168, "spring-ai-cohere");
+
+    public static final OfficialComponent SPRING_AI_DEEPSEEK = new OfficialComponent(169, "spring-ai-deepseek");
+
+    public static final OfficialComponent SPRING_AI_GOOGLE_GENAI = new OfficialComponent(170, "spring-ai-gcp-genai");
+
+    public static final OfficialComponent SPRING_AI_VERTEXAI = new OfficialComponent(171, "spring-ai-gcp-vertex-ai");
+
+    public static final OfficialComponent SPRING_AI_MISTRAL_AI = new OfficialComponent(172, "spring-ai-mistral-ai");
+
+    public static final OfficialComponent SPRING_AI_OPENAI = new OfficialComponent(173, "spring-ai-openai");
+
+    public static final OfficialComponent SPRING_AI_HUGGINGFACE = new OfficialComponent(174, "spring-ai-huggingface");
+
+    public static final OfficialComponent SPRING_AI_MINIMAX = new OfficialComponent(175, "spring-ai-minimax");
+
+    public static final OfficialComponent SPRING_AI_OLLAMA = new OfficialComponent(176, "spring-ai-ollama");
+
+    public static final OfficialComponent SPRING_AI_ZHIPU_AI = new OfficialComponent(177, "spring-ai-zhipu-ai");
+
+    public static final OfficialComponent SPRING_AI = new OfficialComponent(178, "spring-ai");
+
 }

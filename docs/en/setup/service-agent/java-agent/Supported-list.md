@@ -160,6 +160,8 @@ metrics based on the tracing data.
   * [MyBatis](https://github.com/mybatis/mybatis-3) 3.4.x -> 3.5.x
 * Event
   * [GuavaEventBus](https://github.com/google/guava) 19.x -> 31.x-jre
+* GenAI
+  * [spring-ai](https://github.com/spring-projects/spring-ai) 1.x
 
 # Meter Plugins
 The meter plugin provides the advanced metrics collections, which are not a part of tracing.

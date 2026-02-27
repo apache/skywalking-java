@@ -79,7 +79,7 @@ segmentItems:
           - operationName: Spring-ai/openai/call
             parentSpanId: 0
             spanId: 1
-            spanLayer: not null
+            spanLayer: GenAI
             startTime: not null
             endTime: not null
             componentId: 173
@@ -103,7 +103,7 @@ segmentItems:
           - operationName: Spring-ai/openai/stream
             parentSpanId: 0
             spanId: 4
-            spanLayer: not null
+            spanLayer: GenAI
             startTime: not null
             endTime: not null
             componentId: 173

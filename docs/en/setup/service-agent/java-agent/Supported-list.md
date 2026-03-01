@@ -162,19 +162,19 @@ metrics based on the tracing data.
   * [GuavaEventBus](https://github.com/google/guava) 19.x -> 31.x-jre
 * GenAI
   * [spring-ai](https://github.com/spring-projects/spring-ai) 1.x
-   * OpenAI
-   * Azure OpenAI
-   * Anthropic
-   * Amazon Bedrock
-   * Google GenAI
-   * Google VertexAI
-   * DeepSeek
-   * Mistral AI
-   * ZhiPu AI
-   * MiniMax
-   * Ollama
-   * Cohere
-   * HuggingFace
+     * OpenAI
+     * Azure OpenAI
+     * Anthropic
+     * Amazon Bedrock
+     * Google GenAI
+     * Google VertexAI
+     * DeepSeek
+     * Mistral AI
+     * ZhiPu AI
+     * MiniMax
+     * Ollama
+     * Cohere
+     * HuggingFace
 
 # Meter Plugins
 The meter plugin provides the advanced metrics collections, which are not a part of tracing.

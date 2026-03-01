@@ -19,7 +19,8 @@
 package org.apache.skywalking.apm.agent.core.context.trace;
 
 public enum SpanLayer {
-    DB(1), RPC_FRAMEWORK(2), HTTP(3), MQ(4), CACHE(5);
+    DB(1), RPC_FRAMEWORK(2), HTTP(3), MQ(4), CACHE(5),
+    GEN_AI(7);
 
     private int code;
 
@@ -49,5 +50,9 @@ public enum SpanLayer {
 
     public static void asMQ(AbstractSpan span) {
         span.setLayer(SpanLayer.MQ);
+    }
+
+    public static void asGenAI(AbstractSpan span) {
+        span.setLayer(SpanLayer.GEN_AI);
     }
 }

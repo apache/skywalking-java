@@ -45,6 +45,7 @@
         <module>spring-webflux-5.x-webclient-plugin</module>
         <module>spring-webflux-6.x-webclient-plugin</module>
         <module>resttemplate-commons</module>
+        <module>spring-ai-1.x-plugin</module>
     </modules>
     <packaging>pom</packaging>
 

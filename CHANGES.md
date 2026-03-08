@@ -7,6 +7,7 @@ Release Notes.
 
 * Added support for Lettuce reactive Redis commands.
 * Add Spring AI 1.x plugin and GenAI layer.
+* Add Spring RabbitMQ plugin.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)
 

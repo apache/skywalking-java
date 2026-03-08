@@ -29,6 +29,9 @@ public class RabbitMQConsumerInterceptor implements InstanceMethodsAroundInterce
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
+        if (Thread.currentThread().getName().toLowerCase().contains("springframework")) {
+            return;
+        }
         Consumer consumer = (Consumer) allArguments[6];
         allArguments[6] = new TracerConsumer(consumer, (String) objInst.getSkyWalkingDynamicField());
     }

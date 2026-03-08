@@ -80,6 +80,7 @@ jobs:
           - jetty-11.x-scenario
           - jetty-10.x-scenario
           - spring-ai-1.x-scenario
+          - spring-rabbitmq-3.x-4.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

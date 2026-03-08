@@ -46,10 +46,11 @@
         <module>spring-webflux-6.x-webclient-plugin</module>
         <module>resttemplate-commons</module>
         <module>spring-ai-1.x-plugin</module>
+        <module>spring-rabbitmq-plugin</module>
     </modules>
     <packaging>pom</packaging>
 
-    <name>apm-sdk-plugin</name>
+    <name>spring-plugins</name>
     <url>http://maven.apache.org</url>
 
     <properties>

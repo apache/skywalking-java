@@ -18,6 +18,8 @@ healthCheck: http://localhost:8080/spring-rabbitmq-2.x-scenario/case/healthcheck
 startScript: ./bin/startup.sh
 environment:
   - RABBITMQ_HOST=rabbitmq-server
+depends_on:
+  - rabbitmq-server
 dependencies:
   rabbitmq-server:
     image: rabbitmq:3.8.18

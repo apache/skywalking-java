@@ -3,8 +3,8 @@
 # distributed with this work for additional information
 # regarding copyright ownership.  The ASF licenses this file
 # to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -19,28 +19,21 @@ segmentItems:
   segments:
   - segmentId: not null
     spans:
-    - operationName: RabbitMQ/Topic/Queue/test/Consumer
+    - operationName: GET:/spring-rabbitmq-2.x-scenario/case/rabbitmq
       parentSpanId: -1
       spanId: 0
-      spanLayer: MQ
+      spanLayer: Http
       startTime: nq 0
       endTime: nq 0
-      componentId: 53
+      componentId: 1
       isError: false
       spanType: Entry
-      peer: not blank
+      peer: ''
       tags:
-      - {key: mq.broker, value: not blank}
-      - {key: mq.topic, value: ''}
-      - {key: mq.queue, value: test}
-      - {key: transmission.latency, value: ge 0}
-      refs:
-      - {parentEndpoint: GET:/spring-rabbitmq-2.x-scenario/case/rabbitmq, networkAddress: not null,
-        refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
-          null, parentService: spring-rabbitmq-2.x-scenario, traceId: not null}
+      - {key: url, value: 'http://localhost:8080/spring-rabbitmq-2.x-scenario/case/rabbitmq'}
+      - {key: http.method, value: GET}
+      - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
-  - segmentId: not null
-    spans:
     - operationName: RabbitMQ/Topic/Queue/test/Producer
       parentSpanId: 0
       spanId: 1
@@ -56,18 +49,25 @@ segmentItems:
       - {key: mq.queue, value: test}
       - {key: mq.topic, value: ''}
       skipAnalysis: 'false'
-    - operationName: GET:/spring-rabbitmq-2.x-scenario/case/rabbitmq
+  - segmentId: not null
+    spans:
+    - operationName: RabbitMQ/Topic/Queue/test/Consumer
       parentSpanId: -1
       spanId: 0
-      spanLayer: Http
+      spanLayer: MQ
       startTime: nq 0
       endTime: nq 0
-      componentId: 1
+      componentId: 53
       isError: false
       spanType: Entry
-      peer: ''
+      peer: not blank
       tags:
-      - {key: url, value: 'http://localhost:8080/spring-rabbitmq-2.x-scenario/case/rabbitmq'}
-      - {key: http.method, value: GET}
-      - {key: http.status_code, value: '200'}
+      - {key: transmission.latency, value: ge 0}
+      - {key: mq.broker, value: not blank}
+      - {key: mq.topic, value: ''}
+      - {key: mq.queue, value: test}
+      refs:
+      - {parentEndpoint: GET:/spring-rabbitmq-2.x-scenario/case/rabbitmq, networkAddress: not null,
+        refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-rabbitmq-2.x-scenario, traceId: not null}
       skipAnalysis: 'false'

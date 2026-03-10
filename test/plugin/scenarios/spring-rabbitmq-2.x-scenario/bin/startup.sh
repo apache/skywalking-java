@@ -17,4 +17,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -Dspring.rabbitmq.host=${RABBITMQ_HOST} -jar ${agent_opts} ${home}/../libs/spring-rabbitmq-2.x-scenario.jar &
+java -Dspring.rabbitmq.host=${RABBITMQ_HOST:-rabbitmq-server} -jar ${agent_opts} ${home}/../libs/spring-rabbitmq-2.x-scenario.jar &

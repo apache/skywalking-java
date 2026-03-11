@@ -69,7 +69,7 @@ public class RabbitMQSpringConsumerInterceptorTest {
     public void testRabbitMQConsumerInterceptorWithNilHeaders() throws Throwable {
         Object[] args = prepareMockData(false);
         rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, args, new Class[0], null);
-        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }
@@ -78,7 +78,7 @@ public class RabbitMQSpringConsumerInterceptorTest {
     public void testRabbitMQConsumerInterceptor() throws Throwable {
         Object[] args = prepareMockData(true);
         rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, args, new Class[0], null);
-        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null, null);
         List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
         Assert.assertThat(traceSegments.size(), is(1));
     }

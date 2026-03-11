@@ -21,16 +21,16 @@ package org.apache.skywalking.apm.plugin.spring.rabbitmq.define;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.DeclaredInstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassInstanceMethodsEnhancePluginDefineV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.DeclaredInstanceMethodsInterceptV2Point;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.InstanceMethodsInterceptV2Point;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 
-public class SpringRabbitMQConsumerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
+public class SpringRabbitMQConsumerInstrumentation extends ClassInstanceMethodsEnhancePluginDefineV2 {
     public static final String ENHANCE_CLASS = "org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer";
     public static final String ENHANCE_METHOD = "executeListener";
     public static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.rabbitmq.SpringRabbitMQConsumerInterceptor";
@@ -41,16 +41,16 @@ public class SpringRabbitMQConsumerInstrumentation extends ClassInstanceMethodsE
     }
 
     @Override
-    public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
-            new DeclaredInstanceMethodsInterceptPoint() {
+    public InstanceMethodsInterceptV2Point[] getInstanceMethodsInterceptV2Points() {
+        return new InstanceMethodsInterceptV2Point[] {
+            new DeclaredInstanceMethodsInterceptV2Point() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
                     return named(ENHANCE_METHOD);
                 }
 
                 @Override
-                public String getMethodsInterceptor() {
+                public String getMethodsInterceptorV2() {
                     return INTERCEPTOR_CLASS;
                 }
 

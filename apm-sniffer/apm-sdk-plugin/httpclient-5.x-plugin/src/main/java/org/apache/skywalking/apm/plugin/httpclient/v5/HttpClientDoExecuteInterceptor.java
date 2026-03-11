@@ -37,11 +37,22 @@ import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class HttpClientDoExecuteInterceptor implements InstanceMethodsAroundInterceptor {
     private static final String ERROR_URI = "/_blank";
 
     private static final ILog LOGGER = LogManager.getLogger(HttpClientDoExecuteInterceptor.class);
+
+    /**
+     * Lazily-resolved, immutable set of ports that must not receive SkyWalking
+     * propagation headers.  Built once from
+     * {@link HttpClient5PluginConfig.Plugin.HttpClient5#PROPAGATION_EXCLUDE_PORTS}.
+     */
+    private volatile Set<Integer> excludePortsCache;
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -77,7 +88,55 @@ public abstract class HttpClientDoExecuteInterceptor implements InstanceMethodsA
 
     protected boolean skipIntercept(EnhancedInstance objInst, Method method, Object[] allArguments,
                                     Class<?>[] argumentsTypes) {
-        return allArguments[1] == null || getHttpHost(objInst, method, allArguments, argumentsTypes) == null;
+        if (allArguments[1] == null) {
+            return true;
+        }
+        HttpHost host = getHttpHost(objInst, method, allArguments, argumentsTypes);
+        if (host == null) {
+            return true;
+        }
+        return isExcludedPort(host.getPort());
+    }
+
+    /**
+     * Returns {@code true} when {@code port} is listed in
+     * {@link HttpClient5PluginConfig.Plugin.HttpClient5#PROPAGATION_EXCLUDE_PORTS}.
+     *
+     * <p>The config value is parsed lazily and cached so that it is read after
+     * the agent has fully initialised its configuration subsystem.
+     */
+    private boolean isExcludedPort(int port) {
+        if (port <= 0) {
+            return false;
+        }
+        if (excludePortsCache == null) {
+            synchronized (this) {
+                if (excludePortsCache == null) {
+                    excludePortsCache = parseExcludePorts(
+                            HttpClient5PluginConfig.Plugin.HttpClient5.PROPAGATION_EXCLUDE_PORTS);
+                }
+            }
+        }
+        return excludePortsCache.contains(port);
+    }
+
+    private static Set<Integer> parseExcludePorts(String raw) {
+        if (raw == null || raw.trim().isEmpty()) {
+            return Collections.emptySet();
+        }
+        return Arrays.stream(raw.split(","))
+                     .map(String::trim)
+                     .filter(s -> !s.isEmpty())
+                     .map(s -> {
+                         try {
+                             return Integer.parseInt(s);
+                         } catch (NumberFormatException e) {
+                             LOGGER.warn("Ignoring invalid port in PROPAGATION_EXCLUDE_PORTS: {}", s);
+                             return -1;
+                         }
+                     })
+                     .filter(p -> p > 0)
+                     .collect(Collectors.toSet());
     }
 
     protected abstract HttpHost getHttpHost(EnhancedInstance objInst, Method method, Object[] allArguments,

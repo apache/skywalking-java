@@ -48,8 +48,8 @@ public abstract class HttpClientDoExecuteInterceptor implements InstanceMethodsA
     private static final ILog LOGGER = LogManager.getLogger(HttpClientDoExecuteInterceptor.class);
 
     /**
-     * Lazily-resolved, immutable set of ports that must not receive SkyWalking
-     * propagation headers.  Built once from
+     * Lazily-resolved set of ports that must not receive SkyWalking
+     * propagation headers. Built once from
      * {@link HttpClient5PluginConfig.Plugin.HttpClient5#PROPAGATION_EXCLUDE_PORTS}.
      */
     private volatile Set<Integer> excludePortsCache;

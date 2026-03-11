@@ -151,8 +151,8 @@ public class HttpClientPropagationExcludePortTest {
 
         List<TraceSegment> segments = segmentStorage.getTraceSegments();
         assertThat("A trace segment must be created for a non-excluded port", segments.size(), is(1));
-        // sw8, sw8-correlation, sw8-x are the 3 propagation headers
-        verify(request, org.mockito.Mockito.atLeastOnce()).setHeader(anyString(), anyString());
+        // sw8, sw8-correlation, sw8-x – exactly 3 propagation headers, consistent with existing tests
+        verify(request, org.mockito.Mockito.times(3)).setHeader(anyString(), anyString());
     }
 
     // -----------------------------------------------------------------------
@@ -183,7 +183,7 @@ public class HttpClientPropagationExcludePortTest {
 
         List<TraceSegment> segments = segmentStorage.getTraceSegments();
         assertThat("A trace segment must be created for a non-excluded port", segments.size(), is(1));
-        verify(request, org.mockito.Mockito.atLeastOnce()).setHeader(anyString(), anyString());
+        verify(request, org.mockito.Mockito.times(3)).setHeader(anyString(), anyString());
     }
 
     // -----------------------------------------------------------------------
@@ -209,10 +209,10 @@ public class HttpClientPropagationExcludePortTest {
 
     /**
      * Multiple ports can be listed: verify that both excluded ports are silently
-     * skipped while a third, non-excluded port is still traced.
+     * skipped while a non-excluded port is still traced under the same config.
      */
     @Test
-    public void multipleExcludedPorts_allSkipped() throws Throwable {
+    public void multipleExcludedPorts_allSkippedAndNonExcludedStillTraced() throws Throwable {
         HttpClient5PluginConfig.Plugin.HttpClient5.PROPAGATION_EXCLUDE_PORTS = "8123,9200";
 
         HttpClientDoExecuteInterceptor freshInterceptor = new MinimalClientDoExecuteInterceptor();
@@ -220,9 +220,9 @@ public class HttpClientPropagationExcludePortTest {
         // 8123 – must be excluded
         freshInterceptor.beforeMethod(enhancedInstance, null, clickHouseArgs, argumentsType, null);
         freshInterceptor.afterMethod(enhancedInstance, null, clickHouseArgs, argumentsType, httpResponse);
-        assertThat(segmentStorage.getTraceSegments().size(), is(0));
+        assertThat("Port 8123 should be excluded", segmentStorage.getTraceSegments().size(), is(0));
 
-        // Set up a mock host on port 9200 (Elasticsearch)
+        // 9200 (Elasticsearch) – must also be excluded
         HttpHost esHost = org.mockito.Mockito.mock(HttpHost.class);
         when(esHost.getHostName()).thenReturn("es-server");
         when(esHost.getSchemeName()).thenReturn("http");
@@ -233,5 +233,12 @@ public class HttpClientPropagationExcludePortTest {
         freshInterceptor.beforeMethod(enhancedInstance, null, esArgs, argumentsType, null);
         freshInterceptor.afterMethod(enhancedInstance, null, esArgs, argumentsType, httpResponse);
         assertThat("Port 9200 should also be excluded", segmentStorage.getTraceSegments().size(), is(0));
+
+        // 8080 (regular service) – must still be traced under the same multi-port config
+        freshInterceptor = new MinimalClientDoExecuteInterceptor();
+        freshInterceptor.beforeMethod(enhancedInstance, null, regularArgs, argumentsType, null);
+        freshInterceptor.afterMethod(enhancedInstance, null, regularArgs, argumentsType, httpResponse);
+        assertThat("Non-excluded port 8080 must still produce a trace segment",
+                segmentStorage.getTraceSegments().size(), is(1));
     }
 }

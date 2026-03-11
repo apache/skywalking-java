@@ -25,14 +25,16 @@ public class HttpClient5PluginConfig {
         @PluginConfig(root = HttpClient5PluginConfig.class)
         public static class HttpClient5 {
             /**
-             * Comma-separated list of destination ports whose HTTP requests
-             * should NOT have SkyWalking propagation headers injected.
+             * Comma-separated list of destination ports whose outbound HTTP requests
+             * will be completely skipped by the classic client interceptor: no exit
+             * span is created and no SkyWalking propagation headers are injected.
              *
              * <p>Some HTTP-based database protocols (e.g. ClickHouse on port 8123)
              * reject requests that contain unknown HTTP headers, returning HTTP 400.
-             * Adding such ports here prevents the agent from injecting the {@code sw8}
-             * tracing headers into those outbound requests while leaving all other
-             * HTTP calls fully traced.
+             * Adding such ports here prevents the agent from creating exit spans
+             * and from injecting the {@code sw8} tracing headers into those outbound
+             * requests, meaning these requests are completely untraced by SkyWalking,
+             * while leaving all other HTTP calls fully traced.
              *
              * <p>Default: {@code "8123"} (ClickHouse HTTP interface).
              *

@@ -95,7 +95,7 @@ public abstract class HttpClientDoExecuteInterceptor implements InstanceMethodsA
         if (host == null) {
             return true;
         }
-        return isExcludedPort(host.getPort());
+        return isExcludedPort(port(host));
     }
 
     /**

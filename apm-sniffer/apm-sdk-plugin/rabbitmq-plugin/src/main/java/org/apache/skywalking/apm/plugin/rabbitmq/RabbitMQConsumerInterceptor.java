@@ -26,14 +26,18 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 
 public class RabbitMQConsumerInterceptor implements InstanceMethodsAroundInterceptor {
 
-    public static final String INTERNAL_CONSUMER_CLASS_NAME = "org.springframework.amqp.rabbit.listener.BlockingQueueConsumer$InternalConsumer";
+    public static final String SMLC_INTERNAL_CONSUMER = "org.springframework.amqp.rabbit.listener.BlockingQueueConsumer$InternalConsumer";
+    public static final String DMLC_INTERNAL_CONSUMER = "org.springframework.amqp.rabbit.listener.DirectMessageListenerContainer$SimpleConsumer";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
         Consumer consumer = (Consumer) allArguments[6];
-        if (consumer != null && INTERNAL_CONSUMER_CLASS_NAME.equals(consumer.getClass().getName())) {
-            return;
+        if (consumer != null) {
+            String className = consumer.getClass().getName();
+            if (SMLC_INTERNAL_CONSUMER.equals(className) || DMLC_INTERNAL_CONSUMER.equals(className)) {
+                return;
+            }
         }
         allArguments[6] = new TracerConsumer(consumer, (String) objInst.getSkyWalkingDynamicField());
     }

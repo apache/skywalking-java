@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.spring.rabbitmq;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
@@ -45,9 +46,58 @@ public class SpringRabbitMQConsumerInterceptor implements InstanceMethodsAroundI
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInvocationContext context) throws Throwable {
         Channel channel = (Channel) allArguments[0];
-        Message message = (Message) allArguments[1];
-        MessageProperties messageProperties = message.getMessageProperties();
-        Map<String, Object> headers = messageProperties.getHeaders();
+
+        if (allArguments[1] instanceof Message) {
+            // Single message consume
+            Message message = (Message) allArguments[1];
+            MessageProperties messageProperties = message.getMessageProperties();
+            Map<String, Object> headers = messageProperties.getHeaders();
+
+            ContextCarrier contextCarrier = buildContextCarrier(headers);
+            String operationName = buildOperationName(messageProperties);
+            AbstractSpan activeSpan = ContextManager.createEntrySpan(operationName, contextCarrier);
+
+            setSpanAttributes(activeSpan, channel, messageProperties);
+        } else if (allArguments[1] instanceof List) {
+            // Batch message consume
+            List<?> messages = (List<?>) allArguments[1];
+            if (messages.isEmpty()) {
+                return;
+            }
+
+            // Use the first message to create EntrySpan
+            Message firstMessage = (Message) messages.get(0);
+            MessageProperties firstMessageProperties = firstMessage.getMessageProperties();
+            Map<String, Object> firstMessageHeaders = firstMessageProperties.getHeaders();
+
+            ContextCarrier contextCarrier = buildContextCarrier(firstMessageHeaders);
+            String operationName = buildOperationName(firstMessageProperties);
+            AbstractSpan activeSpan = ContextManager.createEntrySpan(operationName, contextCarrier);
+
+            setSpanAttributes(activeSpan, channel, firstMessageProperties);
+
+            // Extract trace context from remaining messages (skip first, already used for EntrySpan)
+            // to correlate all producer traces with this consumer span
+            for (int i = 1; i < messages.size(); i++) {
+                Object msg = messages.get(i);
+                if (msg instanceof Message) {
+                    Message message = (Message) msg;
+                    MessageProperties messageProperties = message.getMessageProperties();
+                    Map<String, Object> headers = messageProperties.getHeaders();
+
+                    ContextCarrier carrier = buildContextCarrier(headers);
+                    if (carrier.isValid()) {
+                        ContextManager.extract(carrier);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Build ContextCarrier from message headers
+     */
+    private ContextCarrier buildContextCarrier(Map<String, Object> headers) {
         ContextCarrier contextCarrier = new ContextCarrier();
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {
@@ -57,29 +107,40 @@ public class SpringRabbitMQConsumerInterceptor implements InstanceMethodsAroundI
                 next.setHeadValue(value.toString());
             }
         }
-        String operationName = OPERATE_NAME_PREFIX + "Topic/" + messageProperties.getReceivedExchange()
-                               + "Queue/" + messageProperties.getReceivedRoutingKey() + CONSUMER_OPERATE_NAME_SUFFIX;
-        AbstractSpan activeSpan = ContextManager.createEntrySpan(operationName, contextCarrier);
+        return contextCarrier;
+    }
+
+    private String buildOperationName(MessageProperties messageProperties) {
+        return OPERATE_NAME_PREFIX + "Topic/" + messageProperties.getReceivedExchange()
+               + "Queue/" + messageProperties.getReceivedRoutingKey()
+               + CONSUMER_OPERATE_NAME_SUFFIX;
+    }
+
+    private void setSpanAttributes(AbstractSpan span, Channel channel, MessageProperties messageProperties) {
         Connection connection = channel.getConnection();
         String serverUrl = connection.getAddress().getHostAddress() + ":" + connection.getPort();
-        Tags.MQ_BROKER.set(activeSpan, serverUrl);
-        Tags.MQ_TOPIC.set(activeSpan, messageProperties.getReceivedExchange());
-        Tags.MQ_QUEUE.set(activeSpan, messageProperties.getReceivedRoutingKey());
-        activeSpan.setComponent(ComponentsDefine.RABBITMQ_CONSUMER);
-        activeSpan.setPeer(serverUrl);
-        SpanLayer.asMQ(activeSpan);
+        Tags.MQ_BROKER.set(span, serverUrl);
+        Tags.MQ_TOPIC.set(span, messageProperties.getReceivedExchange());
+        Tags.MQ_QUEUE.set(span, messageProperties.getReceivedRoutingKey());
+        span.setComponent(ComponentsDefine.RABBITMQ_CONSUMER);
+        span.setPeer(serverUrl);
+        SpanLayer.asMQ(span);
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret, MethodInvocationContext context) throws Throwable {
-        ContextManager.stopSpan();
+        if (ContextManager.isActive()) {
+            ContextManager.stopSpan();
+        }
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
-        ContextManager.activeSpan().log(t);
+        if (ContextManager.isActive()) {
+            ContextManager.activeSpan().log(t);
+        }
     }
 }

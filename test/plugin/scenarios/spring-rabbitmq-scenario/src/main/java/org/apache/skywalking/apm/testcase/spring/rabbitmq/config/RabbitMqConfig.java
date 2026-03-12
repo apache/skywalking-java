@@ -19,6 +19,8 @@
 package org.apache.skywalking.apm.testcase.spring.rabbitmq.config;
 
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,5 +30,25 @@ public class RabbitMqConfig {
     @Bean
     public Queue testQueue() {
         return new Queue("test", false);
+    }
+
+    @Bean
+    public Queue testBatchQueue() {
+        return new Queue("test-batch", false);
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory batchRabbitListenerContainerFactory(
+        ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        // Enable batch listening mode
+        factory.setBatchListener(true);
+        factory.setConsumerBatchEnabled(true);
+        // Set batch size
+        factory.setBatchSize(3);
+        factory.setPrefetchCount(3);
+        factory.setReceiveTimeout(3000L);
+        return factory;
     }
 }

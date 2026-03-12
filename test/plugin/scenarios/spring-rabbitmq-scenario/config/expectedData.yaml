@@ -15,10 +15,87 @@
 # limitations under the License.
 segmentItems:
 - serviceName: spring-rabbitmq-scenario
-  segmentSize: gt 2
+  segmentSize: ge 4
   segments:
   - segmentId: not null
     spans:
+    - operationName: HEAD:/spring-rabbitmq-scenario/case/healthcheck
+      parentSpanId: -1
+      spanId: 0
+      spanLayer: Http
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 1
+      isError: false
+      spanType: Entry
+      peer: ''
+      tags:
+      - {key: url, value: 'http://localhost:8080/spring-rabbitmq-scenario/case/healthcheck'}
+      - {key: http.method, value: HEAD}
+      - {key: http.status_code, value: '200'}
+      skipAnalysis: 'false'
+  - segmentId: not null
+    spans:
+    - operationName: RabbitMQ/Topic/Queue/test/Producer
+      parentSpanId: 0
+      spanId: 1
+      spanLayer: MQ
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 52
+      isError: false
+      spanType: Exit
+      peer: not blank
+      tags:
+      - {key: mq.broker, value: not blank}
+      - {key: mq.queue, value: test}
+      - {key: mq.topic, value: ''}
+      skipAnalysis: 'false'
+    - operationName: RabbitMQ/Topic/Queue/test-batch/Producer
+      parentSpanId: 0
+      spanId: 2
+      spanLayer: MQ
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 52
+      isError: false
+      spanType: Exit
+      peer: not blank
+      tags:
+      - {key: mq.broker, value: not blank}
+      - {key: mq.queue, value: test-batch}
+      - {key: mq.topic, value: ''}
+      skipAnalysis: 'false'
+    - operationName: RabbitMQ/Topic/Queue/test-batch/Producer
+      parentSpanId: 0
+      spanId: 3
+      spanLayer: MQ
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 52
+      isError: false
+      spanType: Exit
+      peer: not blank
+      tags:
+      - {key: mq.broker, value: not blank}
+      - {key: mq.queue, value: test-batch}
+      - {key: mq.topic, value: ''}
+      skipAnalysis: 'false'
+    - operationName: RabbitMQ/Topic/Queue/test-batch/Producer
+      parentSpanId: 0
+      spanId: 4
+      spanLayer: MQ
+      startTime: nq 0
+      endTime: nq 0
+      componentId: 52
+      isError: false
+      spanType: Exit
+      peer: not blank
+      tags:
+      - {key: mq.broker, value: not blank}
+      - {key: mq.queue, value: test-batch}
+      - {key: mq.topic, value: ''}
+      skipAnalysis: 'false'
     - operationName: GET:/spring-rabbitmq-scenario/case/rabbitmq
       parentSpanId: -1
       spanId: 0
@@ -34,20 +111,35 @@ segmentItems:
       - {key: http.method, value: GET}
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'
-    - operationName: RabbitMQ/Topic/Queue/test/Producer
-      parentSpanId: 0
-      spanId: 1
+  - segmentId: not null
+    spans:
+    - operationName: RabbitMQ/Topic/Queue/test-batch/Consumer
+      parentSpanId: -1
+      spanId: 0
       spanLayer: MQ
       startTime: nq 0
       endTime: nq 0
-      componentId: 52
+      componentId: 53
       isError: false
-      spanType: Exit
+      spanType: Entry
       peer: not blank
       tags:
+      - {key: transmission.latency, value: ge 0}
       - {key: mq.broker, value: not blank}
-      - {key: mq.queue, value: test}
       - {key: mq.topic, value: ''}
+      - {key: mq.queue, value: test-batch}
+      - {key: transmission.latency, value: ge 0}
+      - {key: transmission.latency, value: ge 0}
+      refs:
+      - {parentEndpoint: GET:/spring-rabbitmq-scenario/case/rabbitmq, networkAddress: not null,
+        refType: CrossProcess, parentSpanId: 2, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-rabbitmq-scenario, traceId: not null}
+      - {parentEndpoint: GET:/spring-rabbitmq-scenario/case/rabbitmq, networkAddress: not null,
+        refType: CrossProcess, parentSpanId: 3, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-rabbitmq-scenario, traceId: not null}
+      - {parentEndpoint: GET:/spring-rabbitmq-scenario/case/rabbitmq, networkAddress: not null,
+        refType: CrossProcess, parentSpanId: 4, parentTraceSegmentId: not null, parentServiceInstance: not
+          null, parentService: spring-rabbitmq-scenario, traceId: not null}
       skipAnalysis: 'false'
   - segmentId: not null
     spans:

@@ -8,6 +8,7 @@ Release Notes.
 * Added support for Lettuce reactive Redis commands.
 * Add Spring AI 1.x plugin and GenAI layer.
 * Fix httpclient-5.x plugin injecting sw8 propagation headers into ClickHouse HTTP requests (port 8123), causing HTTP 400. Add `PROPAGATION_EXCLUDE_PORTS` config to skip tracing (including header injection) for specified ports in the classic client interceptor.
+* Add Spring RabbitMQ 2.x - 4.x plugin.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)
 

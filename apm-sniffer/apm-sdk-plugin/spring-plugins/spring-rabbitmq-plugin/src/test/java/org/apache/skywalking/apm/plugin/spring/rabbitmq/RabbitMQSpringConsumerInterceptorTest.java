@@ -1,0 +1,192 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.apache.skywalking.apm.plugin.spring.rabbitmq;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.skywalking.apm.agent.core.context.SW8CarrierItem;
+import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
+import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
+import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
+import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+
+@RunWith(TracingSegmentRunner.class)
+public class RabbitMQSpringConsumerInterceptorTest {
+
+    @SegmentStoragePoint
+    private SegmentStorage segmentStorage;
+
+    private SpringRabbitMQConsumerInterceptor rabbitMQConsumerInterceptor;
+
+    @Mock
+    private EnhancedInstance enhancedInstance;
+
+    @Rule
+    public AgentServiceRule serviceRule = new AgentServiceRule();
+
+    @Before
+    public void setUp() throws Exception {
+        rabbitMQConsumerInterceptor = new SpringRabbitMQConsumerInterceptor();
+    }
+
+    @Test
+    public void testRabbitMQConsumerInterceptorWithNilHeaders() throws Throwable {
+        Object[] args = prepareMockData(false);
+        rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null, null);
+        List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertThat(traceSegments.size(), is(1));
+    }
+
+    @Test
+    public void testRabbitMQConsumerInterceptor() throws Throwable {
+        Object[] args = prepareMockData(true);
+        rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null, null);
+        List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertThat(traceSegments.size(), is(1));
+    }
+
+    @Test
+    public void testBatchMessageConsumption() throws Throwable {
+        Object[] args = prepareMockBatchData(true);
+        rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null, null);
+        List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertThat(traceSegments.size(), is(1));
+    }
+
+    @Test
+    public void testEmptyBatchMessageConsumption() throws Throwable {
+        Channel channel = mock(Channel.class);
+        Connection connection = mock(Connection.class);
+        InetAddress address = mock(InetAddress.class);
+
+        when(channel.getConnection()).thenReturn(connection);
+        when(connection.getAddress()).thenReturn(address);
+        when(address.getHostAddress()).thenReturn("127.0.0.1");
+        when(connection.getPort()).thenReturn(5672);
+
+        Object[] args = new Object[] {channel, new java.util.ArrayList<Message>()};
+        rabbitMQConsumerInterceptor.beforeMethod(enhancedInstance, null, args, new Class[0], null);
+        rabbitMQConsumerInterceptor.afterMethod(enhancedInstance, null, args, new Class[0], null, null);
+        List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
+        Assert.assertThat(traceSegments.size(), is(0));
+    }
+
+    private Object[] prepareMockData(boolean withHeaders) throws Exception {
+        Channel channel = mock(Channel.class);
+        Connection connection = mock(Connection.class);
+        InetAddress address = mock(InetAddress.class);
+        Message message = mock(Message.class);
+        MessageProperties messageProperties = mock(MessageProperties.class);
+
+        when(channel.getConnection()).thenReturn(connection);
+        when(connection.getAddress()).thenReturn(address);
+        when(address.getHostAddress()).thenReturn("127.0.0.1");
+        when(connection.getPort()).thenReturn(5672);
+        when(message.getMessageProperties()).thenReturn(messageProperties);
+        when(messageProperties.getReceivedExchange()).thenReturn("test-exchange");
+        when(messageProperties.getReceivedRoutingKey()).thenReturn("test-routing-key");
+
+        if (withHeaders) {
+            Map<String, Object> headers = new HashMap<>();
+            headers.put(SW8CarrierItem.HEADER_NAME,
+                "1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA=");
+            when(messageProperties.getHeader(SW8CarrierItem.HEADER_NAME))
+                .thenReturn(headers.get(SW8CarrierItem.HEADER_NAME));
+        }
+
+        return new Object[] {channel, message};
+    }
+
+    private Object[] prepareMockBatchData(boolean withHeaders) throws Exception {
+        Channel channel = mock(Channel.class);
+        Connection connection = mock(Connection.class);
+        InetAddress address = mock(InetAddress.class);
+
+        when(channel.getConnection()).thenReturn(connection);
+        when(connection.getAddress()).thenReturn(address);
+        when(address.getHostAddress()).thenReturn("127.0.0.1");
+        when(connection.getPort()).thenReturn(5672);
+
+        Message message1 = mock(Message.class);
+        Message message2 = mock(Message.class);
+        Message message3 = mock(Message.class);
+        MessageProperties props1 = mock(MessageProperties.class);
+        MessageProperties props2 = mock(MessageProperties.class);
+        MessageProperties props3 = mock(MessageProperties.class);
+
+        when(message1.getMessageProperties()).thenReturn(props1);
+        when(message2.getMessageProperties()).thenReturn(props2);
+        when(message3.getMessageProperties()).thenReturn(props3);
+
+        when(props1.getReceivedExchange()).thenReturn("test-exchange");
+        when(props1.getReceivedRoutingKey()).thenReturn("test-routing-key");
+        when(props2.getReceivedExchange()).thenReturn("test-exchange");
+        when(props2.getReceivedRoutingKey()).thenReturn("test-routing-key");
+        when(props3.getReceivedExchange()).thenReturn("test-exchange");
+        when(props3.getReceivedRoutingKey()).thenReturn("test-routing-key");
+
+        if (withHeaders) {
+            Map<String, Object> headers1 = new HashMap<>();
+            headers1.put(SW8CarrierItem.HEADER_NAME,
+                "1-My40LjU=-MS4yLjM=-3-c2VydmljZQ==-aW5zdGFuY2U=-L2FwcA==-MTI3LjAuMC4xOjgwODA=");
+            when(props1.getHeader(SW8CarrierItem.HEADER_NAME))
+                .thenReturn(headers1.get(SW8CarrierItem.HEADER_NAME));
+
+            Map<String, Object> headers2 = new HashMap<>();
+            headers2.put(SW8CarrierItem.HEADER_NAME,
+                "1-NTY3Ljg=-OS4xMC4xMQ==-12-ZXJ2aWNlMg==-aW5zdGFuY2UyLU9hcHA=-MTI3LjAuMC4yOjgwODA=");
+            when(props2.getHeader(SW8CarrierItem.HEADER_NAME))
+                .thenReturn(headers2.get(SW8CarrierItem.HEADER_NAME));
+
+            Map<String, Object> headers3 = new HashMap<>();
+            headers3.put(SW8CarrierItem.HEADER_NAME,
+                "1-MTExLjIyMi4zMzM=-NDQ0LjU1NS42NjY=-MzQ1-ZXJ2aWNlMw==-aW5zdGFuY2UzLU9hcHA=-MTI3LjAuMC4zOjgwODA=");
+            when(props3.getHeader(SW8CarrierItem.HEADER_NAME))
+                .thenReturn(headers3.get(SW8CarrierItem.HEADER_NAME));
+        }
+
+        List<Message> messages = new ArrayList<>(Arrays.asList(message1, message2, message3));
+        return new Object[] {channel, messages};
+    }
+}

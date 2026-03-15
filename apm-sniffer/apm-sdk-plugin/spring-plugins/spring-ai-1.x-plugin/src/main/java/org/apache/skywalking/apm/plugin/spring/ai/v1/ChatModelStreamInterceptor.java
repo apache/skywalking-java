@@ -63,6 +63,8 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
             return;
         }
 
+        ContextManager.getRuntimeContext().put(Constants.SPRING_AI_STREAM_START_TIME, System.currentTimeMillis());
+
         ChatOptions chatOptions = prompt.getOptions();
         if (chatOptions == null) {
             return;
@@ -72,8 +74,6 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
         Tags.GEN_AI_TEMPERATURE.set(span, String.valueOf(chatOptions.getTemperature()));
         Tags.GEN_AI_TOP_K.set(span, String.valueOf(chatOptions.getTopK()));
         Tags.GEN_AI_TOP_P.set(span, String.valueOf(chatOptions.getTopP()));
-
-        ContextManager.getRuntimeContext().put(Constants.SPRING_AI_STREAM_START_TIME, System.currentTimeMillis());
     }
 
     @Override

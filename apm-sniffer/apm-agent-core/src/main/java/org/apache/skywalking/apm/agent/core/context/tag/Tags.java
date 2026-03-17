@@ -243,12 +243,12 @@ public final class Tags {
     /**
      * GEN_AI_INPUT_MESSAGES represents the chat history provided to the model as an input.
      */
-    public static final StringTag GEN_AI_INPUT_MESSAGES = new StringTag(44, "gen_ai.input.messages");
+    public static final StringTag GEN_AI_INPUT_MESSAGES = new StringTag(41, "gen_ai.input.messages");
 
     /**
      * GEN_AI_OUTPUT_MESSAGES represents the messages returned by the model where each message represents a specific model response (choice, candidate).
      */
-    public static final StringTag GEN_AI_OUTPUT_MESSAGES = new StringTag(45, "gen_ai.output.messages");
+    public static final StringTag GEN_AI_OUTPUT_MESSAGES = new StringTag(42, "gen_ai.output.messages");
 
     /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without

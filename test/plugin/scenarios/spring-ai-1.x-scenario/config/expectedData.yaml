@@ -116,7 +116,7 @@ segmentItems:
               - { key: gen_ai.request.temperature, value: '0.7' }
               - { key: gen_ai.request.top_k, value: null }
               - { key: gen_ai.request.top_p, value: '0.9' }
-              - { key: gen_ai.stream.ttfr, value: not null }
+              - { key: gen_ai.server.time_to_first_token, value: not null }
               - { key: gen_ai.response.id, value: 'chatcmpl-fc1b64d3' }
               - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
               - { key: gen_ai.response.finish_reasons, value: STOP }

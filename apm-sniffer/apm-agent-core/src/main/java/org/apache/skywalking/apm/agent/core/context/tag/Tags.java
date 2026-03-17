@@ -238,7 +238,7 @@ public final class Tags {
     /**
      * GEN_AI_STREAM_TTFR represents the time to first response (TTFR) for streaming operations.
      */
-    public static final StringTag GEN_AI_STREAM_TTFR = new StringTag(40, "gen_ai.stream.ttfr");
+    public static final StringTag GEN_AI_STREAM_TIME_TO_FIRST_TOKEN = new StringTag(40, "gen_ai.server.time_to_first_token");
 
     /**
      * GEN_AI_INPUT_MESSAGES represents the chat history provided to the model as an input.

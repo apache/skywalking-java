@@ -40,12 +40,10 @@ public class HttpClientPluginConfig {
              * and from injecting the {@code sw8} tracing headers into those outbound
              * requests.
              *
-             * <p>Default: {@code "8123"} (ClickHouse HTTP interface).
-             *
-             * <p>Example – also exclude port 9200 (Elasticsearch):
+             * <p>Example – exclude ClickHouse and Elasticsearch ports:
              * {@code plugin.httpclient.propagation_exclude_ports=8123,9200}
              */
-            public static String PROPAGATION_EXCLUDE_PORTS = "8123";
+            public static String PROPAGATION_EXCLUDE_PORTS = "";
         }
 
         @PluginConfig(root = HttpClientPluginConfig.class)

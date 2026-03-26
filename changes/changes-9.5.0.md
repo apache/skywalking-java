@@ -21,6 +21,8 @@ Release Notes.
   enhanced by both SkyWalking and Spring AOP.
 * Build: Centralized plugin version management in the root POM and remove redundant declarations.
 * Support Spring Cloud Gateway 4.3.x.
+* Add `PROPAGATION_EXCLUDE_PORTS` config to httpclient-4.x plugin to skip tracing and header injection for
+  specified ports (default: 8123), fixing ClickHouse HTTP 400 caused by injected sw8 headers.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/236?closed=1)
 

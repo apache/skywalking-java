@@ -43,7 +43,7 @@ public class HttpClientPluginConfig {
              * <p>Default: {@code "8123"} (ClickHouse HTTP interface).
              *
              * <p>Example – also exclude port 9200 (Elasticsearch):
-             * {@code plugin.httpclient.PROPAGATION_EXCLUDE_PORTS=8123,9200}
+             * {@code plugin.httpclient.propagation_exclude_ports=8123,9200}
              */
             public static String PROPAGATION_EXCLUDE_PORTS = "8123";
         }

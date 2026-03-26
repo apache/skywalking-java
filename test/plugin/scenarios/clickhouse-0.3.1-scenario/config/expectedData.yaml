@@ -53,7 +53,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'select timezone(), version()'}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/Statement/executeQuery
             operationId: 0
             parentSpanId: 0
@@ -70,7 +69,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT * FROM clusters}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/Statement/execute
             operationId: 0
             parentSpanId: 0
@@ -87,7 +85,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT 1}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/Connection/close
             operationId: 0
             parentSpanId: 0
@@ -120,7 +117,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'select timezone(), version()'}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/PreparedStatement/executeQuery
             operationId: 0
             parentSpanId: 0
@@ -137,7 +133,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT * FROM clusters}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/Statement/execute
             operationId: 0
             parentSpanId: 0
@@ -154,7 +149,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT 1}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/Connection/close
             operationId: 0
             parentSpanId: 0
@@ -187,7 +181,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'select timezone(), version()'}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/PreparedStatement/executeQuery
             operationId: 0
             parentSpanId: 0
@@ -205,7 +198,6 @@ segmentItems:
               - {key: db.instance, value: system}
               - {key: db.statement, value: 'SELECT * FROM clusters WHERE cluster = ?'}
               - {key: db.sql.parameters, value: '[1]'}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/Statement/execute
             operationId: 0
             parentSpanId: 0
@@ -222,7 +214,6 @@ segmentItems:
               - {key: db.type, value: ClickHouse}
               - {key: db.instance, value: system}
               - {key: db.statement, value: SELECT 1}
-              - {key: http.status_code, value: '200'}
           - operationName: ClickHouse/JDBC/Connection/close
             operationId: 0
             parentSpanId: 0

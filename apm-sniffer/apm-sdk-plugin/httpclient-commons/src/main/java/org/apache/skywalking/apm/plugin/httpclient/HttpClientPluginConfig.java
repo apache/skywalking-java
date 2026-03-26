@@ -28,6 +28,22 @@ public class HttpClientPluginConfig {
              * This config item controls that whether the HttpClient plugin should collect the parameters of the request.
              */
             public static boolean COLLECT_HTTP_PARAMS = false;
+
+            /**
+             * Comma-separated list of destination ports whose outbound HTTP requests
+             * will be completely skipped by the httpclient-4.x interceptor: no exit
+             * span is created and no SkyWalking propagation headers are injected.
+             *
+             * <p>Some HTTP-based database protocols (e.g. ClickHouse on port 8123)
+             * reject requests that contain unknown HTTP headers, returning HTTP 400.
+             * Adding such ports here prevents the agent from creating exit spans
+             * and from injecting the {@code sw8} tracing headers into those outbound
+             * requests.
+             *
+             * <p>Example – exclude ClickHouse and Elasticsearch ports:
+             * {@code plugin.httpclient.propagation_exclude_ports=8123,9200}
+             */
+            public static String PROPAGATION_EXCLUDE_PORTS = "";
         }
 
         @PluginConfig(root = HttpClientPluginConfig.class)

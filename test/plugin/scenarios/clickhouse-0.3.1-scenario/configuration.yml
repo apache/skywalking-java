@@ -20,6 +20,7 @@ healthCheck: http://localhost:8080/clickhouse-scenario/case/healthCheck
 startScript: ./bin/startup.sh
 environment:
   - SW_JDBC_TRACE_SQL_PARAMETERS=true
+  - SW_PLUGIN_HTTPCLIENT_PROPAGATION_EXCLUDE_PORTS=8123
 depends_on:
   - clickhouse-server
 dependencies:

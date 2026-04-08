@@ -101,6 +101,16 @@ File Name | Descriptions
 
 `*` support-version.list format requires every line for a single version (contains only the last version number of each minor version). You may use `#` to comment out this version.
 
+Each version line supports optional extra Maven properties using comma-separated `key=value` pairs:
+```
+# Simple version
+2.3.10.RELEASE
+
+# Version with extra Maven properties (passed as -D flags)
+2.7.14,spring.boot.version=2.5.15
+```
+This allows different framework versions to use different dependency versions without creating separate test scenarios.
+
 ### configuration.yml
 
 | Field | description

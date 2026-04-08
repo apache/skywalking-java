@@ -292,6 +292,10 @@ dependencies:                                # External services (docker-compose
 4.3.6
 4.4.1
 4.5.0
+
+# Optional: extra Maven properties per version (comma-separated key=value)
+# Useful when different versions need different dependency versions
+2.7.14,spring.boot.version=2.5.15
 ```
 
 **expectedData.yaml:**

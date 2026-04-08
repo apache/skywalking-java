@@ -1070,6 +1070,28 @@ Or for new plugins:
 **3. `test/plugin/scenarios/{scenario}/support-version.list`**
 Add verified versions. Only include the **latest patch version for each minor version** — do not list every patch release.
 
+The version list supports **extra Maven properties** per version line using comma-separated `key=value` pairs:
+```
+# Simple version (default pom properties)
+2.3.10.RELEASE
+
+# Version with overridden Maven properties
+2.7.14,spring.boot.version=2.5.15
+2.8.11,spring.boot.version=2.7.18
+3.1.4,spring.boot.version=3.2.12
+```
+
+This is useful when different framework versions need different dependency versions (e.g., spring-kafka minor versions require matching Spring Boot versions). The extra properties are passed as `-D` flags to Maven during the scenario build.
+
+**IMPORTANT:** Maven `-D` overrides work for `<properties>` and direct `<version>${prop}` references, but do NOT override BOM versions resolved via `<dependencyManagement>` imports. If a BOM version needs to change, set the default in the pom to the highest needed version, not the lowest.
+
+**Spring Boot / Spring Kafka compatibility mapping** (for reference):
+- spring-kafka 2.3-2.6 → Spring Boot 2.3 (default)
+- spring-kafka 2.7 → Spring Boot 2.5 (2.6+ autoconfigure requires `CommonErrorHandler` from spring-kafka 2.8)
+- spring-kafka 2.8-2.9 → Spring Boot 2.7
+- spring-kafka 3.0 → Spring Boot 3.0
+- spring-kafka 3.1-3.3 → Spring Boot 3.2 (requires Spring Framework 6.1)
+
 **This step is mandatory.** Documentation updates are part of the PR requirements.
 
 ## Quick Reference - Plugin Type Decision Tree

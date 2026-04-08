@@ -16,6 +16,7 @@ Release Notes.
 * Extend Undertow plugin to support Undertow 2.1.x, 2.2.x, 2.3.x.
 * Extend GraphQL plugin to support graphql-java 18 -> 24 (20+ requires JDK 17).
 * Extend Spring Kafka plugin to support Spring Kafka 2.4 -> 2.9 and 3.0 -> 3.3.
+* Enhance test/plugin/run.sh to support extra Maven properties per version in support-version.list (format: version,key=value).
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)
 

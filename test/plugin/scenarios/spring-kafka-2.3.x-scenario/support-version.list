@@ -14,10 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Format: spring-kafka-version[,key=value] — extra properties passed to Maven.
+# spring-kafka 2.7+ requires Spring Framework 5.3+ (ApplicationStartup class),
+# so those versions override spring.boot.version to match.
 2.3.10.RELEASE
 2.4.13.RELEASE
 2.5.17.RELEASE
 2.6.13
-2.7.14
-2.8.11
-2.9.13
+2.7.14,spring.boot.version=2.7.18
+2.8.11,spring.boot.version=2.7.18
+2.9.13,spring.boot.version=2.7.18

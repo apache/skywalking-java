@@ -53,7 +53,7 @@ segmentItems:
             spanLayer: Http
             startTime: not null
             endTime: not null
-            componentId: 14
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -70,7 +70,7 @@ segmentItems:
             spanLayer: Http
             startTime: not null
             endTime: not null
-            componentId: 14
+            componentId: 1
             isError: false
             spanType: Entry
             peer: ''
@@ -117,7 +117,7 @@ segmentItems:
               - {key: mq.topic, value: spring_test}
               - {key: transmission.latency, value: not null}
             refs:
-              - {parentEndpoint: GET:/case/spring-kafka-case, networkAddress: 'kafka-server:9092',
+              - {parentEndpoint: 'GET:/spring-kafka-3.x-scenario/case/spring-kafka-case', networkAddress: 'kafka-server:9092',
                  refType: CrossProcess, parentSpanId: not null, parentTraceSegmentId: not null,
                  parentServiceInstance: not null, parentService: spring-kafka-3.x-scenario,
                  traceId: not null}

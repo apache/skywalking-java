@@ -77,7 +77,7 @@ metrics based on the tracing data.
   * [RocketMQ](https://github.com/apache/rocketmq) 3.x-> 5.x
   * [RocketMQ-gRPC](http://github.com/apache/rocketmq-clients) 5.x
   * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 3.9.1
-  * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 3.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
+  * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 2.3.x, 3.0.x -> 3.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 3.x-> 5.x
   * [Spring-RabbitMQ](https://github.com/spring-projects/spring-amqp) 2.x -> 4.x

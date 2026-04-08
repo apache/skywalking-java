@@ -138,12 +138,26 @@ When assessing whether a plugin works with a new library version, or when choosi
 3. Do the witness classes still correctly distinguish versions? (a witness class that exists in both old and new versions won't prevent the plugin from loading on an incompatible version)
 4. Do the runtime APIs called by the interceptor still exist? (e.g., calling `cluster.getDescription()` will crash if that method was removed, even if the plugin loaded successfully)
 
-**How to verify:**
-- Fetch the actual source file from the library's Git repository at the specific version tag (e.g., `https://raw.githubusercontent.com/{org}/{repo}/{tag}/path/to/Class.java`)
-- Or download the specific JAR and inspect the class
-- Or add the version to the plugin's test dependencies and compile
+**How to verify — clone the library source locally:**
+```bash
+# Clone specific version tag to /tmp for easy source code inspection
+cd /tmp && git clone --depth 1 --branch {tag} https://github.com/{org}/{repo}.git {local-name}
+
+# Examples:
+git clone --depth 1 --branch r4.9.0 https://github.com/mongodb/mongo-java-driver.git mongo-4.9
+git clone --depth 1 --branch v2.4.13.RELEASE https://github.com/spring-projects/spring-kafka.git spring-kafka-2.4
+
+# Then grep/read the actual source files to check class/method existence
+grep -rn "getFilter\|getWriteRequests" /tmp/mongo-4.9/driver-core/src/main/com/mongodb/internal/operation/
+```
+
+This is faster and more reliable than fetching individual files via raw GitHub URLs. You can `grep`, `diff` between versions, and trace the full execution path.
+
+**Also check for import-time class loading failures:**
+If a plugin helper class (not just the instrumentation class) imports a library class that was removed, the entire helper class will fail to load with `NoClassDefFoundError` at runtime. This silently breaks ALL functionality in that helper — not just the code paths using the removed class. Verify that every `import` statement in plugin support classes resolves to an existing class in the target version.
 
 **Real examples of why this matters:**
+- MongoDB driver 4.9 removed `InsertOperation`, `DeleteOperation`, `UpdateOperation` — `MongoOperationHelper` imported all three, causing the entire class to fail loading with `NoClassDefFoundError`, silently losing ALL `db.bind_vars` tags even for operations that still exist (like `FindOperation`, `AggregateOperation`)
 - MongoDB driver 4.11 removed `Cluster.getDescription()` — the plugin loads (witness classes pass) but crashes at runtime with `NoSuchMethodError`
 - Feign 12.2 moved `ReflectiveFeign$BuildTemplateByResolvingArgs` to `RequestTemplateFactoryResolver$BuildTemplateByResolvingArgs` — the path variable interception silently stops working
 - MariaDB 3.0 renamed every JDBC wrapper class (`MariaDbConnection` → `Connection`) — none of the plugin's `byName` matchers match anything

@@ -14,10 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Each Spring Kafka minor version requires a matching kafka-clients version.
+# 2.4+ needs kafka-clients 2.4+, but this scenario uses kafka-clients 2.3.1.
+# Extending to 2.4+ requires separate scenarios with version-matched kafka-clients.
 2.3.10.RELEASE
-2.4.13.RELEASE
-2.5.17.RELEASE
-2.6.15
-2.7.18
-2.8.11
-2.9.13

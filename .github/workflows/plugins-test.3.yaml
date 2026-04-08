@@ -69,6 +69,7 @@ jobs:
         case:
           - aerospike-scenario
           - mysql-scenario
+          - mysql-9.x-scenario
           - undertow-scenario
           - webflux-scenario
           - zookeeper-scenario

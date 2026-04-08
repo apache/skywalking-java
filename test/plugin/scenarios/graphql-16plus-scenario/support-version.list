@@ -15,6 +15,9 @@
 # limitations under the License.
 
 # lists your version here
+# graphql-java 20+ requires Java 11+, so only 16-19 are tested here (Java 8 scenario)
 
 16.0
 17.0
+18.7
+19.11

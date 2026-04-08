@@ -19,6 +19,9 @@
 # 1.3.x 1.4.x: select the first, middle, and last version
 # 2.0.x: when there are many releases in the same month, choose the last one
 
+# Undertow 2.3.x requires Java 11+, tested in undertow-2.3.x-scenario (JDK 17 workflow)
 1.3.33.Final
 1.4.27.Final
 2.0.27.Final
+2.1.8.Final
+2.2.37.Final

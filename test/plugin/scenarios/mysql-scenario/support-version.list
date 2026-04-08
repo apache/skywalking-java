@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# mysql:mysql-connector-java artifact ends at 8.0.33
+# For com.mysql:mysql-connector-j (8.0.31+, 9.x), see mysql-9.x-scenario
+8.0.30
 8.0.19
 8.0.15
 6.0.6

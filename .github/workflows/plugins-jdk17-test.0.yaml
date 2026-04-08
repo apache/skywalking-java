@@ -81,6 +81,9 @@ jobs:
           - jetty-10.x-scenario
           - spring-ai-1.x-scenario
           - spring-rabbitmq-scenario
+          - graphql-20plus-scenario
+          - spring-kafka-3.x-scenario
+          - undertow-2.3.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

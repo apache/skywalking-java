@@ -231,8 +231,21 @@ ls "${jacoco_home}"/jacocoagent.jar || curl -Lso "${jacoco_home}"/jacocoagent.ja
 ls "${jacoco_home}"/jacococli.jar || curl -Lso "${jacoco_home}"/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/${jacoco_version}/org.jacoco.cli-${jacoco_version}-nodeps.jar
 
 supported_versions=`grep -v -E "^$|^#" ${supported_version_file}`
-for version in ${supported_versions}
+for version_line in ${supported_versions}
 do
+    # Support format: version[,key=value[,key=value...]]
+    # e.g., "2.7.14,spring.boot.version=2.7.19"
+    # First token is test.framework.version, rest are extra Maven properties.
+    version=$(echo "${version_line}" | cut -d',' -f1)
+    extra_props=""
+    remaining=$(echo "${version_line}" | cut -d',' -f2- -s)
+    if [[ -n "${remaining}" ]]; then
+        IFS=',' read -ra props <<< "${remaining}"
+        for prop in "${props[@]}"; do
+            extra_props="${extra_props} -D${prop}"
+        done
+    fi
+
     testcase_name="${scenario_name}-${version}"
 
     # testcase working directory, there are logs, data and packages.
@@ -245,7 +258,7 @@ do
     cp ./config/expectedData.yaml ${case_work_base}/data
 
     # echo "build ${testcase_name}"
-    ${mvnw} -q --batch-mode clean package -Dtest.framework.version=${version} && \
+    ${mvnw} -q --batch-mode clean package -Dtest.framework.version=${version} ${extra_props} && \
         mv ./target/${scenario_name}.* ${case_work_base}
 
     java -jar \

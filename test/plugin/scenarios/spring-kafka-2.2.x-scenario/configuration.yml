@@ -25,7 +25,7 @@ depends_on:
   - kafka-server
 dependencies:
   zookeeper-server:
-    image: zookeeper:3.4
+    image: zookeeper:3.7
     hostname: zookeeper-server
   kafka-server:
     image: bitnamilegacy/kafka:2.4.1

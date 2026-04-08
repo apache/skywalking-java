@@ -106,6 +106,8 @@ catalog:
         path: "/en/setup/service-agent/java-agent/java-plugin-development-guide/"
       - name: "Java Agent Performance Test"
         path: "https://skyapmtest.github.io/Agent-Benchmarks/"
+      - name: "Claude Code Skills"
+        path: "/en/setup/service-agent/java-agent/Claude-Skills"
   - name: "FAQs"
     catalog:
       - name: "Why is java.ext.dirs not supported?"

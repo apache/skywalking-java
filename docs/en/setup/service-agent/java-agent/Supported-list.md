@@ -16,7 +16,7 @@ metrics based on the tracing data.
   * Resin 4 (Optional¹), See [SkySPM Plugin Repository](https://github.com/SkyAPM/java-plugin-extensions)
   * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional²) -> 6.x (Optional²)
-  * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.0.27.Final
+  * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.3.18.Final
   * [RESTEasy](https://resteasy.dev/)  3.1.0.Final -> 6.2.4.Final
   * [Play Framework](https://www.playframework.com/) 2.6.x -> 2.8.x
   * [Light4J Microservices Framework](https://doc.networknt.com/) 1.6.x -> 2.x
@@ -28,7 +28,7 @@ metrics based on the tracing data.
   * [Netty HTTP](https://github.com/netty/netty) 4.1.x (Optional²)
   * [Solon](https://github.com/opensolon/solon) 2.7.x -> 2.8.x
 * HTTP Client
-  * [Feign](https://github.com/OpenFeign/feign) 9.x
+  * [Feign](https://github.com/OpenFeign/feign) 9.x -> 12.1
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
   * [Okhttp](https://github.com/square/okhttp) 2.x -> 3.x -> 4.x
   * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
@@ -45,12 +45,12 @@ metrics based on the tracing data.
   * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 4.3.x (Optional²)
   * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)
 * JDBC
-  * Mysql Driver 5.x, 6.x, 8.x
+  * Mysql Driver 5.x, 6.x, 8.x, 9.x
   * Oracle Driver (Optional¹), See [SkySPM Plugin Repository](https://github.com/SkyAPM/java-plugin-extensions)
   * H2 Driver 1.3.x -> 1.4.x
   * [ShardingSphere](https://github.com/apache/shardingsphere) 3.0.0, 4.0.0, 4.0.1, 4.1.0, 4.1.1, 5.0.0
   * PostgreSQL Driver 8.x, 9.x, 42.x
-  * Mariadb Driver 2.x, 1.8
+  * Mariadb Driver 1.8, 2.x (2.0 -> 2.7)
   * [InfluxDB](https://github.com/influxdata/influxdb-java) 2.5 -> 2.17
   * [Mssql-Jtds](https://github.com/milesibastos/jTDS) 1.x
   * [Mssql-jdbc](https://github.com/microsoft/mssql-jdbc) 6.x -> 8.x
@@ -77,7 +77,7 @@ metrics based on the tracing data.
   * [RocketMQ](https://github.com/apache/rocketmq) 3.x-> 5.x
   * [RocketMQ-gRPC](http://github.com/apache/rocketmq-clients) 5.x
   * [Kafka](http://kafka.apache.org) 0.11.0.0 -> 3.9.1
-  * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 2.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
+  * [Spring-Kafka](https://github.com/spring-projects/spring-kafka) Spring Kafka Consumer 1.3.x -> 3.3.x (2.0.x and 2.1.x not tested and not recommended by [the official document](https://spring.io/projects/spring-kafka))
   * [ActiveMQ](https://github.com/apache/activemq) 5.10.0 -> 5.15.4
   * [RabbitMQ](https://www.rabbitmq.com/) 3.x-> 5.x
   * [Spring-RabbitMQ](https://github.com/spring-projects/spring-amqp) 2.x -> 4.x
@@ -91,7 +91,7 @@ metrics based on the tracing data.
     * [Jedis](https://github.com/xetorthio/jedis) 2.x-4.x
     * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.0 -> 3.30.0 
     * [Lettuce](https://github.com/lettuce-io/lettuce-core) 5.x -> 6.7.1
-  * [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) 2.13-2.14, 3.4.0-3.12.7, 4.0.0-4.1.0
+  * [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) 2.13-2.14, 3.4.0-3.12.7, 4.0.0-4.10.2
   * Memcached Client
     * [Spymemcached](https://github.com/couchbase/spymemcached) 2.x
     * [Xmemcached](https://github.com/killme2008/xmemcached) 2.x
@@ -147,7 +147,7 @@ metrics based on the tracing data.
 * Kotlin
   * [Coroutine](https://kotlinlang.org/docs/coroutines-overview.html) 1.0.1 -> 1.3.x (Optional²)
 * GraphQL
-  * [Graphql](https://github.com/graphql-java) 8.0 -> 17.x
+  * [Graphql](https://github.com/graphql-java) 8.0 -> 24.x
 * Pool
   * [Apache Commons DBCP](https://github.com/apache/commons-dbcp) 2.x
   * [Alibaba Druid](https://github.com/alibaba/druid) 1.x

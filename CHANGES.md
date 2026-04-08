@@ -11,7 +11,7 @@ Release Notes.
 * Add Spring RabbitMQ 2.x - 4.x plugin.
 * Extend MySQL plugin to support MySQL Connector/J 8.4.0 and 9.x (9.0 -> 9.6).
 * Extend MariaDB plugin to support MariaDB Connector/J 2.7.x.
-* Extend MongoDB 4.x plugin to support MongoDB Java Driver 4.2 -> 4.10.
+* Extend MongoDB 4.x plugin to support MongoDB Java Driver 4.2 -> 4.10. Fix db.bind_vars extraction for driver 4.9+ where InsertOperation/DeleteOperation/UpdateOperation classes were removed.
 * Extend Feign plugin to support OpenFeign 10.x, 11.x, 12.1.
 * Extend Undertow plugin to support Undertow 2.1.x, 2.2.x, 2.3.x.
 * Extend GraphQL plugin to support graphql-java 18 -> 24 (20+ requires JDK 17).

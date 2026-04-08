@@ -27,18 +27,15 @@ import com.mongodb.internal.operation.CountOperation;
 import com.mongodb.internal.operation.CreateCollectionOperation;
 import com.mongodb.internal.operation.CreateIndexesOperation;
 import com.mongodb.internal.operation.CreateViewOperation;
-import com.mongodb.internal.operation.DeleteOperation;
 import com.mongodb.internal.operation.DistinctOperation;
 import com.mongodb.internal.operation.FindAndDeleteOperation;
 import com.mongodb.internal.operation.FindAndReplaceOperation;
 import com.mongodb.internal.operation.FindAndUpdateOperation;
 import com.mongodb.internal.operation.FindOperation;
-import com.mongodb.internal.operation.InsertOperation;
 import com.mongodb.internal.operation.ListCollectionsOperation;
 import com.mongodb.internal.operation.MapReduceToCollectionOperation;
 import com.mongodb.internal.operation.MapReduceWithInlineResultsOperation;
 import com.mongodb.internal.operation.MixedBulkWriteOperation;
-import com.mongodb.internal.operation.UpdateOperation;
 import org.bson.BsonDocument;
 
 import java.util.List;
@@ -48,6 +45,21 @@ import java.util.List;
     "Duplicates"
 })
 public class MongoOperationHelper {
+
+    // InsertOperation, DeleteOperation, UpdateOperation were removed in MongoDB driver 4.9.
+    // Use class existence check to determine which extraction path to use.
+    private static final boolean HAS_LEGACY_WRITE_OPERATIONS;
+
+    static {
+        boolean hasLegacy;
+        try {
+            Class.forName("com.mongodb.internal.operation.InsertOperation");
+            hasLegacy = true;
+        } catch (ClassNotFoundException e) {
+            hasLegacy = false;
+        }
+        HAS_LEGACY_WRITE_OPERATIONS = hasLegacy;
+    }
 
     private MongoOperationHelper() {
 
@@ -69,22 +81,25 @@ public class MongoOperationHelper {
         } else if (obj instanceof FindOperation) {
             BsonDocument filter = ((FindOperation) obj).getFilter();
             return limitFilter(filter.toString());
-        }  else if (obj instanceof ListCollectionsOperation) {
+        } else if (obj instanceof ListCollectionsOperation) {
             BsonDocument filter = ((ListCollectionsOperation) obj).getFilter();
             return limitFilter(filter.toString());
         } else if (obj instanceof MapReduceWithInlineResultsOperation) {
             BsonDocument filter = ((MapReduceWithInlineResultsOperation) obj).getFilter();
             return limitFilter(filter.toString());
-        } else if (obj instanceof DeleteOperation) {
-            List<DeleteRequest> writeRequestList = ((DeleteOperation) obj).getDeleteRequests();
-            return getFilter(writeRequestList);
-        } else if (obj instanceof InsertOperation) {
-            List<InsertRequest> writeRequestList = ((InsertOperation) obj).getInsertRequests();
-            return getFilter(writeRequestList);
-        } else if (obj instanceof UpdateOperation) {
-            List<UpdateRequest> writeRequestList = ((UpdateOperation) obj).getUpdateRequests();
-            return getFilter(writeRequestList);
-        } else if (obj instanceof CreateCollectionOperation) {
+        } else if (HAS_LEGACY_WRITE_OPERATIONS) {
+            String result = LegacyOperationHelper.getTraceParam(obj);
+            if (result != null) {
+                return result;
+            }
+            return getCommonTraceParam(obj);
+        } else {
+            return getCommonTraceParam(obj);
+        }
+    }
+
+    private static String getCommonTraceParam(Object obj) {
+        if (obj instanceof CreateCollectionOperation) {
             String filter = ((CreateCollectionOperation) obj).getCollectionName();
             return limitFilter(filter);
         } else if (obj instanceof CreateIndexesOperation) {
@@ -128,7 +143,7 @@ public class MongoOperationHelper {
         return params.toString();
     }
 
-    private static String getFilter(List<? extends WriteRequest> writeRequestList) {
+    static String getFilter(List<? extends WriteRequest> writeRequestList) {
         StringBuilder params = new StringBuilder();
         for (WriteRequest request : writeRequestList) {
             if (request instanceof InsertRequest) {

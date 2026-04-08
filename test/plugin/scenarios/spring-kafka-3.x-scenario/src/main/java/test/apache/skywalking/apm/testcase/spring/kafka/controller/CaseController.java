@@ -113,7 +113,7 @@ public class CaseController {
             public void onMessage(ConsumerRecord<String, String> data, Acknowledgment acknowledgment) {
                 if (data.value().equals(helloWorld)) {
                     OkHttpClient client = new OkHttpClient.Builder().build();
-                    Request request = new Request.Builder().url("http://localhost:8080/spring-kafka-2.3.x-scenario/case/spring-kafka-consumer-ping").build();
+                    Request request = new Request.Builder().url("http://localhost:8080/spring-kafka-3.x-scenario/case/spring-kafka-consumer-ping").build();
                     Response response = null;
                     try {
                         response = client.newCall(request).execute();

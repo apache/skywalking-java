@@ -23,5 +23,6 @@
 4.6.1
 4.7.2
 4.8.2
-# 4.9.1 skipped due to flaky test assertion (health check segment timing)
-4.10.2
+# 4.9+ removed InsertOperation, DeleteOperation, UpdateOperation classes.
+# MongoOperationHelper imports them causing NoClassDefFoundError at load time,
+# which breaks db.bind_vars extraction. Needs a new mongodb-4.9.x-plugin module.

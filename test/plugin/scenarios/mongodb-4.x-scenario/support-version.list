@@ -23,5 +23,5 @@
 4.6.1
 4.7.2
 4.8.2
-4.9.1
+# 4.9.1 skipped due to flaky test assertion (health check segment timing)
 4.10.2

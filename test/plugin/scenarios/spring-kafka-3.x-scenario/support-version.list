@@ -15,5 +15,8 @@
 # limitations under the License.
 
 # Spring Kafka 3.x requires Spring Boot 3.x / JDK 17+
-# TODO: 3.1+ needs investigation — app fails to start with overridden spring.boot.version
-3.0.17
+# This scenario uses Spring Boot 3.1.12 BOM (Spring Framework 6.1).
+# spring-kafka 3.0.x not tested here (needs Spring Boot 3.0 — covered by separate scenario if needed).
+3.1.4
+3.2.10
+3.3.7

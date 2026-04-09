@@ -74,19 +74,21 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
             AbstractMethodInterceptor.class.getClassLoader(),
             JAKARTA_SERVLET_RESPONSE_CLASS, GET_STATUS_METHOD
         );
+        // Check both javax and jakarta independently — both may exist on the classpath.
+        // For example, a Spring MVC 6.x (Jakarta) app may have javax.servlet as a
+        // transitive dependency. The runtime request type determines which path is used.
         try {
             Class.forName(SERVLET_RESPONSE_CLASS, true, AbstractMethodInterceptor.class.getClassLoader());
-            IN_SERVLET_CONTAINER = true;
             IS_JAVAX = true;
+            IN_SERVLET_CONTAINER = true;
         } catch (Exception ignore) {
-            try {
-                Class.forName(
-                    JAKARTA_SERVLET_RESPONSE_CLASS, true, AbstractMethodInterceptor.class.getClassLoader());
-                IN_SERVLET_CONTAINER = true;
-                IS_JAKARTA = true;
-            } catch (Exception ignore2) {
-                IN_SERVLET_CONTAINER = false;
-            }
+        }
+        try {
+            Class.forName(
+                JAKARTA_SERVLET_RESPONSE_CLASS, true, AbstractMethodInterceptor.class.getClassLoader());
+            IS_JAKARTA = true;
+            IN_SERVLET_CONTAINER = true;
+        } catch (Exception ignore) {
         }
     }
 

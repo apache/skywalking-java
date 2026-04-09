@@ -14,11 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# co.elastic.clients:elasticsearch-java
-# ES server fixed at 8.17.0 (backward compatible with 7.x/8.x/9.x clients)
-# 7.x: RestClientTransport.performRequest directly
-# 8.x/9.x: ElasticsearchTransportBase.performRequest
-7.17.22
-8.5.3
-8.12.2
-8.17.0
+# co.elastic.clients:elasticsearch-java 9.x (requires JDK 17)
+# 9.x: ElasticsearchTransportBase.performRequest
+9.0.0

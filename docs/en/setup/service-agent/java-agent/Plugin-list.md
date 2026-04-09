@@ -70,6 +70,7 @@
 - mongodb-2.x
 - mongodb-3.x
 - mongodb-4.x
+- mongodb-5.x
 - motan-0.x
 - mybatis-3.x
 - mysql-5.x

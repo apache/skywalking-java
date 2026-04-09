@@ -15,5 +15,4 @@
 # limitations under the License.
 
 # co.elastic.clients:elasticsearch-java 9.x (requires JDK 17)
-# 9.x: ElasticsearchTransportBase.performRequest
 9.0.0

@@ -81,7 +81,7 @@ jobs:
           - spring-scheduled-6.x-scenario
           - caffeine-3.x-scenario
           - lettuce-webflux-6x-scenario
-          - elasticsearch-java-9.x-scenario
+          - elasticsearch-java-scenario
     steps:
       - uses: actions/checkout@v2
         with:

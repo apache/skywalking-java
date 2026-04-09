@@ -82,6 +82,7 @@ jobs:
           - vertx-web-3.54minus-scenario
           - vertx-web-3.6plus-scenario
           - mariadb-scenario
+          - mariadb-3.x-scenario
           - micronaut-http-scenario
           - nats-2.14.x-2.16.5-scenario
           - quasar-scenario

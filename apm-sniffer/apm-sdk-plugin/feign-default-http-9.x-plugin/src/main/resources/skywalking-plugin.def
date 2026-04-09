@@ -16,3 +16,4 @@
 
 feign-default-http-9.x=org.apache.skywalking.apm.plugin.feign.http.v9.define.DefaultHttpClientInstrumentation
 feign-pathvar-9.x=org.apache.skywalking.apm.plugin.feign.http.v9.define.PathVarInstrumentation
+feign-pathvar-9.x=org.apache.skywalking.apm.plugin.feign.http.v9.define.PathVarV2Instrumentation

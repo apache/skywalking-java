@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,6 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-42.0.0
-42.1.4
-42.2.8
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} ${home}/../libs/mariadb-3.x-scenario.jar &

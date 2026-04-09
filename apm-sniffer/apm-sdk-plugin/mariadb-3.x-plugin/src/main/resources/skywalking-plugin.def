@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-42.0.0
-42.1.4
-42.2.8
+mariadb-3.x=org.apache.skywalking.apm.plugin.jdbc.mariadb.v3.define.DriverInstrumentation
+mariadb-3.x=org.apache.skywalking.apm.plugin.jdbc.mariadb.v3.define.ConnectionInstrumentation
+mariadb-3.x=org.apache.skywalking.apm.plugin.jdbc.mariadb.v3.define.StatementInstrumentation
+mariadb-3.x=org.apache.skywalking.apm.plugin.jdbc.mariadb.v3.define.PreparedStatementInstrumentation
+mariadb-3.x=org.apache.skywalking.apm.plugin.jdbc.mariadb.v3.define.PreparedStatementSetterInstrumentation
+mariadb-3.x=org.apache.skywalking.apm.plugin.jdbc.mariadb.v3.define.PreparedStatementNullSetterInstrumentation
+mariadb-3.x=org.apache.skywalking.apm.plugin.jdbc.mariadb.v3.define.PreparedStatementIgnoredSetterInstrumentation

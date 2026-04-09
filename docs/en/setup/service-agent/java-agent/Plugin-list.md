@@ -64,6 +64,7 @@
 - lettuce-6.5.x
 - light4j
 - mariadb-2.x
+- mariadb-3.x
 - micrometer-1.10.x
 - memcache-2.x
 - mongodb-2.x

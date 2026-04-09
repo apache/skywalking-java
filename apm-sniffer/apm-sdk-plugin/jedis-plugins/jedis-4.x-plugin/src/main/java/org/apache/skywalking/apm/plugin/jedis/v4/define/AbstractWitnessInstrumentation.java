@@ -35,8 +35,11 @@ public abstract class AbstractWitnessInstrumentation extends ClassInstanceMethod
 
     @Override
     protected List<WitnessMethod> witnessMethods() {
+        // Connection.executeCommand(CommandObject) exists in Jedis 4.x+ and 5.x,
+        // but not in 3.x. Previous witness Pipeline.persist(1) broke in 5.x
+        // because persist moved from Pipeline to PipeliningBase parent class.
         return Collections.singletonList(new WitnessMethod(
-                "redis.clients.jedis.Pipeline",
-                named("persist").and(takesArguments(1))));
+                "redis.clients.jedis.Connection",
+                named("executeCommand").and(takesArguments(1))));
     }
 }

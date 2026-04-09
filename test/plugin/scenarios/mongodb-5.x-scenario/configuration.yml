@@ -14,9 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-4.4.6
-4.3.2
-4.2.3
-4.1.1
-4.0.1
-5.2.0
+type: jvm
+entryService: http://localhost:8080/mongodb-5.x-scenario/case/mongodb-5.x-scenario
+healthCheck: http://localhost:8080/mongodb-5.x-scenario/case/healthCheck
+startScript: ./bin/startup.sh
+dependencies:
+  mongodb-server:
+    image: mongo:6.0
+    hostname: mongodb-server

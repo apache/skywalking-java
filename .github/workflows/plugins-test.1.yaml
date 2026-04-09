@@ -91,6 +91,7 @@ jobs:
           - lettuce-webflux-5x-scenario
           - mongodb-3.x-scenario
           - mongodb-4.x-scenario
+          - mongodb-5.x-scenario
           - netty-socketio-scenario
           - postgresql-above9.4.1207-scenario
           - mssql-jtds-scenario

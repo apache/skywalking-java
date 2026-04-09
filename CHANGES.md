@@ -20,6 +20,7 @@ Release Notes.
 * Extend Spring Kafka plugin to support Spring Kafka 2.4 -> 2.9 and 3.0 -> 3.3.
 * Enhance test/plugin/run.sh to support extra Maven properties per version in support-version.list (format: version,key=value).
 * Add MariaDB 3.x plugin (all classes renamed in 3.x).
+* Extend Jedis 4.x plugin to support Jedis 5.x (fix witness method for 5.x compatibility).
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)
 

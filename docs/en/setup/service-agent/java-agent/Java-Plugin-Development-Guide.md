@@ -621,3 +621,26 @@ Please follow these steps:
 1. Send a pull request and ask for review.
 1. The plugin committers will approve your plugins, plugin CI-with-IT, e2e, and the plugin tests will be passed.
 1. The plugin is accepted by SkyWalking.
+
+### Accessing package-private target classes
+
+When a plugin needs to call methods on a **package-private** class in the target library (e.g., `MongoClusterImpl` which is `final class` without `public`), you cannot import or cast to it from the plugin's `org.apache.skywalking` package.
+
+**Important:** Same-package helper classes do NOT work because the agent and application use different classloaders. Java treats them as different runtime packages even with identical package names, so package-private access is denied with `IllegalAccessError`.
+
+**Solution:** Use `setAccessible` reflection to call public methods on package-private classes:
+
+```java
+try {
+    java.lang.reflect.Method method = objInst.getClass().getMethod("publicMethodName");
+    method.setAccessible(true);  // Required: class is package-private
+    Object result = method.invoke(objInst);
+    if (result instanceof EnhancedInstance) {
+        ((EnhancedInstance) result).setSkyWalkingDynamicField(value);
+    }
+} catch (Exception e) {
+    logger.warn("Failed to access method", e);
+}
+```
+
+**When to use:** Only when the target class is package-private and you need to call its public methods. Prefer normal casting in interceptors when the class is public.

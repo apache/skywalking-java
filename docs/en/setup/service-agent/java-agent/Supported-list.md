@@ -88,10 +88,10 @@ metrics based on the tracing data.
 * NoSQL
   * [aerospike](https://github.com/aerospike/aerospike-client-java) 3.x -> 6.x
   * Redis
-    * [Jedis](https://github.com/xetorthio/jedis) 2.x-4.x
+    * [Jedis](https://github.com/xetorthio/jedis) 2.x-5.x
     * [Redisson](https://github.com/redisson/redisson) Easy Java Redis client 3.5.0 -> 3.30.0 
     * [Lettuce](https://github.com/lettuce-io/lettuce-core) 5.x -> 6.7.1
-  * [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) 2.13-2.14, 3.4.0-3.12.7, 4.0.0-4.11.5
+  * [MongoDB Java Driver](https://github.com/mongodb/mongo-java-driver) 2.13-2.14, 3.4.0-3.12.7, 4.0.0-5.5.x
   * Memcached Client
     * [Spymemcached](https://github.com/couchbase/spymemcached) 2.x
     * [Xmemcached](https://github.com/killme2008/xmemcached) 2.x

@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,9 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-4.4.6
-4.3.2
-4.2.3
-4.1.1
-4.0.1
-5.2.0
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} -Dskywalking.plugin.mongodb.trace_param=true ${home}/../libs/mongodb-5.x-scenario.jar &

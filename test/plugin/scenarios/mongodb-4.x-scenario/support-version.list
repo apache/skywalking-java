@@ -26,3 +26,6 @@
 4.9.1
 4.10.2
 4.11.5
+# 5.0-5.1 still uses MongoClientDelegate (same as 4.x)
+5.0.1
+5.1.4

@@ -57,6 +57,17 @@ Pick interception points based on these principles:
 **Principle 1: Data accessibility without reflection.**
 Choose methods where the information you need (peer address, operation name, request/response details, headers for inject/extract) is directly available as method arguments, return values, or accessible through the `this` object's public API. **Never use reflection to read private fields.** If the data is not accessible at one method, look at a different point in the execution flow.
 
+If the target class is **package-private** (e.g., `final class` without `public`), you cannot import or cast to it. **Same-package helper classes do NOT work** because the agent and application use different classloaders — Java treats them as different runtime packages even with the same package name (`IllegalAccessError`). Use `setAccessible` reflection to call public methods:
+```java
+try {
+    java.lang.reflect.Method method = objInst.getClass().getMethod("publicMethodName");
+    method.setAccessible(true);  // Required for package-private class
+    Object result = method.invoke(objInst);
+} catch (Exception e) {
+    LOGGER.warn("Failed to access method", e);
+}
+```
+
 **Principle 2: Use `EnhancedInstance` dynamic field to propagate context inside the library.**
 This is the primary mechanism for passing data between interception points. The agent adds a dynamic field to every enhanced class via `EnhancedInstance`. Use it to:
 - Store server address (peer) at connection/client creation time, retrieve it at command execution time

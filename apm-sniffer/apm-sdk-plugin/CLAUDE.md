@@ -145,6 +145,25 @@ public class MyPluginConfig {
 ```
 Config key becomes: `plugin.myplugin.some_setting`
 
+### Accessing Package-Private Classes
+
+When a plugin needs to call methods on a **package-private** class in the target library (e.g., `MongoClusterImpl` which is `final class` without `public`), you cannot import or cast to it from the plugin package.
+
+**Same-package helper classes do NOT work** because the agent and application use different classloaders. Even though the package names match, Java considers them different runtime packages, so package-private access is denied (`IllegalAccessError`).
+
+**Solution: use `setAccessible` reflection** to call public methods on package-private classes:
+```java
+try {
+    java.lang.reflect.Method method = objInst.getClass().getMethod("publicMethodName");
+    method.setAccessible(true);  // Required for package-private class
+    Object result = method.invoke(objInst);
+} catch (Exception e) {
+    LOGGER.warn("Failed to access method", e);
+}
+```
+
+**When to use:** Only when the target class is package-private and you need to call its public methods. Prefer normal casting when the class is public.
+
 ### Dependency Management
 
 **Plugin dependencies must use `provided` scope:**

@@ -48,7 +48,9 @@ public class MongoClusterImplConstructorInterceptor
 
         // The OperationExecutorImpl is created INSIDE this constructor (before onConstruct fires),
         // so its constructor interceptor couldn't read the peer yet. Set it now.
-        // MongoClusterImpl is package-private, access getOperationExecutor via reflection.
+        // MongoClusterImpl is package-private and loaded by application classloader.
+        // Same-package helpers from agent classloader cannot access it (different runtime packages).
+        // Use setAccessible reflection to call getOperationExecutor().
         try {
             java.lang.reflect.Method getExecutor = objInst.getClass().getMethod("getOperationExecutor");
             getExecutor.setAccessible(true);

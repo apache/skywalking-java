@@ -20,8 +20,9 @@ package org.apache.skywalking.apm.testcase.elasticsearch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchClientAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = ElasticsearchClientAutoConfiguration.class)
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

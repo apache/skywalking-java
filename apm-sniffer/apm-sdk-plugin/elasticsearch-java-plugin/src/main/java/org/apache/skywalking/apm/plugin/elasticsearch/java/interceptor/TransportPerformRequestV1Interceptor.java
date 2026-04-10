@@ -22,6 +22,8 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -41,6 +43,7 @@ import java.lang.reflect.Method;
  */
 public class TransportPerformRequestV1Interceptor implements InstanceMethodsAroundInterceptor {
 
+    private static final ILog LOGGER = LogManager.getLogger(TransportPerformRequestV1Interceptor.class);
     private static final String DB_TYPE = "Elasticsearch";
     private static final String REQUEST_SUFFIX = "Request";
 
@@ -48,6 +51,7 @@ public class TransportPerformRequestV1Interceptor implements InstanceMethodsArou
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
                              Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
         Object request = allArguments[0];
+        Object endpoint = allArguments[1];
         String operationName = "Elasticsearch/" + deriveOperationName(request);
 
         String peers = (String) objInst.getSkyWalkingDynamicField();
@@ -59,6 +63,18 @@ public class TransportPerformRequestV1Interceptor implements InstanceMethodsArou
         span.setComponent(ComponentsDefine.REST_HIGH_LEVEL_CLIENT);
         Tags.DB_TYPE.set(span, DB_TYPE);
         SpanLayer.asDB(span);
+
+        try {
+            Method requestUrlMethod = endpoint.getClass().getMethod("requestUrl", Object.class);
+            requestUrlMethod.setAccessible(true);
+            String requestUrl = (String) requestUrlMethod.invoke(endpoint, request);
+            String index = TransportPerformRequestInterceptor.extractIndex(requestUrl);
+            if (index != null) {
+                span.tag(Tags.ofKey("db.instance"), index);
+            }
+        } catch (Exception e) {
+            LOGGER.warn("Failed to extract index from request URL", e);
+        }
     }
 
     @Override

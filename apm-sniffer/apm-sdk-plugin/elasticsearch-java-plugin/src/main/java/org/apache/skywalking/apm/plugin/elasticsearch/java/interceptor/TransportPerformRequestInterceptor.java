@@ -41,9 +41,10 @@ public class TransportPerformRequestInterceptor implements InstanceMethodsAround
     private static final String DB_TYPE = "Elasticsearch";
 
     @Override
+    @SuppressWarnings("unchecked")
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
                              Class<?>[] argumentsTypes, MethodInterceptResult result) throws Throwable {
-        Endpoint<?, ?, ?> endpoint = (Endpoint<?, ?, ?>) allArguments[1];
+        Endpoint endpoint = (Endpoint) allArguments[1];
         String operationName = "Elasticsearch/" + endpoint.id();
 
         String peers = (String) objInst.getSkyWalkingDynamicField();
@@ -55,6 +56,12 @@ public class TransportPerformRequestInterceptor implements InstanceMethodsAround
         span.setComponent(ComponentsDefine.REST_HIGH_LEVEL_CLIENT);
         Tags.DB_TYPE.set(span, DB_TYPE);
         SpanLayer.asDB(span);
+
+        String requestUrl = endpoint.requestUrl(allArguments[0]);
+        String index = extractIndex(requestUrl);
+        if (index != null) {
+            span.tag(Tags.ofKey("db.instance"), index);
+        }
     }
 
     @Override
@@ -69,5 +76,27 @@ public class TransportPerformRequestInterceptor implements InstanceMethodsAround
                                       Class<?>[] argumentsTypes, Throwable t) {
         ContextManager.activeSpan().log(t);
         ContextManager.activeSpan().errorOccurred();
+    }
+
+    /**
+     * Extract index name from request URL.
+     * E.g., "/test-index/_doc/1" → "test-index", "/_bulk" → null
+     */
+    static String extractIndex(String requestUrl) {
+        if (requestUrl == null || requestUrl.isEmpty()) {
+            return null;
+        }
+        // Remove leading slash
+        String path = requestUrl.startsWith("/") ? requestUrl.substring(1) : requestUrl;
+        if (path.isEmpty()) {
+            return null;
+        }
+        // First segment before '/' or '_' prefix means no index
+        int slashIdx = path.indexOf('/');
+        String firstSegment = slashIdx > 0 ? path.substring(0, slashIdx) : path;
+        if (firstSegment.startsWith("_")) {
+            return null;
+        }
+        return firstSegment;
     }
 }

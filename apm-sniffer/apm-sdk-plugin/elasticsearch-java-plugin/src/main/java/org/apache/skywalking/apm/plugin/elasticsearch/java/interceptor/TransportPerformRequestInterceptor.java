@@ -27,6 +27,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.elasticsearch.java.ElasticsearchPluginConfig;
 
 import java.lang.reflect.Method;
 
@@ -57,10 +58,21 @@ public class TransportPerformRequestInterceptor implements InstanceMethodsAround
         Tags.DB_TYPE.set(span, DB_TYPE);
         SpanLayer.asDB(span);
 
-        String requestUrl = endpoint.requestUrl(allArguments[0]);
+        Object request = allArguments[0];
+        String requestUrl = endpoint.requestUrl(request);
         String index = extractIndex(requestUrl);
         if (index != null) {
             span.tag(Tags.ofKey("db.instance"), index);
+        }
+        if (ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL) {
+            String dsl = request.toString();
+            if (dsl != null && !dsl.isEmpty()) {
+                int maxLen = ElasticsearchPluginConfig.Plugin.Elasticsearch.ELASTICSEARCH_DSL_LENGTH_THRESHOLD;
+                if (maxLen > 0 && dsl.length() > maxLen) {
+                    dsl = dsl.substring(0, maxLen) + "...";
+                }
+                Tags.DB_STATEMENT.set(span, dsl);
+            }
         }
     }
 

@@ -33,6 +33,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Elasticsearch}
       - {key: db.instance, value: test-index}
+      - {key: db.statement, value: not null}
     - operationName: Elasticsearch/es/index
       parentSpanId: 0
       spanId: 2
@@ -47,6 +48,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Elasticsearch}
       - {key: db.instance, value: test-index}
+      - {key: db.statement, value: not null}
     - operationName: Elasticsearch/es/get
       parentSpanId: 0
       spanId: 3
@@ -61,6 +63,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Elasticsearch}
       - {key: db.instance, value: test-index}
+      - {key: db.statement, value: not null}
     - operationName: Elasticsearch/es/search
       parentSpanId: 0
       spanId: 4
@@ -75,6 +78,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Elasticsearch}
       - {key: db.instance, value: test-index}
+      - {key: db.statement, value: not null}
     - operationName: Elasticsearch/es/delete
       parentSpanId: 0
       spanId: 5
@@ -89,6 +93,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Elasticsearch}
       - {key: db.instance, value: test-index}
+      - {key: db.statement, value: not null}
     - operationName: Elasticsearch/es/indices.delete
       parentSpanId: 0
       spanId: 6
@@ -103,6 +108,7 @@ segmentItems:
       tags:
       - {key: db.type, value: Elasticsearch}
       - {key: db.instance, value: test-index}
+      - {key: db.statement, value: not null}
     - operationName: GET:/elasticsearch-java-case/case/elasticsearch
       parentSpanId: -1
       spanId: 0

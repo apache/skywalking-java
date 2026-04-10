@@ -28,6 +28,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.elasticsearch.java.ElasticsearchPluginConfig;
 
 import java.lang.reflect.Method;
 
@@ -74,6 +75,16 @@ public class TransportPerformRequestV1Interceptor implements InstanceMethodsArou
             }
         } catch (Exception e) {
             LOGGER.warn("Failed to extract index from request URL", e);
+        }
+        if (ElasticsearchPluginConfig.Plugin.Elasticsearch.TRACE_DSL) {
+            String dsl = request.toString();
+            if (dsl != null && !dsl.isEmpty()) {
+                int maxLen = ElasticsearchPluginConfig.Plugin.Elasticsearch.ELASTICSEARCH_DSL_LENGTH_THRESHOLD;
+                if (maxLen > 0 && dsl.length() > maxLen) {
+                    dsl = dsl.substring(0, maxLen) + "...";
+                }
+                Tags.DB_STATEMENT.set(span, dsl);
+            }
         }
     }
 

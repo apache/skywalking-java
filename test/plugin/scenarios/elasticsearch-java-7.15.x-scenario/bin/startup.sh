@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,29 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# co.elastic.clients:elasticsearch-java
-# ES server fixed at 8.17.0 (backward compatible with 7.x/8.x clients)
-# 7.16+: co.elastic.clients.transport.rest_client.RestClientTransport
-# 8.x: ElasticsearchTransportBase.performRequest
-7.16.3
-7.17.29
-8.0.1
-8.1.3
-8.2.3
-8.3.3
-8.4.3
-8.5.3
-8.6.2
-8.7.1
-8.8.2
-8.9.2
-8.10.4
-8.11.4
-8.12.2
-8.13.4
-8.14.3
-8.15.5
-8.16.7
-8.17.11
-8.18.8
-8.19.14
+home="$(cd "$(dirname $0)"; pwd)"
+
+java -jar ${agent_opts} -Dskywalking.plugin.elasticsearch.trace_dsl=true ${home}/../libs/elasticsearch-java-7.15.x-scenario.jar &

@@ -98,6 +98,7 @@ jobs:
           - rocketmq-scenario
           - rocketmq-5-grpc-scenario
           - elasticsearch-java-scenario
+          - elasticsearch-java-7.15.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

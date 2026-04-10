@@ -97,6 +97,7 @@ jobs:
           - nacos-client-2.x-scenario
           - rocketmq-scenario
           - rocketmq-5-grpc-scenario
+          - elasticsearch-java-scenario
     steps:
       - uses: actions/checkout@v2
         with:

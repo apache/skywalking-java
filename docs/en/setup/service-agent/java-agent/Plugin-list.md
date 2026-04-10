@@ -25,6 +25,7 @@
 - elasticsearch-5.x
 - elasticsearch-6.x
 - elasticsearch-7.x
+- elasticsearch-java
 - fastjson-1.2.x
 - feign-default-http-9.x
 - feign-pathvar-9.x

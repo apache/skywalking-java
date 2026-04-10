@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Elasticsearch Java client (co.elastic.clients:elasticsearch-java) 7.15.x-9.x
-elasticsearch-java=org.apache.skywalking.apm.plugin.elasticsearch.java.define.RestClientTransportV1Instrumentation
+# Elasticsearch Java client (co.elastic.clients:elasticsearch-java) 7.16.x-9.x
 elasticsearch-java=org.apache.skywalking.apm.plugin.elasticsearch.java.define.RestClientTransportInstrumentation
 elasticsearch-java=org.apache.skywalking.apm.plugin.elasticsearch.java.define.ElasticsearchTransportBaseInstrumentation

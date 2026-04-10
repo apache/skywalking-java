@@ -25,6 +25,7 @@ import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.DeleteResponse;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.DeleteIndexResponse;
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
@@ -80,7 +81,7 @@ public class CaseController {
             // Search
             SearchResponse<Map> searchResp = client.search(s -> s
                 .index("test-index")
-                .query(q -> q.match(m -> m.field("name").query("test"))), Map.class);
+                .query(q -> q.match(m -> m.field("name").query(FieldValue.of("test")))), Map.class);
 
             // Delete document
             DeleteResponse deleteResp = client.delete(d -> d.index("test-index").id("1"));

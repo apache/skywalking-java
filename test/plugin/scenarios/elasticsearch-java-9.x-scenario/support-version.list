@@ -15,7 +15,8 @@
 # limitations under the License.
 
 # co.elastic.clients:elasticsearch-java 9.x (requires JDK 17)
-9.0.11
-9.1.12
+# Versions must match elasticsearch-rest-client available versions
+9.0.8
+9.1.10
 9.2.8
-9.3.4
+9.3.3

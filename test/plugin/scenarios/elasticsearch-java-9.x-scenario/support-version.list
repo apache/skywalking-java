@@ -15,4 +15,7 @@
 # limitations under the License.
 
 # co.elastic.clients:elasticsearch-java 9.x (requires JDK 17)
-9.0.0
+9.0.11
+9.1.12
+9.2.8
+9.3.4

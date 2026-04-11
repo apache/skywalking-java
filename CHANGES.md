@@ -21,7 +21,9 @@ Release Notes.
 * Enhance test/plugin/run.sh to support extra Maven properties per version in support-version.list (format: version,key=value).
 * Add MariaDB 3.x plugin (all classes renamed in 3.x).
 * Extend Jedis 4.x plugin to support Jedis 5.x (fix witness method for 5.x compatibility).
-* Add Elasticsearch Java client (co.elastic.clients:elasticsearch-java) plugin for 7.x-9.x.
+* Add Elasticsearch Java client (co.elastic.clients:elasticsearch-java) plugin for 7.16.x-9.x.
+* Only publish `apm-application-toolkit` modules to Maven Central. Agent and plugins are distributed via download package and Docker images.
+* Add unified release script (`tools/releasing/release.sh`) with two-step flow: `prepare-vote` and `vote-passed`.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)
 

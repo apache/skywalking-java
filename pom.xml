@@ -131,6 +131,8 @@
         <jmh.version>1.33</jmh.version>
         <gmaven-plugin.version>1.5</gmaven-plugin.version>
         <checkstyle.fails.on.error>true</checkstyle.fails.on.error>
+        <!-- Only publish toolkit modules to Maven Central; agent/plugins are distributed via package -->
+        <maven.deploy.skip>true</maven.deploy.skip>
 		<maven-docker-plugin.version>0.46.0</maven-docker-plugin.version>
     </properties>
 

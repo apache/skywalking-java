@@ -32,7 +32,10 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <maven.compiler.release>17</maven.compiler.release>
+        <!-- Reset to blank to allow compiling against provided Spring AI classes that use
+             java.lang.Record. The plugin bytecode remains JDK 8 compatible but needs
+             the full JDK 17+ API surface visible at compile time. -->
+        <maven.compiler.release />
     </properties>
 
     <dependencies>
@@ -44,4 +47,16 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

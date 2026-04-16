@@ -292,5 +292,5 @@ GitHub Actions workflows:
 3. **Respect checkstyle**: No System.out, no @author, no Chinese characters
 4. **Use Lombok**: Prefer annotations over boilerplate code
 5. **Test both unit and E2E**: Different test patterns for different scopes
-6. **Java version compatibility**: Agent core must maintain Java 8 compatibility, but individual plugins may target higher JDK versions (e.g., jdk-httpclient-plugin for JDK 11+, virtual-thread plugins for JDK 21+)
+6. **Java version compatibility**: Agent core must maintain Java 8 compatibility, but individual plugins may target higher JDK versions (e.g., jdk-httpclient-plugin for JDK 11+, virtual-thread plugins for JDK 21+). **Do NOT set `maven.compiler.release` or `maven.compiler.source/target` in a plugin pom.xml unless the plugin source code itself uses JDK 9+ language features.** A `provided`-scope dependency targeting a higher JDK does not require raising the compiler level — the plugin code only references the library's API at compile time and does not need to match the library's runtime JDK requirement.
 7. **For plugin development**: See `apm-sniffer/apm-sdk-plugin/CLAUDE.md` and `apm-sniffer/bootstrap-plugins/CLAUDE.md`

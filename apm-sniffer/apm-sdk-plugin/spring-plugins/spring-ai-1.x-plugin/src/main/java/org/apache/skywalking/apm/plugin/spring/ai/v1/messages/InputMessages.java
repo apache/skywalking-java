@@ -93,7 +93,10 @@ public class InputMessages {
 
         @Override
         public Map<String, Object> toMap() {
-            return Map.of("type", "text", "content", content != null ? content : "");
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("type", "text");
+            map.put("content", content != null ? content : "");
+            return map;
         }
     }
 
@@ -268,4 +271,5 @@ public class InputMessages {
 
         return parts;
     }
+
 }

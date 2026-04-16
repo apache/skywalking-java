@@ -73,6 +73,8 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Check Javaagent Plugin List
         run: tools/plugin/check-javaagent-plugin-list.sh
+      - name: Check Plugin Compiler Overrides
+        run: tools/plugin/check-compiler-overrides.sh
       - name: Install and Test
         run: ./mvnw -q --batch-mode clean verify install javadoc:javadoc
 

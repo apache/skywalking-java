@@ -28,8 +28,6 @@
     <artifactId>tomcat-10x-plugin</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
         <tomcat.version>10.0.22</tomcat.version>
     </properties>
     <dependencies>

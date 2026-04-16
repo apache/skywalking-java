@@ -29,11 +29,6 @@
     <artifactId>nats-2.14.x-2.16.5-plugin</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>io.nats</groupId>

@@ -30,6 +30,7 @@ WORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd ../.. && pwd)"
 ALLOWLIST=(
     "bootstrap-plugins/jdk-httpclient-plugin"
     "bootstrap-plugins/jdk-http-plugin"
+    "spring-plugins/spring-ai-1.x-plugin"
 )
 
 EXIT_CODE=0

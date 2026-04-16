@@ -31,6 +31,13 @@
     <name>spring-ai-1.x-plugin</name>
     <url>http://maven.apache.org</url>
 
+    <properties>
+        <!-- Reset to blank to allow compiling against provided Spring AI classes that use
+             java.lang.Record. The plugin bytecode remains JDK 8 compatible but needs
+             the full JDK 17+ API surface visible at compile time. -->
+        <maven.compiler.release />
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.ai</groupId>

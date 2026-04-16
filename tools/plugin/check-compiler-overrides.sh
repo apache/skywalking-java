@@ -25,10 +25,20 @@
 
 WORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd ../.. && pwd)"
 
-# Plugins whose source code genuinely uses higher-JDK language features or APIs,
-# or that set <maven.compiler.release /> to cancel a parent POM's value.
+# Plugins that override maven.compiler.release. Two categories:
+#
+# 1. JDK 11/17+ required: plugin source code uses higher-JDK APIs directly
+#    (e.g., java.net.http.HttpClient). Sets maven.compiler.release=11/17/etc.
+#
+# 2. API visibility only: plugin source code is JDK 8 compatible, but provided
+#    dependencies use java.lang.Record or other JDK 9+ types. Sets
+#    <maven.compiler.release /> (blank) to cancel the parent's --release 8
+#    restriction, so the compiler can resolve those types. Bytecode remains
+#    JDK 8 compatible.
 ALLOWLIST=(
+    # Category 1: JDK 11+ required
     "bootstrap-plugins/jdk-httpclient-plugin"
+    # Category 2: API visibility only
     "bootstrap-plugins/jdk-http-plugin"
     "spring-plugins/spring-ai-1.x-plugin"
 )

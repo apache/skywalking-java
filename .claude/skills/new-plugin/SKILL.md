@@ -249,6 +249,11 @@ apm-sniffer/optional-plugins/{name}-plugin/
 - Never bundle target library classes into the plugin JAR
 - If the plugin needs a 3rd-party utility not already in agent-core, discuss with maintainers first
 
+**CRITICAL compiler level rule:**
+- Do NOT set `maven.compiler.release` or `maven.compiler.source/target` unless the plugin source code itself uses JDK 9+ language features (e.g., `var`, records, sealed classes, `java.net.http.HttpClient`).
+- A `provided`-scope dependency targeting a higher JDK (e.g., Spring AI requires JDK 17+) does NOT require raising the compiler level — the plugin only references the library's API at compile time.
+- Bootstrap plugins like `jdk-httpclient-plugin` (which uses JDK 11 `HttpClient` API directly in plugin source code) legitimately need a higher compiler target. SDK plugins and optional plugins generally should not.
+
 ### Register in Parent POM
 
 Add the new module to the parent `pom.xml`:
@@ -1052,6 +1057,7 @@ Before submitting:
 - [ ] Types in `PascalCase`, variables in `camelCase`
 - [ ] Imports only from `java.*`, `org.apache.skywalking.*`, `net.bytebuddy.*` (in instrumentation files)
 - [ ] Target library dependencies in `provided` scope
+- [ ] No unnecessary `maven.compiler.release` or `maven.compiler.source/target` (only set if plugin source uses JDK 9+ language features)
 - [ ] Using V2 API for new plugins
 - [ ] String literals (not `.class` references) in instrumentation definitions
 - [ ] `skywalking-plugin.def` registered

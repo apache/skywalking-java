@@ -31,10 +31,6 @@
     <name>spring-ai-1.x-plugin</name>
     <url>http://maven.apache.org</url>
 
-    <properties>
-        <maven.compiler.release>17</maven.compiler.release>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.ai</groupId>

@@ -83,7 +83,7 @@ public class ClickHousePrepareStatementTracingTest {
     @Test
     public void longSqlIsTruncatedToConfiguredLimit() throws Exception {
         JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH = 16;
-        // 32 chars, twice the limit, so the helper must truncate to first 16 chars and append "..."
+        // Longer than the configured limit, so the helper must truncate to the first 16 chars and append "..."
         String sql = "SELECT * FROM table_with_many_cols";
 
         ClickHousePrepareStatementTracing.of(connectionInfo, "execute", sql, () -> Boolean.TRUE);

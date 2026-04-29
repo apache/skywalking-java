@@ -24,6 +24,7 @@ Release Notes.
 * Add Elasticsearch Java client (co.elastic.clients:elasticsearch-java) plugin for 7.16.x-9.x.
 * Only publish `apm-application-toolkit` modules to Maven Central. Agent and plugins are distributed via download package and Docker images.
 * Add unified release script (`tools/releasing/release.sh`) with two-step flow: `prepare-vote` and `vote-passed`.
+* Fix `JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH` was not honored by clickhouse-0.3.1 and clickhouse-0.3.2.x plugins.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)
 

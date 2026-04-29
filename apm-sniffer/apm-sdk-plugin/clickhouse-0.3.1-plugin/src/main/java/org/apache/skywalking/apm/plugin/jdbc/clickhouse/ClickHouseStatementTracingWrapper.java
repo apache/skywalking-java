@@ -23,6 +23,7 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.plugin.jdbc.SqlBodyUtil;
 import org.apache.skywalking.apm.plugin.jdbc.trace.ConnectionInfo;
 
 /**
@@ -37,7 +38,7 @@ public class ClickHouseStatementTracingWrapper {
         try {
             Tags.DB_TYPE.set(span, connectionInfo.getDBType());
             Tags.DB_INSTANCE.set(span, connectionInfo.getDatabaseName());
-            Tags.DB_STATEMENT.set(span, sql);
+            Tags.DB_STATEMENT.set(span, SqlBodyUtil.limitSqlBodySize(sql));
             span.setComponent(connectionInfo.getComponent());
             SpanLayer.asDB(span);
             return supplier.get();

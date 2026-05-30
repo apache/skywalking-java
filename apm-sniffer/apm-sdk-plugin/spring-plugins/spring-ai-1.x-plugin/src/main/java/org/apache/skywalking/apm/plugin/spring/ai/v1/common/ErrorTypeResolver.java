@@ -34,7 +34,7 @@ public final class ErrorTypeResolver {
     private static final AbstractTag<String> ERROR_TYPE = Tags.ofKey("error.type");
     private static final String TIMEOUT = "timeout";
     private static final String SERVER_CERTIFICATE_INVALID = "server_certificate_invalid";
-    private static final String INTERNAL_SERVER_ERROR = "500";
+    private static final String OTHER = "_OTHER";
 
     private ErrorTypeResolver() {
     }
@@ -53,7 +53,7 @@ public final class ErrorTypeResolver {
         if (matches(throwable, ErrorTypeResolver::isCertificateInvalid)) {
             return SERVER_CERTIFICATE_INVALID;
         }
-        return INTERNAL_SERVER_ERROR;
+        return OTHER;
     }
 
     private static boolean isTimeout(Throwable throwable) {

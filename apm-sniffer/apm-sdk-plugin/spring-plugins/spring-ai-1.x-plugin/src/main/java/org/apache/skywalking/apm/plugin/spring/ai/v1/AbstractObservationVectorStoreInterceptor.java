@@ -23,7 +23,6 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.GsonUtil;
@@ -43,14 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AbstractObservationVectorStoreInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
-
-    @Override
-    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        if (allArguments != null && allArguments.length > 0) {
-            objInst.setSkyWalkingDynamicField(allArguments[0]);
-        }
-    }
+public class AbstractObservationVectorStoreInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,

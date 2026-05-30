@@ -34,9 +34,15 @@ public class AbstractObservationVectorStoreInstrumentation extends ClassInstance
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.vectorstore.observation.AbstractObservationVectorStore";
 
+    private static final String EMBEDDING_MODEL_CLASS = "org.springframework.ai.embedding.EmbeddingModel";
+
     private static final String INTERCEPT_METHOD = "doSimilaritySearch";
 
-    private static final String INTERCEPTOR_CLASS = "org.apache.skywalking.apm.plugin.spring.ai.v1.AbstractObservationVectorStoreInterceptor";
+    private static final String INTERCEPTOR_CLASS =
+            "org.apache.skywalking.apm.plugin.spring.ai.v1.AbstractObservationVectorStoreInterceptor";
+
+    private static final String CONSTRUCTOR_INTERCEPTOR_CLASS =
+            "org.apache.skywalking.apm.plugin.spring.ai.v1.AbstractObservationVectorStoreConstructorInterceptor";
 
     @Override
     protected ClassMatch enhanceClass() {
@@ -45,7 +51,19 @@ public class AbstractObservationVectorStoreInstrumentation extends ClassInstance
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[0];
+        return new ConstructorInterceptPoint[] {
+                new ConstructorInterceptPoint() {
+                    @Override
+                    public ElementMatcher<MethodDescription> getConstructorMatcher() {
+                        return takesArguments(4).and(takesArgumentWithType(0, EMBEDDING_MODEL_CLASS));
+                    }
+
+                    @Override
+                    public String getConstructorInterceptor() {
+                        return CONSTRUCTOR_INTERCEPTOR_CLASS;
+                    }
+                }
+        };
     }
 
     @Override
@@ -54,7 +72,9 @@ public class AbstractObservationVectorStoreInstrumentation extends ClassInstance
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return named(INTERCEPT_METHOD).and(takesArguments(1)).and(takesArgumentWithType(0, "org.springframework.ai.vectorstore.SearchRequest"));
+                        return named(INTERCEPT_METHOD)
+                                .and(takesArguments(1))
+                                .and(takesArgumentWithType(0, "org.springframework.ai.vectorstore.SearchRequest"));
                     }
 
                     @Override

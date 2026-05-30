@@ -18,11 +18,17 @@
 package test.apache.skywalking.apm.testcase.jdk.httpclient.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import test.apache.skywalking.apm.testcase.jdk.httpclient.tool.WeatherTool;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/case")
@@ -31,6 +37,7 @@ public class CaseController {
 
     private final WeatherTool weatherTool;
     private final ChatClient chatClient;
+    private final ObjectProvider<VectorStore> vectorStoreProvider;
 
     @GetMapping("/healthCheck")
     public String healthCheck() {
@@ -62,6 +69,22 @@ public class CaseController {
                 .content()
                 .doOnNext(System.out::println)
                 .blockLast();
+
+        String question = "What is Apache SkyWalking?";
+        VectorStore vectorStore = vectorStoreProvider.getObject();
+        String context = vectorStore.similaritySearch(SearchRequest.builder()
+                        .query(question)
+                        .topK(2)
+                        .build())
+                .stream()
+                .map(Document::getText)
+                .collect(Collectors.joining("\n"));
+
+        chatClient
+                .prompt(question)
+                .system("Answer using only the following context:\n" + context)
+                .call()
+                .content();
 
         return "success";
     }

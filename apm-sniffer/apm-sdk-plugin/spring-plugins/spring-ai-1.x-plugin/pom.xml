@@ -46,6 +46,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-vector-store</artifactId>
+            <version>1.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

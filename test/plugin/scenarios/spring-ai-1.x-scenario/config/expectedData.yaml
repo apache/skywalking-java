@@ -142,6 +142,49 @@ segmentItems:
               - { key: http.method, value: POST }
               - { key: http.status_code, value: '200' }
 
+          - operationName: retrieval/simple/in-memory-map
+            parentSpanId: 0
+            spanId: 6
+            spanLayer: GenAI
+            startTime: not null
+            endTime: not null
+            componentId: 178
+            spanType: Exit
+            peer: simple/in-memory-map
+            tags:
+              - { key: gen_ai.operation.name, value: retrieval }
+              - { key: gen_ai.data_source.id, value: in-memory-map }
+              - { key: gen_ai.request.model, value: text-embedding-3-small }
+              - { key: gen_ai.request.top_k, value: '2' }
+              - { key: gen_ai.retrieval.query.text, value: 'What is Apache SkyWalking?' }
+              - { key: gen_ai.retrieval.documents, value: not null }
+
+          - operationName: Spring-ai/openai/call
+            parentSpanId: 0
+            spanId: 7
+            spanLayer: GenAI
+            startTime: not null
+            endTime: not null
+            componentId: 173
+            isError: false
+            spanType: Exit
+            peer: http://localhost:8080/spring-ai-1.x-scenario/llm/v1/chat/completions
+            skipAnalysis: false
+            tags:
+              - { key: gen_ai.operation.name, value: chat }
+              - { key: gen_ai.provider.name, value: openai }
+              - { key: gen_ai.request.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.request.temperature, value: '0.7' }
+              - { key: gen_ai.request.top_p, value: '0.9' }
+              - { key: gen_ai.response.id, value: chatcmpl-DknJunZ3tgcSkKiv }
+              - { key: gen_ai.response.model, value: gpt-4.1-2025-04-14 }
+              - { key: gen_ai.usage.input_tokens, value: '72' }
+              - { key: gen_ai.usage.output_tokens, value: '25' }
+              - { key: gen_ai.client.token.usage, value: '97' }
+              - { key: gen_ai.response.finish_reasons, value: STOP }
+              - { key: gen_ai.input.messages, value: not null }
+              - { key: gen_ai.output.messages, value: not null }
+
           - operationName: GET:/spring-ai-1.x-scenario/case/spring-ai-1.x-scenario-case
             parentSpanId: -1
             spanId: 0

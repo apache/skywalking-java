@@ -26,6 +26,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ErrorTypeResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.InputMessages;
@@ -129,7 +130,9 @@ public class ChatModelCallInterceptor implements InstanceMethodsAroundIntercepto
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         if (ContextManager.isActive()) {
-            ContextManager.activeSpan().log(t);
+            AbstractSpan span = ContextManager.activeSpan();
+            span.log(t);
+            ErrorTypeResolver.setErrorType(span, t);
         }
     }
 

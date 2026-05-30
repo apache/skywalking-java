@@ -142,7 +142,7 @@ segmentItems:
               - { key: http.method, value: POST }
               - { key: http.status_code, value: '200' }
 
-          - operationName: retrieval in-memory-map
+          - operationName: retrieval/simple/in-memory-map
             parentSpanId: 0
             spanId: 6
             spanLayer: GenAI
@@ -150,10 +150,9 @@ segmentItems:
             endTime: not null
             componentId: 178
             spanType: Exit
-            peer: in-memory-map
+            peer: simple/in-memory-map
             tags:
               - { key: gen_ai.operation.name, value: retrieval }
-              - { key: gen_ai.provider.name, value: simple }
               - { key: gen_ai.data_source.id, value: in-memory-map }
               - { key: gen_ai.request.model, value: text-embedding-3-small }
               - { key: gen_ai.request.top_k, value: '2' }

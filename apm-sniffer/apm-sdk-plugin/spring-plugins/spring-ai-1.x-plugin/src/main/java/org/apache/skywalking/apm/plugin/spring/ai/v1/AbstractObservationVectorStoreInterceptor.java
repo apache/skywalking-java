@@ -49,11 +49,10 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
         VectorStoreObservationContext context = createObservationContext(objInst, request);
         String dataSourceId = resolveDataSourceId(context, objInst);
 
-        AbstractSpan span = ContextManager.createExitSpan(Constants.RETRIEVAL + " " + dataSourceId, dataSourceId);
+        AbstractSpan span = ContextManager.createExitSpan(Constants.RETRIEVAL + "/" + dataSourceId, dataSourceId);
         SpanLayer.asGenAI(span);
         span.setComponent(ComponentsDefine.SPRING_AI);
         Tags.GEN_AI_OPERATION_NAME.set(span, Constants.RETRIEVAL);
-        Tags.GEN_AI_PROVIDER_NAME.set(span, context.getDatabaseSystem());
         Tags.GEN_AI_DATA_SOURCE_ID.set(span, dataSourceId);
         String model = resolveEmbeddingModelName(objInst);
         if (StringUtils.hasText(model)) {
@@ -110,16 +109,24 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
     }
 
     private String resolveDataSourceId(VectorStoreObservationContext context, EnhancedInstance objInst) {
-        if (StringUtils.hasText(context.getCollectionName())) {
-            return context.getCollectionName();
-        }
-        if (StringUtils.hasText(context.getNamespace())) {
-            return context.getNamespace();
-        }
-        if (StringUtils.hasText(context.getDatabaseSystem())) {
-            return context.getDatabaseSystem();
+        StringBuilder dataSourceId = new StringBuilder();
+        appendDataSourcePart(dataSourceId, context.getDatabaseSystem());
+        appendDataSourcePart(dataSourceId, context.getNamespace());
+        appendDataSourcePart(dataSourceId, context.getCollectionName());
+        if (dataSourceId.length() > 0) {
+            return dataSourceId.toString();
         }
         return objInst.getClass().getSimpleName();
+    }
+
+    private void appendDataSourcePart(StringBuilder dataSourceId, String value) {
+        if (!StringUtils.hasText(value)) {
+            return;
+        }
+        if (dataSourceId.length() > 0) {
+            dataSourceId.append('/');
+        }
+        dataSourceId.append(value);
     }
 
     private String toDocumentsJson(List<?> documents) {

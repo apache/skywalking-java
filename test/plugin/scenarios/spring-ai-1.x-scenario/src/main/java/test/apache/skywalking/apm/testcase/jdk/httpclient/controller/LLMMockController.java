@@ -194,8 +194,8 @@ public class LLMMockController {
                         }
                     ],
                     "created": 1780045046,
-                    "id": "chatcmpl-DknJunZ3tgcSkKivGOyQ6gEkMCrCX",
-                    "model": "gpt-4.1-mini-2025-04-14",
+                    "id": "chatcmpl-DknJunZ3tgcSkKiv",
+                    "model": "gpt-4.1-2025-04-14",
                     "object": "chat.completion",
                     "service_tier": "default",
                     "system_fingerprint": "fp_a7294185dc",

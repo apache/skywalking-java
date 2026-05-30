@@ -20,13 +20,66 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.springframework.ai.embedding.EmbeddingOptions;
+import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class AbstractObservationVectorStoreConstructorInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         if (allArguments != null && allArguments.length > 0) {
-            objInst.setSkyWalkingDynamicField(allArguments[0]);
+            String embeddingModelName = resolveModelFromEmbeddingModel(allArguments[0]);
+            objInst.setSkyWalkingDynamicField(new VectorStoreEnhanceContext(embeddingModelName));
         }
+    }
+
+    private String resolveModelFromEmbeddingModel(Object embeddingModel) {
+        if (embeddingModel == null) {
+            return null;
+        }
+        String model = resolveModelFromOptionsMethod(embeddingModel);
+        if (StringUtils.hasText(model)) {
+            return model;
+        }
+        model = resolveModelFromOptionsField(embeddingModel, "options");
+        if (StringUtils.hasText(model)) {
+            return model;
+        }
+        return resolveModelFromOptionsField(embeddingModel, "defaultOptions");
+    }
+
+    private String resolveModelFromOptionsMethod(Object embeddingModel) {
+        try {
+            Method method = embeddingModel.getClass().getMethod("getOptions");
+            return resolveModelFromOptions(method.invoke(embeddingModel));
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+    private String resolveModelFromOptionsField(Object embeddingModel, String fieldName) {
+        Class<?> type = embeddingModel.getClass();
+        while (type != null) {
+            try {
+                Field field = type.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return resolveModelFromOptions(field.get(embeddingModel));
+            } catch (NoSuchFieldException e) {
+                type = type.getSuperclass();
+            } catch (Throwable ignored) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private String resolveModelFromOptions(Object options) {
+        if (options instanceof EmbeddingOptions) {
+            return ((EmbeddingOptions) options).getModel();
+        }
+        return null;
     }
 }

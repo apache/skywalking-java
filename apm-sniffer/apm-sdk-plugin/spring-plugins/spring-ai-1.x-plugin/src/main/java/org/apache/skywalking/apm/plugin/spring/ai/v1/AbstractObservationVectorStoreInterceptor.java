@@ -23,6 +23,7 @@ import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.GsonUtil;
@@ -42,7 +43,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AbstractObservationVectorStoreInterceptor implements InstanceMethodsAroundInterceptor {
+public class AbstractObservationVectorStoreInterceptor implements InstanceConstructorInterceptor, InstanceMethodsAroundInterceptor {
+
+    @Override
+    public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
+        if (allArguments != null && allArguments.length > 0) {
+            objInst.setSkyWalkingDynamicField(allArguments[0]);
+        }
+    }
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
@@ -104,14 +112,7 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
     }
 
     private String resolveEmbeddingModelName(EnhancedInstance objInst) {
-        try {
-            Field field = AbstractObservationVectorStore.class.getDeclaredField("embeddingModel");
-            field.setAccessible(true);
-            Object embeddingModel = field.get(objInst);
-            return resolveModelFromEmbeddingModel(embeddingModel);
-        } catch (Throwable ignored) {
-            return null;
-        }
+        return resolveModelFromEmbeddingModel(objInst.getSkyWalkingDynamicField());
     }
 
     private String resolveModelFromEmbeddingModel(Object embeddingModel) {

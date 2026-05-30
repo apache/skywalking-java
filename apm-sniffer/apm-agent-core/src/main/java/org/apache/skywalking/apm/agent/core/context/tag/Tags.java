@@ -251,6 +251,21 @@ public final class Tags {
     public static final StringTag GEN_AI_OUTPUT_MESSAGES = new StringTag(42, "gen_ai.output.messages");
 
     /**
+     * GEN_AI_DATA_SOURCE_ID represents the data source identifier.
+     */
+    public static final StringTag GEN_AI_DATA_SOURCE_ID = new StringTag(43, "gen_ai.data_source.id");
+
+    /**
+     * GEN_AI_RETRIEVAL_DOCUMENTS represents the documents retrieved.
+     */
+    public static final StringTag GEN_AI_RETRIEVAL_DOCUMENTS = new StringTag(44, "gen_ai.retrieval.documents");
+
+    /**
+     * GEN_AI_RETRIEVAL_QUERY_TEXT represents the query text used for retrieval.
+     */
+    public static final StringTag GEN_AI_RETRIEVAL_QUERY_TEXT = new StringTag(45, "gen_ai.retrieval.query.text");
+
+    /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without
      * creating a new one.
      *

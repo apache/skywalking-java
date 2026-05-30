@@ -27,6 +27,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ChatModelMetadataResolver;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ErrorTypeResolver;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.messages.InputMessages;
@@ -94,9 +95,14 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
 
         return flux
                 .doOnNext(response -> onStreamNext(span, response, state))
-                .doOnError(span::log)
+                .doOnError(t -> recordError(span, t))
                 .doFinally(signalType -> onStreamFinally(span, allArguments, state))
                 .contextWrite(c -> c.put(Constants.SKYWALKING_CONTEXT_SNAPSHOT, snapshot));
+    }
+
+    private void recordError(AbstractSpan span, Throwable t) {
+        span.log(t);
+        ErrorTypeResolver.setErrorType(span, t);
     }
 
     private void onStreamNext(AbstractSpan span, ChatResponse response, StreamState state) {
@@ -248,7 +254,9 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         if (ContextManager.isActive()) {
-            ContextManager.activeSpan().log(t);
+            AbstractSpan span = ContextManager.activeSpan();
+            span.log(t);
+            ErrorTypeResolver.setErrorType(span, t);
         }
     }
 

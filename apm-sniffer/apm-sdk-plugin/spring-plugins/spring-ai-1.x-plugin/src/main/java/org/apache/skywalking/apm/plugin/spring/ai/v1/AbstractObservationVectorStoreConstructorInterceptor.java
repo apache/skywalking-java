@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.springframework.ai.embedding.EmbeddingOptions;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -31,9 +32,16 @@ public class AbstractObservationVectorStoreConstructorInterceptor implements Ins
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         if (allArguments != null && allArguments.length > 0) {
-            String embeddingModelName = resolveModelFromEmbeddingModel(allArguments[0]);
+            String embeddingModelName = resolveModelFromArgument(allArguments[0]);
             objInst.setSkyWalkingDynamicField(new VectorStoreEnhanceContext(embeddingModelName));
         }
+    }
+
+    private String resolveModelFromArgument(Object argument) {
+        if (argument instanceof EmbeddingModel) {
+            return resolveModelFromEmbeddingModel(argument);
+        }
+        return null;
     }
 
     private String resolveModelFromEmbeddingModel(Object embeddingModel) {

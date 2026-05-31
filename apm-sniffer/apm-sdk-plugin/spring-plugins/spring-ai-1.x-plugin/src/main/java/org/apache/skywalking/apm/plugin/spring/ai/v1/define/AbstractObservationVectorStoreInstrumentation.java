@@ -25,6 +25,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import org.apache.skywalking.apm.agent.core.plugin.match.HierarchyMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.logical.LogicalMatchOperation;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
@@ -33,8 +35,6 @@ import static org.apache.skywalking.apm.agent.core.plugin.bytebuddy.ArgumentType
 public class AbstractObservationVectorStoreInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.vectorstore.observation.AbstractObservationVectorStore";
-
-    private static final String EMBEDDING_MODEL_CLASS = "org.springframework.ai.embedding.EmbeddingModel";
 
     private static final String INTERCEPT_METHOD = "doSimilaritySearch";
 
@@ -46,16 +46,16 @@ public class AbstractObservationVectorStoreInstrumentation extends ClassInstance
 
     @Override
     protected ClassMatch enhanceClass() {
-        return HierarchyMatch.byHierarchyMatch(ENHANCE_CLASS);
+        return LogicalMatchOperation.or(HierarchyMatch.byHierarchyMatch(ENHANCE_CLASS), MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS));
     }
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
-        return new ConstructorInterceptPoint[] {
+        return new ConstructorInterceptPoint[]{
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArguments(4).and(takesArgumentWithType(0, EMBEDDING_MODEL_CLASS));
+                        return takesArgumentWithType(0, "org.springframework.ai.embedding.EmbeddingModel");
                     }
 
                     @Override
@@ -68,7 +68,7 @@ public class AbstractObservationVectorStoreInstrumentation extends ClassInstance
 
     @Override
     public InstanceMethodsInterceptPoint[] getInstanceMethodsInterceptPoints() {
-        return new InstanceMethodsInterceptPoint[] {
+        return new InstanceMethodsInterceptPoint[]{
                 new InstanceMethodsInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {

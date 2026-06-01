@@ -18,18 +18,19 @@
 
 package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
-public class VectorStoreEnhanceContext {
+import org.springframework.util.StringUtils;
 
-    private final EmbeddingModelEnhanceContext embeddingModelEnhanceContext;
+public class EmbeddingModelEnhanceContext {
 
-    public VectorStoreEnhanceContext(EmbeddingModelEnhanceContext embeddingModelEnhanceContext) {
-        this.embeddingModelEnhanceContext = embeddingModelEnhanceContext;
-    }
+    private volatile String embeddingModelName;
 
     public String getEmbeddingModelName() {
-        if (embeddingModelEnhanceContext == null) {
-            return null;
+        return embeddingModelName;
+    }
+
+    public void setEmbeddingModelNameIfAbsent(String embeddingModelName) {
+        if (!StringUtils.hasText(this.embeddingModelName) && StringUtils.hasText(embeddingModelName)) {
+            this.embeddingModelName = embeddingModelName;
         }
-        return embeddingModelEnhanceContext.getEmbeddingModelName();
     }
 }

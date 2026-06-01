@@ -25,6 +25,7 @@ Release Notes.
 * Only publish `apm-application-toolkit` modules to Maven Central. Agent and plugins are distributed via download package and Docker images.
 * Add unified release script (`tools/releasing/release.sh`) with two-step flow: `prepare-vote` and `vote-passed`.
 * Fix an issue where `JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH` was not honored by clickhouse-0.3.1 and clickhouse-0.3.2.x plugins.
+- Add tracing support for vector-store retrieval operations.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)
 

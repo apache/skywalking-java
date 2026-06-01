@@ -15,6 +15,7 @@
 # limitations under the License.
 
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.ChatModelInstrumentation
+spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.EmbeddingModelInstrumentation
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.ToolCallbackInstrumentation
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.DefaultToolCallingManagerInstrumentation
 spring-ai-1.x=org.apache.skywalking.apm.plugin.spring.ai.v1.define.AbstractObservationVectorStoreInstrumentation

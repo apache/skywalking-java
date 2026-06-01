@@ -24,7 +24,6 @@ import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 
 import javax.net.ssl.SSLHandshakeException;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.security.cert.CertPathValidatorException;
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeoutException;
@@ -47,13 +46,10 @@ public final class ErrorTypeResolver {
         if (matches(throwable, ErrorTypeResolver::isTimeout)) {
             return TIMEOUT;
         }
-        if (matches(throwable, UnknownHostException.class::isInstance)) {
-            return UnknownHostException.class.getName();
-        }
         if (matches(throwable, ErrorTypeResolver::isCertificateInvalid)) {
             return SERVER_CERTIFICATE_INVALID;
         }
-        return OTHER;
+        return throwable.getClass().getName();
     }
 
     private static boolean isTimeout(Throwable throwable) {

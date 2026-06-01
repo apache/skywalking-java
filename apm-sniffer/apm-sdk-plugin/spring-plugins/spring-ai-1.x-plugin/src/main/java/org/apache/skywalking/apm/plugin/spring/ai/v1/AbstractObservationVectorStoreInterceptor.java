@@ -46,10 +46,24 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInterceptResult result) throws Throwable {
         SearchRequest request = (SearchRequest) allArguments[0];
-        VectorStoreObservationContext context = createObservationContext(objInst, request);
-        String dataSourceId = resolveDataSourceId(context, objInst);
+        String dataSourceId = objInst.getClass().getSimpleName();
+
+        try {
+            VectorStoreObservationContext context =
+                    createObservationContext(objInst, request);
+
+            String resolved =
+                    resolveDataSourceId(context, objInst);
+
+            if (StringUtils.hasText(resolved)) {
+                dataSourceId = resolved;
+            }
+        } catch (Throwable ignored) {
+
+        }
 
         AbstractSpan span = ContextManager.createExitSpan(Constants.RETRIEVAL + "/" + dataSourceId, dataSourceId);
+
         SpanLayer.asGenAI(span);
         span.setComponent(ComponentsDefine.SPRING_AI);
         Tags.GEN_AI_OPERATION_NAME.set(span, Constants.RETRIEVAL);

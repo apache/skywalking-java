@@ -18,5 +18,4 @@
 
 home="$(cd "$(dirname $0)"; pwd)"
 
-java -Dskywalking.plugin.springai.collect_input_messages=true -Dskywalking.plugin.springai.collect_output_messages=true -Dskywalking.plugin.springai.collect_tool_input=true -Dskywalking.plugin.springai.collect_tool_output=true
--Dskywalking.plugin.springai.collect_retrieval_query=true -Dskywalking.plugin.springai.collect_retrieval_documents=true -jar ${agent_opts} ${home}/../libs/spring-ai-1.x-scenario.jar &
+java -Dskywalking.plugin.springai.collect_input_messages=true -Dskywalking.plugin.springai.collect_output_messages=true -Dskywalking.plugin.springai.collect_tool_input=true -Dskywalking.plugin.springai.collect_tool_output=true -Dskywalking.plugin.springai.collect_retrieval_query=true -Dskywalking.plugin.springai.collect_retrieval_documents=true -jar ${agent_opts} ${home}/../libs/spring-ai-1.x-scenario.jar &

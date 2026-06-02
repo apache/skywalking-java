@@ -20,19 +20,16 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
-import org.springframework.ai.embedding.EmbeddingModel;
 
 public class AbstractObservationVectorStoreConstructorInterceptor implements InstanceConstructorInterceptor {
 
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
-        if (allArguments != null && allArguments.length > 0) {
-            objInst.setSkyWalkingDynamicField(new VectorStoreEnhanceContext(resolveContextFromArgument(allArguments[0])));
-        }
+        objInst.setSkyWalkingDynamicField(new VectorStoreEnhanceContext(resolveContextFromArgument(allArguments[0])));
     }
 
     private EmbeddingModelEnhanceContext resolveContextFromArgument(Object argument) {
-        if (argument instanceof EmbeddingModel && argument instanceof EnhancedInstance) {
+        if (argument instanceof EnhancedInstance) {
             return getOrCreateContext((EnhancedInstance) argument);
         }
         return null;

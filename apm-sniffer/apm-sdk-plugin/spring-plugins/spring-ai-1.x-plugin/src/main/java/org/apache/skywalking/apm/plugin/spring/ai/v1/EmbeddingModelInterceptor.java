@@ -21,6 +21,7 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.EmbeddingModelEnhanceContext;
 import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.ai.embedding.EmbeddingResponseMetadata;
 import org.springframework.util.StringUtils;
@@ -36,6 +37,10 @@ public class EmbeddingModelInterceptor implements InstanceMethodsAroundIntercept
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
+        if (!(ret instanceof EmbeddingResponse)) {
+            return ret;
+        }
+
         EmbeddingResponseMetadata metadata = ((EmbeddingResponse) ret).getMetadata();
         if (metadata == null) {
             return ret;

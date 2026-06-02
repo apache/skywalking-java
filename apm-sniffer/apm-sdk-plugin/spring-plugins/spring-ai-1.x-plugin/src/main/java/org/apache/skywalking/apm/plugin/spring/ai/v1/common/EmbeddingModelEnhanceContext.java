@@ -16,7 +16,7 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.spring.ai.v1;
+package org.apache.skywalking.apm.plugin.spring.ai.v1.common;
 
 import org.springframework.util.StringUtils;
 

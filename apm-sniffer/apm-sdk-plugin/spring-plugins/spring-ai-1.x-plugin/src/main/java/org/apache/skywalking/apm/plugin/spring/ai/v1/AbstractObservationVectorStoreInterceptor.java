@@ -27,6 +27,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceM
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.apache.skywalking.apm.agent.core.util.GsonUtil;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.ErrorTypeResolver;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.config.SpringAiPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.ai.v1.contant.Constants;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
@@ -75,8 +77,13 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
 
         if (request != null) {
             Tags.GEN_AI_TOP_K.set(span, String.valueOf(request.getTopK()));
-            if (StringUtils.hasText(request.getQuery())) {
-                Tags.GEN_AI_RETRIEVAL_QUERY_TEXT.set(span, request.getQuery());
+            String query = request.getQuery();
+            if (StringUtils.hasText(query) && SpringAiPluginConfig.Plugin.SpringAi.COLLECT_RETRIEVAL_QUERY) {
+                int limit = SpringAiPluginConfig.Plugin.SpringAi.RETRIEVAL_QUERY_LENGTH_LIMIT;
+                if (limit > 0 && query.length() > limit) {
+                    query = query.substring(0, limit);
+                }
+                Tags.GEN_AI_RETRIEVAL_QUERY_TEXT.set(span, query);
             }
         }
     }
@@ -88,7 +95,7 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
             return ret;
         }
         try {
-            if (ret instanceof List<?>) {
+            if (ret instanceof List<?> && SpringAiPluginConfig.Plugin.SpringAi.COLLECT_RETRIEVAL_DOCUMENTS) {
                 Tags.GEN_AI_RETRIEVAL_DOCUMENTS.set(ContextManager.activeSpan(), toDocumentsJson((List<?>) ret));
             }
         } finally {
@@ -101,7 +108,9 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
         if (ContextManager.isActive()) {
-            ContextManager.activeSpan().log(t);
+            AbstractSpan span = ContextManager.activeSpan();
+            span.log(t);
+            ErrorTypeResolver.setErrorType(span, t);
         }
     }
 

@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.EmbeddingModelEnhanceContext;
 
 public class AbstractObservationVectorStoreConstructorInterceptor implements InstanceConstructorInterceptor {
 

@@ -33,7 +33,6 @@ public final class ErrorTypeResolver {
     private static final AbstractTag<String> ERROR_TYPE = Tags.ofKey("error.type");
     private static final String TIMEOUT = "timeout";
     private static final String SERVER_CERTIFICATE_INVALID = "server_certificate_invalid";
-    private static final String OTHER = "_OTHER";
 
     private ErrorTypeResolver() {
     }

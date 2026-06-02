@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.EmbeddingModelEnhanceContext;
+
 public class VectorStoreEnhanceContext {
 
     private final EmbeddingModelEnhanceContext embeddingModelEnhanceContext;

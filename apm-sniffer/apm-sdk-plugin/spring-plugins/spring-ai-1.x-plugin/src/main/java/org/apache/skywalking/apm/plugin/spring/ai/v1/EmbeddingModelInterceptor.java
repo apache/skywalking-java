@@ -18,39 +18,39 @@
 
 package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
-import java.lang.reflect.Method;
-
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
-import org.springframework.ai.embedding.EmbeddingOptions;
+import org.springframework.ai.embedding.EmbeddingResponse;
+import org.springframework.ai.embedding.EmbeddingResponseMetadata;
 import org.springframework.util.StringUtils;
+
+import java.lang.reflect.Method;
 
 public class EmbeddingModelInterceptor implements InstanceMethodsAroundInterceptor {
 
     @Override
-    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                             MethodInterceptResult result) {
-        if (allArguments == null || allArguments.length < 2 || !(allArguments[1] instanceof EmbeddingOptions)) {
-            return;
-        }
-        String model = ((EmbeddingOptions) allArguments[1]).getModel();
-        if (!StringUtils.hasText(model)) {
-            return;
-        }
-        EmbeddingModelEnhanceContext context = getOrCreateContext(objInst);
-        context.setEmbeddingModelNameIfAbsent(model);
+    public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
+
     }
 
     @Override
-    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                              Object ret) {
+    public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
+        EmbeddingResponseMetadata metadata = ((EmbeddingResponse) ret).getMetadata();
+        if (metadata == null) {
+            return ret;
+        }
+        String model = metadata.getModel();
+        if (!StringUtils.hasText(model)) {
+            return ret;
+        }
+        EmbeddingModelEnhanceContext context = getOrCreateContext(objInst);
+        context.setEmbeddingModelNameIfAbsent(model);
         return ret;
     }
 
     @Override
-    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-                                      Class<?>[] argumentsTypes, Throwable t) {
+    public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
     }
 
     private EmbeddingModelEnhanceContext getOrCreateContext(EnhancedInstance objInst) {

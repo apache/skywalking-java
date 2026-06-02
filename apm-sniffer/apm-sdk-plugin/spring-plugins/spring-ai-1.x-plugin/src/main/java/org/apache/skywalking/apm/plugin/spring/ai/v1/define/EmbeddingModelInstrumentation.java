@@ -34,7 +34,7 @@ public class EmbeddingModelInstrumentation extends ClassInstanceMethodsEnhancePl
 
     private static final String ENHANCE_CLASS = "org.springframework.ai.embedding.EmbeddingModel";
 
-    private static final String INTERCEPT_METHOD = "embed";
+    private static final String INTERCEPT_METHOD = "call";
 
     private static final String INTERCEPTOR_CLASS =
             "org.apache.skywalking.apm.plugin.spring.ai.v1.EmbeddingModelInterceptor";
@@ -56,10 +56,8 @@ public class EmbeddingModelInstrumentation extends ClassInstanceMethodsEnhancePl
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named(INTERCEPT_METHOD)
-                                .and(takesArguments(3))
-                                .and(takesArgumentWithType(0, "java.util.List"))
-                                .and(takesArgumentWithType(1, "org.springframework.ai.embedding.EmbeddingOptions"))
-                                .and(takesArgumentWithType(2, "org.springframework.ai.embedding.BatchingStrategy"));
+                                .and(takesArguments(1))
+                                .and(takesArgumentWithType(0, "org.springframework.ai.embedding.EmbeddingRequest"));
                     }
 
                     @Override

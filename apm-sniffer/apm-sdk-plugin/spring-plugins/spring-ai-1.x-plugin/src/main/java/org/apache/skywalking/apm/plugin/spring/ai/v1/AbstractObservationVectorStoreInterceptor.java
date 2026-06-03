@@ -80,7 +80,7 @@ public class AbstractObservationVectorStoreInterceptor implements InstanceMethod
             String query = request.getQuery();
             if (StringUtils.hasText(query) && SpringAiPluginConfig.Plugin.SpringAi.COLLECT_RETRIEVAL_QUERY) {
                 int limit = SpringAiPluginConfig.Plugin.SpringAi.RETRIEVAL_QUERY_LENGTH_LIMIT;
-                if (limit > 0 && query.length() > limit) {
+                if (limit >= 0 && query.length() > limit) {
                     query = query.substring(0, limit);
                 }
                 Tags.GEN_AI_RETRIEVAL_QUERY_TEXT.set(span, query);

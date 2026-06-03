@@ -218,7 +218,7 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
         String inputMessagesJson = inputMessages.toJson();
 
         int limit = SpringAiPluginConfig.Plugin.SpringAi.INPUT_MESSAGES_LENGTH_LIMIT;
-        if (limit > 0 && inputMessagesJson.length() > limit) {
+        if (limit >= 0 && inputMessagesJson.length() > limit) {
             inputMessagesJson = inputMessagesJson.substring(0, limit);
         }
 
@@ -238,7 +238,7 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
         String outputMessagesJson = outputMessages.toJson();
 
         int limit = SpringAiPluginConfig.Plugin.SpringAi.OUTPUT_MESSAGES_LENGTH_LIMIT;
-        if (limit > 0 && outputMessagesJson.length() > limit) {
+        if (limit >= 0 && outputMessagesJson.length() > limit) {
             outputMessagesJson = outputMessagesJson.substring(0, limit);
         }
 

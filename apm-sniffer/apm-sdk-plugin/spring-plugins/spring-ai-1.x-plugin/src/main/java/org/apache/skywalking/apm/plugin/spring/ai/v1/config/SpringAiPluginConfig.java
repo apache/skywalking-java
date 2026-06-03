@@ -85,7 +85,7 @@ public class SpringAiPluginConfig {
             /**
              * Whether to collect the documents of the rag call.
              */
-            public static boolean COLLECT_RETRIEVAL_DOCUMENTS  = false;
+            public static boolean COLLECT_RETRIEVAL_DOCUMENTS = false;
         }
     }
 }

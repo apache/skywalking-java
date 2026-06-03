@@ -16,18 +16,22 @@
  *
  */
 
-package org.apache.skywalking.apm.plugin.spring.ai.v1.contant;
+package org.apache.skywalking.apm.plugin.spring.ai.v1;
 
-public class Constants {
-    public static final String SPRING_AI_STREAM_START_TIME = "Spring-ai.stream.startTime";
+import org.apache.skywalking.apm.plugin.spring.ai.v1.common.EmbeddingModelEnhanceContext;
 
-    public static final String SKYWALKING_CONTEXT_SNAPSHOT = "SKYWALKING_CONTEXT_SNAPSHOT";
+public class VectorStoreEnhanceContext {
 
-    public static final String CHAT = "chat";
+    private final EmbeddingModelEnhanceContext embeddingModelEnhanceContext;
 
-    public static final String EXECUTE_TOOL = "execute_tool";
+    public VectorStoreEnhanceContext(EmbeddingModelEnhanceContext embeddingModelEnhanceContext) {
+        this.embeddingModelEnhanceContext = embeddingModelEnhanceContext;
+    }
 
-    public static final String RETRIEVAL = "retrieval";
-
-    public static final String DEFAULT_COMPLETIONS_PATH = "/v1/chat/completions";
+    public String getEmbeddingModelName() {
+        if (embeddingModelEnhanceContext == null) {
+            return null;
+        }
+        return embeddingModelEnhanceContext.getEmbeddingModelName();
+    }
 }

@@ -69,6 +69,23 @@ public class SpringAiPluginConfig {
              * Whether to collect the execution result (output) of the tool/function call.
              */
             public static boolean COLLECT_TOOL_OUTPUT = false;
+
+            /**
+             * Whether to collect the query of the rag call.
+             */
+            public static boolean COLLECT_RETRIEVAL_QUERY = false;
+
+            /**
+             * The maximum characters of the collected rag query content.
+             * If the content exceeds this limit, it will be truncated.
+             * Use a negative value to represent no limit, but be aware this could cause OOM.
+             */
+            public static int RETRIEVAL_QUERY_LENGTH_LIMIT = 1024;
+
+            /**
+             * Whether to collect the documents of the rag call.
+             */
+            public static boolean COLLECT_RETRIEVAL_DOCUMENTS  = false;
         }
     }
 }

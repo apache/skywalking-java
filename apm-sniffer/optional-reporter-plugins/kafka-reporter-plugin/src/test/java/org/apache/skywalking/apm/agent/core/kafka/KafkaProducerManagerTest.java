@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.agent.core.kafka;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Method;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,6 +45,11 @@ public class KafkaProducerManagerTest {
         notifyListeners.invoke(kafkaProducerManager, KafkaConnectionStatus.CONNECTED);
 
         assertEquals(counter.get(), times);
+    }
+
+    @Test
+    public void outranksKafkaReportersSoProducerClosesLast() {
+        assertTrue(new KafkaProducerManager().priority() > new KafkaTraceSegmentServiceClient().priority());
     }
 
     @Test

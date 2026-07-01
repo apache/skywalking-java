@@ -50,7 +50,7 @@ public enum ServiceManager {
     }
 
     public void shutdown() {
-        bootedServices.values().stream().sorted(Comparator.comparingInt(BootService::priority).reversed()).forEach(service -> {
+        bootedServices.values().stream().sorted(Comparator.comparingInt(BootService::priority)).forEach(service -> {
             try {
                 service.shutdown();
             } catch (Throwable e) {
@@ -103,7 +103,7 @@ public enum ServiceManager {
     }
 
     private void prepare() {
-        bootedServices.values().stream().sorted(Comparator.comparingInt(BootService::priority)).forEach(service -> {
+        bootedServices.values().stream().sorted(Comparator.comparingInt(BootService::priority).reversed()).forEach(service -> {
             try {
                 service.prepare();
             } catch (Throwable e) {
@@ -113,7 +113,7 @@ public enum ServiceManager {
     }
 
     private void startup() {
-        bootedServices.values().stream().sorted(Comparator.comparingInt(BootService::priority)).forEach(service -> {
+        bootedServices.values().stream().sorted(Comparator.comparingInt(BootService::priority).reversed()).forEach(service -> {
             try {
                 service.boot();
             } catch (Throwable e) {

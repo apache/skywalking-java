@@ -44,12 +44,10 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.DefaultImplementor;
 import org.apache.skywalking.apm.agent.core.boot.DefaultNamedThreadFactory;
-import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
 import org.apache.skywalking.apm.agent.core.kafka.KafkaReporterPluginConfig.Plugin.Kafka;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.plugin.loader.AgentClassLoader;
-import org.apache.skywalking.apm.agent.core.remote.GRPCChannelManager;
 import org.apache.skywalking.apm.util.RunnableWithExceptionProtection;
 import org.apache.skywalking.apm.util.StringUtil;
 
@@ -183,14 +181,10 @@ public class KafkaProducerManager implements BootService, Runnable {
         return producer;
     }
 
-    /**
-     * make kafka producer init later but before {@link GRPCChannelManager}
-     *
-     * @return priority value
-     */
+    // Higher than the Kafka reporters sharing this producer, so the producer closes only after they stop.
     @Override
     public int priority() {
-        return ServiceManager.INSTANCE.findService(GRPCChannelManager.class).priority() - 1;
+        return 1;
     }
 
     @Override

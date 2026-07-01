@@ -50,11 +50,13 @@ public class EventReportServiceClient implements BootService, GRPCChannelListene
 
     private final AtomicBoolean reported = new AtomicBoolean();
 
+    private volatile boolean bootCompleted;
+
     private Event.Builder startingEvent;
 
-    private EventServiceGrpc.EventServiceStub eventServiceStub;
+    private volatile EventServiceGrpc.EventServiceStub eventServiceStub;
 
-    private GRPCChannelStatus status;
+    private volatile GRPCChannelStatus status = GRPCChannelStatus.DISCONNECT;
 
     @Override
     public void prepare() throws Throwable {
@@ -91,6 +93,7 @@ public class EventReportServiceClient implements BootService, GRPCChannelListene
     @Override
     public void onComplete() throws Throwable {
         startingEvent.setEndTime(System.currentTimeMillis());
+        bootCompleted = true;
 
         reportStartingEvent();
     }
@@ -117,7 +120,8 @@ public class EventReportServiceClient implements BootService, GRPCChannelListene
                                                  )
                                                 .setLayer(EVENT_LAYER_NAME);
 
-        final StreamObserver<Event> collector = eventServiceStub.collect(new StreamObserver<Commands>() {
+        final EventServiceGrpc.EventServiceStub stub = eventServiceStub.withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS);
+        final StreamObserver<Event> collector = stub.collect(new StreamObserver<Commands>() {
             @Override
             public void onNext(final Commands commands) {
                 ServiceManager.INSTANCE.findService(CommandService.class).receiveCommand(commands);
@@ -143,25 +147,27 @@ public class EventReportServiceClient implements BootService, GRPCChannelListene
 
     @Override
     public void statusChanged(final GRPCChannelStatus status) {
+        if (CONNECTED.equals(status)) {
+            final Channel channel = ServiceManager.INSTANCE.findService(GRPCChannelManager.class).getChannel();
+            eventServiceStub = EventServiceGrpc.newStub(channel);
+        }
         this.status = status;
 
-        if (!CONNECTED.equals(status)) {
-            return;
+        if (CONNECTED.equals(status)) {
+            reportStartingEvent();
         }
-
-        final Channel channel = ServiceManager.INSTANCE.findService(GRPCChannelManager.class).getChannel();
-        eventServiceStub = EventServiceGrpc.newStub(channel);
-        eventServiceStub = eventServiceStub.withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS);
-
-        reportStartingEvent();
     }
 
     private void reportStartingEvent() {
-        if (reported.compareAndSet(false, true)) {
+        if (!bootCompleted || !CONNECTED.equals(status)) {
+            return;
+        }
+        if (!reported.compareAndSet(false, true)) {
             return;
         }
 
-        final StreamObserver<Event> collector = eventServiceStub.collect(new StreamObserver<Commands>() {
+        final EventServiceGrpc.EventServiceStub stub = eventServiceStub.withDeadlineAfter(GRPC_UPSTREAM_TIMEOUT, TimeUnit.SECONDS);
+        final StreamObserver<Event> collector = stub.collect(new StreamObserver<Commands>() {
             @Override
             public void onNext(final Commands commands) {
                 ServiceManager.INSTANCE.findService(CommandService.class).receiveCommand(commands);

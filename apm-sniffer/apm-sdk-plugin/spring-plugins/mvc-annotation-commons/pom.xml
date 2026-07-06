@@ -55,16 +55,24 @@
             <version>5.2.4.RELEASE</version>
             <scope>provided</scope>
         </dependency>
+        <!--
+          The javax/jakarta servlet namespace split for request/response reads is handled by the
+          shared servlet-commons module (JDK-typed HttpRequestWrapper / HttpResponseWrapper).
+          javax.servlet-api is still required at compile time only: GetBeanInterceptor calls
+          spring-web's ServletRequestAttributes.getRequest(), whose return type resolves to
+          javax.servlet.http.HttpServletRequest against the javax-based spring-web here (the value
+          is stored as Object; the live jakarta/javax type is resolved at runtime by the wrappers).
+        -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-servlet-commons</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${javax-servlet-api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

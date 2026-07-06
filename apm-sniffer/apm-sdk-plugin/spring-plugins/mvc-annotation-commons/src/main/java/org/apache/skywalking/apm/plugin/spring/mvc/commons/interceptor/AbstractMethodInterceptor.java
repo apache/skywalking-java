@@ -19,8 +19,6 @@
 package org.apache.skywalking.apm.plugin.spring.mvc.commons.interceptor;
 
 import java.lang.reflect.Method;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -36,9 +34,11 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
 import org.apache.skywalking.apm.agent.core.util.MethodUtil;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.apache.skywalking.apm.plugin.servlet.HttpRequestWrapper;
+import org.apache.skywalking.apm.plugin.servlet.HttpRequestWrappers;
+import org.apache.skywalking.apm.plugin.servlet.HttpResponseWrapper;
+import org.apache.skywalking.apm.plugin.servlet.HttpResponseWrappers;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.EnhanceRequireObjectCache;
-import org.apache.skywalking.apm.plugin.spring.mvc.commons.HttpServletRequestWrapper;
-import org.apache.skywalking.apm.plugin.spring.mvc.commons.HttpServletRequestWrappers;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.RequestUtil;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.SpringMVCPluginConfig;
 import org.apache.skywalking.apm.plugin.spring.mvc.commons.exception.IllegalMethodStackDepthException;
@@ -57,40 +57,6 @@ import static org.apache.skywalking.apm.plugin.spring.mvc.commons.Constants.RESP
  */
 public abstract class AbstractMethodInterceptor implements InstanceMethodsAroundInterceptor {
     private static final ILog LOGGER = LogManager.getLogger(AbstractMethodInterceptor.class);
-    private static boolean IS_SERVLET_GET_STATUS_METHOD_EXIST;
-    private static boolean IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST;
-    private static final String SERVLET_RESPONSE_CLASS = "javax.servlet.http.HttpServletResponse";
-    private static final String JAKARTA_SERVLET_RESPONSE_CLASS = "jakarta.servlet.http.HttpServletResponse";
-    private static final String GET_STATUS_METHOD = "getStatus";
-
-    private static boolean IN_SERVLET_CONTAINER;
-    private static boolean IS_JAVAX = false;
-    private static boolean IS_JAKARTA = false;
-
-    static {
-        IS_SERVLET_GET_STATUS_METHOD_EXIST = MethodUtil.isMethodExist(
-            AbstractMethodInterceptor.class.getClassLoader(), SERVLET_RESPONSE_CLASS, GET_STATUS_METHOD);
-        IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST = MethodUtil.isMethodExist(
-            AbstractMethodInterceptor.class.getClassLoader(),
-            JAKARTA_SERVLET_RESPONSE_CLASS, GET_STATUS_METHOD
-        );
-        // Check both javax and jakarta independently — both may exist on the classpath.
-        // For example, a Spring MVC 6.x (Jakarta) app may have javax.servlet as a
-        // transitive dependency. The runtime request type determines which path is used.
-        try {
-            Class.forName(SERVLET_RESPONSE_CLASS, true, AbstractMethodInterceptor.class.getClassLoader());
-            IS_JAVAX = true;
-            IN_SERVLET_CONTAINER = true;
-        } catch (Exception ignore) {
-        }
-        try {
-            Class.forName(
-                JAKARTA_SERVLET_RESPONSE_CLASS, true, AbstractMethodInterceptor.class.getClassLoader());
-            IS_JAKARTA = true;
-            IN_SERVLET_CONTAINER = true;
-        } catch (Exception ignore) {
-        }
-    }
 
     public abstract String getRequestURL(Method method);
 
@@ -115,16 +81,9 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
             if (stackDepth == null) {
                 final ContextCarrier contextCarrier = new ContextCarrier();
 
-                if (IN_SERVLET_CONTAINER && IS_JAVAX && HttpServletRequest.class.isAssignableFrom(request.getClass())) {
-                    final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-                    handleBeforeMethod(
-                        objInst, method, HttpServletRequestWrappers.wrap(httpServletRequest), contextCarrier);
-
-                } else if (IN_SERVLET_CONTAINER && IS_JAKARTA && jakarta.servlet.http.HttpServletRequest.class.isAssignableFrom(
-                    request.getClass())) {
-                    final jakarta.servlet.http.HttpServletRequest httpServletRequest = (jakarta.servlet.http.HttpServletRequest) request;
-                    handleBeforeMethod(
-                        objInst, method, HttpServletRequestWrappers.wrap(httpServletRequest), contextCarrier);
+                final HttpRequestWrapper httpServletRequest = HttpRequestWrappers.wrap(request);
+                if (httpServletRequest != null) {
+                    handleBeforeMethod(objInst, method, httpServletRequest, contextCarrier);
 
                 } else if (ServerHttpRequest.class.isAssignableFrom(request.getClass())) {
                     final ServerHttpRequest serverHttpRequest = (ServerHttpRequest) request;
@@ -167,7 +126,7 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
     }
 
     private void handleBeforeMethod(EnhancedInstance objInst, Method method,
-                                    HttpServletRequestWrapper httpServletRequest, ContextCarrier contextCarrier) {
+                                    HttpRequestWrapper httpServletRequest, ContextCarrier contextCarrier) {
         CarrierItem next = contextCarrier.items();
         while (next.hasNext()) {
             next = next.next();
@@ -225,14 +184,11 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
 
                     Integer statusCode = null;
 
-                    if (IS_SERVLET_GET_STATUS_METHOD_EXIST && HttpServletResponse.class.isAssignableFrom(
-                        response.getClass())) {
-                        statusCode = ((HttpServletResponse) response).getStatus();
-                    } else if (IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST && jakarta.servlet.http.HttpServletResponse.class.isAssignableFrom(
-                        response.getClass())) {
-                        statusCode = ((jakarta.servlet.http.HttpServletResponse) response).getStatus();
+                    final HttpResponseWrapper httpServletResponse = HttpResponseWrappers.wrap(response);
+                    if (httpServletResponse != null) {
+                        statusCode = httpServletResponse.getStatus();
                     } else if (ServerHttpResponse.class.isAssignableFrom(response.getClass())) {
-                        if (IS_SERVLET_GET_STATUS_METHOD_EXIST || IS_JAKARTA_SERVLET_GET_STATUS_METHOD_EXIST) {
+                        if (HttpResponseWrappers.servletStatusSupported()) {
                             statusCode = ((ServerHttpResponse) response).getRawStatusCode();
                         }
                         Object context = runtimeContext.get(REACTIVE_ASYNC_SPAN_IN_RUNTIME_CONTEXT);
@@ -256,11 +212,9 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
 
                 // Active HTTP parameter collection automatically in the profiling context.
                 if (!SpringMVCPluginConfig.Plugin.SpringMVC.COLLECT_HTTP_PARAMS && span.isProfiling()) {
-                    if (IS_JAVAX && HttpServletRequest.class.isAssignableFrom(request.getClass())) {
-                        RequestUtil.collectHttpParam((HttpServletRequest) request, span);
-                    } else if (IS_JAKARTA && jakarta.servlet.http.HttpServletRequest.class.isAssignableFrom(
-                        request.getClass())) {
-                        RequestUtil.collectHttpParam((jakarta.servlet.http.HttpServletRequest) request, span);
+                    final HttpRequestWrapper httpServletRequest = HttpRequestWrappers.wrap(request);
+                    if (httpServletRequest != null) {
+                        RequestUtil.collectHttpParam(httpServletRequest, span);
                     } else if (ServerHttpRequest.class.isAssignableFrom(request.getClass())) {
                         RequestUtil.collectHttpParam((ServerHttpRequest) request, span);
                     }

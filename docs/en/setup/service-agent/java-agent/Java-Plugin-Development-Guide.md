@@ -360,7 +360,7 @@ The following sections will tell you how to implement the interceptor.
 
 3. Add plugin definition into the `skywalking-plugin.def` file.
 ```properties
-tomcat-7.x/8.x=TomcatInstrumentation
+tomcat=TomcatInstrumentation
 ```
 
 4. Set up `witnessClasses` and/or `witnessMethods` if the instrumentation has to be activated in specific versions.

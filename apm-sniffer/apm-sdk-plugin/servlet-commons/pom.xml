@@ -1,0 +1,75 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  ~
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.apache.skywalking</groupId>
+        <artifactId>apm-sdk-plugin</artifactId>
+        <version>9.7.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>apm-servlet-commons</artifactId>
+    <packaging>jar</packaging>
+
+    <name>servlet-commons</name>
+
+    <properties>
+        <javax-servlet-api.version>3.0.1</javax-servlet-api.version>
+        <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
+    </properties>
+
+    <!--
+      A shared, plugin-agnostic library (no skywalking-plugin.def) providing a JDK-typed,
+      namespace-agnostic view over the servlet HTTP request/response, so servlet plugins can
+      handle both javax.servlet and jakarta.servlet through a single runtime dispatch point.
+      Both servlet APIs are 'provided': only one is present in any given application at runtime;
+      the factory selects the live one. Consumed by servlet plugins at 'provided' scope — this
+      module ships its own jar into skywalking-agent/plugins (via the inherited antrun copy),
+      so its classes are visible to every plugin through the AgentClassLoader at runtime.
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax-servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta-servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+          Both servlet APIs are on the TEST classpath (provided scope), which is exactly the #13938
+          trigger: both javax and jakarta present at once. The unit tests assert wrap() selects the
+          live namespace, guarding against a regression of the old exclusive-detection defect.
+        -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

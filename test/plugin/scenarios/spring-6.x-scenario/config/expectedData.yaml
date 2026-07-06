@@ -371,5 +371,9 @@ segmentItems:
       tags:
       - {key: url, value: 'http://localhost:8080/spring-6.x-scenario/case/resttemplate'}
       - {key: http.method, value: GET}
+      - key: http.params
+        value: |-
+          q1=[v1]
+          chinese=[中文]
       - {key: http.status_code, value: '200'}
       skipAnalysis: 'false'

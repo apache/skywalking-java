@@ -55,7 +55,7 @@
 - jedis-4.x
 - jetty-client-9.0
 - jetty-client-9.x
-- jetty-server-9.x
+- jetty-server
 - kafka-0.11.x/1.x/2.x
 - kafka-3.7.x
 - kafka-3.9.x
@@ -133,8 +133,7 @@
 - spymemcached-2.x
 - struts2-2.x
 - thrift
-- tomcat-7.x/8.x
-- tomcat-10.x
+- tomcat
 - toolkit-counter
 - toolkit-gauge
 - toolkit-histogram
@@ -180,7 +179,6 @@
 - jersey-3.x
 - grizzly-2.3.x-4.x
 - grizzly-2.3.x-4.x-threadpool
-- jetty-server-11.x
 - jetty-client-11.x
 - websphere-liberty-23.x
 - spring-cloud-gateway-4.x

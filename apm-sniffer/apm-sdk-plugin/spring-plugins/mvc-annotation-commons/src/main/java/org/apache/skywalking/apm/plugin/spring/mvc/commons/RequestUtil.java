@@ -20,10 +20,10 @@ package org.apache.skywalking.apm.plugin.spring.mvc.commons;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.util.CollectionUtil;
+import org.apache.skywalking.apm.plugin.servlet.HttpRequestWrapper;
 import org.apache.skywalking.apm.util.StringUtil;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -32,27 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestUtil {
-    public static void collectHttpParam(HttpServletRequest request, AbstractSpan span) {
-        final Map<String, String[]> parameterMap = request.getParameterMap();
-        if (parameterMap != null && !parameterMap.isEmpty()) {
-            String tagValue = CollectionUtil.toString(parameterMap);
-            tagValue = SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD > 0 ?
-                    StringUtil.cut(tagValue, SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD) : tagValue;
-            Tags.HTTP.PARAMS.set(span, tagValue);
-        }
-    }
-
-    public static void collectHttpParam(jakarta.servlet.http.HttpServletRequest request, AbstractSpan span) {
-        final Map<String, String[]> parameterMap = request.getParameterMap();
-        if (parameterMap != null && !parameterMap.isEmpty()) {
-            String tagValue = CollectionUtil.toString(parameterMap);
-            tagValue = SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD > 0 ?
-                    StringUtil.cut(tagValue, SpringMVCPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD) : tagValue;
-            Tags.HTTP.PARAMS.set(span, tagValue);
-        }
-    }
-
-    public static void collectHttpParam(HttpServletRequestWrapper request, AbstractSpan span) {
+    public static void collectHttpParam(HttpRequestWrapper request, AbstractSpan span) {
         final Map<String, String[]> parameterMap = request.getParameterMap();
         if (parameterMap != null && !parameterMap.isEmpty()) {
             String tagValue = CollectionUtil.toString(parameterMap);
@@ -75,45 +55,7 @@ public class RequestUtil {
         }
     }
 
-    public static void collectHttpHeaders(HttpServletRequestWrapper request, AbstractSpan span) {
-        final List<String> headersList = new ArrayList<>(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.size());
-        SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.stream()
-                .filter(
-                        headerName -> request.getHeaders(headerName) != null)
-                .forEach(headerName -> {
-                    Enumeration<String> headerValues = request.getHeaders(
-                            headerName);
-                    List<String> valueList = Collections.list(
-                            headerValues);
-                    if (!CollectionUtil.isEmpty(valueList)) {
-                        String headerValue = valueList.toString();
-                        headersList.add(headerName + "=" + headerValue);
-                    }
-                });
-
-        collectHttpHeaders(headersList, span);
-    }
-
-    public static void collectHttpHeaders(HttpServletRequest request, AbstractSpan span) {
-        final List<String> headersList = new ArrayList<>(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.size());
-        SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.stream()
-                .filter(
-                        headerName -> request.getHeaders(headerName) != null)
-                .forEach(headerName -> {
-                    Enumeration<String> headerValues = request.getHeaders(
-                            headerName);
-                    List<String> valueList = Collections.list(
-                            headerValues);
-                    if (!CollectionUtil.isEmpty(valueList)) {
-                        String headerValue = valueList.toString();
-                        headersList.add(headerName + "=" + headerValue);
-                    }
-                });
-
-        collectHttpHeaders(headersList, span);
-    }
-
-    public static void collectHttpHeaders(jakarta.servlet.http.HttpServletRequest request, AbstractSpan span) {
+    public static void collectHttpHeaders(HttpRequestWrapper request, AbstractSpan span) {
         final List<String> headersList = new ArrayList<>(SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.size());
         SpringMVCPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.stream()
                 .filter(

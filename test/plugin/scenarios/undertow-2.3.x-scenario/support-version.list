@@ -14,5 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Undertow 2.3.x requires Java 11+, tested with JDK 17
-2.3.18.Final
+# Undertow 2.3.x requires Java 11+; 2.4.x requires Java 17. Tested with JDK 17.
+2.3.25.Final
+2.4.2.Final

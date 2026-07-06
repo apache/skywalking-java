@@ -61,5 +61,14 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- servlet-commons is a provided (non-transitive) dependency of the commons module; the
+             interceptor unit tests here exercise the commons AbstractMethodInterceptor, which calls
+             HttpRequestWrappers, so it must be on this module's test classpath. -->
+        <dependency>
+            <groupId>org.apache.skywalking</groupId>
+            <artifactId>apm-servlet-commons</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

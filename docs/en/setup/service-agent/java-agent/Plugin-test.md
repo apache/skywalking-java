@@ -16,11 +16,11 @@ Every plugin maintained in the main repo requires corresponding test cases as we
 
 ## Case Base Image Introduction
 
-The test framework provides `JVM-container` and `Tomcat-container` base images including JDK8 and JDK17. You can choose the best one for your test case. If both are suitable for your case, **`JVM-container` is preferred**.
+The test framework provides `JVM-container` and `Tomcat-container` base images. You can choose the best one for your test case. If both are suitable for your case, **`JVM-container` is preferred**.
 
 ### JVM-container Image Introduction
 
-[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `eclipse-temurin:8-jdk` as the base image. `JVM-container` supports JDK8 and JDK17 as well in CI, which inherits `eclipse-temurin:8-jdk` and `eclipse-temurin:17-jdk`.
+[JVM-container](../../../../../test/plugin/containers/jvm-container) uses `eclipse-temurin:8-jdk` as the default base image. In CI it is exercised on **JDK 8, 11, 17, 21 and 25** (via the `eclipse-temurin:{8,11,17,21,25}-jdk` images).
 It is supported to custom the base Java docker image by specify `base_image_java`.
 The test case project must be packaged as `project-name.zip`, including `startup.sh` and uber jar, by using `mvn clean package`.
 
@@ -31,8 +31,8 @@ Take the following test projects as examples:
 
 ### Tomcat-container Image Introduction
 
-[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk`, `tomcat:8.5-jdk17-openjdk` as the base image.
-It is supported to custom the base Tomcat docker image by specify `base_image_tomcat`.
+[Tomcat-container](../../../../../test/plugin/containers/tomcat-container) uses `tomcat:8.5-jdk8-openjdk` as the default base image. In CI it is exercised on **Tomcat 8.5, 9.0, 10.0 and 10.1** (e.g. `tomcat:8.5-jdk8-openjdk`, `tomcat:9.0.71-jdk8`, `tomcat:10.0.22-jdk8`, `tomcat:8.5-jdk17-openjdk`, `tomcat:10.1-jdk17-temurin`, `tomcat:10.1-jdk21-temurin`). Tomcat 8.5/9.0 are `javax.servlet`; Tomcat 10.0/10.1 are `jakarta.servlet`.
+It is supported to custom the base Tomcat docker image by specify `base_image_tomcat`. The base image must provide `curl` (used by the container's health check); if an official image lacks it, build a small custom image that adds `curl` first — as the JDK 25 lane does with `tomcat-curl:10.1.50-jdk25-temurin`.
 The test case project must be packaged as `project-name.war` by using `mvn package`.
 
 Take the following test project as an example

@@ -72,6 +72,7 @@ jobs:
         case:
           - spring-6.x-scenario
           - spring-boot-3.x-scenario
+          - struts2.7-scenario
           - resteasy-6.x-scenario
           - gateway-4.x-scenario
           - gateway-4.1.2.x-scenario

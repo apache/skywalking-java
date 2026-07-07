@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements.  See the NOTICE file distributed with
@@ -18,28 +17,40 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.apache.skywalking</groupId>
         <artifactId>apm-sdk-plugin</artifactId>
         <version>9.7.0-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jetty-plugins</artifactId>
-    <modules>
-        <module>jetty-client-9.x-plugin</module>
-        <module>jetty-client-9.0-plugin</module>
-        <module>jetty-server-plugin</module>
-        <module>jetty-server-12.x-plugin</module>
-        <module>jetty-client-11.x-plugin</module>
-    </modules>
-    <packaging>pom</packaging>
+    <artifactId>apm-struts2-7.x-plugin</artifactId>
+    <packaging>jar</packaging>
 
-    <name>jetty-plugin</name>
-    <url>http://maven.apache.org</url>
+    <name>struts2-7.x-plugin</name>
 
+    <!--
+      Struts 7.x moved DefaultActionInvocation from com.opensymphony.xwork2 to org.apache.struts2
+      and switched to the jakarta.servlet namespace (Jakarta Servlet 6.0, JDK 17), so it needs a
+      separate plugin from struts2-2.x-plugin (which stays on the old class + javax).
+    -->
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <struts.version>7.2.1</struts.version>
+        <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+            <version>${struts.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>${jakarta-servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

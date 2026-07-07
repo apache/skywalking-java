@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements.  See the NOTICE file distributed with
@@ -18,28 +17,36 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
     <parent>
+        <artifactId>jetty-plugins</artifactId>
         <groupId>org.apache.skywalking</groupId>
-        <artifactId>apm-sdk-plugin</artifactId>
         <version>9.7.0-SNAPSHOT</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jetty-plugins</artifactId>
-    <modules>
-        <module>jetty-client-9.x-plugin</module>
-        <module>jetty-client-9.0-plugin</module>
-        <module>jetty-server-plugin</module>
-        <module>jetty-server-12.x-plugin</module>
-        <module>jetty-client-11.x-plugin</module>
-    </modules>
-    <packaging>pom</packaging>
+    <artifactId>apm-jetty-server-12.x-plugin</artifactId>
+    <packaging>jar</packaging>
 
-    <name>jetty-plugin</name>
+    <name>jetty-server-12.x-plugin</name>
     <url>http://maven.apache.org</url>
 
+    <!--
+      Jetty 12 removed the concrete org.eclipse.jetty.server.HttpChannel class that the merged
+      jetty-server plugin enhances, and redesigned request handling around the namespace-neutral
+      core API org.eclipse.jetty.server.Server#handle(Request, Response, Callback), which is async
+      (the response status is only known when the Callback completes). Hence a separate plugin that
+      does not use the servlet-commons wrapper. Covers Jetty 12.0.x and 12.1.x (same signature).
+    -->
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jetty-server.version>12.0.36</jetty-server.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty-server.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

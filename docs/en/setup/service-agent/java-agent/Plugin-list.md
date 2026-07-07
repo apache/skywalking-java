@@ -56,6 +56,7 @@
 - jetty-client-9.0
 - jetty-client-9.x
 - jetty-server
+- jetty-server-12.x
 - kafka-0.11.x/1.x/2.x
 - kafka-3.7.x
 - kafka-3.9.x
@@ -132,6 +133,7 @@
 - spring-webflux-5.x-webclient
 - spymemcached-2.x
 - struts2-2.x
+- struts2-7.x
 - thrift
 - tomcat
 - toolkit-counter

@@ -11,10 +11,10 @@ metrics based on the tracing data.
   * Spring MVC 3.x, 4.x 5.x with servlet 3.x
   * Spring MVC 6.x (Optional²)
   * [Nutz Web Framework](https://github.com/nutzam/nutz)  1.x
-  * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x
+  * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x, 7.x (Jakarta, JDK17)
   * Resin 3 (Optional¹), See [SkySPM Plugin Repository](https://github.com/SkyAPM/java-plugin-extensions)
   * Resin 4 (Optional¹), See [SkySPM Plugin Repository](https://github.com/SkyAPM/java-plugin-extensions)
-  * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 11.x
+  * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 12.x
   * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional²) -> 6.x (Optional²)
   * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.3.18.Final
   * [RESTEasy](https://resteasy.dev/)  3.1.0.Final -> 6.2.4.Final
@@ -172,7 +172,7 @@ The meter plugin provides the advanced metrics collections, which are not a part
   * [Undertow](https://github.com/undertow-io/undertow) 2.1.x -> 2.6.x
   * [Tomcat](https://github.com/apache/tomcat) 7.0.x -> 10.0.x
   * [Dubbo](https://github.com/apache/dubbo) 2.5.x -> 2.7.x
-  * [Jetty](https://github.com/eclipse/jetty.project) 9.1.x -> 11.x
+  * [Jetty](https://github.com/eclipse/jetty.project) 9.1.x -> 12.x
   * [Grizzly](https://github.com/eclipse-ee4j/grizzly) 2.3.x -> 4.x
 * Connection Pool
   * Supported JDBC drviers

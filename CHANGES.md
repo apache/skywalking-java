@@ -7,6 +7,8 @@ Release Notes.
 
 * Fix `plugin.http.include_http_headers` not working on Spring Boot 3.x / Jakarta EE (apache/skywalking#13938).
 * Unify the Tomcat plugins into a single `tomcat` plugin (Tomcat 7 - 10) and the Jetty server plugins into a single `jetty-server` plugin (Jetty 9 - 11), each supporting both `javax.servlet` and `jakarta.servlet`. Breaking change: plugin names `tomcat-7.x/8.x` and `tomcat-10.x` are replaced by `tomcat`, and `jetty-server-9.x` and `jetty-server-11.x` by `jetty-server`; update `plugin.exclude_plugins` if you reference the old names.
+* Add a Jetty 12 server plugin (`jetty-server-12.x`). Jetty 12 removed the `HttpChannel` handle target and moved request handling to the async `Server#handle(Request, Response, Callback)` core API, so it needs a separate plugin from the merged `jetty-server`.
+* Add a Struts 7 plugin (`struts2-7.x`) for Jakarta Struts, whose `DefaultActionInvocation` moved to `org.apache.struts2`.
 * Added support for Lettuce reactive Redis commands.
 * Add Spring AI 1.x plugin and GenAI layer.
 * Fix httpclient-5.x plugin injecting sw8 propagation headers into ClickHouse HTTP requests (port 8123), causing HTTP 400. Add `PROPAGATION_EXCLUDE_PORTS` config to skip tracing (including header injection) for specified ports in the classic client interceptor.

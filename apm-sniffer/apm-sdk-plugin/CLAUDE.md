@@ -251,6 +251,8 @@ histogram.addValue(3);
 
 The plugin test framework verifies plugin functionality using Docker containers with real services and a mock OAP backend.
 
+> See `test/plugin/CLAUDE.md` for the testing philosophy: a plugin's scenario (with one-version-per-minor coverage) is the **key** test — it proves the interceptor's cast/fetch-data logic and version compatibility by running the real framework. Do **not** over-engineer with many mock-based unit tests for a plugin.
+
 ### Environment Requirements
 - MacOS/Linux
 - JDK 8+

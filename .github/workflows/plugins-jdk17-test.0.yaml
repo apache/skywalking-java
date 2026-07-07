@@ -79,6 +79,7 @@ jobs:
           - grizzly-2.3.x-4.x-workthreadpool-scenario
           - jetty-11.x-scenario
           - jetty-10.x-scenario
+          - jetty-12.x-scenario
           - spring-ai-1.x-scenario
           - spring-rabbitmq-scenario
           - graphql-20plus-scenario

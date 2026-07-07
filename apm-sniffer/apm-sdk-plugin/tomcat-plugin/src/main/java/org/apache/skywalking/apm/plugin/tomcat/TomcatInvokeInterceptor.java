@@ -37,8 +37,11 @@ import org.apache.skywalking.apm.util.StringUtil;
 import org.apache.tomcat.util.http.Parameters;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TomcatInvokeInterceptor implements InstanceMethodsAroundInterceptor {
@@ -63,6 +66,10 @@ public class TomcatInvokeInterceptor implements InstanceMethodsAroundInterceptor
 
         if (TomcatPluginConfig.Plugin.Tomcat.COLLECT_HTTP_PARAMS) {
             collectHttpParam(request, span);
+        }
+
+        if (!CollectionUtil.isEmpty(TomcatPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS)) {
+            collectHttpHeaders(request, span);
         }
     }
 
@@ -113,6 +120,27 @@ public class TomcatInvokeInterceptor implements InstanceMethodsAroundInterceptor
                 StringUtil.cut(tagValue, TomcatPluginConfig.Plugin.Http.HTTP_PARAMS_LENGTH_THRESHOLD) :
                 tagValue;
             Tags.HTTP.PARAMS.set(span, tagValue);
+        }
+    }
+
+    private void collectHttpHeaders(Request request, AbstractSpan span) {
+        final List<String> headersList = new ArrayList<>(TomcatPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.size());
+        TomcatPluginConfig.Plugin.Http.INCLUDE_HTTP_HEADERS.stream()
+            .filter(headerName -> request.getHeaders(headerName) != null)
+            .forEach(headerName -> {
+                Enumeration<String> headerValues = request.getHeaders(headerName);
+                List<String> valueList = Collections.list(headerValues);
+                if (!CollectionUtil.isEmpty(valueList)) {
+                    headersList.add(headerName + "=" + valueList);
+                }
+            });
+
+        if (!headersList.isEmpty()) {
+            String tagValue = String.join("\n", headersList);
+            tagValue = TomcatPluginConfig.Plugin.Http.HTTP_HEADERS_LENGTH_THRESHOLD > 0 ?
+                StringUtil.cut(tagValue, TomcatPluginConfig.Plugin.Http.HTTP_HEADERS_LENGTH_THRESHOLD) :
+                tagValue;
+            Tags.HTTP.HEADERS.set(span, tagValue);
         }
     }
 }

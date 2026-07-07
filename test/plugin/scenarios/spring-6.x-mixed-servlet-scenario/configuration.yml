@@ -15,7 +15,9 @@
 # limitations under the License.
 
 type: tomcat
-entryService: http://localhost:8080/tomcat-9x-scenario/case/tomcat-9x-scenario
-healthCheck: http://localhost:8080/tomcat-9x-scenario/case/healthCheck
+entryService: '"http://localhost:8080/spring-6.x-mixed-servlet-scenario/case/resttemplate?q1=v1&chinese=%e4%b8%ad%e6%96%87"'
+healthCheck: http://localhost:8080/spring-6.x-mixed-servlet-scenario/healthCheck
+runningMode: with_optional
+withPlugins: apm-spring-annotation-plugin-*.jar;apm-*-6.x-plugin-*.jar
 environment:
-  - CATALINA_OPTS="-Dskywalking.plugin.http.include_http_headers=mock_header -Dskywalking.plugin.tomcat.collect_http_params=true"
+  - CATALINA_OPTS="-Dskywalking.plugin.http.include_http_headers=mock_header -Dskywalking.plugin.springmvc.collect_http_params=true"

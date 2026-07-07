@@ -37,7 +37,10 @@ public class CaseServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost("http://localhost:8080/tomcat-9x-scenario/case/tomcat-9x-scenario");
+            // Carry a query param and a header so the receiving Tomcat entry span (doPost) exercises
+            // the tomcat-plugin's http.params + http.headers collection (see configuration.yml).
+            HttpPost httpPost = new HttpPost("http://localhost:8080/tomcat-9x-scenario/case/tomcat-9x-scenario?q1=v1");
+            httpPost.setHeader("mock_header", "mock_value");
             ResponseHandler<String> responseHandler = response -> {
                 HttpEntity entity = response.getEntity();
                 return entity != null ? EntityUtils.toString(entity) : null;

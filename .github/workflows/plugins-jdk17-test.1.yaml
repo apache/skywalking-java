@@ -71,6 +71,7 @@ jobs:
       matrix:
         case:
           - spring-6.x-scenario
+          - spring-6.x-mixed-servlet-scenario
           - spring-boot-3.x-scenario
           - struts2.7-scenario
           - resteasy-6.x-scenario

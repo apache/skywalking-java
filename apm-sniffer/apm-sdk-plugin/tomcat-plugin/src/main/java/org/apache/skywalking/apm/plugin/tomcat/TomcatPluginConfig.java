@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.tomcat;
 
+import java.util.List;
 import org.apache.skywalking.apm.agent.core.boot.PluginConfig;
 
 public class TomcatPluginConfig {
@@ -38,6 +39,19 @@ public class TomcatPluginConfig {
              * for the sake of performance
              */
             public static int HTTP_PARAMS_LENGTH_THRESHOLD = 1024;
+
+            /**
+             * When {@link Http#INCLUDE_HTTP_HEADERS} declares header names, this threshold controls the length
+             * limitation of all header values. use negative values to keep and send the complete headers.
+             * Note. this config item is added for the sake of performance.
+             */
+            public static int HTTP_HEADERS_LENGTH_THRESHOLD = 2048;
+
+            /**
+             * It controls what header data should be collected, this is for security purpose, values must be in lower
+             * case. Shares the {@code plugin.http.include_http_headers} config key with the other HTTP server plugins.
+             */
+            public static List<String> INCLUDE_HTTP_HEADERS;
         }
     }
 }

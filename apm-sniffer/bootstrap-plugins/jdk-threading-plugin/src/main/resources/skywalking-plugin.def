@@ -16,3 +16,4 @@
 
 jdk-threading-plugin=org.apache.skywalking.apm.plugin.jdk.threading.define.RunnableInstrumentation
 jdk-threading-plugin=org.apache.skywalking.apm.plugin.jdk.threading.define.CallableInstrumentation
+jdk-threading-plugin=org.apache.skywalking.apm.plugin.jdk.threading.define.ThreadPoolExecutorInstrumentation

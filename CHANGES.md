@@ -11,6 +11,7 @@ Release Notes.
 * Add a Jetty 12 server plugin (`jetty-server-12.x`). Jetty 12 removed the `HttpChannel` handle target and moved request handling to the async `Server#handle(Request, Response, Callback)` core API, so it needs a separate plugin from the merged `jetty-server`.
 * Add a Struts 7 plugin (`struts2-7.x`) for Jakarta Struts, whose `DefaultActionInvocation` moved to `org.apache.struts2`.
 * Added support for Lettuce reactive Redis commands.
+* Add tracing support for `invokeAll` and `invokeAny` in the JDK thread pool plugin.
 * Add Spring AI 1.x plugin and GenAI layer.
 * Fix httpclient-5.x plugin injecting sw8 propagation headers into ClickHouse HTTP requests (port 8123), causing HTTP 400. Add `PROPAGATION_EXCLUDE_PORTS` config to skip tracing (including header injection) for specified ports in the classic client interceptor.
 * Add Spring RabbitMQ 2.x - 4.x plugin.

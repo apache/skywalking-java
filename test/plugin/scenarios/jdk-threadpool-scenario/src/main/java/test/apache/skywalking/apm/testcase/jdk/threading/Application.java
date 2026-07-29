@@ -17,11 +17,19 @@
 
 package test.apache.skywalking.apm.testcase.jdk.threading;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -48,6 +56,7 @@ public class Application {
         private final RestTemplate restTemplate;
         private final ExecutorService executorService;
         private final ExecutorService executorService2;
+        private final ExecutorService executorService3;
 
         public TestController(final RestTemplate restTemplate) {
             this.restTemplate = restTemplate;
@@ -67,6 +76,15 @@ public class Application {
                     return thread;
                 }
             });
+            this.executorService3 = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r);
+                    thread.setName("batch-callable-thread");
+                    return thread;
+                }
+            });
         }
 
         @GetMapping("/healthCheck")
@@ -75,7 +93,8 @@ public class Application {
         }
 
         @GetMapping("/greet/{username}")
-        public String testCase(@PathVariable final String username) throws ExecutionException, InterruptedException {
+        public String testCase(@PathVariable final String username)
+            throws ExecutionException, InterruptedException, TimeoutException {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -98,7 +117,34 @@ public class Application {
             executorService2.submit(runnable);
             executorService2.submit(callable).get();
 
+            Callable<String> firstCallable = new Callable<String>() {
+                @Override
+                public String call() {
+                    return "first";
+                }
+            };
+            Callable<String> secondCallable = new Callable<String>() {
+                @Override
+                public String call() {
+                    return "second";
+                }
+            };
+            List<Callable<String>> invokeAllCallables = Collections.unmodifiableList(
+                Arrays.asList(firstCallable, secondCallable));
+            verifyInvokeAllResults(executorService3.invokeAll(invokeAllCallables));
+            verifyInvokeAllResults(executorService3.invokeAll(invokeAllCallables, 10, TimeUnit.SECONDS));
+
+            List<Callable<String>> invokeAnyCallables = Collections.singletonList(firstCallable);
+            executorService3.invokeAny(invokeAnyCallables);
+            executorService3.invokeAny(invokeAnyCallables, 10, TimeUnit.SECONDS);
+
             return username;
+        }
+
+        private void verifyInvokeAllResults(List<Future<String>> results) throws ExecutionException, InterruptedException {
+            if (!"first".equals(results.get(0).get()) || !"second".equals(results.get(1).get())) {
+                throw new IllegalStateException("invokeAll results do not preserve task iteration order");
+            }
         }
 
         @GetMapping("/threadpool")

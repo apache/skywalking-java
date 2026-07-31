@@ -37,15 +37,9 @@ public class ThreadPoolExecutorInstrumentation extends ClassInstanceMethodsEnhan
 
     private static final String INTERCEPT_SUBMIT_METHOD = "submit";
 
-    private static final String INTERCEPT_INVOKE_ALL_METHOD = "invokeAll";
-
-    private static final String INTERCEPT_INVOKE_ANY_METHOD = "invokeAny";
-
     private static final String INTERCEPT_EXECUTE_METHOD_HANDLE = "org.apache.skywalking.apm.plugin.ThreadPoolExecuteMethodInterceptor";
 
     private static final String INTERCEPT_SUBMIT_METHOD_HANDLE = "org.apache.skywalking.apm.plugin.ThreadPoolSubmitMethodInterceptor";
-
-    private static final String INTERCEPT_INVOKE_METHOD_HANDLE = "org.apache.skywalking.apm.plugin.ThreadPoolInvokeMethodInterceptor";
 
     @Override
     public boolean isBootstrapInstrumentation() {
@@ -90,23 +84,6 @@ public class ThreadPoolExecutorInstrumentation extends ClassInstanceMethodsEnhan
                     @Override
                     public String getMethodsInterceptor() {
                         return INTERCEPT_SUBMIT_METHOD_HANDLE;
-                    }
-
-                    @Override
-                    public boolean isOverrideArgs() {
-                        return true;
-                    }
-                },
-                new InstanceMethodsInterceptPoint() {
-                    @Override
-                    public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                        return ElementMatchers.named(INTERCEPT_INVOKE_ALL_METHOD)
-                                              .or(ElementMatchers.named(INTERCEPT_INVOKE_ANY_METHOD));
-                    }
-
-                    @Override
-                    public String getMethodsInterceptor() {
-                        return INTERCEPT_INVOKE_METHOD_HANDLE;
                     }
 
                     @Override

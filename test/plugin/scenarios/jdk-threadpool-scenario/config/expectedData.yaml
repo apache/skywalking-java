@@ -344,22 +344,10 @@ segmentItems:
                  traceId:  not null}
       - segmentId:  not null
         spans:
-          - operationName: ThreadPoolExecutor/invokeAny
+          - operationName: ThreadPoolExecutor/invokeAll
             operationId: 0
             parentSpanId: 0
-            spanId: 4
-            spanLayer: Unknown
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 80
-            isError: false
-            spanType: Local
-            peer: ''
-            skipAnalysis: false
-          - operationName: ThreadPoolExecutor/invokeAny
-            operationId: 0
-            parentSpanId: 0
-            spanId: 3
+            spanId: 1
             spanLayer: Unknown
             startTime: nq 0
             endTime: nq 0
@@ -380,10 +368,22 @@ segmentItems:
             spanType: Local
             peer: ''
             skipAnalysis: false
-          - operationName: ThreadPoolExecutor/invokeAll
+          - operationName: ThreadPoolExecutor/invokeAny
             operationId: 0
             parentSpanId: 0
-            spanId: 1
+            spanId: 3
+            spanLayer: Unknown
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 80
+            isError: false
+            spanType: Local
+            peer: ''
+            skipAnalysis: false
+          - operationName: ThreadPoolExecutor/invokeAny
+            operationId: 0
+            parentSpanId: 0
+            spanId: 4
             spanLayer: Unknown
             startTime: nq 0
             endTime: nq 0

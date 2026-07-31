@@ -27,24 +27,25 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.InstanceMethodsAroundInterceptorV2;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.wrapper.SwCallableWrapper;
 
-public class ThreadPoolInvokeMethodInterceptor implements InstanceMethodsAroundInterceptor {
+public class ThreadPoolInvokeMethodInterceptor implements InstanceMethodsAroundInterceptorV2 {
 
     private static final String OPERATION_NAME_PREFIX = "ThreadPoolExecutor/";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                             MethodInterceptResult result) throws Throwable {
+                             MethodInvocationContext context) throws Throwable {
         if (!shouldEnhance(allArguments)) {
             return;
         }
 
         AbstractSpan span = ContextManager.createLocalSpan(OPERATION_NAME_PREFIX + method.getName());
         span.setComponent(ComponentsDefine.JDK_THREADING);
+        context.setContext(span);
 
         ContextSnapshot contextSnapshot = ContextManager.capture();
         Collection<?> callables = (Collection<?>) allArguments[0];
@@ -57,18 +58,20 @@ public class ThreadPoolInvokeMethodInterceptor implements InstanceMethodsAroundI
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
-                              Object ret) throws Throwable {
-        if (shouldEnhance(allArguments)) {
-            ContextManager.stopSpan();
+                              Object ret, MethodInvocationContext context) throws Throwable {
+        AbstractSpan span = (AbstractSpan) context.getContext();
+        if (span != null) {
+            ContextManager.stopSpan(span);
         }
         return ret;
     }
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
-                                      Class<?>[] argumentsTypes, Throwable t) {
-        if (shouldEnhance(allArguments)) {
-            ContextManager.activeSpan().log(t);
+                                      Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
+        AbstractSpan span = (AbstractSpan) context.getContext();
+        if (span != null) {
+            span.log(t);
         }
     }
 

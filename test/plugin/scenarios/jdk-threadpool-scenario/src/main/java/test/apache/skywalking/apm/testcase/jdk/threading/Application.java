@@ -53,6 +53,14 @@ public class Application {
 
     @RestController
     static class TestController {
+        private static class NestedThreadPoolExecutor extends ThreadPoolExecutor {
+            private NestedThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
+                                             TimeUnit unit, LinkedBlockingQueue<Runnable> workQueue,
+                                             ThreadFactory threadFactory) {
+                super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory);
+            }
+        }
+
         private final RestTemplate restTemplate;
         private final ExecutorService executorService;
         private final ExecutorService executorService2;
@@ -76,7 +84,7 @@ public class Application {
                     return thread;
                 }
             });
-            this.executorService3 = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS,
+            this.executorService3 = new NestedThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
                 @Override
                 public Thread newThread(Runnable r) {

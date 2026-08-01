@@ -15,3 +15,4 @@
 # limitations under the License.
 
 jdk-threadpool-plugin=org.apache.skywalking.apm.plugin.define.ThreadPoolExecutorInstrumentation
+jdk-threadpool-plugin=org.apache.skywalking.apm.plugin.define.ThreadPoolExecutorInvokeInstrumentation

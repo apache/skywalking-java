@@ -46,7 +46,6 @@ import org.apache.skywalking.apm.plugin.wrapper.SwCallableWrapper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
 @RunWith(TracingSegmentRunner.class)
 public class ThreadPoolInvokeMethodInterceptorTest {
@@ -57,10 +56,21 @@ public class ThreadPoolInvokeMethodInterceptorTest {
     @Rule
     public AgentServiceRule agentServiceRule = new AgentServiceRule();
 
-    @Mock
-    private EnhancedInstance enhancedInstance;
-
     private final ThreadPoolInvokeMethodInterceptor interceptor = new ThreadPoolInvokeMethodInterceptor();
+
+    @Test
+    public void shouldIgnoreInvocationWithoutActiveContext() throws Throwable {
+        List<Callable<String>> original = Collections.singletonList(new StringCallable("callable"));
+        Object[] arguments = new Object[] {original};
+        MethodInvocationContext context = new MethodInvocationContext();
+
+        interceptor.beforeMethod(null, invokeAllMethod(), arguments, null, context);
+        interceptor.afterMethod(null, invokeAllMethod(), arguments, null, null, context);
+
+        assertThat(arguments[0], sameInstance((Object) original));
+        assertThat(context.getContext(), is((Object) null));
+        assertThat(segmentStorage.getTraceSegments().isEmpty(), is(true));
+    }
 
     @Test
     public void shouldWrapCallablesInOrderWithoutMutatingOriginalCollection() throws Throwable {
@@ -71,7 +81,7 @@ public class ThreadPoolInvokeMethodInterceptorTest {
         MethodInvocationContext context = new MethodInvocationContext();
         ContextManager.createEntrySpan("parent", new ContextCarrier());
 
-        interceptor.beforeMethod(enhancedInstance, invokeAllMethod(), arguments, null, context);
+        interceptor.beforeMethod(null, invokeAllMethod(), arguments, null, context);
 
         assertThat(arguments[0] == original, is(false));
         assertThat(arguments[0], instanceOf(List.class));
@@ -82,7 +92,7 @@ public class ThreadPoolInvokeMethodInterceptorTest {
         assertThat(original.get(0), sameInstance(first));
         assertThat(original.get(1), sameInstance(second));
 
-        interceptor.afterMethod(enhancedInstance, invokeAllMethod(), arguments, null, null, context);
+        interceptor.afterMethod(null, invokeAllMethod(), arguments, null, null, context);
         assertThat(ContextManager.isActive(), is(true));
         ContextManager.stopSpan();
 
@@ -98,13 +108,13 @@ public class ThreadPoolInvokeMethodInterceptorTest {
         Object[] arguments = new Object[] {Arrays.asList(alreadyWrapped, capturedCallable)};
         MethodInvocationContext context = new MethodInvocationContext();
 
-        interceptor.beforeMethod(enhancedInstance, invokeAnyMethod(), arguments, null, context);
+        interceptor.beforeMethod(null, invokeAnyMethod(), arguments, null, context);
 
         List<?> wrapped = (List<?>) arguments[0];
         assertThat(wrapped.get(0), sameInstance((Object) alreadyWrapped));
         assertThat(wrapped.get(1), sameInstance((Object) capturedCallable));
 
-        interceptor.afterMethod(enhancedInstance, invokeAnyMethod(), arguments, null, null, context);
+        interceptor.afterMethod(null, invokeAnyMethod(), arguments, null, null, context);
         ContextManager.stopSpan();
 
         assertInvocationSpan("ThreadPoolExecutor/invokeAny", false);
@@ -127,8 +137,8 @@ public class ThreadPoolInvokeMethodInterceptorTest {
             MethodInvocationContext context = new MethodInvocationContext();
             ContextManager.createEntrySpan("parent", new ContextCarrier());
 
-            interceptor.beforeMethod(enhancedInstance, method, arguments, method.getParameterTypes(), context);
-            interceptor.afterMethod(enhancedInstance, method, arguments, method.getParameterTypes(), null, context);
+            interceptor.beforeMethod(null, method, arguments, method.getParameterTypes(), context);
+            interceptor.afterMethod(null, method, arguments, method.getParameterTypes(), null, context);
             ContextManager.stopSpan();
         }
 
@@ -151,10 +161,10 @@ public class ThreadPoolInvokeMethodInterceptorTest {
             MethodInvocationContext context = new MethodInvocationContext();
             ContextManager.createEntrySpan("parent", new ContextCarrier());
 
-            interceptor.beforeMethod(enhancedInstance, invokeAllMethod(), arguments, null, context);
+            interceptor.beforeMethod(null, invokeAllMethod(), arguments, null, context);
             interceptor.handleMethodException(
-                enhancedInstance, invokeAllMethod(), arguments, null, new IllegalStateException("ignored"), context);
-            interceptor.afterMethod(enhancedInstance, invokeAllMethod(), arguments, null, null, context);
+                null, invokeAllMethod(), arguments, null, new IllegalStateException("ignored"), context);
+            interceptor.afterMethod(null, invokeAllMethod(), arguments, null, null, context);
 
             assertThat(context.getContext(), is((Object) null));
             assertThat(ContextManager.isActive(), is(true));
@@ -176,10 +186,10 @@ public class ThreadPoolInvokeMethodInterceptorTest {
         MethodInvocationContext context = new MethodInvocationContext();
         ContextManager.createEntrySpan("parent", new ContextCarrier());
 
-        interceptor.beforeMethod(enhancedInstance, invokeAnyMethod(), arguments, null, context);
+        interceptor.beforeMethod(null, invokeAnyMethod(), arguments, null, context);
         interceptor.handleMethodException(
-            enhancedInstance, invokeAnyMethod(), arguments, null, new IllegalStateException("test"), context);
-        interceptor.afterMethod(enhancedInstance, invokeAnyMethod(), arguments, null, null, context);
+            null, invokeAnyMethod(), arguments, null, new IllegalStateException("test"), context);
+        interceptor.afterMethod(null, invokeAnyMethod(), arguments, null, null, context);
 
         assertThat(ContextManager.isActive(), is(true));
         ContextManager.stopSpan();

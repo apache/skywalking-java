@@ -424,7 +424,7 @@ segmentItems:
             skipAnalysis: false
             refs:
               - {parentEndpoint: 'GET:/greet/{username}', networkAddress: '', refType: CrossThread,
-                 parentSpanId: not null, parentTraceSegmentId:  not null,
+                 parentSpanId: gt 0, parentTraceSegmentId:  not null,
                  parentServiceInstance:  not null, parentService: jdk-threadpool-scenario,
                  traceId:  not null}
       - segmentId:  not null
@@ -443,7 +443,7 @@ segmentItems:
             skipAnalysis: false
             refs:
               - {parentEndpoint: 'GET:/greet/{username}', networkAddress: '', refType: CrossThread,
-                 parentSpanId: not null, parentTraceSegmentId:  not null,
+                 parentSpanId: gt 0, parentTraceSegmentId:  not null,
                  parentServiceInstance:  not null, parentService: jdk-threadpool-scenario,
                  traceId:  not null}
       - segmentId:  not null
@@ -462,7 +462,7 @@ segmentItems:
             skipAnalysis: false
             refs:
               - {parentEndpoint: 'GET:/greet/{username}', networkAddress: '', refType: CrossThread,
-                 parentSpanId: not null, parentTraceSegmentId:  not null,
+                 parentSpanId: gt 0, parentTraceSegmentId:  not null,
                  parentServiceInstance:  not null, parentService: jdk-threadpool-scenario,
                  traceId:  not null}
       - segmentId:  not null
@@ -481,7 +481,7 @@ segmentItems:
             skipAnalysis: false
             refs:
               - {parentEndpoint: 'GET:/greet/{username}', networkAddress: '', refType: CrossThread,
-                 parentSpanId: not null, parentTraceSegmentId:  not null,
+                 parentSpanId: gt 0, parentTraceSegmentId:  not null,
                  parentServiceInstance:  not null, parentService: jdk-threadpool-scenario,
                  traceId:  not null}
       - segmentId:  not null
@@ -500,7 +500,7 @@ segmentItems:
             skipAnalysis: false
             refs:
               - {parentEndpoint: 'GET:/greet/{username}', networkAddress: '', refType: CrossThread,
-                 parentSpanId: not null, parentTraceSegmentId:  not null,
+                 parentSpanId: gt 0, parentTraceSegmentId:  not null,
                  parentServiceInstance:  not null, parentService: jdk-threadpool-scenario,
                  traceId:  not null}
       - segmentId:  not null
@@ -519,7 +519,7 @@ segmentItems:
             skipAnalysis: false
             refs:
               - {parentEndpoint: 'GET:/greet/{username}', networkAddress: '', refType: CrossThread,
-                 parentSpanId: not null, parentTraceSegmentId:  not null,
+                 parentSpanId: gt 0, parentTraceSegmentId:  not null,
                  parentServiceInstance:  not null, parentService: jdk-threadpool-scenario,
                  traceId:  not null}
       - segmentId:  not null

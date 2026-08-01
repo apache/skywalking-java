@@ -53,6 +53,7 @@ public class Application {
 
     @RestController
     static class TestController {
+        // Verifies inherited invoke methods dispatch through ThreadPoolExecutor's single enhanced override.
         private static class NestedThreadPoolExecutor extends ThreadPoolExecutor {
             private NestedThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
                                              TimeUnit unit, LinkedBlockingQueue<Runnable> workQueue,

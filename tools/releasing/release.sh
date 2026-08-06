@@ -397,7 +397,7 @@ This is a call for vote to release Apache SkyWalking Java Agent version ${versio
 
 Release notes:
 
- * https://github.com/apache/skywalking-java/blob/master/changes/changes-${version}.md
+ * https://github.com/apache/skywalking-java/blob/main/changes/changes-${version}.md
 
 Release Candidate:
 
@@ -457,7 +457,7 @@ the previous version. The notable changes include:
 3. ...
 
 Please refer to the change log for the complete list of changes:
-https://github.com/apache/skywalking-java/blob/master/changes/changes-${version}.md
+https://github.com/apache/skywalking-java/blob/main/changes/changes-${version}.md
 
 Apache SkyWalking website:
 http://skywalking.apache.org/

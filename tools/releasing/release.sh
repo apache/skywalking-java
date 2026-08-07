@@ -189,10 +189,14 @@ cmd_prepare() {
     info "Moving changelog to changes/changes-${version}.md..."
     local changes_file="changes/changes-${version}.md"
 
-    # Extract current version section from CHANGES.md
-    sed -n "/^${version}$/,/^------------------$/p" CHANGES.md | head -n -1 > "$changes_file"
-    grep "All issues and pull requests" CHANGES.md >> "$changes_file" || true
-    info "Created $changes_file"
+    # Archive CHANGES.md as the release changelog: everything up to and including
+    # the milestone link, dropping only the trailing "Find change logs of all
+    # versions" footer. Uses POSIX sed addressing so it works on BSD and GNU alike.
+    if ! grep -q "All issues and pull requests" CHANGES.md; then
+        error "CHANGES.md has no 'All issues and pull requests' milestone line; cannot archive changelog."
+    fi
+    sed -n '1,/All issues and pull requests/p' CHANGES.md > "$changes_file"
+    info "Created $changes_file ($(wc -l < "$changes_file" | tr -d ' ') lines)"
 
     # Reset CHANGES.md for next development version
     cat > CHANGES.md << EOF
@@ -397,7 +401,7 @@ This is a call for vote to release Apache SkyWalking Java Agent version ${versio
 
 Release notes:
 
- * https://github.com/apache/skywalking-java/blob/master/changes/changes-${version}.md
+ * https://github.com/apache/skywalking-java/blob/main/changes/changes-${version}.md
 
 Release Candidate:
 
@@ -457,7 +461,7 @@ the previous version. The notable changes include:
 3. ...
 
 Please refer to the change log for the complete list of changes:
-https://github.com/apache/skywalking-java/blob/master/changes/changes-${version}.md
+https://github.com/apache/skywalking-java/blob/main/changes/changes-${version}.md
 
 Apache SkyWalking website:
 http://skywalking.apache.org/

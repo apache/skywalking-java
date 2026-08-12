@@ -6,7 +6,7 @@ Release Notes.
 ------------------
 
 
-All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/xxx?closed=1)
+All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/263?closed=1)
 
 ------------------
 Find change logs of all versions [here](changes).

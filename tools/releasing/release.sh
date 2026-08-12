@@ -47,6 +47,51 @@ warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
 error() { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
 
 # ============================================================
+# resolve_version — identify the release from its tag
+# ============================================================
+# Every step after `prepare` acts on the release tag, never on whatever branch
+# happens to be checked out. `release:perform` builds from the tag, the source
+# tar is cut from the tag, and the vote email quotes the tag's commit IDs.
+#
+# The version therefore has to be derived from the tag as well. `git describe`
+# cannot do this: release tags are created on release/x.y.z branches and never
+# become ancestors of main, so once the release PR is merged and the branch is
+# deleted, describe walks past them to an unrelated ancient tag (v3.2.6 here).
+# That would aim SVN moves and Docker pushes at the wrong version. Tags are
+# branch-independent and outlive the release branch, so select from the tag list.
+#
+# Order of precedence: explicit argument, then $RELEASE_VERSION, then the highest
+# vX.Y.Z tag in the repository.
+resolve_version() {
+    local explicit="${1:-}"
+    [ -z "$explicit" ] && explicit="${RELEASE_VERSION:-}"
+
+    local version
+    if [ -n "$explicit" ]; then
+        version="${explicit#v}"
+    else
+        local latest
+        latest=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
+        if [ -z "$latest" ]; then
+            error "No vX.Y.Z release tag found. Pass the version explicitly, e.g. '$0 <command> 9.7.0'."
+        fi
+        version="${latest#v}"
+    fi
+
+    case "$version" in
+        [0-9]*.[0-9]*.[0-9]*) ;;
+        *) error "Version must look like x.y.z, got: ${version}" ;;
+    esac
+
+    # Refuse to act on a release that was never tagged.
+    if ! git rev-parse -q --verify "refs/tags/v${version}" >/dev/null 2>&1; then
+        error "Tag v${version} does not exist locally. Run '$0 prepare ${version}' first, or fetch it with 'git fetch origin --tags'."
+    fi
+
+    echo "$version"
+}
+
+# ============================================================
 # preflight — check tools and environment
 # ============================================================
 cmd_preflight() {
@@ -161,6 +206,40 @@ cmd_prepare() {
     echo "  Next dev version: ${next_version}-SNAPSHOT"
     echo "  Branch: ${branch_name}"
     echo ""
+
+    # At the end of this step CHANGES.md is reset for the next development
+    # version, and its milestone link needs that version's GitHub milestone ID.
+    # Ask for it here, up front, so the release does not stop for input after
+    # the long release:prepare build. Set NEXT_MILESTONE=<id> to skip the prompt.
+    local next_milestone="${NEXT_MILESTONE:-}"
+    if [ -z "$next_milestone" ]; then
+        echo "  CHANGES.md will be reset for ${next_version}, and its milestone link needs an ID."
+        echo "  Find 'Java - ${next_version}' at https://github.com/apache/skywalking/milestones"
+        read -rp "  Milestone ID for ${next_version} (number, or blank to fill in manually later): " next_milestone
+    fi
+    if [ -n "$next_milestone" ]; then
+        case "$next_milestone" in
+            *[!0-9]*) error "Milestone ID must be a number, got: ${next_milestone}" ;;
+        esac
+        # gh api writes the error body to stdout on failure, so gate on its
+        # exit status rather than letting a 404 payload become the title.
+        local milestone_title
+        if ! milestone_title=$(gh api "repos/apache/skywalking/milestones/${next_milestone}" -q .title 2>/dev/null); then
+            milestone_title=""
+        fi
+        if [ -z "$milestone_title" ]; then
+            warn "  Could not verify milestone ${next_milestone} on apache/skywalking; using it as given."
+        elif [ "$milestone_title" != "Java - ${next_version}" ]; then
+            warn "  Milestone ${next_milestone} is '${milestone_title}', expected 'Java - ${next_version}'. Double-check it."
+        else
+            info "  Next milestone: ${next_milestone} (${milestone_title})"
+        fi
+    else
+        next_milestone="xxx"
+        warn "  No milestone ID given; CHANGES.md will keep 'milestone/xxx' - edit it before merging the release PR."
+    fi
+
+    echo ""
     read -rp "Continue? [y/N] " confirm
     if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
         info "Aborted."
@@ -208,7 +287,7 @@ ${next_version}
 ------------------
 
 
-All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/xxx?closed=1)
+All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/${next_milestone}?closed=1)
 
 ------------------
 Find change logs of all versions [here](changes).
@@ -249,12 +328,11 @@ EOF
 cmd_stage() {
     cd "$PROJECT_ROOT"
 
-    # Detect version from latest tag
     local version
-    version=$(git describe --tags --abbrev=0 | sed 's/^v//')
+    version=$(resolve_version "${1:-}")
     local tag_name="v${version}"
 
-    info "Staging release ${version}..."
+    info "Staging release ${version} (from tag ${tag_name})..."
 
     # Maven release:perform
     info "Running maven release:perform..."
@@ -320,7 +398,7 @@ cmd_upload() {
     cd "$PROJECT_ROOT"
 
     local version
-    version=$(git describe --tags --abbrev=0 | sed 's/^v//')
+    version=$(resolve_version "${1:-}")
     local svn_dev="https://dist.apache.org/repos/dist/dev/skywalking/java-agent"
 
     info "Uploading release ${version} to Apache SVN (dist/dev)..."
@@ -366,13 +444,13 @@ cmd_upload() {
 cmd_email() {
     local type="${1:-}"
     if [[ ! "$type" =~ ^(vote|announce)$ ]]; then
-        error "Usage: $0 email [vote|announce]"
+        error "Usage: $0 email <vote|announce> [version]"
     fi
 
     cd "$PROJECT_ROOT"
 
     local version
-    version=$(git describe --tags --abbrev=0 | sed 's/^v//')
+    version=$(resolve_version "${2:-}")
     local tag="v${version}"
     local commit_id
     commit_id=$(git rev-list -n1 "$tag" 2>/dev/null || echo "<GIT_COMMIT_ID>")
@@ -495,9 +573,9 @@ cmd_docker() {
     cd "$PROJECT_ROOT"
 
     local version
-    version=$(git describe --tags --abbrev=0 | sed 's/^v//')
+    version=$(resolve_version "${1:-}")
 
-    info "Building and pushing Docker images for ${version}..."
+    info "Building and pushing Docker images for ${version} (from tag v${version})..."
 
     local dist_tar="${SCRIPT_DIR}/${PRODUCT_NAME}-${version}/${PRODUCT_NAME}-${version}.tgz"
 
@@ -518,13 +596,56 @@ cmd_docker() {
 }
 
 # ============================================================
+# github-release — publish the GitHub Release
+# ============================================================
+# This is what ships the official Docker images. Publishing a non-prerelease
+# fires the `release: released` trigger in .github/workflows/publish-docker.yaml,
+# which builds every base variant and pushes them to Docker Hub. Running
+# `$0 docker` by hand is only a fallback for when that workflow fails.
+cmd_github_release() {
+    cd "$PROJECT_ROOT"
+
+    local version
+    version=$(resolve_version "${1:-}")
+    local tag="v${version}"
+    local notes_file="changes/changes-${version}.md"
+
+    info "Publishing GitHub Release ${tag}..."
+
+    if ! git ls-remote --tags origin "refs/tags/${tag}" | grep -q .; then
+        error "Tag ${tag} is not on origin. Push it before publishing the release."
+    fi
+
+    if gh release view "${tag}" >/dev/null 2>&1; then
+        warn "GitHub Release ${tag} already exists; leaving it alone."
+        warn "If the images were not pushed, re-run the workflow or use '$0 docker ${version}'."
+        return 0
+    fi
+
+    local -a notes_args
+    if [ -f "$notes_file" ]; then
+        notes_args=(--notes-file "$notes_file")
+    else
+        warn "  ${notes_file} not found; using auto-generated notes."
+        notes_args=(--generate-notes)
+    fi
+
+    gh release create "${tag}" --title "${version}" "${notes_args[@]}"
+
+    info "GitHub Release ${tag} published."
+    info "  publish-docker.yaml is now pushing to Docker Hub:"
+    info "    apache/skywalking-java-agent:${version}-{alpine,java8,java11,java17,java21,java25}"
+    info "  Watch: https://github.com/apache/skywalking-java/actions/workflows/publish-docker.yaml"
+}
+
+# ============================================================
 # promote — move from dist/dev to dist/release
 # ============================================================
 cmd_promote() {
     cd "$PROJECT_ROOT"
 
     local version
-    version=$(git describe --tags --abbrev=0 | sed 's/^v//')
+    version=$(resolve_version "${1:-}")
 
     info "Promoting release ${version} from dist/dev to dist/release..."
 
@@ -537,10 +658,10 @@ cmd_promote() {
 
     info "Release ${version} promoted."
     info "Next steps:"
-    info "  1. Release the Nexus staging repository"
+    info "  1. Release the Nexus staging repository at https://repository.apache.org"
     info "  2. Update website download page"
-    info "  3. Run: $0 email announce"
-    info "  4. Run: $0 docker"
+    info "  3. Run: $0 github-release ${version}   (pushes the Docker images via GitHub Actions)"
+    info "  4. Run: $0 email announce ${version}"
 }
 
 # ============================================================
@@ -578,11 +699,11 @@ cmd_prepare_vote() {
     echo ""
     cmd_prepare "$version" "$next_version"
     echo ""
-    cmd_stage
+    cmd_stage "$version"
     echo ""
-    cmd_upload
+    cmd_upload "$version"
     echo ""
-    cmd_email vote
+    cmd_email vote "$version"
 }
 
 # ============================================================
@@ -591,11 +712,38 @@ cmd_prepare_vote() {
 cmd_vote_passed() {
     local old_version="${1:-}"
 
-    cmd_promote
+    cd "$PROJECT_ROOT"
+
+    # Resolved from the release tag, so this works after the release branch has
+    # been merged and deleted. Show it before touching SVN or Docker Hub, both of
+    # which are public and awkward to undo.
+    local version
+    version=$(resolve_version "")
+
+    info "Publishing release ${version}:"
+    echo "  Release tag     : v${version}"
+    echo "  SVN promote     : dist/dev/skywalking/java-agent/${version} -> dist/release/..."
+    echo "  GitHub Release  : v${version} (this is what triggers the Docker Hub push)"
+    echo "  Docker Hub tags : apache/skywalking-java-agent:${version}-{alpine,java8,java11,java17,java21,java25}"
+    echo "                    pushed by .github/workflows/publish-docker.yaml, not from here"
+    if [ -n "$old_version" ]; then
+        echo "  Remove from SVN : dist/release/skywalking/java-agent/${old_version}"
+    else
+        echo "  Remove from SVN : (nothing - no old version given)"
+    fi
     echo ""
-    cmd_docker
+    read -rp "Continue? [y/N] " confirm
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        info "Aborted."
+        exit 0
+    fi
     echo ""
-    cmd_email announce
+
+    cmd_promote "$version"
+    echo ""
+    cmd_github_release "$version"
+    echo ""
+    cmd_email announce "$version"
 
     if [ -n "$old_version" ]; then
         echo ""
@@ -618,8 +766,9 @@ main() {
         prepare)      cmd_prepare "$@" ;;
         stage)        cmd_stage "$@" ;;
         upload)       cmd_upload "$@" ;;
-        email)        cmd_email "$@" ;;
-        docker)       cmd_docker "$@" ;;
+        email)          cmd_email "$@" ;;
+        github-release) cmd_github_release "$@" ;;
+        docker)         cmd_docker "$@" ;;
         promote)      cmd_promote "$@" ;;
         cleanup)      cmd_cleanup "$@" ;;
         prepare-vote) cmd_prepare_vote "$@" ;;
@@ -634,17 +783,24 @@ main() {
             echo "  (wait for 72h vote to pass)"
             echo "  $0 vote-passed [old_version]       # after vote"
             echo ""
+            echo "Every command after 'prepare' identifies the release by its tag (vX.Y.Z), not by the"
+            echo "checked-out branch, so they still work once release/x.y.z has been merged and deleted."
+            echo "The version defaults to the highest vX.Y.Z tag; override with an argument or RELEASE_VERSION."
+            echo ""
             echo "Individual commands:"
             echo "  preflight                     Check tools and environment"
             echo "  prepare <ver> [next_ver]      Prepare release (branch, tag, PR)"
-            echo "  stage                         Stage release (maven release:perform, build tars)"
-            echo "  upload                        Upload to Apache SVN dist/dev"
+            echo "  stage [ver]                   Stage release (maven release:perform, build tars)"
+            echo "  upload [ver]                  Upload to Apache SVN dist/dev"
             echo "  prepare-vote <ver> [next_ver] Run preflight + prepare + stage + upload + vote email"
-            echo "  email [vote|announce]  Generate email content"
-            echo "  promote                Move from dist/dev to dist/release in SVN"
-            echo "  docker                 Build and push Docker images"
-            echo "  vote-passed [old_ver]  Run promote + docker + announce email [+ cleanup]"
-            echo "  cleanup <old_version>  Remove old release from dist/release"
+            echo "  email <vote|announce> [ver]   Generate email content"
+            echo "  promote [ver]                 Move from dist/dev to dist/release in SVN"
+            echo "  github-release [ver]          Publish the GitHub Release; this is what pushes"
+            echo "                                the Docker images, via publish-docker.yaml"
+            echo "  docker [ver]                  Push Docker images from this machine (fallback"
+            echo "                                for when the workflow fails)"
+            echo "  vote-passed [old_ver]         Run promote + github-release + announce [+ cleanup]"
+            echo "  cleanup <old_version>         Remove old release from dist/release"
             ;;
     esac
 }

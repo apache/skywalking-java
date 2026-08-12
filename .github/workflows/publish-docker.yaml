@@ -16,37 +16,90 @@
 
 name: publish-docker
 
+# Two kinds of image come out of this workflow:
+#
+#   push to main   -> per-commit development images, tagged with the commit SHA,
+#                     pushed to GitHub Container Registry.
+#   release        -> the official versioned images for a passed release vote,
+#                     tagged x.y.z-<base>, pushed to Docker Hub as
+#                     apache/skywalking-java-agent.
+#
+# The release trigger is `released` rather than `published`, so publishing a
+# pre-release does not ship official images. Creating the GitHub Release is the
+# last step of `tools/releasing/release.sh vote-passed`.
 on:
   push:
     branches:
       - main
+  release:
+    types:
+      - released
 
 env:
   SKIP_TEST: true
-  HUB: ghcr.io/apache/skywalking-java
 
 jobs:
-  build-tar:
+  # One agent package feeds every image. The variants differ only in the JRE they
+  # sit on: the Dockerfile takes BASE_IMAGE and ADDs the same DIST directory, and
+  # the agent itself is Java 8 bytecode that runs on all of them. So this is built
+  # (or downloaded) exactly once and handed to the matrix below as an artifact,
+  # rather than each variant fetching its own copy.
+  agent-package:
     if: github.repository == 'apache/skywalking-java'
-    name: Build Agent
+    name: Prepare Agent Package
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+
+      # Development images are compiled from the branch.
       - name: Cache local Maven repository
+        if: github.event_name != 'release'
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-publish-docker-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-publish-docker-
       - uses: actions/setup-java@v2
+        if: github.event_name != 'release'
         with:
           distribution: temurin
           java-version: 17
       - name: Build Agent
+        if: github.event_name != 'release'
         run: make build
+
+      # A release is never rebuilt. The published image has to carry the artifact
+      # the PMC voted on, so take it from the Apache distribution area and prove
+      # it is that one: the sha512 rules out a truncated download, and verifying
+      # the detached signature against the project KEYS file rules out anything
+      # the release manager did not sign. `release.sh promote` does the svn mv
+      # from dist/dev to dist/release immediately before the GitHub Release that
+      # triggers this workflow, so the file is in place by the time this runs.
+      - name: Download the released agent package
+        if: github.event_name == 'release'
+        run: |
+          set -euo pipefail
+          TAG=${{ github.event.release.tag_name }}
+          VERSION=${TAG#v}
+          BASE="https://dist.apache.org/repos/dist/release/skywalking/java-agent/${VERSION}"
+          TARBALL="apache-skywalking-java-agent-${VERSION}.tgz"
+
+          curl -fsSL --retry 5 --retry-delay 10 -O "${BASE}/${TARBALL}"
+          curl -fsSL --retry 5 --retry-delay 10 -O "${BASE}/${TARBALL}.asc"
+          curl -fsSL --retry 5 --retry-delay 10 -O "${BASE}/${TARBALL}.sha512"
+
+          sha512sum -c "${TARBALL}.sha512"
+
+          curl -fsSL --retry 5 --retry-delay 10 https://downloads.apache.org/skywalking/KEYS | gpg --import
+          gpg --verify "${TARBALL}.asc" "${TARBALL}"
+
+          tar -xzf "${TARBALL}"
+          # The Makefile passes this directory to the Dockerfile as ARG DIST.
+          test -d skywalking-agent
+
       - uses: actions/upload-artifact@v4
         name: Upload Agent
         with:
@@ -55,7 +108,7 @@ jobs:
 
   build-docker:
     if: github.repository == 'apache/skywalking-java'
-    needs: [ build-tar ]
+    needs: [ agent-package ]
     name: Build and Push Docker
     runs-on: ubuntu-latest
     permissions:
@@ -64,9 +117,10 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        java-version: [ 8, 11, 17, 21, 25 ]
-    env:
-      TAG: ${{ github.sha }}
+        # A release publishes the complete set the previous manual `make
+        # docker.push.*` produced, alpine included. Per-commit development
+        # images keep the existing JRE-only set.
+        base: ${{ github.event_name == 'release' && fromJSON('["alpine","java8","java11","java17","java21","java25"]') || fromJSON('["java8","java11","java17","java21","java25"]') }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -75,6 +129,35 @@ jobs:
         with:
           name: skywalking-agent
           path: skywalking-agent
+      - name: Set environment variables
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            # Provisioned by ASF INFRA on request, as for apache/skywalking.
+            # Without them docker/login-action fails with an opaque error, so say
+            # what is actually missing.
+            if [[ -z "${{ secrets.DOCKERHUB_USER }}" || -z "${{ secrets.DOCKERHUB_TOKEN }}" ]]; then
+              echo "::error::DOCKERHUB_USER / DOCKERHUB_TOKEN are not set on this repository."
+              echo "::error::Ask ASF INFRA to add them (see docs/en/contribution/release-java-agent.md),"
+              echo "::error::or publish from a workstation with './tools/releasing/release.sh docker <version>'."
+              exit 1
+            fi
+            # apache/skywalking-java-agent:x.y.z-<base> on Docker Hub.
+            # NAME differs from the development images, which is why it is set
+            # here rather than left to the Makefile default.
+            echo "HUB=apache" >> $GITHUB_ENV
+            echo "NAME=skywalking-java-agent" >> $GITHUB_ENV
+            echo "DOCKER_REGISTRY=docker.io" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{ secrets.DOCKERHUB_USER }}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{ secrets.DOCKERHUB_TOKEN }}" >> $GITHUB_ENV
+            TAG=${{ github.event.release.tag_name }}
+            echo "TAG=${TAG#v}" >> $GITHUB_ENV
+          else
+            echo "HUB=ghcr.io/apache/skywalking-java" >> $GITHUB_ENV
+            echo "DOCKER_REGISTRY=ghcr.io" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{ github.actor }}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+            echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
+          fi
       - name: Disable containerd image store
         run: |
           DAEMON_JSON="/etc/docker/daemon.json"
@@ -93,8 +176,14 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
-          registry: ${{ env.HUB }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build docker image
-        run: make docker.push.java${{ matrix.java-version }} || make docker.push.java${{ matrix.java-version }}
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+      # The Makefile builds linux/amd64 and linux/arm64, which needs emulation
+      # and the docker-container buildx driver.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+      - name: Build and push docker image
+        run: make docker.push.${{ matrix.base }} || make docker.push.${{ matrix.base }}

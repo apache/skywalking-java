@@ -76,6 +76,14 @@ Then run `gpgconf --kill gpg-agent` and `gpg --sign /dev/null` to cache it.
 4. **upload** — upload to Apache SVN `dist/dev` (prompts for SVN credentials)
 5. **email vote** — print vote email template with pre-filled version, commit ID, submodule commit, and checksums
 
+Before the long build starts, **prepare** asks for the GitHub milestone ID of the next
+development version, which it writes into the reset `CHANGES.md`. Look up the
+`Java - <next_version>` milestone at https://github.com/apache/skywalking/milestones and
+enter its number. The ID is checked against that milestone's title, and you are warned if
+they disagree. Set `NEXT_MILESTONE=<id>` to answer non-interactively; leave the prompt
+blank to keep the `milestone/xxx` placeholder and edit it by hand before merging the
+release PR.
+
 Copy the generated email and send it to `dev@skywalking.apache.org`. Voting remains open for at least 72 hours. At least 3 (+1 binding) PMC votes with more +1 than -1 are required.
 
 ## Vote Check
@@ -92,8 +100,49 @@ are found in `https://dist.apache.org/repos/dist/dev/skywalking/java-agent/x.y.z
 1. Check the Apache License Header. Run `docker run --rm -v $(pwd):/github/workspace apache/skywalking-eyes header check`. (No binaries in source codes)
 
 ## vote-passed
+Every step after `prepare` identifies the release by its **tag** (`vx.y.z`), never by the
+checked-out branch. By the time you run `vote-passed`, the release PR has normally been
+merged and `release/x.y.z` deleted, and `main` has already moved on to the next
+`-SNAPSHOT`; the tag is the only thing that still pins the release. The version defaults to
+the highest `vx.y.z` tag in the repository, and can be overridden with a positional
+argument (`./release.sh docker 9.7.0`) or `RELEASE_VERSION=9.7.0`.
+
 After the vote passes, run `vote-passed` which executes:
 1. **promote** — move packages from `dist/dev` to `dist/release` in Apache SVN (prompts for SVN credentials), then release the Nexus staging repository at https://repository.apache.org and update the website download page
-2. **docker** — build and push all Docker image variants (alpine, java8, java11, java17, java21, java25)
+2. **github-release** — publish the GitHub Release for the tag, using `changes/changes-x.y.z.md` as its notes
 3. **email announce** — print announcement email template. Copy and send to `dev@skywalking.apache.org` and `announce@apache.org`
 4. **cleanup** (optional) — if old version is provided, remove it from `dist/release`. Update download page links to point to `https://archive.apache.org/dist/skywalking`
+
+### Docker images
+Docker images are published by GitHub Actions, not from your machine. Publishing the
+GitHub Release fires the `release: released` trigger in
+[`.github/workflows/publish-docker.yaml`](../../../.github/workflows/publish-docker.yaml),
+which builds every base variant and pushes
+`apache/skywalking-java-agent:x.y.z-{alpine,java8,java11,java17,java21,java25}` to Docker
+Hub for `linux/amd64` and `linux/arm64`. Watch that workflow; if it fails you can fall back
+to pushing from your machine with `./tools/releasing/release.sh docker x.y.z`, which needs
+you to be logged in to Docker Hub with push access to the `apache` organisation.
+
+The image contains the exact tarball that was voted on. The workflow downloads
+`apache-skywalking-java-agent-x.y.z.tgz` from `dist/release`, checks it against the
+published `.sha512`, and verifies the `.asc` signature against the project
+[KEYS](https://downloads.apache.org/skywalking/KEYS) file before it goes into an image — it
+does not rebuild the agent from source.
+
+The same workflow keeps publishing per-commit development images to
+`ghcr.io/apache/skywalking-java` on every push to `main`; only the `release` event
+publishes official versioned images.
+
+#### Docker Hub credentials
+The release path needs the `DOCKERHUB_USER` and `DOCKERHUB_TOKEN` repository secrets. These
+are the names used across the other Apache SkyWalking repositories (`apache/skywalking`,
+`skywalking-python`, `skywalking-mcp`, ...). They are **not** self-service: `.asf.yaml`
+cannot set secrets. File an [ASF INFRA JIRA](https://issues.apache.org/jira/browse/INFRA)
+ticket asking for them to be added to `apache/skywalking-java`, referencing that
+`apache/skywalking` already has them; INFRA holds the Docker Hub account credentials. See
+[GitHub Actions and Secrets](https://infra.apache.org/github-actions-secrets.html).
+
+Until they exist, the release run fails early with an explicit error and you should publish
+with `./tools/releasing/release.sh docker x.y.z` instead. Because `github-release` is
+idempotent, you can also add the secrets later and just re-run the failed workflow from the
+Actions tab — there is no need to delete and recreate the GitHub Release.

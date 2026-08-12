@@ -92,6 +92,13 @@ are found in `https://dist.apache.org/repos/dist/dev/skywalking/java-agent/x.y.z
 1. Check the Apache License Header. Run `docker run --rm -v $(pwd):/github/workspace apache/skywalking-eyes header check`. (No binaries in source codes)
 
 ## vote-passed
+Every step after `prepare` identifies the release by its **tag** (`vx.y.z`), never by the
+checked-out branch. By the time you run `vote-passed`, the release PR has normally been
+merged and `release/x.y.z` deleted, and `main` has already moved on to the next
+`-SNAPSHOT`; the tag is the only thing that still pins the release. The version defaults to
+the highest `vx.y.z` tag in the repository, and can be overridden with a positional
+argument (`./release.sh docker 9.7.0`) or `RELEASE_VERSION=9.7.0`.
+
 After the vote passes, run `vote-passed` which executes:
 1. **promote** — move packages from `dist/dev` to `dist/release` in Apache SVN (prompts for SVN credentials), then release the Nexus staging repository at https://repository.apache.org and update the website download page
 2. **docker** — build and push all Docker image variants (alpine, java8, java11, java17, java21, java25)

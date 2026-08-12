@@ -596,6 +596,49 @@ cmd_docker() {
 }
 
 # ============================================================
+# github-release — publish the GitHub Release
+# ============================================================
+# This is what ships the official Docker images. Publishing a non-prerelease
+# fires the `release: released` trigger in .github/workflows/publish-docker.yaml,
+# which builds every base variant and pushes them to Docker Hub. Running
+# `$0 docker` by hand is only a fallback for when that workflow fails.
+cmd_github_release() {
+    cd "$PROJECT_ROOT"
+
+    local version
+    version=$(resolve_version "${1:-}")
+    local tag="v${version}"
+    local notes_file="changes/changes-${version}.md"
+
+    info "Publishing GitHub Release ${tag}..."
+
+    if ! git ls-remote --tags origin "refs/tags/${tag}" | grep -q .; then
+        error "Tag ${tag} is not on origin. Push it before publishing the release."
+    fi
+
+    if gh release view "${tag}" >/dev/null 2>&1; then
+        warn "GitHub Release ${tag} already exists; leaving it alone."
+        warn "If the images were not pushed, re-run the workflow or use '$0 docker ${version}'."
+        return 0
+    fi
+
+    local -a notes_args
+    if [ -f "$notes_file" ]; then
+        notes_args=(--notes-file "$notes_file")
+    else
+        warn "  ${notes_file} not found; using auto-generated notes."
+        notes_args=(--generate-notes)
+    fi
+
+    gh release create "${tag}" --title "${version}" "${notes_args[@]}"
+
+    info "GitHub Release ${tag} published."
+    info "  publish-docker.yaml is now pushing to Docker Hub:"
+    info "    apache/skywalking-java-agent:${version}-{alpine,java8,java11,java17,java21,java25}"
+    info "  Watch: https://github.com/apache/skywalking-java/actions/workflows/publish-docker.yaml"
+}
+
+# ============================================================
 # promote — move from dist/dev to dist/release
 # ============================================================
 cmd_promote() {
@@ -615,10 +658,10 @@ cmd_promote() {
 
     info "Release ${version} promoted."
     info "Next steps:"
-    info "  1. Release the Nexus staging repository"
+    info "  1. Release the Nexus staging repository at https://repository.apache.org"
     info "  2. Update website download page"
-    info "  3. Run: $0 email announce"
-    info "  4. Run: $0 docker"
+    info "  3. Run: $0 github-release ${version}   (pushes the Docker images via GitHub Actions)"
+    info "  4. Run: $0 email announce ${version}"
 }
 
 # ============================================================
@@ -680,7 +723,9 @@ cmd_vote_passed() {
     info "Publishing release ${version}:"
     echo "  Release tag     : v${version}"
     echo "  SVN promote     : dist/dev/skywalking/java-agent/${version} -> dist/release/..."
+    echo "  GitHub Release  : v${version} (this is what triggers the Docker Hub push)"
     echo "  Docker Hub tags : apache/skywalking-java-agent:${version}-{alpine,java8,java11,java17,java21,java25}"
+    echo "                    pushed by .github/workflows/publish-docker.yaml, not from here"
     if [ -n "$old_version" ]; then
         echo "  Remove from SVN : dist/release/skywalking/java-agent/${old_version}"
     else
@@ -696,7 +741,7 @@ cmd_vote_passed() {
 
     cmd_promote "$version"
     echo ""
-    cmd_docker "$version"
+    cmd_github_release "$version"
     echo ""
     cmd_email announce "$version"
 
@@ -721,8 +766,9 @@ main() {
         prepare)      cmd_prepare "$@" ;;
         stage)        cmd_stage "$@" ;;
         upload)       cmd_upload "$@" ;;
-        email)        cmd_email "$@" ;;
-        docker)       cmd_docker "$@" ;;
+        email)          cmd_email "$@" ;;
+        github-release) cmd_github_release "$@" ;;
+        docker)         cmd_docker "$@" ;;
         promote)      cmd_promote "$@" ;;
         cleanup)      cmd_cleanup "$@" ;;
         prepare-vote) cmd_prepare_vote "$@" ;;
@@ -749,8 +795,11 @@ main() {
             echo "  prepare-vote <ver> [next_ver] Run preflight + prepare + stage + upload + vote email"
             echo "  email <vote|announce> [ver]   Generate email content"
             echo "  promote [ver]                 Move from dist/dev to dist/release in SVN"
-            echo "  docker [ver]                  Build and push Docker images to Docker Hub"
-            echo "  vote-passed [old_ver]         Run promote + docker + announce email [+ cleanup]"
+            echo "  github-release [ver]          Publish the GitHub Release; this is what pushes"
+            echo "                                the Docker images, via publish-docker.yaml"
+            echo "  docker [ver]                  Push Docker images from this machine (fallback"
+            echo "                                for when the workflow fails)"
+            echo "  vote-passed [old_ver]         Run promote + github-release + announce [+ cleanup]"
             echo "  cleanup <old_version>         Remove old release from dist/release"
             ;;
     esac

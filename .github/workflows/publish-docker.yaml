@@ -16,14 +16,27 @@
 
 name: publish-docker
 
+# Two kinds of image come out of this workflow:
+#
+#   push to main   -> per-commit development images, tagged with the commit SHA,
+#                     pushed to GitHub Container Registry.
+#   release        -> the official versioned images for a passed release vote,
+#                     tagged x.y.z-<base>, pushed to Docker Hub as
+#                     apache/skywalking-java-agent.
+#
+# The release trigger is `released` rather than `published`, so publishing a
+# pre-release does not ship official images. Creating the GitHub Release is the
+# last step of `tools/releasing/release.sh vote-passed`.
 on:
   push:
     branches:
       - main
+  release:
+    types:
+      - released
 
 env:
   SKIP_TEST: true
-  HUB: ghcr.io/apache/skywalking-java
 
 jobs:
   build-tar:
@@ -64,9 +77,10 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        java-version: [ 8, 11, 17, 21, 25 ]
-    env:
-      TAG: ${{ github.sha }}
+        # A release publishes the complete set the previous manual `make
+        # docker.push.*` produced, alpine included. Per-commit development
+        # images keep the existing JRE-only set.
+        base: ${{ github.event_name == 'release' && fromJSON('["alpine","java8","java11","java17","java21","java25"]') || fromJSON('["java8","java11","java17","java21","java25"]') }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -75,6 +89,26 @@ jobs:
         with:
           name: skywalking-agent
           path: skywalking-agent
+      - name: Set environment variables
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            # apache/skywalking-java-agent:x.y.z-<base> on Docker Hub.
+            # NAME differs from the development images, which is why it is set
+            # here rather than left to the Makefile default.
+            echo "HUB=apache" >> $GITHUB_ENV
+            echo "NAME=skywalking-java-agent" >> $GITHUB_ENV
+            echo "DOCKER_REGISTRY=docker.io" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{ secrets.DOCKERHUB_USER }}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{ secrets.DOCKERHUB_TOKEN }}" >> $GITHUB_ENV
+            TAG=${{ github.event.release.tag_name }}
+            echo "TAG=${TAG#v}" >> $GITHUB_ENV
+          else
+            echo "HUB=ghcr.io/apache/skywalking-java" >> $GITHUB_ENV
+            echo "DOCKER_REGISTRY=ghcr.io" >> $GITHUB_ENV
+            echo "DOCKER_USERNAME=${{ github.actor }}" >> $GITHUB_ENV
+            echo "DOCKER_PASSWORD=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+            echo "TAG=${{ github.sha }}" >> $GITHUB_ENV
+          fi
       - name: Disable containerd image store
         run: |
           DAEMON_JSON="/etc/docker/daemon.json"
@@ -93,8 +127,14 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
-          registry: ${{ env.HUB }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build docker image
-        run: make docker.push.java${{ matrix.java-version }} || make docker.push.java${{ matrix.java-version }}
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+      # The Makefile builds linux/amd64 and linux/arm64, which needs emulation
+      # and the docker-container buildx driver.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3 # v4.1.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4.1.0
+      - name: Build and push docker image
+        run: make docker.push.${{ matrix.base }} || make docker.push.${{ matrix.base }}

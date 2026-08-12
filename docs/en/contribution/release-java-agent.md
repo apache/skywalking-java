@@ -109,6 +109,21 @@ argument (`./release.sh docker 9.7.0`) or `RELEASE_VERSION=9.7.0`.
 
 After the vote passes, run `vote-passed` which executes:
 1. **promote** — move packages from `dist/dev` to `dist/release` in Apache SVN (prompts for SVN credentials), then release the Nexus staging repository at https://repository.apache.org and update the website download page
-2. **docker** — build and push all Docker image variants (alpine, java8, java11, java17, java21, java25)
+2. **github-release** — publish the GitHub Release for the tag, using `changes/changes-x.y.z.md` as its notes
 3. **email announce** — print announcement email template. Copy and send to `dev@skywalking.apache.org` and `announce@apache.org`
 4. **cleanup** (optional) — if old version is provided, remove it from `dist/release`. Update download page links to point to `https://archive.apache.org/dist/skywalking`
+
+### Docker images
+Docker images are published by GitHub Actions, not from your machine. Publishing the
+GitHub Release fires the `release: released` trigger in
+[`.github/workflows/publish-docker.yaml`](../../../.github/workflows/publish-docker.yaml),
+which builds every base variant and pushes
+`apache/skywalking-java-agent:x.y.z-{alpine,java8,java11,java17,java21,java25}` to Docker
+Hub for `linux/amd64` and `linux/arm64`. Watch that workflow; if it fails you can fall back
+to pushing from your machine with `./tools/releasing/release.sh docker x.y.z`, which needs
+you to be logged in to Docker Hub with push access to the `apache` organisation.
+
+The same workflow keeps publishing per-commit development images to
+`ghcr.io/apache/skywalking-java` on every push to `main`; only the `release` event
+publishes official versioned images. It requires the `DOCKERHUB_USER` and
+`DOCKERHUB_TOKEN` repository secrets, as `apache/skywalking` does.

@@ -1,0 +1,38 @@
+Changes by Version
+==================
+Release Notes.
+
+9.7.0
+------------------
+
+* Fix `plugin.http.include_http_headers` not working on Spring Boot 3.x / Jakarta EE (apache/skywalking#13938).
+* Support `plugin.http.include_http_headers` in the Tomcat plugin, collecting the configured request headers as the `http.headers` tag on Tomcat entry spans (e.g. RESTEasy on Tomcat), consistent with the Spring MVC plugin. Honors the shared `plugin.http.http_headers_length_threshold`.
+* Unify the Tomcat plugins into a single `tomcat` plugin (Tomcat 7 - 10) and the Jetty server plugins into a single `jetty-server` plugin (Jetty 9 - 11), each supporting both `javax.servlet` and `jakarta.servlet`. Breaking change: plugin names `tomcat-7.x/8.x` and `tomcat-10.x` are replaced by `tomcat`, and `jetty-server-9.x` and `jetty-server-11.x` by `jetty-server`; update `plugin.exclude_plugins` if you reference the old names.
+* Add a Jetty 12 server plugin (`jetty-server-12.x`). Jetty 12 removed the `HttpChannel` handle target and moved request handling to the async `Server#handle(Request, Response, Callback)` core API, so it needs a separate plugin from the merged `jetty-server`.
+* Add a Struts 7 plugin (`struts2-7.x`) for Jakarta Struts, whose `DefaultActionInvocation` moved to `org.apache.struts2`.
+* Added support for Lettuce reactive Redis commands.
+* Add tracing support for `invokeAll` and `invokeAny` in the JDK thread pool plugin (`jdk-threadpool-plugin`).
+* Add Spring AI 1.x plugin and GenAI layer.
+* Fix httpclient-5.x plugin injecting sw8 propagation headers into ClickHouse HTTP requests (port 8123), causing HTTP 400. Add `PROPAGATION_EXCLUDE_PORTS` config to skip tracing (including header injection) for specified ports in the classic client interceptor.
+* Add Spring RabbitMQ 2.x - 4.x plugin.
+* Extend MySQL plugin to support MySQL Connector/J 8.4.0 and 9.x (9.0 -> 9.6).
+* Extend MariaDB plugin to support MariaDB Connector/J 2.7.x.
+* Extend MongoDB 4.x plugin to support MongoDB Java Driver 4.2 -> 4.10. Fix db.bind_vars extraction for driver 4.9+ where InsertOperation/DeleteOperation/UpdateOperation classes were removed.
+* Fix MongoDB 4.x plugin for driver 4.11+ where Cluster.getDescription() was removed, use getCurrentDescription() instead.
+* Extend Feign plugin to support OpenFeign 10.x, 11.x, 12.1.
+* Add Feign 12.2+ PathVar support (BuildTemplateByResolvingArgs moved to RequestTemplateFactoryResolver).
+* Extend Undertow plugin to support Undertow 2.1.x, 2.2.x, 2.3.x.
+* Extend GraphQL plugin to support graphql-java 18 -> 24 (20+ requires JDK 17).
+* Extend Spring Kafka plugin to support Spring Kafka 2.4 -> 2.9 and 3.0 -> 3.3.
+* Enhance test/plugin/run.sh to support extra Maven properties per version in support-version.list (format: version,key=value).
+* Add MariaDB 3.x plugin (all classes renamed in 3.x).
+* Extend Jedis 4.x plugin to support Jedis 5.x (fix witness method for 5.x compatibility).
+* Add Elasticsearch Java client (co.elastic.clients:elasticsearch-java) plugin for 7.16.x-9.x.
+* Only publish `apm-application-toolkit` modules to Maven Central. Agent and plugins are distributed via download package and Docker images.
+* Add unified release script (`tools/releasing/release.sh`) with two-step flow: `prepare-vote` and `vote-passed`.
+* Fix an issue where `JDBCPluginConfig.Plugin.JDBC.SQL_BODY_MAX_LENGTH` was not honored by clickhouse-0.3.1 and clickhouse-0.3.2.x plugins.
+- Add tracing support for vector-store retrieval operations.
+* Fix agent lifecycle events: the Start event now carries the service instance name, and the Shutdown event is delivered on graceful JVM exit. `ServiceManager` prepares/starts higher-priority `BootService`s first and shuts them down last (matching `BootService#priority()`), and the shutdown event refreshes its gRPC deadline before sending.
+* Fix the `SenderSendInterceptor` in the nutz-plugins/http-1.x-plugin to avoid NPE caused by the Response status.
+
+All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/249?closed=1)

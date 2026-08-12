@@ -76,6 +76,14 @@ Then run `gpgconf --kill gpg-agent` and `gpg --sign /dev/null` to cache it.
 4. **upload** — upload to Apache SVN `dist/dev` (prompts for SVN credentials)
 5. **email vote** — print vote email template with pre-filled version, commit ID, submodule commit, and checksums
 
+Before the long build starts, **prepare** asks for the GitHub milestone ID of the next
+development version, which it writes into the reset `CHANGES.md`. Look up the
+`Java - <next_version>` milestone at https://github.com/apache/skywalking/milestones and
+enter its number. The ID is checked against that milestone's title, and you are warned if
+they disagree. Set `NEXT_MILESTONE=<id>` to answer non-interactively; leave the prompt
+blank to keep the `milestone/xxx` placeholder and edit it by hand before merging the
+release PR.
+
 Copy the generated email and send it to `dev@skywalking.apache.org`. Voting remains open for at least 72 hours. At least 3 (+1 binding) PMC votes with more +1 than -1 are required.
 
 ## Vote Check

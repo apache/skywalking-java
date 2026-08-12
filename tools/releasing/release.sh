@@ -161,6 +161,40 @@ cmd_prepare() {
     echo "  Next dev version: ${next_version}-SNAPSHOT"
     echo "  Branch: ${branch_name}"
     echo ""
+
+    # At the end of this step CHANGES.md is reset for the next development
+    # version, and its milestone link needs that version's GitHub milestone ID.
+    # Ask for it here, up front, so the release does not stop for input after
+    # the long release:prepare build. Set NEXT_MILESTONE=<id> to skip the prompt.
+    local next_milestone="${NEXT_MILESTONE:-}"
+    if [ -z "$next_milestone" ]; then
+        echo "  CHANGES.md will be reset for ${next_version}, and its milestone link needs an ID."
+        echo "  Find 'Java - ${next_version}' at https://github.com/apache/skywalking/milestones"
+        read -rp "  Milestone ID for ${next_version} (number, or blank to fill in manually later): " next_milestone
+    fi
+    if [ -n "$next_milestone" ]; then
+        case "$next_milestone" in
+            *[!0-9]*) error "Milestone ID must be a number, got: ${next_milestone}" ;;
+        esac
+        # gh api writes the error body to stdout on failure, so gate on its
+        # exit status rather than letting a 404 payload become the title.
+        local milestone_title
+        if ! milestone_title=$(gh api "repos/apache/skywalking/milestones/${next_milestone}" -q .title 2>/dev/null); then
+            milestone_title=""
+        fi
+        if [ -z "$milestone_title" ]; then
+            warn "  Could not verify milestone ${next_milestone} on apache/skywalking; using it as given."
+        elif [ "$milestone_title" != "Java - ${next_version}" ]; then
+            warn "  Milestone ${next_milestone} is '${milestone_title}', expected 'Java - ${next_version}'. Double-check it."
+        else
+            info "  Next milestone: ${next_milestone} (${milestone_title})"
+        fi
+    else
+        next_milestone="xxx"
+        warn "  No milestone ID given; CHANGES.md will keep 'milestone/xxx' - edit it before merging the release PR."
+    fi
+
+    echo ""
     read -rp "Continue? [y/N] " confirm
     if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
         info "Aborted."
@@ -208,7 +242,7 @@ ${next_version}
 ------------------
 
 
-All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/xxx?closed=1)
+All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/${next_milestone}?closed=1)
 
 ------------------
 Find change logs of all versions [here](changes).

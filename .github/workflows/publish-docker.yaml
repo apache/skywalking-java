@@ -39,72 +39,45 @@ env:
   SKIP_TEST: true
 
 jobs:
-  # Only development images are compiled here. A release must not be rebuilt: its
-  # image has to contain the exact agent package that was signed, uploaded to
-  # dist/dev and voted on, so build-docker downloads that tarball instead.
-  build-tar:
-    if: github.repository == 'apache/skywalking-java' && github.event_name != 'release'
-    name: Build Agent
+  # One agent package feeds every image. The variants differ only in the JRE they
+  # sit on: the Dockerfile takes BASE_IMAGE and ADDs the same DIST directory, and
+  # the agent itself is Java 8 bytecode that runs on all of them. So this is built
+  # (or downloaded) exactly once and handed to the matrix below as an artifact,
+  # rather than each variant fetching its own copy.
+  agent-package:
+    if: github.repository == 'apache/skywalking-java'
+    name: Prepare Agent Package
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+
+      # Development images are compiled from the branch.
       - name: Cache local Maven repository
+        if: github.event_name != 'release'
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-publish-docker-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-publish-docker-
       - uses: actions/setup-java@v2
+        if: github.event_name != 'release'
         with:
           distribution: temurin
           java-version: 17
       - name: Build Agent
-        run: make build
-      - uses: actions/upload-artifact@v4
-        name: Upload Agent
-        with:
-          name: skywalking-agent
-          path: skywalking-agent
-
-  build-docker:
-    # build-tar is skipped on releases, and a skipped dependency would otherwise
-    # skip this job too.
-    if: |
-      always() && github.repository == 'apache/skywalking-java' &&
-      (needs.build-tar.result == 'success' || needs.build-tar.result == 'skipped')
-    needs: [ build-tar ]
-    name: Build and Push Docker
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    timeout-minutes: 60
-    strategy:
-      matrix:
-        # A release publishes the complete set the previous manual `make
-        # docker.push.*` produced, alpine included. Per-commit development
-        # images keep the existing JRE-only set.
-        base: ${{ github.event_name == 'release' && fromJSON('["alpine","java8","java11","java17","java21","java25"]') || fromJSON('["java8","java11","java17","java21","java25"]') }}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Download development agent package
         if: github.event_name != 'release'
-        uses: actions/download-artifact@v4
-        with:
-          name: skywalking-agent
-          path: skywalking-agent
-      # The published image must carry the artifact the PMC voted on, not a
-      # rebuild of it. Take the tarball straight from the Apache distribution
-      # area and prove it is that one: the sha512 rules out a truncated download,
-      # and verifying the detached signature against the project KEYS file rules
-      # out anything the release manager did not sign. `svn mv` from dist/dev to
-      # dist/release runs in `release.sh promote`, immediately before the GitHub
-      # Release that triggers this workflow, so the file is already in place.
+        run: make build
+
+      # A release is never rebuilt. The published image has to carry the artifact
+      # the PMC voted on, so take it from the Apache distribution area and prove
+      # it is that one: the sha512 rules out a truncated download, and verifying
+      # the detached signature against the project KEYS file rules out anything
+      # the release manager did not sign. `release.sh promote` does the svn mv
+      # from dist/dev to dist/release immediately before the GitHub Release that
+      # triggers this workflow, so the file is in place by the time this runs.
       - name: Download the released agent package
         if: github.event_name == 'release'
         run: |
@@ -124,8 +97,38 @@ jobs:
           gpg --verify "${TARBALL}.asc" "${TARBALL}"
 
           tar -xzf "${TARBALL}"
-          # The Makefile feeds this directory to the Dockerfile as ARG DIST.
+          # The Makefile passes this directory to the Dockerfile as ARG DIST.
           test -d skywalking-agent
+
+      - uses: actions/upload-artifact@v4
+        name: Upload Agent
+        with:
+          name: skywalking-agent
+          path: skywalking-agent
+
+  build-docker:
+    if: github.repository == 'apache/skywalking-java'
+    needs: [ agent-package ]
+    name: Build and Push Docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        # A release publishes the complete set the previous manual `make
+        # docker.push.*` produced, alpine included. Per-commit development
+        # images keep the existing JRE-only set.
+        base: ${{ github.event_name == 'release' && fromJSON('["alpine","java8","java11","java17","java21","java25"]') || fromJSON('["java8","java11","java17","java21","java25"]') }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: skywalking-agent
+          path: skywalking-agent
       - name: Set environment variables
         run: |
           if [[ "${{ github.event_name }}" == "release" ]]; then

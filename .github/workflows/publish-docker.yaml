@@ -39,8 +39,11 @@ env:
   SKIP_TEST: true
 
 jobs:
+  # Only development images are compiled here. A release must not be rebuilt: its
+  # image has to contain the exact agent package that was signed, uploaded to
+  # dist/dev and voted on, so build-docker downloads that tarball instead.
   build-tar:
-    if: github.repository == 'apache/skywalking-java'
+    if: github.repository == 'apache/skywalking-java' && github.event_name != 'release'
     name: Build Agent
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -67,7 +70,11 @@ jobs:
           path: skywalking-agent
 
   build-docker:
-    if: github.repository == 'apache/skywalking-java'
+    # build-tar is skipped on releases, and a skipped dependency would otherwise
+    # skip this job too.
+    if: |
+      always() && github.repository == 'apache/skywalking-java' &&
+      (needs.build-tar.result == 'success' || needs.build-tar.result == 'skipped')
     needs: [ build-tar ]
     name: Build and Push Docker
     runs-on: ubuntu-latest
@@ -85,10 +92,40 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - uses: actions/download-artifact@v4
+      - name: Download development agent package
+        if: github.event_name != 'release'
+        uses: actions/download-artifact@v4
         with:
           name: skywalking-agent
           path: skywalking-agent
+      # The published image must carry the artifact the PMC voted on, not a
+      # rebuild of it. Take the tarball straight from the Apache distribution
+      # area and prove it is that one: the sha512 rules out a truncated download,
+      # and verifying the detached signature against the project KEYS file rules
+      # out anything the release manager did not sign. `svn mv` from dist/dev to
+      # dist/release runs in `release.sh promote`, immediately before the GitHub
+      # Release that triggers this workflow, so the file is already in place.
+      - name: Download the released agent package
+        if: github.event_name == 'release'
+        run: |
+          set -euo pipefail
+          TAG=${{ github.event.release.tag_name }}
+          VERSION=${TAG#v}
+          BASE="https://dist.apache.org/repos/dist/release/skywalking/java-agent/${VERSION}"
+          TARBALL="apache-skywalking-java-agent-${VERSION}.tgz"
+
+          curl -fsSL --retry 5 --retry-delay 10 -O "${BASE}/${TARBALL}"
+          curl -fsSL --retry 5 --retry-delay 10 -O "${BASE}/${TARBALL}.asc"
+          curl -fsSL --retry 5 --retry-delay 10 -O "${BASE}/${TARBALL}.sha512"
+
+          sha512sum -c "${TARBALL}.sha512"
+
+          curl -fsSL --retry 5 --retry-delay 10 https://downloads.apache.org/skywalking/KEYS | gpg --import
+          gpg --verify "${TARBALL}.asc" "${TARBALL}"
+
+          tar -xzf "${TARBALL}"
+          # The Makefile feeds this directory to the Dockerfile as ARG DIST.
+          test -d skywalking-agent
       - name: Set environment variables
         run: |
           if [[ "${{ github.event_name }}" == "release" ]]; then

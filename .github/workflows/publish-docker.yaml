@@ -129,6 +129,15 @@ jobs:
       - name: Set environment variables
         run: |
           if [[ "${{ github.event_name }}" == "release" ]]; then
+            # Provisioned by ASF INFRA on request, as for apache/skywalking.
+            # Without them docker/login-action fails with an opaque error, so say
+            # what is actually missing.
+            if [[ -z "${{ secrets.DOCKERHUB_USER }}" || -z "${{ secrets.DOCKERHUB_TOKEN }}" ]]; then
+              echo "::error::DOCKERHUB_USER / DOCKERHUB_TOKEN are not set on this repository."
+              echo "::error::Ask ASF INFRA to add them (see docs/en/contribution/release-java-agent.md),"
+              echo "::error::or publish from a workstation with './tools/releasing/release.sh docker <version>'."
+              exit 1
+            fi
             # apache/skywalking-java-agent:x.y.z-<base> on Docker Hub.
             # NAME differs from the development images, which is why it is set
             # here rather than left to the Makefile default.

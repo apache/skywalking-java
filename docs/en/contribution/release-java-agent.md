@@ -123,7 +123,26 @@ Hub for `linux/amd64` and `linux/arm64`. Watch that workflow; if it fails you ca
 to pushing from your machine with `./tools/releasing/release.sh docker x.y.z`, which needs
 you to be logged in to Docker Hub with push access to the `apache` organisation.
 
+The image contains the exact tarball that was voted on. The workflow downloads
+`apache-skywalking-java-agent-x.y.z.tgz` from `dist/release`, checks it against the
+published `.sha512`, and verifies the `.asc` signature against the project
+[KEYS](https://downloads.apache.org/skywalking/KEYS) file before it goes into an image — it
+does not rebuild the agent from source.
+
 The same workflow keeps publishing per-commit development images to
 `ghcr.io/apache/skywalking-java` on every push to `main`; only the `release` event
-publishes official versioned images. It requires the `DOCKERHUB_USER` and
-`DOCKERHUB_TOKEN` repository secrets, as `apache/skywalking` does.
+publishes official versioned images.
+
+#### Docker Hub credentials
+The release path needs the `DOCKERHUB_USER` and `DOCKERHUB_TOKEN` repository secrets. These
+are the names used across the other Apache SkyWalking repositories (`apache/skywalking`,
+`skywalking-python`, `skywalking-mcp`, ...). They are **not** self-service: `.asf.yaml`
+cannot set secrets. File an [ASF INFRA JIRA](https://issues.apache.org/jira/browse/INFRA)
+ticket asking for them to be added to `apache/skywalking-java`, referencing that
+`apache/skywalking` already has them; INFRA holds the Docker Hub account credentials. See
+[GitHub Actions and Secrets](https://infra.apache.org/github-actions-secrets.html).
+
+Until they exist, the release run fails early with an explicit error and you should publish
+with `./tools/releasing/release.sh docker x.y.z` instead. Because `github-release` is
+idempotent, you can also add the secrets later and just re-run the failed workflow from the
+Actions tab — there is no need to delete and recreate the GitHub Release.

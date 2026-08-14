@@ -134,14 +134,29 @@ After the vote passes, run `vote-passed` which executes:
 4. **cleanup** (optional) — if old version is provided, remove it from `dist/release`. Update download page links to point to `https://archive.apache.org/dist/skywalking`
 
 ### Docker images
-Docker images are published by GitHub Actions, not from your machine. Publishing the
-GitHub Release fires the `release: released` trigger in
-[`.github/workflows/publish-docker.yaml`](../../../.github/workflows/publish-docker.yaml),
-which builds every base variant and pushes
+Docker images are published by GitHub Actions, not from your machine. `github-release`
+publishes the GitHub Release and then dispatches
+[`.github/workflows/publish-docker.yaml`](../../../.github/workflows/publish-docker.yaml)
+with the release version. It builds every base variant and pushes
 `apache/skywalking-java-agent:x.y.z-{alpine,java8,java11,java17,java21,java25}` to Docker
-Hub for `linux/amd64` and `linux/arm64`. Watch that workflow; if it fails you can fall back
-to pushing from your machine with `./tools/releasing/release.sh docker x.y.z`, which needs
-you to be logged in to Docker Hub with push access to the `apache` organisation.
+Hub for `linux/amd64` and `linux/arm64`. Watch that workflow.
+
+If it fails, run it again: **Actions → publish-docker → Run workflow**, entering the
+version (`9.7.0`). That is the same path `github-release` takes, so retrying is safe and
+idempotent.
+
+> [!NOTE]
+> There is deliberately **no `release:` trigger**. GitHub runs a release event's workflow as
+> it exists *at the tag*, and the tag is cut at `prepare` while the Release is published at
+> `vote-passed`, at least 72 hours later — so any change to the workflow in between would
+> silently not apply to the release in flight. That window is why 9.7.0 published with no
+> workflow run at all. Dispatching instead means the workflow always comes from `main`,
+> while everything it acts on comes from the tag: the tree it builds is checked out at
+> `vx.y.z`, and the agent package is the verified tarball from `dist/release`.
+
+As a last resort you can push from your machine with
+`./tools/releasing/release.sh docker x.y.z`, which needs you to be logged in to Docker Hub
+with push access to the `apache` organisation.
 
 The image contains the exact tarball that was voted on. The workflow downloads
 `apache-skywalking-java-agent-x.y.z.tgz` from `dist/release`, checks it against the

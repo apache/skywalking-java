@@ -689,11 +689,26 @@ cmd_github_release() {
     fi
 
     gh release create "${tag}" --title "${version}" "${notes_args[@]}"
-
     info "GitHub Release ${tag} published."
-    info "  publish-docker.yaml is now pushing to Docker Hub:"
-    info "    apache/skywalking-java-agent:${version}-{alpine,java8,java11,java17,java21,java25}"
-    info "  Watch: https://github.com/apache/skywalking-java/actions/workflows/publish-docker.yaml"
+
+    # Dispatch rather than let a `release` trigger fire. GitHub runs a release
+    # event's workflow as it exists at the tag, and the tag is cut at `prepare`
+    # while this runs at `vote-passed`, at least 72 hours later - anything
+    # changed in publish-docker.yaml in between would silently not apply. A
+    # dispatch always runs the workflow from the default branch, so the release
+    # publishes with what is on main, and builds from the tag.
+    info "Dispatching publish-docker for ${version}..."
+    if gh workflow run publish-docker.yaml -f version="${version}"; then
+        info "  Pushing to Docker Hub:"
+        info "    apache/skywalking-java-agent:${version}-{alpine,java8,java11,java17,java21,java25}"
+        info "  Watch: https://github.com/apache/skywalking-java/actions/workflows/publish-docker.yaml"
+    else
+        warn "  Could not dispatch publish-docker. The release itself is published;"
+        warn "  only the images are missing. Retry with:"
+        warn "    gh workflow run publish-docker.yaml -f version=${version}"
+        warn "  or from Actions -> publish-docker -> Run workflow, or as a last resort"
+        warn "    $0 docker ${version}"
+    fi
 }
 
 # ============================================================

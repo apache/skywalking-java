@@ -27,8 +27,9 @@
 #   ./release.sh prepare-vote               Run prepare + stage + upload, then generate vote email
 #   ./release.sh email [vote|announce]      Generate email content
 #   ./release.sh promote                    Move from dist/dev to dist/release in SVN
-#   ./release.sh docker                     Build and push Docker images
-#   ./release.sh vote-passed                Run promote + docker, then generate announce email
+#   ./release.sh github-release             Publish the GitHub Release (pushes Docker images via CI)
+#   ./release.sh docker                     Push Docker images locally (fallback)
+#   ./release.sh vote-passed [--release x.y.z] [--old_version x.y.z]
 #   ./release.sh cleanup <old_version>      Remove old release from dist/release
 
 set -euo pipefail
@@ -42,9 +43,69 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-info()  { echo -e "${GREEN}[INFO]${NC} $*"; }
-warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
-error() { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
+# Diagnostics go to stderr. resolve_version and the detect_* helpers are called
+# inside $( ), which captures stdout - an error printed there would be swallowed
+# into the variable instead of reaching the release manager.
+info()  { echo -e "${GREEN}[INFO]${NC} $*" >&2; }
+warn()  { echo -e "${YELLOW}[WARN]${NC} $*" >&2; }
+error() { echo -e "${RED}[ERROR]${NC} $*" >&2; exit 1; }
+
+# ============================================================
+# validate_version — the only accepted shape for a version
+# ============================================================
+# Anchored, so nothing can ride along after the digits. A glob like
+# [0-9]*.[0-9]*.[0-9]* accepts "9.7.0/", which is textually different from
+# "9.7.0" and so slips past the equality guard in vote-passed, yet SVN
+# canonicalises the trailing slash - cleanup would then delete the release that
+# promote had just published. Every version entering an svn path goes through
+# here.
+validate_version() {
+    local version="$1"
+    local what="${2:-version}"
+    if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        error "${what} must be exactly x.y.z, got: '${version}'"
+    fi
+}
+
+# ============================================================
+# detect_release_version — best guess at the release in flight
+# ============================================================
+# Ordered by when the tag was made, not by version number. Releases are not
+# monotonic: a 9.6.1 patch cut from the 9.6.0 line after 9.7.0 has shipped is
+# newer in time but lower in version, and sorting by version would pick the
+# already-released 9.7.0. maven-release-plugin writes annotated tags, so
+# creatordate is the tag's own timestamp and is stable across fetches.
+#
+# This is only ever a default offered to the release manager, never the final
+# word - vote-passed asks them to confirm it.
+detect_release_version() {
+    local found
+    found=$(git for-each-ref --sort=-creatordate --format='%(refname:short)' \
+        'refs/tags/v[0-9]*.[0-9]*.[0-9]*' 2>/dev/null | head -1 | sed 's/^v//') || found=""
+    printf '%s' "$found"
+}
+
+# ============================================================
+# detect_old_version — the release currently published in dist/release
+# ============================================================
+# ASF policy keeps only the current release in dist/release; older ones are
+# served from archive.apache.org. Whatever is there now is therefore what this
+# release replaces. Excludes the version being released, so re-running after a
+# partial failure - when promote has already copied it in - does not offer to
+# delete the release itself. Best effort: no network, no default.
+detect_old_version() {
+    local exclude="${1:-}"
+    local found
+    # Under `set -euo pipefail` a failed svn ls, or a grep that matches nothing,
+    # would abort the whole release rather than simply yield no suggestion. This
+    # is only ever a hint, so swallow both and return empty.
+    found=$(svn ls "https://dist.apache.org/repos/dist/release/skywalking/java-agent/" 2>/dev/null \
+        | sed 's#/$##' \
+        | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
+        | grep -vx "$exclude" \
+        | sort -V | tail -1) || found=""
+    printf '%s' "$found"
+}
 
 # ============================================================
 # resolve_version — identify the release from its tag
@@ -60,8 +121,8 @@ error() { echo -e "${RED}[ERROR]${NC} $*"; exit 1; }
 # That would aim SVN moves and Docker pushes at the wrong version. Tags are
 # branch-independent and outlive the release branch, so select from the tag list.
 #
-# Order of precedence: explicit argument, then $RELEASE_VERSION, then the highest
-# vX.Y.Z tag in the repository.
+# Order of precedence: explicit argument, then $RELEASE_VERSION, then the most
+# recently created vX.Y.Z tag (see detect_release_version for why not the highest).
 resolve_version() {
     local explicit="${1:-}"
     [ -z "$explicit" ] && explicit="${RELEASE_VERSION:-}"
@@ -71,17 +132,14 @@ resolve_version() {
         version="${explicit#v}"
     else
         local latest
-        latest=$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -1)
+        latest=$(detect_release_version)
         if [ -z "$latest" ]; then
             error "No vX.Y.Z release tag found. Pass the version explicitly, e.g. '$0 <command> 9.7.0'."
         fi
-        version="${latest#v}"
+        version="$latest"
     fi
 
-    case "$version" in
-        [0-9]*.[0-9]*.[0-9]*) ;;
-        *) error "Version must look like x.y.z, got: ${version}" ;;
-    esac
+    validate_version "$version" "Release version"
 
     # Refuse to act on a release that was never tagged.
     if ! git rev-parse -q --verify "refs/tags/v${version}" >/dev/null 2>&1; then
@@ -672,6 +730,7 @@ cmd_cleanup() {
     if [ -z "$old_version" ]; then
         error "Usage: $0 cleanup <old_version>  (e.g., 9.5.0)"
     fi
+    validate_version "$old_version" "Old version"
 
     info "Removing old release ${old_version} from dist/release..."
 
@@ -710,15 +769,87 @@ cmd_prepare_vote() {
 # vote-passed — run all steps after the vote passes
 # ============================================================
 cmd_vote_passed() {
-    local old_version="${1:-}"
-
     cd "$PROJECT_ROOT"
 
-    # Resolved from the release tag, so this works after the release branch has
-    # been merged and deleted. Show it before touching SVN or Docker Hub, both of
-    # which are public and awkward to undo.
-    local version
-    version=$(resolve_version "")
+    # Two versions, and they do opposite things: one is published, the other is
+    # deleted. Never take them positionally - `vote-passed 9.7.0` while releasing
+    # 9.7.0 reads as "release this" but would svn rm what promote just copied in.
+    # Name them, or be asked for them. Detection only supplies defaults.
+    local version="${RELEASE_VERSION:-}"
+    local old_version="${OLD_VERSION:-}"
+    local old_version_given=0
+    [ -n "$old_version" ] && old_version_given=1
+
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --release|--release-version)
+                [ -n "${2:-}" ] || error "$1 needs a version, e.g. --release 9.7.0"
+                version="$2"; shift 2 ;;
+            --old_version|--old-version)
+                [ -n "${2:-}" ] || error "$1 needs a version, e.g. --old_version 9.6.0 (or --no-cleanup)"
+                old_version="$2"; old_version_given=1; shift 2 ;;
+            --no-cleanup)
+                old_version=""; old_version_given=1; shift ;;
+            -h|--help)
+                echo "Usage: $0 vote-passed [--release x.y.z] [--old_version x.y.z | --no-cleanup]"
+                echo ""
+                echo "  --release       the version being published; must already be tagged"
+                echo "  --old_version   the version removed from dist/release"
+                echo "  --no-cleanup    leave dist/release alone"
+                echo ""
+                echo "Anything not given is asked for. RELEASE_VERSION and OLD_VERSION are"
+                echo "honoured as well, and the flags win over them."
+                return 0 ;;
+            -*)
+                error "Unknown option: $1
+  Usage: $0 vote-passed [--release x.y.z] [--old_version x.y.z | --no-cleanup]" ;;
+            *)
+                error "'$0 vote-passed' does not take positional arguments - it is too easy to
+  confuse the version being released with the one being deleted. Name them:
+    $0 vote-passed --release <new> --old_version <old>
+  or run it with no arguments and answer the prompts." ;;
+        esac
+    done
+
+    info "Publishing a release. Two versions are needed."
+    echo ""
+
+    if [ -z "$version" ]; then
+        local suggested
+        suggested=$(detect_release_version)
+        echo "  The version being released. It must already be tagged and voted on."
+        if [ -n "$suggested" ]; then
+            echo "  Most recently tagged: ${suggested} (tag v${suggested})"
+        fi
+        read -rp "  Release version${suggested:+ [$suggested]}: " version
+        version="${version:-$suggested}"
+    fi
+    [ -z "$version" ] && error "No release version given."
+    version=$(resolve_version "$version")
+    echo ""
+
+    if [ "$old_version_given" -eq 0 ]; then
+        local current
+        current=$(detect_old_version "$version")
+        echo "  The version to remove from dist/release. ASF policy keeps only the"
+        echo "  current release there; older ones are served from archive.apache.org."
+        if [ -n "$current" ]; then
+            echo "  Currently published in dist/release: ${current}"
+        else
+            echo "  Could not read dist/release, so there is no suggestion."
+        fi
+        read -rp "  Old version to remove${current:+ [$current]} (or 'none' to skip): " old_version
+        old_version="${old_version:-$current}"
+    fi
+    # 'none' is the explicit opt out; blank accepts the suggestion above.
+    [ "$old_version" = "none" ] && old_version=""
+    [ -n "$old_version" ] && validate_version "$old_version" "Old version ('none' or --no-cleanup skips cleanup);"
+
+    # The mistake this whole prompt exists to prevent.
+    if [ -n "$old_version" ] && [ "$old_version" = "$version" ]; then
+        error "Old version and release version are both ${version}; that would delete the release being published."
+    fi
+    echo ""
 
     info "Publishing release ${version}:"
     echo "  Release tag     : v${version}"
@@ -781,11 +912,14 @@ main() {
             echo "Quick start (two-step release):"
             echo "  $0 prepare-vote 9.7.0 [9.8.0]     # before vote (next version auto-calculated if omitted)"
             echo "  (wait for 72h vote to pass)"
-            echo "  $0 vote-passed [old_version]       # after vote"
+            echo "  $0 vote-passed                     # after vote (asks for the versions)"
+            echo "  $0 vote-passed --release 9.7.0 --old_version 9.6.0"
             echo ""
             echo "Every command after 'prepare' identifies the release by its tag (vX.Y.Z), not by the"
             echo "checked-out branch, so they still work once release/x.y.z has been merged and deleted."
-            echo "The version defaults to the highest vX.Y.Z tag; override with an argument or RELEASE_VERSION."
+            echo "The version defaults to the most recently created vX.Y.Z tag - not the highest, since a"
+            echo "patch release can be newer in time but lower in version. Override with an argument or"
+            echo "RELEASE_VERSION."
             echo ""
             echo "Individual commands:"
             echo "  preflight                     Check tools and environment"
@@ -799,7 +933,10 @@ main() {
             echo "                                the Docker images, via publish-docker.yaml"
             echo "  docker [ver]                  Push Docker images from this machine (fallback"
             echo "                                for when the workflow fails)"
-            echo "  vote-passed [old_ver]         Run promote + github-release + announce [+ cleanup]"
+            echo "  vote-passed [--release x.y.z] [--old_version x.y.z | --no-cleanup]"
+            echo "                                Run promote + github-release + announce [+ cleanup]."
+            echo "                                Anything not named is asked for. Never positional:"
+            echo "                                the two versions do opposite things."
             echo "  cleanup <old_version>         Remove old release from dist/release"
             ;;
     esac

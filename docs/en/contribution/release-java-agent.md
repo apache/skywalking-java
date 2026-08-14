@@ -47,8 +47,8 @@ The release script `tools/releasing/release.sh` automates the full release workf
 
 # (send vote email to dev@skywalking.apache.org, wait 72h for vote to pass)
 
-# Step 2: Promote, push Docker images, generate announce email, and clean up
-./tools/releasing/release.sh vote-passed [old_version_to_remove]
+# Step 2: Promote, publish the GitHub Release, generate announce email, and clean up
+./tools/releasing/release.sh vote-passed
 ```
 
 Run `./tools/releasing/release.sh` without arguments to see all available commands, including individual steps if you need to run them separately.
@@ -104,8 +104,28 @@ Every step after `prepare` identifies the release by its **tag** (`vx.y.z`), nev
 checked-out branch. By the time you run `vote-passed`, the release PR has normally been
 merged and `release/x.y.z` deleted, and `main` has already moved on to the next
 `-SNAPSHOT`; the tag is the only thing that still pins the release. The version defaults to
-the highest `vx.y.z` tag in the repository, and can be overridden with a positional
+the most recently created `vx.y.z` tag, and can be overridden with a positional
 argument (`./release.sh docker 9.7.0`) or `RELEASE_VERSION=9.7.0`.
+
+`vote-passed` never takes the versions positionally — they do opposite things, and swapping
+them would delete the release that was just promoted. Name them, or be asked:
+
+```shell
+./tools/releasing/release.sh vote-passed --release 9.7.0 --old_version 9.6.0
+./tools/releasing/release.sh vote-passed --release 9.7.0 --no-cleanup
+./tools/releasing/release.sh vote-passed          # asks for both
+```
+
+- **Release version** — the one being published. Defaults to the most recently *created*
+  `vx.y.z` tag, not the highest one: a `9.6.1` patch cut from the `9.6.0` line after `9.7.0`
+  has shipped is newer in time but lower in version.
+- **Old version** — removed from `dist/release`, which ASF policy keeps to just the current
+  release. Defaults to what is published there now, excluding the version being released.
+  Answer `none` to skip.
+
+`RELEASE_VERSION` and `OLD_VERSION` are honoured too; the flags win over them. Both versions
+are validated as `x.y.z`, the release version must already be tagged, and the two being equal
+is refused.
 
 After the vote passes, run `vote-passed` which executes:
 1. **promote** — move packages from `dist/dev` to `dist/release` in Apache SVN (prompts for SVN credentials), then release the Nexus staging repository at https://repository.apache.org and update the website download page

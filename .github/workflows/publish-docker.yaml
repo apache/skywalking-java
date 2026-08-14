@@ -24,19 +24,33 @@ name: publish-docker
 #                     tagged x.y.z-<base>, pushed to Docker Hub as
 #                     apache/skywalking-java-agent.
 #
-# The release trigger is `released` rather than `published`, so publishing a
-# pre-release does not ship official images. Creating the GitHub Release is the
-# last step of `tools/releasing/release.sh vote-passed`.
+# Releases publish by dispatch, deliberately, rather than by a `release` trigger.
+# For a `release` event GitHub runs the workflow as it exists **at the tag**, and
+# the tag is cut at `prepare` while the GitHub Release is published at
+# `vote-passed`, at least 72 hours later. Anything changed here in between would
+# silently not apply to the release in flight - that window is how 9.7.0 shipped
+# with no workflow run at all. A dispatch always runs the workflow from the
+# default branch, so what is on main is what publishes.
+#
+# `release.sh github-release` creates the Release and then dispatches this
+# workflow, so this stays automatic; running it by hand from the Actions tab is
+# how you retry a release whose images failed to push.
 on:
   push:
     branches:
       - main
-  release:
-    types:
-      - released
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version to publish to Docker Hub, e.g. 9.7.0. Leave blank to build a development image from main.'
+        required: false
+        default: ''
 
 env:
   SKIP_TEST: true
+  # Non-empty exactly when this run publishes an official release. Everything
+  # below keys off this rather than the event name.
+  RELEASE_TAG: ${{ github.event.inputs.version }}
 
 jobs:
   # One agent package feeds every image. The variants differ only in the JRE they
@@ -56,19 +70,19 @@ jobs:
 
       # Development images are compiled from the branch.
       - name: Cache local Maven repository
-        if: github.event_name != 'release'
+        if: env.RELEASE_TAG == ''
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-publish-docker-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-publish-docker-
       - uses: actions/setup-java@v2
-        if: github.event_name != 'release'
+        if: env.RELEASE_TAG == ''
         with:
           distribution: temurin
           java-version: 17
       - name: Build Agent
-        if: github.event_name != 'release'
+        if: env.RELEASE_TAG == ''
         run: make build
 
       # A release is never rebuilt. The published image has to carry the artifact
@@ -79,11 +93,10 @@ jobs:
       # from dist/dev to dist/release immediately before the GitHub Release that
       # triggers this workflow, so the file is in place by the time this runs.
       - name: Download the released agent package
-        if: github.event_name == 'release'
+        if: env.RELEASE_TAG != ''
         run: |
           set -euo pipefail
-          TAG=${{ github.event.release.tag_name }}
-          VERSION=${TAG#v}
+          VERSION=${RELEASE_TAG#v}
           BASE="https://dist.apache.org/repos/dist/release/skywalking/java-agent/${VERSION}"
           TARBALL="apache-skywalking-java-agent-${VERSION}.tgz"
 
@@ -120,18 +133,32 @@ jobs:
         # A release publishes the complete set the previous manual `make
         # docker.push.*` produced, alpine included. Per-commit development
         # images keep the existing JRE-only set.
-        base: ${{ github.event_name == 'release' && fromJSON('["alpine","java8","java11","java17","java21","java25"]') || fromJSON('["java8","java11","java17","java21","java25"]') }}
+        base: ${{ github.event.inputs.version && fromJSON('["alpine","java8","java11","java17","java21","java25"]') || fromJSON('["java8","java11","java17","java21","java25"]') }}
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      # The workflow file necessarily comes from the default branch on a
+      # dispatch - that is the point, it is what makes the run deterministic. The
+      # tree it builds must not. Dockerfile and Makefile decide what the image
+      # actually is, so for a release take them from the tag, exactly as the
+      # release:perform build and the source tarball did.
+      - name: Check out the released tag
+        if: env.RELEASE_TAG != ''
+        run: |
+          set -euo pipefail
+          VERSION=${RELEASE_TAG#v}
+          git fetch --depth 1 origin "refs/tags/v${VERSION}:refs/tags/v${VERSION}"
+          git checkout "refs/tags/v${VERSION}"
+          git submodule update --init --depth 1
+          git --no-pager log -1 --format='building from %h %d'
       - uses: actions/download-artifact@v4
         with:
           name: skywalking-agent
           path: skywalking-agent
       - name: Set environment variables
         run: |
-          if [[ "${{ github.event_name }}" == "release" ]]; then
+          if [[ -n "${RELEASE_TAG}" ]]; then
             # Provisioned by ASF INFRA on request, as for apache/skywalking.
             # Without them docker/login-action fails with an opaque error, so say
             # what is actually missing.
@@ -149,8 +176,7 @@ jobs:
             echo "DOCKER_REGISTRY=docker.io" >> $GITHUB_ENV
             echo "DOCKER_USERNAME=${{ secrets.DOCKERHUB_USER }}" >> $GITHUB_ENV
             echo "DOCKER_PASSWORD=${{ secrets.DOCKERHUB_TOKEN }}" >> $GITHUB_ENV
-            TAG=${{ github.event.release.tag_name }}
-            echo "TAG=${TAG#v}" >> $GITHUB_ENV
+            echo "TAG=${RELEASE_TAG#v}" >> $GITHUB_ENV
           else
             echo "HUB=ghcr.io/apache/skywalking-java" >> $GITHUB_ENV
             echo "DOCKER_REGISTRY=ghcr.io" >> $GITHUB_ENV

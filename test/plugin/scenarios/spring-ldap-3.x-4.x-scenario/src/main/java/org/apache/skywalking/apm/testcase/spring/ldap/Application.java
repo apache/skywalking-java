@@ -62,27 +62,29 @@ public final class Application {
 
     private static final String USER_PASSWORD = "secret";
 
-    private static LdapContextSource contextSource;
+    private final LdapContextSource contextSource;
 
-    private static LdapTemplate ldapTemplate;
+    private final LdapTemplate ldapTemplate;
 
-    private static LdapClient ldapClient;
+    private final LdapClient ldapClient;
 
-    private Application() {
+    private Application(final LdapContextSource contextSource) {
+        this.contextSource = contextSource;
+        this.ldapTemplate = new LdapTemplate(contextSource);
+        final ObservationContextSource observationContextSource =
+            new ObservationContextSource(contextSource, ObservationRegistry.NOOP);
+        this.ldapClient = LdapClient.create(observationContextSource);
     }
 
     public static void main(String[] args) throws Exception {
-        contextSource = createContextSource();
+        final LdapContextSource contextSource = createContextSource();
         waitForLdap(contextSource);
-        ldapTemplate = new LdapTemplate(contextSource);
-        ObservationContextSource observationContextSource =
-            new ObservationContextSource(contextSource, ObservationRegistry.NOOP);
-        ldapClient = LdapClient.create(observationContextSource);
+        final Application application = new Application(contextSource);
 
-        Undertow server = Undertow.builder()
-                                  .addHttpListener(8080, "0.0.0.0")
-                                  .setHandler(Application::handleRequest)
-                                  .build();
+        final Undertow server = Undertow.builder()
+                                        .addHttpListener(8080, "0.0.0.0")
+                                        .setHandler(application::handleRequest)
+                                        .build();
         Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
         server.start();
     }
@@ -114,7 +116,7 @@ public final class Application {
         throw new IllegalStateException("OpenLDAP did not become ready", lastFailure);
     }
 
-    private static void handleRequest(HttpServerExchange exchange) {
+    private void handleRequest(HttpServerExchange exchange) {
         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
         if (HEALTH_PATH.equals(exchange.getRequestPath())) {
             exchange.getResponseSender().send("Success");
@@ -139,7 +141,7 @@ public final class Application {
         });
     }
 
-    private static synchronized void runScenario() throws Throwable {
+    private synchronized void runScenario() throws Throwable {
         cleanupRaw();
         boolean completed = false;
         try {
@@ -191,7 +193,7 @@ public final class Application {
     }
 
     @SuppressWarnings("unchecked")
-    private static List<String> searchWithClient(LdapQuery query) throws Throwable {
+    private List<String> searchWithClient(LdapQuery query) throws Throwable {
         LdapClient.SearchSpec search = ldapClient.search().query(query);
         AttributesMapper<String> mapper = uidMapper();
         try {
@@ -250,7 +252,7 @@ public final class Application {
         }
     }
 
-    private static void cleanupRaw() {
+    private void cleanupRaw() {
         DirContext context = null;
         try {
             context = contextSource.getReadWriteContext();

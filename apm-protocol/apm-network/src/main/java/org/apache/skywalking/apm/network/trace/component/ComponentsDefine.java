@@ -295,4 +295,6 @@ public class ComponentsDefine {
 
     public static final OfficialComponent SPRING_AI = new OfficialComponent(178, "spring-ai");
 
+    public static final OfficialComponent SPRING_LDAP = new OfficialComponent(179, "spring-ldap");
+
 }

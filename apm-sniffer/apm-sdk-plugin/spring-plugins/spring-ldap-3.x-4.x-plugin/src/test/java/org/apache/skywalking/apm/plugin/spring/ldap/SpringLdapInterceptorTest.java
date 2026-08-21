@@ -36,10 +36,16 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.SpanAssert;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.ldap.core.AuthenticatedLdapEntryContextMapper;
+import org.springframework.ldap.core.ContextSource;
+import org.springframework.ldap.core.LdapClient;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.query.LdapQuery;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -59,12 +65,33 @@ public class SpringLdapInterceptorTest {
 
     private Method searchMethod;
 
+    private Method primitiveAuthenticateMethod;
+
+    private Method templateMapperAuthenticateMethod;
+
+    private Method clientMapperExecuteMethod;
+
+    private Method contextSourceSetterMethod;
+
     @Before
     public void setUp() throws Exception {
+        SpringLdapPluginConfig.Plugin.SpringLDAP.COLLECT_EXCEPTION_DETAILS = false;
         operationInterceptor = new SpringLdapOperationInterceptor();
         ldapTemplate = new TestEnhancedInstance();
         ldapTemplate.setSkyWalkingDynamicField(new SpringLdapEnhanceInfo("ldap-server:389"));
         searchMethod = TestOperations.class.getMethod("search", String.class, String.class);
+        primitiveAuthenticateMethod = LdapTemplate.class.getMethod(
+            "authenticate", String.class, String.class, String.class);
+        templateMapperAuthenticateMethod = LdapTemplate.class.getMethod(
+            "authenticate", LdapQuery.class, String.class, AuthenticatedLdapEntryContextMapper.class);
+        clientMapperExecuteMethod = LdapClient.AuthenticateSpec.class.getMethod(
+            "execute", AuthenticatedLdapEntryContextMapper.class);
+        contextSourceSetterMethod = LdapTemplate.class.getMethod("setContextSource", ContextSource.class);
+    }
+
+    @After
+    public void tearDown() {
+        SpringLdapPluginConfig.Plugin.SpringLDAP.COLLECT_EXCEPTION_DETAILS = false;
     }
 
     @Test
@@ -87,17 +114,52 @@ public class SpringLdapInterceptorTest {
     }
 
     @Test
-    public void shouldMarkFalseAuthenticationAsError() throws Throwable {
+    public void shouldMarkFalsePrimitiveAuthenticationAsError() throws Throwable {
         TestEnhancedInstance authentication = new TestEnhancedInstance();
         authentication.setSkyWalkingDynamicField(new SpringLdapEnhanceInfo("ldap-server:389", "authenticate"));
         MethodInvocationContext context = new MethodInvocationContext();
+        Object[] arguments = {"ou=people", "(uid=alice)", "invalid-password"};
 
-        operationInterceptor.beforeMethod(authentication, searchMethod, new Object[0], null, context);
-        operationInterceptor.afterMethod(authentication, searchMethod, new Object[0], null, false, context);
+        operationInterceptor.beforeMethod(authentication, primitiveAuthenticateMethod, arguments, null, context);
+        operationInterceptor.afterMethod(authentication, primitiveAuthenticateMethod, arguments, null, false, context);
 
         AbstractTracingSpan span = onlySpan();
         assertThat(span.getOperationName(), is("SpringLDAP/authenticate"));
         SpanAssert.assertOccurException(span, true);
+        SpanAssert.assertLogSize(span, 0);
+    }
+
+    @Test
+    public void shouldNotMarkSuccessfulTemplateMapperBooleanFalseAsError() throws Throwable {
+        TestEnhancedInstance authentication = new TestEnhancedInstance();
+        authentication.setSkyWalkingDynamicField(new SpringLdapEnhanceInfo("ldap-server:389", "authenticate"));
+        MethodInvocationContext context = new MethodInvocationContext();
+        Object[] arguments = {new Object(), "secret", new Object()};
+
+        operationInterceptor.beforeMethod(authentication, templateMapperAuthenticateMethod, arguments, null, context);
+        operationInterceptor.afterMethod(
+            authentication, templateMapperAuthenticateMethod, arguments, null, Boolean.FALSE, context);
+
+        AbstractTracingSpan span = onlySpan();
+        assertThat(span.getOperationName(), is("SpringLDAP/authenticate"));
+        SpanAssert.assertOccurException(span, false);
+        SpanAssert.assertLogSize(span, 0);
+    }
+
+    @Test
+    public void shouldNotMarkSuccessfulClientMapperBooleanFalseAsError() throws Throwable {
+        TestEnhancedInstance authentication = new TestEnhancedInstance();
+        authentication.setSkyWalkingDynamicField(new SpringLdapEnhanceInfo("ldap-server:389", "authenticate"));
+        MethodInvocationContext context = new MethodInvocationContext();
+        Object[] arguments = {new Object()};
+
+        operationInterceptor.beforeMethod(authentication, clientMapperExecuteMethod, arguments, null, context);
+        operationInterceptor.afterMethod(
+            authentication, clientMapperExecuteMethod, arguments, null, Boolean.FALSE, context);
+
+        AbstractTracingSpan span = onlySpan();
+        assertThat(span.getOperationName(), is("SpringLDAP/authenticate"));
+        SpanAssert.assertOccurException(span, false);
         SpanAssert.assertLogSize(span, 0);
     }
 
@@ -133,9 +195,26 @@ public class SpringLdapInterceptorTest {
     }
 
     @Test
-    public void shouldRecordExceptionOnCreatedSpan() throws Throwable {
+    public void shouldMarkExceptionWithoutCollectingDetailsByDefault() throws Throwable {
         MethodInvocationContext context = new MethodInvocationContext();
-        IllegalStateException exception = new IllegalStateException("LDAP unavailable");
+        IllegalStateException exception = new IllegalStateException(
+            "[LDAP: error code 32 - No Such Object]; remaining name 'uid=alice,ou=people'");
+
+        operationInterceptor.beforeMethod(ldapTemplate, searchMethod, new Object[0], null, context);
+        operationInterceptor.handleMethodException(ldapTemplate, searchMethod, new Object[0], null, exception, context);
+        operationInterceptor.afterMethod(ldapTemplate, searchMethod, new Object[0], null, null, context);
+
+        AbstractTracingSpan span = onlySpan();
+        SpanAssert.assertOccurException(span, true);
+        SpanAssert.assertLogSize(span, 0);
+    }
+
+    @Test
+    public void shouldCollectExceptionDetailsWhenExplicitlyEnabled() throws Throwable {
+        SpringLdapPluginConfig.Plugin.SpringLDAP.COLLECT_EXCEPTION_DETAILS = true;
+        MethodInvocationContext context = new MethodInvocationContext();
+        IllegalStateException exception = new IllegalStateException(
+            "[LDAP: error code 32 - No Such Object]; remaining name 'uid=alice,ou=people'");
 
         operationInterceptor.beforeMethod(ldapTemplate, searchMethod, new Object[0], null, context);
         operationInterceptor.handleMethodException(ldapTemplate, searchMethod, new Object[0], null, exception, context);
@@ -144,13 +223,17 @@ public class SpringLdapInterceptorTest {
         AbstractTracingSpan span = onlySpan();
         SpanAssert.assertOccurException(span, true);
         SpanAssert.assertLogSize(span, 1);
-        SpanAssert.assertException(SpanHelper.getLogs(span).get(0), IllegalStateException.class, "LDAP unavailable");
+        SpanAssert.assertException(
+            SpanHelper.getLogs(span).get(0),
+            IllegalStateException.class,
+            "[LDAP: error code 32 - No Such Object]; remaining name 'uid=alice,ou=people'");
     }
 
     @Test
     public void shouldRecordExceptionOnLdapSpanWhenCallbackSpanIsActive() throws Throwable {
         MethodInvocationContext context = new MethodInvocationContext();
-        IllegalStateException exception = new IllegalStateException("LDAP callback failed");
+        IllegalStateException exception = new IllegalStateException(
+            "[LDAP: error code 32 - No Such Object]; remaining name 'uid=alice,ou=people'");
 
         operationInterceptor.beforeMethod(ldapTemplate, searchMethod, new Object[0], null, context);
         AbstractSpan callbackSpan = ContextManager.createLocalSpan("ldap-callback");
@@ -162,9 +245,7 @@ public class SpringLdapInterceptorTest {
         AbstractTracingSpan ldapSpan = span("SpringLDAP/search");
         AbstractTracingSpan nestedSpan = span("ldap-callback");
         SpanAssert.assertOccurException(ldapSpan, true);
-        SpanAssert.assertLogSize(ldapSpan, 1);
-        SpanAssert.assertException(
-            SpanHelper.getLogs(ldapSpan).get(0), IllegalStateException.class, "LDAP callback failed");
+        SpanAssert.assertLogSize(ldapSpan, 0);
         SpanAssert.assertOccurException(nestedSpan, false);
         SpanAssert.assertLogSize(nestedSpan, 0);
     }
@@ -235,10 +316,28 @@ public class SpringLdapInterceptorTest {
         constructorInterceptor.onConstruct(ldapTemplate, new Object[0]);
 
         setterInterceptor.afterMethod(
-            ldapTemplate, null, new Object[] {contextSource}, null, null, new MethodInvocationContext());
+            ldapTemplate, contextSourceSetterMethod, new Object[] {contextSource}, null, null,
+            new MethodInvocationContext());
 
         SpringLdapEnhanceInfo info = (SpringLdapEnhanceInfo) ldapTemplate.getSkyWalkingDynamicField();
         assertThat(info.getPeer(), is("replacement-ldap:636"));
+    }
+
+    @Test
+    public void shouldPreservePeerWhenContextSourceSetterFails() throws Throwable {
+        ldapTemplate.setSkyWalkingDynamicField(new SpringLdapEnhanceInfo("ldap-server:389"));
+        LdapContextSourceSetterInterceptor setterInterceptor = new LdapContextSourceSetterInterceptor();
+        MethodInvocationContext context = new MethodInvocationContext();
+        Object[] arguments = {null};
+
+        setterInterceptor.beforeMethod(ldapTemplate, contextSourceSetterMethod, arguments, null, context);
+        setterInterceptor.handleMethodException(
+            ldapTemplate, contextSourceSetterMethod, arguments, null,
+            new IllegalArgumentException("contextSource must not be null"), context);
+        setterInterceptor.afterMethod(ldapTemplate, contextSourceSetterMethod, arguments, null, null, context);
+
+        SpringLdapEnhanceInfo info = (SpringLdapEnhanceInfo) ldapTemplate.getSkyWalkingDynamicField();
+        assertThat(info.getPeer(), is("ldap-server:389"));
     }
 
     private AbstractTracingSpan onlySpan() {

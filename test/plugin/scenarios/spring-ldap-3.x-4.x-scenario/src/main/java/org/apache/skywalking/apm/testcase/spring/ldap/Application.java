@@ -182,6 +182,18 @@ public final class Application {
             ldapClient.modify(TEMP_USER_DN).attributes(replaceAttribute("sn", "TemporaryUpdated")).execute();
             ldapClient.unbind(TEMP_USER_DN).execute();
 
+            Boolean templateMapperResult = ldapTemplate.authenticate(
+                aliceQuery, USER_PASSWORD, (context, identification) -> Boolean.FALSE);
+            require(Boolean.FALSE.equals(templateMapperResult),
+                "LdapTemplate authentication mapper returned an unexpected result");
+
+            Boolean clientMapperResult = ldapClient.authenticate()
+                                                   .query(aliceQuery)
+                                                   .password(USER_PASSWORD)
+                                                   .execute((context, identification) -> Boolean.FALSE);
+            require(Boolean.FALSE.equals(clientMapperResult),
+                "LdapClient authentication mapper returned an unexpected result");
+
             ldapTemplate.unbind(RENAMED_USER_DN);
             ldapTemplate.unbind(ORGANIZATION_UNIT_DN);
             completed = true;

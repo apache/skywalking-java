@@ -74,8 +74,7 @@ public class SpringLdapOperationInterceptor implements InstanceMethodsAroundInte
             return ret;
         }
         try {
-            // Some LdapTemplate authenticate overloads report invalid credentials as false.
-            if (AUTHENTICATE_OPERATION.equals(state.operation) && Boolean.FALSE.equals(ret)) {
+            if (failedPrimitiveBooleanAuthenticate(method, state.operation, ret)) {
                 state.span.errorOccurred();
             }
             return ret;
@@ -88,9 +87,26 @@ public class SpringLdapOperationInterceptor implements InstanceMethodsAroundInte
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
         InvocationState state = invocationState(context);
-        if (state != null) {
+        if (state == null) {
+            return;
+        }
+        // Default to a privacy-safe error flag. Exception messages/stacks can contain DNs,
+        // filters, or credentials and are collected only when explicitly enabled.
+        state.span.errorOccurred();
+        if (SpringLdapPluginConfig.Plugin.SpringLDAP.COLLECT_EXCEPTION_DETAILS) {
             state.span.log(t);
         }
+    }
+
+    /**
+     * Only primitive {@code boolean authenticate(...)} methods report invalid credentials as
+     * {@code false}. Mapper overloads may return {@link Boolean#FALSE} as a successful mapped value.
+     */
+    private static boolean failedPrimitiveBooleanAuthenticate(Method method, String operation, Object ret) {
+        return AUTHENTICATE_OPERATION.equals(operation)
+            && method != null
+            && method.getReturnType() == boolean.class
+            && Boolean.FALSE.equals(ret);
     }
 
     private static InvocationState invocationState(MethodInvocationContext context) {

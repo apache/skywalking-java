@@ -25,6 +25,12 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.Method
 
 public class LdapContextSourceSetterInterceptor implements InstanceMethodsAroundInterceptorV2 {
 
+    /**
+     * The V2 interceptor bridge always invokes {@code afterMethod} in {@code finally}, even when
+     * the original setter throws. This marker skips the peer update for a rejected setter call.
+     */
+    private static final Object SETTER_FAILED = new Object();
+
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                              MethodInvocationContext context) {
@@ -33,6 +39,9 @@ public class LdapContextSourceSetterInterceptor implements InstanceMethodsAround
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret, MethodInvocationContext context) {
+        if (context.getContext() == SETTER_FAILED) {
+            return ret;
+        }
         objInst.setSkyWalkingDynamicField(LdapEndpointResolver.resolve(allArguments[0]));
         return ret;
     }
@@ -40,5 +49,6 @@ public class LdapContextSourceSetterInterceptor implements InstanceMethodsAround
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t, MethodInvocationContext context) {
+        context.setContext(SETTER_FAILED);
     }
 }

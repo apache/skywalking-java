@@ -264,9 +264,39 @@ segmentItems:
               - { key: db.type, value: LDAP }
               - { key: ldap.operation, value: unbind }
             logs: []
-          - operationName: SpringLDAP/unbind
+          - operationName: SpringLDAP/authenticate
             parentSpanId: 0
             spanId: 16
+            spanLayer: Database
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 179
+            isError: false
+            spanType: Exit
+            peer: openldap:389
+            skipAnalysis: false
+            tags:
+              - { key: db.type, value: LDAP }
+              - { key: ldap.operation, value: authenticate }
+            logs: []
+          - operationName: SpringLDAP/authenticate
+            parentSpanId: 0
+            spanId: 17
+            spanLayer: Database
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 179
+            isError: false
+            spanType: Exit
+            peer: openldap:389
+            skipAnalysis: false
+            tags:
+              - { key: db.type, value: LDAP }
+              - { key: ldap.operation, value: authenticate }
+            logs: []
+          - operationName: SpringLDAP/unbind
+            parentSpanId: 0
+            spanId: 18
             spanLayer: Database
             startTime: nq 0
             endTime: nq 0
@@ -281,7 +311,7 @@ segmentItems:
             logs: []
           - operationName: SpringLDAP/unbind
             parentSpanId: 0
-            spanId: 17
+            spanId: 19
             spanLayer: Database
             startTime: nq 0
             endTime: nq 0

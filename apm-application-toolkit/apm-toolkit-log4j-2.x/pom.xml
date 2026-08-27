@@ -39,4 +39,31 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!--
+                      The root POM declares annotationProcessorPaths, which makes
+                      javac stop discovering processors from the classpath.
+                      Append log4j-core's PluginProcessor (which generates
+                      Log4j2Plugins.dat) so that %traceId / %sw_ctx resolve to the
+                      toolkit converters instead of built-in Log4j2 patterns.
+                      combine.children="append" keeps the Lombok entry inherited
+                      from the root POM.
+                    -->
+                    <annotationProcessorPaths combine.children="append">
+                        <path>
+                            <groupId>org.apache.logging.log4j</groupId>
+                            <artifactId>log4j-core</artifactId>
+                            <version>${log4j-core.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

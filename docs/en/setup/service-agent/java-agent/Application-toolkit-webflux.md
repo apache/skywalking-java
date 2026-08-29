@@ -10,13 +10,13 @@ Reactor 3.4.0. No single artifact can serve both.
 
 | Artifact | Java package | Reactor | Spring Boot |
 |---|---|---|---|
-| `apm-toolkit-webflux-5.x` | `org.apache.skywalking.apm.toolkit.webflux.v5` | 3.1 -> 3.4 | 2.x |
+| `apm-toolkit-webflux-5.x` | `org.apache.skywalking.apm.toolkit.webflux.v5` | 3.1.3 -> 3.4 | 2.x |
 | `apm-toolkit-webflux-6.x` | `org.apache.skywalking.apm.toolkit.webflux.v6` | 3.5 -> 3.8 | 3.x and 4.x |
 
 The two artifacts expose exactly the same API, so only the dependency coordinate and the import
 change. Add **one** of them — never both.
 
-For Spring Boot 2.x (Reactor 3.1 - 3.4):
+For Spring Boot 2.x (Reactor 3.1.3 - 3.4):
 ```xml
    <dependency>
       <groupId>org.apache.skywalking</groupId>
@@ -50,17 +50,27 @@ Before 9.8.0 there was a single un-versioned `apm-toolkit-webflux` artifact, in 
 (Spring Boot 3.0 and later).
 
 To migrate, change the artifactId and the import: pick `-5.x` to stay on Spring Boot 2.x, or `-6.x`
-if you are on Spring Boot 3.x/4.x. Both are build-time changes — a stale coordinate fails to
-resolve, and a stale import fails to compile, so there is no silent runtime failure.
+if you are on Spring Boot 3.x/4.x. Getting the migration itself wrong is caught at build time — a
+stale coordinate fails to resolve, and a stale import fails to compile.
 
-Applications that keep depending on the old `apm-toolkit-webflux` jar (9.7.0 and earlier) are still
-instrumented by newer agents, so upgrading the agent alone does not force this change.
+**Upgrade the agent first, or together with the toolkit.** Compatibility is only backward, not
+forward:
+
+| Toolkit | Agent | Result |
+|---|---|---|
+| old `apm-toolkit-webflux` (<= 9.7.0) | 9.8.0+ | works — the agent still matches the un-versioned classes |
+| `-5.x` / `-6.x` (9.8.0+) | <= 9.7.0 | **silently untraced** — the older agent does not know the `.v5` / `.v6` classes, so it never instruments them |
+
+The second row compiles and runs perfectly normally; the only symptom is that the toolkit calls
+stop producing spans. So do not roll out a 9.8.0+ toolkit against a 9.7.0 or older agent.
 
 The following scenarios are supported for tracing assistance.
 
 ### Continue Tracing from Client
 The `WebFluxSkyWalkingOperators#continueTracing` provides manual tracing continuous capabilities to adopt native Webflux APIs
 
+With `apm-toolkit-webflux-5.x` (Reactor 3.1.3 - 3.4). `Mono#subscriberContext` was removed in
+Reactor 3.5, so this form does not compile on Spring Boot 3.x/4.x:
 ```java
     @GetMapping("/testcase/annotation/mono/onnext") 
     public Mono<String> monoOnNext(@RequestBody(required = false) String body) {
@@ -72,6 +82,7 @@ The `WebFluxSkyWalkingOperators#continueTracing` provides manual tracing continu
     }
 ```
 
+The `ServerWebExchange` overload takes no Reactor context, so it is identical on both generations:
 ```java
     @GetMapping("/login/userFunctions")
     public Mono<Response<FunctionInfoResult>> functionInfo(ServerWebExchange exchange, @RequestParam String userId) {
@@ -86,6 +97,8 @@ The `WebFluxSkyWalkingOperators#continueTracing` provides manual tracing continu
     }
 ```
 
+With `apm-toolkit-webflux-6.x` (Reactor 3.5+). `Mono#deferContextual` and `Context#of(ContextView)`
+were added in Reactor 3.4, so this form requires Reactor 3.4 or later:
 ```java
     Mono.just("key").subscribeOn(Schedulers.boundedElastic())
         .doOnEach(WebFluxSkyWalkingOperators.continueTracing(SignalType.ON_NEXT, () -> log.info("test log with tid")))

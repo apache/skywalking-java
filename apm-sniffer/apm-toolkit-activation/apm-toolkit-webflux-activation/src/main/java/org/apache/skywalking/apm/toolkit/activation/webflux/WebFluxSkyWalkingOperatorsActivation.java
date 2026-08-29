@@ -21,8 +21,8 @@ package org.apache.skywalking.apm.toolkit.activation.webflux;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.ConstructorInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.v2.StaticMethodsInterceptV2Point;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.ClassStaticMethodsEnhancePluginDefineV2;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
@@ -32,7 +32,7 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMa
 
 /**
  */
-public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnhancePluginDefine {
+public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnhancePluginDefineV2 {
 
     public static final String INTERCEPT_CLASS =
             "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingOperatorsInterceptor";
@@ -65,9 +65,9 @@ public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnha
     }
 
     @Override
-    public StaticMethodsInterceptPoint[] getStaticMethodsInterceptPoints() {
-        return new StaticMethodsInterceptPoint[] {
-                new StaticMethodsInterceptPoint() {
+    public StaticMethodsInterceptV2Point[] getStaticMethodsInterceptV2Points() {
+        return new StaticMethodsInterceptV2Point[] {
+                new StaticMethodsInterceptV2Point() {
                     @Override
                     public ElementMatcher<MethodDescription> getMethodsMatcher() {
                         return named(ENHANCE_METHOD).and(takesArguments(2))
@@ -76,7 +76,7 @@ public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnha
                     }
 
                     @Override
-                    public String getMethodsInterceptor() {
+                    public String getMethodsInterceptorV2() {
                         return INTERCEPT_CLASS;
                     }
 

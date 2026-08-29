@@ -188,9 +188,6 @@ public abstract class AbstractMethodInterceptor implements InstanceMethodsAround
                     if (httpServletResponse != null) {
                         statusCode = httpServletResponse.getStatus();
                     } else if (ServerHttpResponse.class.isAssignableFrom(response.getClass())) {
-                        if (HttpResponseWrappers.servletStatusSupported()) {
-                            statusCode = ((ServerHttpResponse) response).getRawStatusCode();
-                        }
                         Object context = runtimeContext.get(REACTIVE_ASYNC_SPAN_IN_RUNTIME_CONTEXT);
                         if (context != null) {
                             ((AbstractSpan[]) context)[0] = span.prepareForAsync();

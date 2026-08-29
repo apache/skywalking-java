@@ -41,6 +41,7 @@
         <module>apm-toolkit-micrometer-registry</module>
         <module>apm-toolkit-micrometer-1.10</module>
         <module>apm-toolkit-kafka</module>
-        <module>apm-toolkit-webflux</module>
+        <module>apm-toolkit-webflux-5.x</module>
+        <module>apm-toolkit-webflux-6.x</module>
     </modules>
 </project>

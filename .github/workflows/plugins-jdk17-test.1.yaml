@@ -85,6 +85,7 @@ jobs:
           - caffeine-3.x-scenario
           - lettuce-webflux-6x-scenario
           - elasticsearch-java-9.x-scenario
+          - webflux-6.x-7.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

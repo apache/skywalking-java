@@ -37,6 +37,12 @@ public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhanc
     private static final String WEBFLUX_CONTEXT_WRITE_METHOD = "contextWrite";
     private static final String WEBFLUX_METHOD_INTERCEPTOR = "org.apache.skywalking.apm.plugin.spring.webflux.v6.DispatcherHandlerHandleMethodInterceptor";
     private static final String WEBFLUX_ENHANCE_CLASS = "org.springframework.web.reactive.DispatcherHandler";
+    /**
+     * Added in Spring Framework 6.0 and still present in 7.x, absent in 5.x. The Mono#contextWrite
+     * witness below only bounds Reactor, not Spring, so this is what keeps the 6.x plugin off a
+     * Spring 5 application when both webflux plugins are dropped into /plugins.
+     */
+    private static final String WEBFLUX_6_WITNESS_CLASS = "org.springframework.web.reactive.DispatchExceptionHandler";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -77,5 +83,10 @@ public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhanc
     protected List<WitnessMethod> witnessMethods() {
         return Collections.singletonList(
             new WitnessMethod(WEBFLUX_CONTEXT_WRITE_CLASS, named(WEBFLUX_CONTEXT_WRITE_METHOD)));
+    }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[] {WEBFLUX_6_WITNESS_CLASS};
     }
 }

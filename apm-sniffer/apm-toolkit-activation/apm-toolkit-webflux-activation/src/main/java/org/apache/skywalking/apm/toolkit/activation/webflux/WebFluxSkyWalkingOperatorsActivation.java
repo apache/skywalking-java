@@ -28,7 +28,7 @@ import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
-import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
+import static org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch.byMultiClassMatch;
 
 /**
  */
@@ -36,13 +36,27 @@ public class WebFluxSkyWalkingOperatorsActivation extends ClassStaticMethodsEnha
 
     public static final String INTERCEPT_CLASS =
             "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingOperatorsInterceptor";
+    /**
+     * The un-versioned name shipped by apm-toolkit-webflux 9.7.0 and earlier. Still matched so that
+     * applications which never upgrade their toolkit keep working against a newer agent.
+     */
     public static final String ENHANCE_CLASS =
             "org.apache.skywalking.apm.toolkit.webflux.WebFluxSkyWalkingOperators";
+    /**
+     * apm-toolkit-webflux-5.x, for Reactor 3.1-3.4 (Spring Boot 2.x).
+     */
+    public static final String ENHANCE_CLASS_V5 =
+            "org.apache.skywalking.apm.toolkit.webflux.v5.WebFluxSkyWalkingOperators";
+    /**
+     * apm-toolkit-webflux-6.x, for Reactor 3.5+ (Spring Boot 3.x and 4.x).
+     */
+    public static final String ENHANCE_CLASS_V6 =
+            "org.apache.skywalking.apm.toolkit.webflux.v6.WebFluxSkyWalkingOperators";
     public static final String ENHANCE_METHOD = "continueTracing";
 
     @Override
     protected ClassMatch enhanceClass() {
-        return byName(ENHANCE_CLASS);
+        return byMultiClassMatch(ENHANCE_CLASS, ENHANCE_CLASS_V5, ENHANCE_CLASS_V6);
     }
 
     @Override

@@ -40,7 +40,6 @@ import org.springframework.web.util.pattern.PathPattern;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 public class DispatcherHandlerHandleMethodInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -56,9 +55,12 @@ public class DispatcherHandlerHandleMethodInterceptor implements InstanceMethods
         HttpHeaders headers = exchange.getRequest().getHeaders();
         while (next.hasNext()) {
             next = next.next();
-            List<String> header = headers.get(next.getHeadKey());
-            if (header != null && header.size() > 0) {
-                next.setHeadValue(header.get(0));
+            // Use getFirst(String) rather than get(Object): Spring Framework 7 dropped the
+            // MultiValueMap contract from HttpHeaders, removing List get(Object). getFirst(String)
+            // is declared on HttpHeaders itself in Spring 5, 6 and 7 with an identical descriptor.
+            String headerValue = headers.getFirst(next.getHeadKey());
+            if (headerValue != null) {
+                next.setHeadValue(headerValue);
             }
         }
 

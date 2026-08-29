@@ -21,7 +21,8 @@ package org.apache.skywalking.apm.toolkit.activation.webflux;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
-import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.MethodInvocationContext;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.v2.StaticMethodsAroundInterceptorV2;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.util.context.Context;
@@ -29,39 +30,57 @@ import reactor.util.context.Context;
 import java.lang.reflect.Method;
 
 /**
+ * Continues the trace context inside a Reactor operator.
+ * <p>
+ * A span is only created when a context snapshot is actually available - an empty Reactor context, or a
+ * ServerWebExchange that was never enhanced because the optional WebFlux plugin is not installed, both
+ * legitimately yield nothing to continue. Because of that, this interceptor must remember whether it
+ * created a span for THIS invocation: {@link MethodInvocationContext} carries that decision from
+ * {@link #beforeMethod} to {@link #afterMethod}, so the interceptor never stops or logs against a span
+ * that belongs to somebody else, and nesting is handled correctly.
  */
-public class WebFluxSkyWalkingOperatorsInterceptor extends WebFluxSkyWalkingStaticMethodsAroundInterceptor {
-    
+public class WebFluxSkyWalkingOperatorsInterceptor implements StaticMethodsAroundInterceptorV2 {
+
+    private static final Object SPAN_CREATED = new Object();
+
     @Override
     public void beforeMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
-                             MethodInterceptResult result) {
-        // get ContextSnapshot from reactor context,  the snapshot is set to reactor context by any other plugin
+                             MethodInvocationContext context) {
+        // get ContextSnapshot from reactor context, the snapshot is set to reactor context by any other plugin
         // such as DispatcherHandlerHandleMethodInterceptor in spring-webflux-5.x-plugin
+        ContextSnapshot snapshot = null;
         if (parameterTypes[0] == Context.class) {
-            ((Context) allArguments[0]).getOrEmpty("SKYWALKING_CONTEXT_SNAPSHOT")
-                    .ifPresent(ctx -> {
-                        ContextManager.createLocalSpan("WebFluxOperators/onNext").setComponent(ComponentsDefine.SPRING_WEBFLUX);
-                        ContextManager.continued((ContextSnapshot) ctx);
-                    });
+            snapshot = (ContextSnapshot) ((Context) allArguments[0])
+                    .getOrEmpty("SKYWALKING_CONTEXT_SNAPSHOT")
+                    .orElse(null);
         } else if (parameterTypes[0] == ServerWebExchange.class) {
-            EnhancedInstance instance = getInstance(allArguments[0]);
+            EnhancedInstance instance = WebFluxSkyWalkingStaticMethodsAroundInterceptor.getInstance(allArguments[0]);
             if (instance != null && instance.getSkyWalkingDynamicField() != null) {
-                ContextManager.createLocalSpan("WebFluxOperators/onNext").setComponent(ComponentsDefine.SPRING_WEBFLUX);
-                ContextManager.continued((ContextSnapshot) instance.getSkyWalkingDynamicField());
+                snapshot = (ContextSnapshot) instance.getSkyWalkingDynamicField();
             }
+        }
+
+        if (snapshot != null) {
+            ContextManager.createLocalSpan("WebFluxOperators/onNext").setComponent(ComponentsDefine.SPRING_WEBFLUX);
+            ContextManager.continued(snapshot);
+            context.setContext(SPAN_CREATED);
         }
     }
 
     @Override
-    public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Object ret) {
-        ContextManager.stopSpan();
+    public Object afterMethod(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes, Object ret,
+                              MethodInvocationContext context) {
+        if (context.getContext() != null) {
+            ContextManager.stopSpan();
+        }
         return ret;
     }
 
     @Override
     public void handleMethodException(Class clazz, Method method, Object[] allArguments, Class<?>[] parameterTypes,
-                                      Throwable t) {
-        ContextManager.activeSpan().log(t);
+                                      Throwable t, MethodInvocationContext context) {
+        if (context.getContext() != null) {
+            ContextManager.activeSpan().log(t);
+        }
     }
-
 }

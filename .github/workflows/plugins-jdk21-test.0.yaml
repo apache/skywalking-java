@@ -72,6 +72,7 @@ jobs:
         case:
           - spring-6.x-scenario
           - jdk-virtual-thread-executor-scenario
+          - gateway-5.x-scenario
     steps:
       - uses: actions/checkout@v2
         with:

@@ -1,6 +1,6 @@
 # Spring Gateway Plugin
 
-Spring Gateway Plugin only support Spring Gateway 2.x, 3.x and 4.x. It has capabilities to create entry spans for
+Spring Gateway Plugin only support Spring Gateway 2.x, 3.x, 4.x and 5.x. It has capabilities to create entry spans for
 incoming calls, continue tracing context propagation in Spring Gateway and create exit spans for outgoing calls.
 
 About the filter extension of Gateway, it provides automatically support as much as possible, including GlobalFilter and GatewayFilter

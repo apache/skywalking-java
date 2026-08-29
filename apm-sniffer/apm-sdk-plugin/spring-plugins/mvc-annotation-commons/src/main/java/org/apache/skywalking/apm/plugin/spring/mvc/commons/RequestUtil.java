@@ -101,7 +101,12 @@ public class RequestUtil {
     }
 
     public static Enumeration<String> getHeaders(final ServerHttpRequest request, final String headerName) {
-        List<String> values = request.getHeaders().get(headerName);
+        // Use getValuesAsList(String) rather than get(Object): Spring Framework 7 dropped the
+        // MultiValueMap contract from HttpHeaders, removing List get(Object). getValuesAsList(String)
+        // is declared on HttpHeaders itself in Spring 5, 6 and 7 with an identical descriptor.
+        // Note it additionally splits comma-delimited values, which is the more correct reading
+        // for header collection.
+        List<String> values = request.getHeaders().getValuesAsList(headerName);
         if (values == null) {
             return Collections.enumeration(Collections.emptyList());
         }

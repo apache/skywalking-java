@@ -23,7 +23,7 @@ import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.StaticMethodsInterceptPoint;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassStaticMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
-import org.apache.skywalking.apm.agent.core.plugin.match.NameMatch;
+import org.apache.skywalking.apm.agent.core.plugin.match.MultiClassNameMatch;
 
 import static net.bytebuddy.matcher.ElementMatchers.named;
 
@@ -32,7 +32,19 @@ public class WebFluxSkyWalkingTraceContextActivation extends ClassStaticMethodsE
     public static final String TRACE_ID_INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingTraceIDInterceptor";
     public static final String SEGMENT_ID_INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingSegmentIDInterceptor";
     public static final String SPAN_ID_INTERCEPT_CLASS = "org.apache.skywalking.apm.toolkit.activation.webflux.WebFluxSkyWalkingSpanIDInterceptor";
+    /**
+     * The un-versioned name shipped by apm-toolkit-webflux 9.7.0 and earlier. Still matched so that
+     * applications which never upgrade their toolkit keep working against a newer agent.
+     */
     public static final String ENHANCE_CLASS = "org.apache.skywalking.apm.toolkit.webflux.WebFluxSkyWalkingTraceContext";
+    /**
+     * apm-toolkit-webflux-5.x, for Reactor 3.1-3.4 (Spring Boot 2.x).
+     */
+    public static final String ENHANCE_CLASS_V5 = "org.apache.skywalking.apm.toolkit.webflux.v5.WebFluxSkyWalkingTraceContext";
+    /**
+     * apm-toolkit-webflux-6.x, for Reactor 3.5+ (Spring Boot 3.x and 4.x).
+     */
+    public static final String ENHANCE_CLASS_V6 = "org.apache.skywalking.apm.toolkit.webflux.v6.WebFluxSkyWalkingTraceContext";
     public static final String ENHANCE_TRACE_ID_METHOD = "traceId";
     public static final String ENHANCE_SEGMENT_ID_METHOD = "segmentId";
     public static final String ENHANCE_SPAN_ID_METHOD = "spanId";
@@ -46,7 +58,7 @@ public class WebFluxSkyWalkingTraceContextActivation extends ClassStaticMethodsE
      */
     @Override
     protected ClassMatch enhanceClass() {
-        return NameMatch.byName(ENHANCE_CLASS);
+        return MultiClassNameMatch.byMultiClassMatch(ENHANCE_CLASS, ENHANCE_CLASS_V5, ENHANCE_CLASS_V6);
     }
 
     /**

@@ -7,15 +7,15 @@ metrics based on the tracing data.
   * [Tomcat](https://github.com/apache/tomcat) 8
   * [Tomcat](https://github.com/apache/tomcat) 9
   * [Tomcat](https://github.com/apache/tomcat) 10
-  * [Spring Boot](https://github.com/spring-projects/spring-boot) Web 4.x
+  * [Spring Web](https://github.com/spring-projects/spring-framework) 4.x
   * Spring MVC 3.x, 4.x 5.x with servlet 3.x
-  * Spring MVC 6.x (Optional²)
+  * Spring MVC 6.x -> 7.x (Optional²)
   * [Nutz Web Framework](https://github.com/nutzam/nutz)  1.x
   * [Struts2 MVC](http://struts.apache.org/)  2.3.x -> 2.5.x, 7.x (Jakarta, JDK17)
   * Resin 3 (Optional¹), See [SkySPM Plugin Repository](https://github.com/SkyAPM/java-plugin-extensions)
   * Resin 4 (Optional¹), See [SkySPM Plugin Repository](https://github.com/SkyAPM/java-plugin-extensions)
   * [Jetty Server](http://www.eclipse.org/jetty/) 9.x -> 12.x
-  * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional²) -> 6.x (Optional²)
+  * [Spring WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html) 5.x (Optional²) -> 7.x (Optional²)
   * [Undertow](http://undertow.io/)  1.3.0.Final -> 2.3.18.Final
   * [RESTEasy](https://resteasy.dev/)  3.1.0.Final -> 6.2.4.Final
   * [Play Framework](https://www.playframework.com/) 2.6.x -> 2.8.x
@@ -33,16 +33,16 @@ metrics based on the tracing data.
   * [Okhttp](https://github.com/square/okhttp) 2.x -> 3.x -> 4.x
   * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 4.x
-  * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 6.x (Optional²)
+  * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 6.x -> 7.x (Optional²)
   * [Jetty Client](http://www.eclipse.org/jetty/) 9.x -> 11.x
   * [Apache httpcomponent AsyncClient](https://hc.apache.org/httpcomponents-asyncclient-4.1.x/) 4.x
   * [AsyncHttpClient](https://github.com/AsyncHttpClient/async-http-client) 2.1+
-  * [Spring Webflux WebClient](https://github.com/spring-projects/spring-framework/tree/main/spring-webflux) 5.x -> 6.x
+  * [Spring Webflux WebClient](https://github.com/spring-projects/spring-framework/tree/main/spring-webflux) 5.x -> 7.x
   * JRE HttpURLConnection (Optional²)
   * [Hutool-http](https://www.hutool.cn/) client 5.x
   * [Micronaut HTTP Client](https://github.com/micronaut-projects/micronaut-core) 3.2.x -> 3.6.x
 * HTTP Gateway
-  * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 4.3.x (Optional²)
+  * [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway) 2.0.2.RELEASE -> 5.0.x (Optional²)
   * [Apache ShenYu](https://shenyu.apache.org) (Rich protocol support: `HTTP`,`Spring Cloud`,`gRPC`,`Dubbo`,`SOFARPC`,`Motan`,`Tars`) 2.4.x (Optional²)
 * JDBC
   * Mysql Driver 5.x, 6.x, 8.x, 9.x

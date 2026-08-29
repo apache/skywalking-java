@@ -34,6 +34,12 @@ import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName
 public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
     private static final String WEBFLUX_CONTEXT_WRITE_CLASS = "reactor.core.publisher.Mono";
     private static final String WEBFLUX_CONTEXT_WRITE_METHOD = "subscriberContext";
+    /**
+     * Removed in Spring Framework 6.0, so this pins the 5.x plugin to Spring 5. Mono#subscriberContext
+     * alone is not enough: on Reactor 3.4 both it and Mono#contextWrite exist, so without this the
+     * 5.x and 6.x plugins would both match DispatcherHandler#handle on Spring Boot 2.4-2.7.
+     */
+    private static final String WEBFLUX_5_WITNESS_CLASS = "org.springframework.web.reactive.resource.GzipResourceResolver";
 
     @Override
     public ConstructorInterceptPoint[] getConstructorsInterceptPoints() {
@@ -71,5 +77,10 @@ public class DispatcherHandlerInstrumentation extends ClassInstanceMethodsEnhanc
     protected List<WitnessMethod> witnessMethods() {
         return Collections.singletonList(
             new WitnessMethod(WEBFLUX_CONTEXT_WRITE_CLASS, named(WEBFLUX_CONTEXT_WRITE_METHOD)));
+    }
+
+    @Override
+    protected String[] witnessClasses() {
+        return new String[] {WEBFLUX_5_WITNESS_CLASS};
     }
 }

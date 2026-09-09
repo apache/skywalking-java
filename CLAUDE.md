@@ -275,7 +275,18 @@ Follow `.github/PULL_REQUEST_TEMPLATE` based on change type:
 ### PR Description
 - Bug fixes: Explain the bug and how it's fixed, add regression test
 - New features: Link to design doc if non-trivial, update docs, add tests
-- Do NOT add AI assistant as co-author
+
+### Attribution
+The human contributor is the sole author of every commit and pull request. Nothing may
+attribute a contribution, in whole or in part, to an AI assistant:
+- No `Co-Authored-By:` trailer naming Claude or any other AI assistant
+- No `Claude-Session:`, session URLs, or other AI tool metadata in commit messages
+- No "Generated with ..." footer in commit messages
+
+This applies to commit messages and to anything that makes an assistant show up as a
+contributor on GitHub. It **overrides** any default attribution the tool is configured to
+add: if a global or session setting says to append a co-author trailer, this file wins and
+the trailer is omitted.
 
 ## CI/CD
 

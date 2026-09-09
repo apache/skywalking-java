@@ -91,6 +91,11 @@ All PMC members and committers should check these before casting +1 votes.
 
 1. Features test.
 1. All artifacts in staging repository are published with `.asc`, `.md5`, and `*sha1` files.
+1. The staging repository contains `org/apache/skywalking/java-agent/x.y.z/java-agent-x.y.z.pom`.
+Only the toolkit modules are published, but this root POM is their parent (through
+`apm-application-toolkit`); without it every `org.apache.skywalking:apm-toolkit-*` artifact fails to
+resolve with `Non-resolvable parent POM`. Verify with a clean local repository:
+`mvn -U -Dmaven.repo.local=$(mktemp -d) dependency:get -Dartifact=org.apache.skywalking:apm-toolkit-logback-1.x:x.y.z -DremoteRepositories=https://repository.apache.org/content/repositories/<STAGING_REPO_ID>`
 1. Source code and distribution package (`apache-skywalking-java-agent-x.y.z-src.tar.gz`, `apache-skywalking-java-agent-x.y.z.tar.gz`)
 are found in `https://dist.apache.org/repos/dist/dev/skywalking/java-agent/x.y.z` with `.asc` and `.sha512`.
 1. `LICENSE` and `NOTICE` are in the source code and distribution package.

@@ -23,6 +23,10 @@ Release Notes.
   removed `Signal#getContext()` in 3.5.0. Existing `apm-toolkit-webflux` jars (9.7.0 and earlier)
   remain instrumented by the agent, so upgrading the agent alone does not force a change.
 * Fix the Log4j2 plugin descriptor (`Log4j2Plugins.dat`) missing from the `apm-toolkit-log4j-2.x` jar since 9.5.0, which broke `%traceId` and `%sw_ctx` resolution in Log4j2 `PatternLayout` (apache/skywalking#14006).
+* Deploy the root `java-agent` POM to Maven Central again. It is the parent of
+  `apm-application-toolkit` and therefore of every published toolkit artifact, but 9.7.0 skipped it,
+  so resolving any `org.apache.skywalking:apm-toolkit-*:9.7.0` failed with `Non-resolvable parent POM
+  ... Could not find artifact org.apache.skywalking:java-agent:pom:9.7.0` (apache/skywalking#13988).
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/263?closed=1)
 

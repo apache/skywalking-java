@@ -131,7 +131,10 @@
         <jmh.version>1.33</jmh.version>
         <gmaven-plugin.version>1.5</gmaven-plugin.version>
         <checkstyle.fails.on.error>true</checkstyle.fails.on.error>
-        <!-- Only publish toolkit modules to Maven Central; agent/plugins are distributed via package -->
+        <!-- Only publish toolkit modules to Maven Central; agent/plugins are distributed via package.
+             This root POM is the exception: it is the parent of apm-application-toolkit, so it has to
+             be published too or the toolkit POMs cannot resolve their parent chain. See the
+             maven-deploy-plugin declaration below, which re-enables deployment for this POM alone. -->
         <maven.deploy.skip>true</maven.deploy.skip>
 		<maven-docker-plugin.version>0.46.0</maven-docker-plugin.version>
     </properties>
@@ -369,6 +372,19 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <!-- maven.deploy.skip is true for the whole reactor, which would skip this root POM as
+                 well. It is the parent of apm-application-toolkit and therefore of every published
+                 toolkit artifact, so Maven Central needs it: without it, resolving any
+                 org.apache.skywalking:apm-toolkit-* artifact fails with "Non-resolvable parent POM".
+                 inherited=false keeps the exception to this POM only; the modules still skip deploy,
+                 apart from apm-application-toolkit and its children, which opt back in themselves. -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>kr.motd.maven</groupId>
                 <artifactId>os-maven-plugin</artifactId>

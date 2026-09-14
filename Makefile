@@ -28,7 +28,7 @@ build:
 
 .PHONY: dist
 dist: build
-	tar czf apache-skywalking-java-agent-$(TAG).tgz $(AGENT_PACKAGE)
+	COPYFILE_DISABLE=1 tar czf apache-skywalking-java-agent-$(TAG).tgz --exclude '._*' --exclude .DS_Store $(AGENT_PACKAGE)
 	gpg --armor --detach-sig apache-skywalking-java-agent-$(TAG).tgz
 	shasum -a 512 apache-skywalking-java-agent-$(TAG).tgz > apache-skywalking-java-agent-$(TAG).tgz.sha512
 

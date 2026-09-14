@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 
 * Add Spring LDAP 3.3.x-4.x plugin.
+* Exclude macOS metadata files from source and binary release archives (apache/skywalking#14080).
 * Fix `NoSuchMethodError: org.apache.skywalking.apm.plugin.spring.webflux.v6.DispatcherHandlerHandleMethodInterceptor`
   on Spring Framework 7 (Spring Boot 4). `HttpHeaders` no longer implements `MultiValueMap`, so
   `List get(Object)` was removed; the entry span was never created and the service produced no

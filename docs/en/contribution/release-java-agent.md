@@ -76,6 +76,9 @@ Then run `gpgconf --kill gpg-agent` and `gpg --sign /dev/null` to cache it.
 4. **upload** — upload to Apache SVN `dist/dev` (prompts for SVN credentials)
 5. **email vote** — print vote email template with pre-filled version, commit ID, submodule commit, and checksums
 
+Source and binary packaging uses `COPYFILE_DISABLE=1` to prevent macOS `tar` from
+generating AppleDouble metadata, and excludes existing `._*` and `.DS_Store` files.
+
 Before the long build starts, **prepare** asks for the GitHub milestone ID of the next
 development version, which it writes into the reset `CHANGES.md`. Look up the
 `Java - <next_version>` milestone at https://github.com/apache/skywalking/milestones and

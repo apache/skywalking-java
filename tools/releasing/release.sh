@@ -425,9 +425,10 @@ cmd_stage() {
 
     # Source tar
     info "Creating source tar..."
-    tar czf "${product_dir}-src.tgz" \
+    COPYFILE_DISABLE=1 tar czf "${product_dir}-src.tgz" \
         --exclude .git \
         --exclude .DS_Store \
+        --exclude '._*' \
         --exclude .github \
         --exclude .gitignore \
         --exclude .gitmodules \

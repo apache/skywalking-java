@@ -53,14 +53,22 @@ public abstract class AbstractConnectionInterceptor implements InstanceMethodsAr
         // Refer to `plugin.jedis.operation_mapping_read`, `plugin.jedis.operation_mapping_write` config item in agent.config
         String cmd = protocolCommand == null ? UNKNOWN : protocolCommand.toLowerCase();
         ConnectionInformation connectionData = (ConnectionInformation) objInst.getSkyWalkingDynamicField();
+        // connectionData can be null when this Connection instance wasn't captured by the constructor
+        // interceptor (e.g. a pooled/recycled connection created through a code path the constructor
+        // interceptor doesn't cover). Fall back to UNKNOWN instead of throwing here: an exception in
+        // this method, before createExitSpan() runs, would leave no exit span pushed for this call,
+        // so afterMethod()'s unconditional stopSpan() would incorrectly pop and close whatever span
+        // is already on the stack (typically the caller's entry/local span).
+        String actualTarget = connectionData == null ? UNKNOWN : connectionData.getActualTarget();
+        String clusterNodes = connectionData == null ? null : connectionData.getClusterNodes();
         // Use cluster information to adapt Virtual Cache if exists, otherwise use real server host
-        String peer =  StringUtil.isBlank(connectionData.getClusterNodes()) ? connectionData.getActualTarget() : connectionData.getClusterNodes();
+        String peer = StringUtil.isBlank(clusterNodes) ? actualTarget : clusterNodes;
         AbstractSpan span = ContextManager.createExitSpan("Jedis/" + cmd, peer);
         span.setComponent(ComponentsDefine.JEDIS);
         readKeyIfNecessary(iterator).ifPresent(key -> Tags.CACHE_KEY.set(span, key));
         Tags.CACHE_CMD.set(span, cmd);
         Tags.CACHE_TYPE.set(span, CACHE_TYPE);
-        TAG_ARGS.set(span, connectionData.getActualTarget());
+        TAG_ARGS.set(span, actualTarget);
         parseOperation(cmd).ifPresent(op -> Tags.CACHE_OP.set(span, op));
         SpanLayer.asCache(span);
     }
@@ -84,8 +92,12 @@ public abstract class AbstractConnectionInterceptor implements InstanceMethodsAr
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-        AbstractSpan span = ContextManager.activeSpan().log(t).errorOccurred();
-        ContextManager.stopSpan(span);
+        // Do not call ContextManager.stopSpan() here: afterMethod() below always runs afterwards
+        // (InstMethodsInter invokes it in a finally block, on every path including exceptions) and
+        // already pops this span. Stopping it a second time here pops one extra span - typically the
+        // caller's entry/local span - corrupting the trace for the rest of the request. Only log the
+        // exception on the still-active span, matching the jedis-2.x-3.x-plugin's safe behavior.
+        ContextManager.activeSpan().log(t).errorOccurred();
     }
 
     private Optional<String> parseOperation(String cmd) {

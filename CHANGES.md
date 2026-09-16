@@ -5,6 +5,9 @@ Release Notes.
 9.8.0
 ------------------
 
+* Fix `jedis-4.x-plugin`'s `AbstractConnectionInterceptor` double-stopping the span stack on any
+  Redis-level exception (or a null dynamic field on a pooled/recycled `Connection`), which corrupted
+  the parent trace for the rest of the request (apache/skywalking#14085).
 * Add Spring LDAP 3.3.x-4.x plugin.
 * Exclude macOS metadata files from source and binary release archives (apache/skywalking#14080).
 * Fix `NoSuchMethodError: org.apache.skywalking.apm.plugin.spring.webflux.v6.DispatcherHandlerHandleMethodInterceptor`

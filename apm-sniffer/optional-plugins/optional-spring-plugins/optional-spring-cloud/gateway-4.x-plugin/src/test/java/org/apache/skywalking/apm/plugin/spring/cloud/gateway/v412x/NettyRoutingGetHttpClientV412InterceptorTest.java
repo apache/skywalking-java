@@ -19,9 +19,9 @@
 package org.apache.skywalking.apm.plugin.spring.cloud.gateway.v412x;
 
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
+import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
-import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
@@ -29,48 +29,35 @@ import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
 import org.apache.skywalking.apm.agent.test.tools.TracingSegmentRunner;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.spring.cloud.gateway.v4x.define.EnhanceObjectCache;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import java.util.List;
+import reactor.netty.http.client.HttpClient;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 @RunWith(TracingSegmentRunner.class)
 public class NettyRoutingGetHttpClientV412InterceptorTest {
     private final static String ENTRY_OPERATION_NAME = "/get";
+
     private final NettyRoutingGetHttpClientV412Interceptor interceptor = new NettyRoutingGetHttpClientV412Interceptor();
-    private final EnhancedInstance enhancedInstance = new EnhancedInstance() {
-        private EnhanceObjectCache enhanceObjectCache;
 
-        @Override
-        public Object getSkyWalkingDynamicField() {
-            return enhanceObjectCache;
-        }
-
-        @Override
-        public void setSkyWalkingDynamicField(Object value) {
-            this.enhanceObjectCache = (EnhanceObjectCache) value;
-        }
-    };
-    private final EnhancedInstance retEnhancedInstance = new EnhancedInstance() {
-        private EnhanceObjectCache enhanceObjectCache;
-        @Override
-        public Object getSkyWalkingDynamicField() {
-            return enhanceObjectCache;
-        }
-
-        @Override
-        public void setSkyWalkingDynamicField(Object value) {
-            this.enhanceObjectCache = (EnhanceObjectCache) value;
-        }
-    };
+    /**
+     * Stands for the single <code>NettyRoutingFilter#httpClient</code> bean, which
+     * <code>NettyRoutingFilter#getHttpClient</code> returns to every request.
+     */
+    private final HttpClient sharedHttpClient = mockHttpClient();
 
     @Rule
     public AgentServiceRule serviceRule = new AgentServiceRule();
@@ -79,37 +66,66 @@ public class NettyRoutingGetHttpClientV412InterceptorTest {
 
     @SegmentStoragePoint
     private SegmentStorage segmentStorage;
-    private AbstractSpan entrySpan;
 
-    @Before
-    public void setUp() throws Exception {
+    @Test
+    public void testSnapshotIsHeldByADerivedClientAndNotByTheSharedOne() throws Throwable {
+        final HttpClient derivedHttpClient = mockHttpClient();
+        when(sharedHttpClient.headers(any())).thenReturn(derivedHttpClient);
+
+        final Object ret = getHttpClientWithinARequest(sharedHttpClient);
+
+        assertSame(derivedHttpClient, ret);
+        assertNotNull(snapshotOf(derivedHttpClient));
+        // The shared bean is reused by every request, so it must never hold a request scoped snapshot.
+        verify((EnhancedInstance) sharedHttpClient, never()).setSkyWalkingDynamicField(any());
     }
 
     @Test
-    public void testWithContextIsActive() throws Throwable {
-        entrySpan = ContextManager.createEntrySpan(ENTRY_OPERATION_NAME, null);
-        entrySpan.setLayer(SpanLayer.HTTP);
-        entrySpan.setComponent(ComponentsDefine.SPRING_WEBFLUX);
-        interceptor.afterMethod(enhancedInstance, null, null, null, retEnhancedInstance);
-        assertNotNull(retEnhancedInstance.getSkyWalkingDynamicField());
-        assertTrue(retEnhancedInstance.getSkyWalkingDynamicField() instanceof EnhanceObjectCache);
-        EnhanceObjectCache enhanceObjectCache = (EnhanceObjectCache) retEnhancedInstance.getSkyWalkingDynamicField();
-        assertNotNull(enhanceObjectCache.getContextSnapshot());
-        final List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
-        assertEquals(traceSegments.size(), 0);
-        if (ContextManager.isActive()) {
-            ContextManager.stopSpan();
-        }
+    public void testConcurrentRequestsDoNotShareTheSnapshot() throws Throwable {
+        final HttpClient firstDerivedHttpClient = mockHttpClient();
+        final HttpClient secondDerivedHttpClient = mockHttpClient();
+        when(sharedHttpClient.headers(any())).thenReturn(firstDerivedHttpClient, secondDerivedHttpClient);
+
+        final Object firstRet = getHttpClientWithinARequest(sharedHttpClient);
+        final Object secondRet = getHttpClientWithinARequest(sharedHttpClient);
+
+        assertSame(firstDerivedHttpClient, firstRet);
+        assertSame(secondDerivedHttpClient, secondRet);
+        assertNotEquals(
+            snapshotOf(firstDerivedHttpClient).getTraceId().getId(),
+            snapshotOf(secondDerivedHttpClient).getTraceId().getId()
+        );
+        verify((EnhancedInstance) sharedHttpClient, never()).setSkyWalkingDynamicField(any());
     }
 
     @Test
     public void testWithContextNotActive() throws Throwable {
-        interceptor.afterMethod(enhancedInstance, null, null, null, retEnhancedInstance);
-        assertNull(retEnhancedInstance.getSkyWalkingDynamicField());
-        final List<TraceSegment> traceSegments = segmentStorage.getTraceSegments();
-        assertEquals(traceSegments.size(), 0);
-        if (ContextManager.isActive()) {
+        final Object ret = interceptor.afterMethod(null, null, null, null, sharedHttpClient);
+
+        assertSame(sharedHttpClient, ret);
+        // Nothing to propagate, so not even a client is derived.
+        verify(sharedHttpClient, never()).headers(any());
+        verify((EnhancedInstance) sharedHttpClient, never()).setSkyWalkingDynamicField(any());
+    }
+
+    private Object getHttpClientWithinARequest(final HttpClient httpClient) throws Throwable {
+        final AbstractSpan entrySpan = ContextManager.createEntrySpan(ENTRY_OPERATION_NAME, null);
+        entrySpan.setLayer(SpanLayer.HTTP);
+        entrySpan.setComponent(ComponentsDefine.SPRING_WEBFLUX);
+        try {
+            return interceptor.afterMethod(null, null, null, null, httpClient);
+        } finally {
             ContextManager.stopSpan();
         }
+    }
+
+    private ContextSnapshot snapshotOf(final HttpClient httpClient) {
+        final ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
+        verify((EnhancedInstance) httpClient).setSkyWalkingDynamicField(captor.capture());
+        return ((EnhanceObjectCache) captor.getValue()).getContextSnapshot();
+    }
+
+    private static HttpClient mockHttpClient() {
+        return mock(HttpClient.class, withSettings().extraInterfaces(EnhancedInstance.class));
     }
 }

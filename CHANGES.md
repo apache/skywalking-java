@@ -5,6 +5,13 @@ Release Notes.
 9.8.0
 ------------------
 
+* Fix the `spring-cloud-gateway-4.x` plugin propagating another request's context. Since Spring Cloud
+  Gateway 4.1.2 the outbound chain is assembled in `NettyRoutingFilter#filter` but subscribed later, so the
+  plugin parked the request's `ContextSnapshot` on the `HttpClient` returned by
+  `NettyRoutingFilter#getHttpClient`, which is the single shared bean unless a connect timeout is configured.
+  A concurrent request could overwrite it before the chain was subscribed, and the outbound `sw8` header then
+  carried a context the downstream service joined by mistake. The snapshot is held by a client derived per
+  request now (apache/skywalking#14095).
 * Fix `jedis-4.x-plugin`'s `AbstractConnectionInterceptor` double-stopping the span stack on any
   Redis-level exception (or a null dynamic field on a pooled/recycled `Connection`), which corrupted
   the parent trace for the rest of the request (apache/skywalking#14085).

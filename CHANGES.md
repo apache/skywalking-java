@@ -5,6 +5,9 @@ Release Notes.
 9.8.0
 ------------------
 
+* Fix the `spring-ai-1.x-plugin` `ChatModelStreamInterceptor` leaking its async span when
+  `ChatModel#stream(Prompt)` fails synchronously, which silently dropped the whole `TraceSegment`
+  of the request (apache/skywalking#14098).
 * Fix `jedis-4.x-plugin`'s `AbstractConnectionInterceptor` double-stopping the span stack on any
   Redis-level exception (or a null dynamic field on a pooled/recycled `Connection`), which corrupted
   the parent trace for the rest of the request (apache/skywalking#14085).

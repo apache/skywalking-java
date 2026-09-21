@@ -83,6 +83,11 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
             return ret;
         }
 
+        if (!(ret instanceof Flux)) {
+            ContextManager.stopSpan();
+            return ret;
+        }
+
         final AbstractSpan span = ContextManager.activeSpan();
         final ContextSnapshot snapshot = ContextManager.capture();
 

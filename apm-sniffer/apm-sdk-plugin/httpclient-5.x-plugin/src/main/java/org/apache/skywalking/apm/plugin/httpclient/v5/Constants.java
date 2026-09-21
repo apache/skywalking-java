@@ -20,4 +20,6 @@ package org.apache.skywalking.apm.plugin.httpclient.v5;
 public class Constants {
 
     public static String SKYWALKING_CONTEXT_SNAPSHOT = "skywalking-context-snapshot";
+
+    public static String SKYWALKING_LOCAL_SPAN = "skywalking-local-span";
 }

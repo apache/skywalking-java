@@ -62,6 +62,7 @@ public class IOSessionImplPollInterceptor implements InstanceMethodsAroundInterc
         AbstractSpan localSpan = ContextManager.createLocalSpan("httpasyncclient/local");
         localSpan.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
         localSpan.setLayer(SpanLayer.HTTP);
+        httpContext.setAttribute(Constants.SKYWALKING_LOCAL_SPAN, localSpan);
         ContextManager.continued(snapshot);
 
         final ContextCarrier contextCarrier = new ContextCarrier();

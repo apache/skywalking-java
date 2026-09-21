@@ -4,6 +4,7 @@ Release Notes.
 
 9.8.0
 ------------------
+* Fix `httpclient-5.x-plugin` closing the caller thread's active span when `FutureCallback` executes on the caller thread (apache/skywalking#14097).
 
 * Fix the `spring-ai-1.x-plugin` `ChatModelStreamInterceptor` leaking its async span when
   `ChatModel#stream(Prompt)` fails synchronously, which silently dropped the whole `TraceSegment`

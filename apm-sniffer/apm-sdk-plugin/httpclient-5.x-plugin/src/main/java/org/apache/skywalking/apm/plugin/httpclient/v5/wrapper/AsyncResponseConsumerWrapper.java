@@ -28,6 +28,7 @@ import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.plugin.httpclient.v5.OwnedSpans;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -52,6 +53,12 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
                 span.errorOccurred();
             }
             ContextManager.stopSpan();
+            // consumeResponse runs on the I/O thread that created the local span. Finish it here, otherwise it
+            // would stay on this thread's span stack when the FutureCallback runs on another thread.
+            AbstractSpan localSpan = OwnedSpans.activeOwnedSpan(context);
+            if (localSpan != null) {
+                ContextManager.stopSpan(localSpan);
+            }
         }
         consumer.consumeResponse(response, entityDetails, context, resultCallback);
     }

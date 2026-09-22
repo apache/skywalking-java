@@ -24,6 +24,7 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
 import org.springframework.http.client.reactive.ClientHttpRequest;
+import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Method;
 
@@ -34,17 +35,36 @@ public class BodyInserterRequestInterceptor implements InstanceMethodsAroundInte
                              MethodInterceptResult result) throws Throwable {
         ClientHttpRequest clientHttpRequest = (ClientHttpRequest) allArguments[0];
         ContextCarrier contextCarrier = (ContextCarrier) objInst.getSkyWalkingDynamicField();
-        CarrierItem next = contextCarrier.items();
-        while (next.hasNext()) {
-            next = next.next();
-            clientHttpRequest.getHeaders().set(next.getHeadKey(), next.getHeadValue());
+        if (contextCarrier != null) {
+            inject(clientHttpRequest, contextCarrier);
         }
     }
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
                               Object ret) throws Throwable {
-        return ret;
+        // Connectors like JdkClientHttpConnector invoke writeTo eagerly at assembly time,
+        // before the exchange interceptor sets the carrier at subscription time. Retry the
+        // injection when the returned Mono is subscribed, before the request is committed.
+        if (objInst.getSkyWalkingDynamicField() != null || !(ret instanceof Mono)) {
+            return ret;
+        }
+        final ClientHttpRequest clientHttpRequest = (ClientHttpRequest) allArguments[0];
+        return Mono.defer(() -> {
+            ContextCarrier contextCarrier = (ContextCarrier) objInst.getSkyWalkingDynamicField();
+            if (contextCarrier != null) {
+                inject(clientHttpRequest, contextCarrier);
+            }
+            return (Mono<?>) ret;
+        });
+    }
+
+    private void inject(ClientHttpRequest clientHttpRequest, ContextCarrier contextCarrier) {
+        CarrierItem next = contextCarrier.items();
+        while (next.hasNext()) {
+            next = next.next();
+            clientHttpRequest.getHeaders().set(next.getHeadKey(), next.getHeadValue());
+        }
     }
 
     @Override

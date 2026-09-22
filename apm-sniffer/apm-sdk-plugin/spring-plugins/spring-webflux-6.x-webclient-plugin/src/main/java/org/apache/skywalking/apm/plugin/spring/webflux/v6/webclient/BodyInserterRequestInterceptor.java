@@ -53,7 +53,11 @@ public class BodyInserterRequestInterceptor implements InstanceMethodsAroundInte
         return Mono.defer(() -> {
             ContextCarrier contextCarrier = (ContextCarrier) objInst.getSkyWalkingDynamicField();
             if (contextCarrier != null) {
-                inject(clientHttpRequest, contextCarrier);
+                try {
+                    inject(clientHttpRequest, contextCarrier);
+                } catch (Throwable t) {
+                    // headers are read-only once the request is committed (e.g. re-subscribed by a retry)
+                }
             }
             return (Mono<?>) ret;
         });

@@ -17,73 +17,51 @@
 
 package org.apache.skywalking.apm.plugin.httpclient.v5.wrapper;
 
-import org.apache.hc.core5.concurrent.FutureCallback;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.List;
 import org.apache.hc.core5.http.EntityDetails;
-import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.nio.AsyncResponseConsumer;
 import org.apache.hc.core5.http.nio.CapacityChannel;
 import org.apache.hc.core5.http.protocol.HttpContext;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.tag.Tags;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.plugin.httpclient.v5.OwnedSpans;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.List;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.skywalking.apm.plugin.httpclient.v5.AsyncExitSpan;
 
 public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T> {
 
-    private AsyncResponseConsumer<T> consumer;
+    private final AsyncResponseConsumer<T> consumer;
+    private final AsyncExitSpan exitSpan;
 
-    public AsyncResponseConsumerWrapper(AsyncResponseConsumer<T> consumer) {
+    public AsyncResponseConsumerWrapper(
+            AsyncResponseConsumer<T> consumer, AsyncExitSpan exitSpan) {
         this.consumer = consumer;
+        this.exitSpan = exitSpan;
     }
 
     @Override
-    public void consumeResponse(HttpResponse response, EntityDetails entityDetails, HttpContext context,
+    public void consumeResponse(
+            HttpResponse response,
+            EntityDetails entityDetails,
+            HttpContext context,
             FutureCallback<T> resultCallback) throws HttpException, IOException {
-        if (ContextManager.isActive()) {
-            int statusCode = response.getCode();
-            AbstractSpan span = ContextManager.activeSpan();
-            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
-            if (statusCode >= 400) {
-                span.errorOccurred();
-            }
-            ContextManager.stopSpan();
-            // consumeResponse runs on the I/O thread that created the local span. Finish it here, otherwise it
-            // would stay on this thread's span stack when the FutureCallback runs on another thread.
-            AbstractSpan localSpan = OwnedSpans.activeOwnedSpan(context);
-            if (localSpan != null) {
-                ContextManager.stopSpan(localSpan);
-            }
+
+        exitSpan.onResponse(response.getCode());
+
+        if (entityDetails == null) {
+            exitSpan.finish();
         }
+
         consumer.consumeResponse(response, entityDetails, context, resultCallback);
     }
 
     @Override
-    public void informationResponse(HttpResponse response, HttpContext context) throws HttpException, IOException {
-        if (ContextManager.isActive()) {
-            int statusCode = response.getCode();
-            AbstractSpan span = ContextManager.activeSpan();
-            Tags.HTTP_RESPONSE_STATUS_CODE.set(span, statusCode);
-            if (statusCode >= 400) {
-                span.errorOccurred();
-            }
-            ContextManager.stopSpan();
-        }
+    public void informationResponse(
+            HttpResponse response,
+            HttpContext context) throws HttpException, IOException {
         consumer.informationResponse(response, context);
-    }
-
-    @Override
-    public void failed(Exception cause) {
-        if (ContextManager.isActive()) {
-            ContextManager.activeSpan().errorOccurred().log(cause);
-            ContextManager.stopSpan();
-        }
-        consumer.failed(cause);
     }
 
     @Override
@@ -98,11 +76,19 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
 
     @Override
     public void streamEnd(List<? extends Header> trailers) throws HttpException, IOException {
+        exitSpan.finish();
         consumer.streamEnd(trailers);
     }
 
     @Override
+    public void failed(Exception cause) {
+        exitSpan.fail(cause);
+        consumer.failed(cause);
+    }
+
+    @Override
     public void releaseResources() {
+        exitSpan.abort();
         consumer.releaseResources();
     }
 }

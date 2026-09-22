@@ -18,29 +18,22 @@
 package org.apache.skywalking.apm.plugin.httpclient.v5.wrapper;
 
 import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.http.protocol.HttpContext;
-import org.apache.skywalking.apm.agent.core.context.ContextManager;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
-import org.apache.skywalking.apm.plugin.httpclient.v5.OwnedSpans;
+import org.apache.skywalking.apm.plugin.httpclient.v5.AsyncExitSpan;
 
 public class FutureCallbackWrapper<T> implements FutureCallback<T> {
 
     private final FutureCallback<T> callback;
-    private final HttpContext context;
+    private final AsyncExitSpan exitSpan;
 
-    public FutureCallbackWrapper(FutureCallback<T> callback, HttpContext context) {
+    public FutureCallbackWrapper(FutureCallback<T> callback, AsyncExitSpan exitSpan) {
         this.callback = callback;
-        this.context = context;
+        this.exitSpan = exitSpan;
     }
 
     @Override
     public void completed(T o) {
-        // The callback may run on the caller thread (e.g. HttpAsyncClients.classic), whose active span
-        // does not belong to this request. Only finish the span created for this request.
-        AbstractSpan span = OwnedSpans.activeOwnedSpan(context);
-        if (span != null) {
-            ContextManager.stopSpan(span);
-        }
+        exitSpan.finish();
+
         if (callback != null) {
             callback.completed(o);
         }
@@ -48,11 +41,8 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
 
     @Override
     public void failed(Exception e) {
-        AbstractSpan span = OwnedSpans.activeOwnedSpan(context);
-        if (span != null) {
-            span.errorOccurred().log(e);
-            ContextManager.stopSpan(span);
-        }
+        exitSpan.fail(e);
+
         if (callback != null) {
             callback.failed(e);
         }
@@ -60,11 +50,8 @@ public class FutureCallbackWrapper<T> implements FutureCallback<T> {
 
     @Override
     public void cancelled() {
-        AbstractSpan span = OwnedSpans.activeOwnedSpan(context);
-        if (span != null) {
-            span.errorOccurred();
-            ContextManager.stopSpan(span);
-        }
+        exitSpan.abort();
+
         if (callback != null) {
             callback.cancelled();
         }

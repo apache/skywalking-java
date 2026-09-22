@@ -8,6 +8,8 @@ Release Notes.
 * Fix the `spring-ai-1.x-plugin` `ChatModelStreamInterceptor` leaking its async span when
   `ChatModel#stream(Prompt)` fails synchronously, which silently dropped the whole `TraceSegment`
   of the request (apache/skywalking#14098).
+* Split HikariCP datasource metrics into `datasource` for connection-related values and
+  `datasource_time` for timeout-related values to keep metric semantics consistent.
 * Fix `jedis-4.x-plugin`'s `AbstractConnectionInterceptor` double-stopping the span stack on any
   Redis-level exception (or a null dynamic field on a pooled/recycled `Connection`), which corrupted
   the parent trace for the rest of the request (apache/skywalking#14085).
@@ -29,7 +31,7 @@ Release Notes.
   `WebFluxSkyWalkingOperators#continueTracing` previously threw `NoSuchMethodError` because Reactor
   removed `Signal#getContext()` in 3.5.0. Existing `apm-toolkit-webflux` jars (9.7.0 and earlier)
   remain instrumented by the agent, so upgrading the agent alone does not force a change.
-* Fix the Log4j2 plugin descriptor (`Log4j2Plugins.dat`) missing from the `apm-toolkit-log4j-2.x` jar since 9.5.0, which broke `%traceId` and `%sw_ctx` resolution in Log4j2 `PatternLayout` (apache/skywalking#14006).
+* Fix the Log4j2 plugin descriptor (`Log4j2Plugins.dat`) missing from the `apm-toolkit-log4j-2.x` jar since 9.5.0, which broke `%traceId` and `%sw_ctx` resolution in Log4j2 `PatternLayout` (apache/skywalking#14069).
 * Deploy the root `java-agent` POM to Maven Central again. It is the parent of
   `apm-application-toolkit` and therefore of every published toolkit artifact, but 9.7.0 skipped it,
   so resolving any `org.apache.skywalking:apm-toolkit-*:9.7.0` failed with `Non-resolvable parent POM

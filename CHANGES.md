@@ -6,6 +6,12 @@ Release Notes.
 ------------------
 * Fix `httpclient-5.x-plugin` closing the caller thread's active span when `FutureCallback` executes on the caller thread (apache/skywalking#14097).
 
+* Fix the `NullPointerException` thrown by the `spring-webflux-5.x-webclient` and
+  `spring-webflux-6.x-webclient` plugins when `DefaultClientRequestBuilder$BodyInserterRequest#writeTo` runs
+  before any exit span exists. Connectors such as `JdkClientHttpConnector` call `writeTo` eagerly at assembly
+  time, while the exchange interceptor creates the exit span and its `ContextCarrier` only at subscription, so
+  the interception failed and the `sw8` header was not propagated. The carrier injection is now null-guarded
+  and, if the carrier is still absent, retried when the returned `Mono` is subscribed (apache/skywalking#13589).
 * Fix the `spring-ai-1.x-plugin` `ChatModelStreamInterceptor` leaking its async span when
   `ChatModel#stream(Prompt)` fails synchronously, which silently dropped the whole `TraceSegment`
   of the request (apache/skywalking#14098).

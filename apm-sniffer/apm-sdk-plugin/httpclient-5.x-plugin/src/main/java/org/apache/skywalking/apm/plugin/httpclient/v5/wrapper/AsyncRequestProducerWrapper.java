@@ -18,7 +18,10 @@
 package org.apache.skywalking.apm.plugin.httpclient.v5.wrapper;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.nio.AsyncRequestProducer;
 import org.apache.hc.core5.http.nio.DataStreamChannel;
@@ -30,10 +33,14 @@ import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
+import org.apache.skywalking.apm.agent.core.logging.api.ILog;
+import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
 import org.apache.skywalking.apm.plugin.httpclient.v5.AsyncExitSpan;
 
 public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
+
+    private static final ILog LOGGER = LogManager.getLogger(AsyncRequestProducerWrapper.class);
 
     private final AsyncRequestProducer producer;
     private final AsyncExitSpan exitSpan;
@@ -53,8 +60,8 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
             if (exitSpan.claimCreation()) {
                 try {
                     startExitSpan(request);
-                } catch (Throwable ignored) {
-                    // Never let tracing instrumentation break the user's HTTP request.
+                } catch (Throwable t) {
+                    LOGGER.error("Failed to trace the async HTTP request.", t);
                 }
             }
 
@@ -62,39 +69,69 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
         }, context);
     }
 
-    private void startExitSpan(HttpRequest request) {
-        String operationName = request.getRequestUri();
-        String remotePeer = exitSpan.getTarget().toHostString();
+    private void startExitSpan(HttpRequest request) throws URISyntaxException {
+        URI uri = request.getUri();
+        HttpHost target = exitSpan.getTarget();
 
-        ContextCarrier contextCarrier = new ContextCarrier();
-        AbstractSpan span = ContextManager.createExitSpan(
-                operationName,
-                contextCarrier,
-                remotePeer
-        );
+        String scheme = target != null ? target.getSchemeName() : uri.getScheme();
+        String host = target != null ? target.getHostName() : uri.getHost();
+        int port = target != null ? target.getPort() : uri.getPort();
 
-        boolean nested = ContextManager.activeSpan().isExit();
-
-        if (!nested) {
-            span.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
-            Tags.URL.set(span, request.getRequestUri());
-            SpanLayer.asHttp(span);
+        if (host == null) {
+            return;
         }
 
-        CarrierItem next = contextCarrier.items();
-        while (next.hasNext()) {
-            request.setHeader(next.getHeadKey(), next.getHeadValue());
-            next = next.next();
+        if (scheme == null) {
+            scheme = "http";
         }
 
-        if (!nested) {
-            span.prepareForAsync();
+        if (port < 0) {
+            port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
         }
 
-        ContextManager.stopSpan(span);
+        String peer = host + ":" + port;
 
-        if (!nested) {
-            exitSpan.start(span);
+        String path = uri.getPath() == null || uri.getPath().isEmpty()
+                ? "/"
+                : uri.getPath();
+
+        String url = scheme + "://" + peer + path
+                + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
+
+        /*
+         * Check whether an exit span was already active BEFORE creating
+         * this request's span.
+         */
+        boolean nested = ContextManager.isActive() && ContextManager.activeSpan().isExit();
+
+        AbstractSpan span = ContextManager.createExitSpan(path, peer);
+
+        try {
+            if (!nested) {
+                span.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
+                Tags.URL.set(span, url);
+                Tags.HTTP.METHOD.set(span, request.getMethod());
+                SpanLayer.asHttp(span);
+            }
+
+            ContextCarrier carrier = new ContextCarrier();
+            ContextManager.inject(carrier);
+
+            CarrierItem next = carrier.items();
+            while (next.hasNext()) {
+                next = next.next();
+                request.setHeader(next.getHeadKey(), next.getHeadValue());
+            }
+        } finally {
+            if (!nested) {
+                span.prepareForAsync();
+            }
+
+            ContextManager.stopSpan(span);
+
+            if (!nested) {
+                exitSpan.start(span);
+            }
         }
     }
 

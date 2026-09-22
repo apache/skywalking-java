@@ -17,6 +17,7 @@
 
 package org.apache.skywalking.apm.plugin.httpclient.v5;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpRequest;
@@ -26,8 +27,11 @@ import org.apache.hc.core5.http.protocol.BasicHttpContext;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.http.message.BasicHttpRequest;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
+import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
@@ -113,5 +117,61 @@ public class AsyncRequestProducerWrapperTest {
 
         verify(producer).sendRequest(any(RequestChannel.class), any(HttpContext.class));
         verify(requestChannel).sendRequest(any(), any(), any());
+    }
+
+    @Test
+    public void interleavedRequestsDoNotShareCallerSpanStack() throws Exception {
+        AbstractSpan callerSpan = ContextManager.createEntrySpan("/business", null);
+
+        AsyncExitSpan firstRequest = createAsyncExitSpan("/first");
+        AsyncExitSpan secondRequest = createAsyncExitSpan("/second");
+
+        Thread reactorThread = new Thread(() -> {
+            // Both requests are already detached from the caller's span stack.
+            // Finish them in reverse order to simulate response interleaving.
+            secondRequest.onResponse(500);
+            firstRequest.onResponse(200);
+
+            secondRequest.finish();
+            firstRequest.finish();
+
+            // No request span should have been pushed onto this reactor thread.
+            assertThat(ContextManager.isActive(), is(false));
+        });
+
+        reactorThread.start();
+        reactorThread.join();
+
+        // Finishing the async spans must not affect the caller's active span.
+        assertThat(ContextManager.isActive(), is(true));
+        assertThat(ContextManager.activeSpan() == callerSpan, is(true));
+
+        ContextManager.stopSpan(callerSpan);
+
+        assertThat(segmentStorage.getTraceSegments().size(), is(1));
+
+        List<AbstractTracingSpan> spans =
+                SegmentHelper.getSpans(segmentStorage.getTraceSegments().get(0));
+
+        // One caller entry span + two independently finished request exit spans.
+        assertThat(spans.size(), is(3));
+    }
+
+    private AsyncExitSpan createAsyncExitSpan(String operationName) {
+        AsyncExitSpan exitSpan = new AsyncExitSpan(
+                new HttpHost("http", "127.0.0.1", 8080)
+        );
+
+        AbstractSpan requestSpan = ContextManager.createExitSpan(
+                operationName,
+                new ContextCarrier(),
+                "127.0.0.1:8080"
+        );
+
+        exitSpan.start(requestSpan);
+        requestSpan.prepareForAsync();
+        ContextManager.stopSpan(requestSpan);
+
+        return exitSpan;
     }
 }

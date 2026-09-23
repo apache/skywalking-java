@@ -62,7 +62,6 @@ public class PoolingJmxRegisterInterceptor implements InstanceMethodsAroundInter
         metricMap.put("numActive", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getNumActive());
         metricMap.put("maxTotal", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxTotal());
         metricMap.put("numIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) (basicDataSource.getNumIdle()));
-        metricMap.put("maxWaitMillis", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxWaitMillis());
         metricMap.put("maxIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMaxIdle());
         metricMap.put("minIdle", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getMinIdle());
         metricMap.put("initialSize", (BasicDataSourceMXBean basicDataSource) -> () -> (double) basicDataSource.getInitialSize());

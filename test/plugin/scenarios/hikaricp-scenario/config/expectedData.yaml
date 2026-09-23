@@ -206,7 +206,7 @@ segmentItems:
       - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: hikaricp-scenario
-  meterSize: ge 15
+  meterSize: ge 11
   meters:
   - meterId:
       name: datasource

@@ -212,19 +212,13 @@ segmentItems:
         - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: c3p0-0.9.0.x-0.9.1.x-scenario
-  meterSize: ge 12
+  meterSize: ge 11
   meters:
   - meterId:
       name: datasource
       tags:
       - {name: name, value: test_mysql-server:3306}
       - {name: status, value: initialPoolSize}
-    singleValue: ge 0
-  - meterId:
-      name: datasource
-      tags:
-      - {name: name, value: test_mysql-server:3306}
-      - {name: status, value: maxIdleTime}
     singleValue: ge 0
   - meterId:
       name: datasource

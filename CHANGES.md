@@ -40,6 +40,8 @@ Release Notes.
   `apm-application-toolkit` and therefore of every published toolkit artifact, but 9.7.0 skipped it,
   so resolving any `org.apache.skywalking:apm-toolkit-*:9.7.0` failed with `Non-resolvable parent POM
   ... Could not find artifact org.apache.skywalking:java-agent:pom:9.7.0` (apache/skywalking#13988).
+* Stop reporting datasource timeout configuration as metrics. The c3p0 `maxIdleTime`, DBCP `maxWaitMillis`
+  and HikariCP `connectionTimeout`, `validationTimeout`, `idleTimeout` and `leakDetectionThreshold` gauges are no longer reported.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/263?closed=1)
 

@@ -34,7 +34,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Intercepts HikariCP connection acquisition and registers datasource metrics.
+ * Registers HikariCP datasource metrics when the connection pool is sealed.
  */
 public class PoolingSealInterceptor implements InstanceMethodsAroundInterceptor {
 

@@ -27,7 +27,6 @@ public class PoolConstants {
     public static final String NUM_TOTAL_CONNECTIONS = "numTotalConnections";
     public static final String NUM_BUSY_CONNECTIONS = "numBusyConnections";
     public static final String NUM_IDLE_CONNECTIONS = "numIdleConnections";
-    public static final String MAX_IDLE_TIME = "maxIdleTime";
     public static final String MIN_POOL_SIZE = "minPoolSize";
     public static final String MAX_POOL_SIZE = "maxPoolSize";
     public static final String INITIAL_POOL_SIZE = "initialPoolSize";

@@ -34,7 +34,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * {@link PoolingSealInterceptor} intercepted the method of HikariCP getting connection.
+ * Registers HikariCP datasource metrics when the connection pool is sealed.
  */
 public class PoolingSealInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -81,10 +81,6 @@ public class PoolingSealInterceptor implements InstanceMethodsAroundInterceptor 
 
     private Map<String, Function<HikariConfigMXBean, Supplier<Double>>> getConfigMetrics() {
         final Map<String, Function<HikariConfigMXBean, Supplier<Double>>> metricConfigMap = new HashMap();
-        metricConfigMap.put("connectionTimeout", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getConnectionTimeout());
-        metricConfigMap.put("validationTimeout", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getValidationTimeout());
-        metricConfigMap.put("idleTimeout", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getIdleTimeout());
-        metricConfigMap.put("leakDetectionThreshold", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getLeakDetectionThreshold());
         metricConfigMap.put("minimumIdle", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getMinimumIdle());
         metricConfigMap.put("maximumPoolSize", (HikariConfigMXBean hikariConfigMXBean) -> () -> (double) hikariConfigMXBean.getMaximumPoolSize());
         return metricConfigMap;

@@ -112,10 +112,6 @@ public class PoolingCreationInterceptor implements InstanceMethodsAroundIntercep
             return numIdleConnections;
         });
         metricMap.put(
-            PoolConstants.MAX_IDLE_TIME,
-            (ComboPooledDataSource pooledDataSource) -> () -> (double) pooledDataSource.getMaxIdleTime()
-        );
-        metricMap.put(
             PoolConstants.MIN_POOL_SIZE,
             (ComboPooledDataSource pooledDataSource) -> () -> (double) pooledDataSource.getMinPoolSize()
         );

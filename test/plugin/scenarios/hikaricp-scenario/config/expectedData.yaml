@@ -206,7 +206,7 @@ segmentItems:
       - {key: http.status_code, value: '200'}
 meterItems:
 - serviceName: hikaricp-scenario
-  meterSize: ge 15
+  meterSize: ge 11
   meters:
   - meterId:
       name: datasource
@@ -231,30 +231,6 @@ meterItems:
       tags:
         - {name: name, value: test_mysql-server:3306}
         - {name: status, value: threadsAwaitingConnection}
-    singleValue: ge 0
-  - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: connectionTimeout}
-    singleValue: ge 0
-  - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: validationTimeout}
-    singleValue: ge 0
-  - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: idleTimeout}
-    singleValue: ge 0
-  - meterId:
-      name: datasource
-      tags:
-        - {name: name, value: test_mysql-server:3306}
-        - {name: status, value: leakDetectionThreshold}
     singleValue: ge 0
   - meterId:
       name: datasource

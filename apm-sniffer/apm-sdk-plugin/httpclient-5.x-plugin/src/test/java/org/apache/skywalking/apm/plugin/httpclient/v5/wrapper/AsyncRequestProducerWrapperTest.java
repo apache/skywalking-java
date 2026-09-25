@@ -19,6 +19,7 @@
 package org.apache.skywalking.apm.plugin.httpclient.v5.wrapper;
 
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.apache.hc.core5.http.HttpHost;
@@ -30,6 +31,10 @@ import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
+import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
+import org.apache.skywalking.apm.agent.test.helper.SpanHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStorage;
 import org.apache.skywalking.apm.agent.test.tools.SegmentStoragePoint;
@@ -40,6 +45,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,22 +57,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Exercises {@link AsyncRequestProducerWrapper} against the real {@link ContextManager}, via
- * {@link TracingSegmentRunner}. {@code startExitSpan()} calls {@code ContextManager.createExitSpan},
- * {@code AbstractSpan.prepareForAsync()} and {@code ContextManager.stopSpan()} directly — mocking those out
- * would only prove a mock was invoked, not that the caller's own active-span stack is left correctly balanced,
- * which is the entire point of this class (and of issue #14097).
- *
- * <p>{@code AsyncResponseConsumerWrapperTest} and {@code FutureCallbackWrapperTest} don't need this harness:
- * neither ever touches {@code ContextManager} — only the {@link AsyncRequestSpans} reference they're handed.
- *
- * <p><b>Known gap, deliberate:</b> there is no assertion here that the exit span's peer is built from the
- * explicit target host rather than the request URI's authority. That would require reading a completed span
- * back out of the archived {@code TraceSegment} (e.g. a peer accessor), and I don't have confirmed access to
- * that accessor in this codebase — guessing it once already produced a compile failure, so I'm not guessing
- * again. The target/URI precedence logic in {@code startExitSpan()} is a short, branch-free block that's easy
- * to verify by reading it directly; if you tell me the actual read-side accessor (on whatever class
- * {@code TraceSegment}/the span type actually exposes it), I'll add that assertion in a follow-up.
+ * Runs {@link AsyncRequestProducerWrapper} against the real {@link ContextManager}: the exit span must be created in
+ * the caller's segment, detached from the caller's stack before the request is forwarded, and finished later by
+ * reference only.
  */
 @RunWith(TracingSegmentRunner.class)
 public class AsyncRequestProducerWrapperTest {
@@ -84,7 +77,7 @@ public class AsyncRequestProducerWrapperTest {
      * adapter): calls the {@link RequestChannel} it's handed synchronously, on the calling thread, with a
      * concrete request — exactly what {@link AsyncRequestProducerWrapper#sendRequest} depends on.
      */
-        private AsyncRequestProducer syncDelegate(HttpRequest request) throws Exception {
+    private AsyncRequestProducer syncDelegate(HttpRequest request) throws Exception {
         AsyncRequestProducer delegate = mock(AsyncRequestProducer.class);
         doAnswer(invocation -> {
             RequestChannel channel = invocation.getArgument(0);
@@ -214,5 +207,50 @@ public class AsyncRequestProducerWrapperTest {
         verify(realChannel).sendRequest(eq(badRequest), any(), any(HttpContext.class));
 
         ContextManager.stopSpan(outer);
+    }
+
+    @Test
+    public void exitSpanLandsInCallerSegmentWithExplicitTargetAsPeer() throws Exception {
+        AbstractSpan caller = ContextManager.createLocalSpan("caller");
+        // The request's own authority differs from the explicit target, which must win, as in the client itself.
+        AsyncRequestSpans spans = new AsyncRequestSpans(TARGET);
+        AsyncRequestProducerWrapper wrapper = new AsyncRequestProducerWrapper(
+            syncDelegate(requestTo("http://other.invalid:9999/hello?a=b")), spans);
+
+        wrapper.sendRequest(mock(RequestChannel.class), mock(HttpContext.class));
+        spans.onResponse(200);
+        spans.finish();
+        ContextManager.stopSpan(caller);
+
+        assertEquals(1, segmentStorage.getTraceSegments().size());
+        TraceSegment segment = segmentStorage.getTraceSegments().get(0);
+        List<AbstractTracingSpan> spanList = SegmentHelper.getSpans(segment);
+        assertEquals(2, spanList.size());
+        AbstractTracingSpan exit = spanList.get(0);
+        assertTrue(exit.isExit());
+        assertEquals("/hello", exit.getOperationName());
+        assertEquals("example.org:8080", SpanHelper.getPeer(exit));
+        assertEquals(caller.getSpanId(), SpanHelper.getParentSpanId(exit));
+        assertFalse(SpanHelper.getErrorOccurred(exit));
+    }
+
+    /**
+     * An outer exit span without a peer: injection fails, but the reused span's extra depth must still be released,
+     * otherwise the outer span could never be stopped and the caller's segment would never be reported.
+     */
+    @Test
+    public void nestedInsideExitSpanWithoutPeerLeavesTheStackBalanced() throws Exception {
+        AbstractSpan outerExit = ContextManager.createExitSpan("outer-exit", "");
+        HttpRequest request = requestTo("http://example.org/hello");
+        RequestChannel realChannel = mock(RequestChannel.class);
+        AsyncRequestSpans spans = new AsyncRequestSpans(TARGET);
+        AsyncRequestProducerWrapper wrapper = new AsyncRequestProducerWrapper(syncDelegate(request), spans);
+
+        wrapper.sendRequest(realChannel, mock(HttpContext.class));
+
+        verify(realChannel).sendRequest(eq(request), any(), any(HttpContext.class));
+        assertSame(outerExit, ContextManager.activeSpan());
+        ContextManager.stopSpan(outerExit);
+        assertEquals(1, segmentStorage.getTraceSegments().size());
     }
 }

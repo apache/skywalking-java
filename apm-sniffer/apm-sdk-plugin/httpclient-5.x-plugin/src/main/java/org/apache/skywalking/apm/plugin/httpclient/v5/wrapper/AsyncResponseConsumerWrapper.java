@@ -19,7 +19,11 @@
 package org.apache.skywalking.apm.plugin.httpclient.v5.wrapper;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.List;
+import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.EntityDetails;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.nio.AsyncResponseConsumer;
@@ -28,9 +32,9 @@ import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.skywalking.apm.plugin.httpclient.v5.AsyncRequestSpans;
 
 /**
- * Runs entirely on the I/O thread (with the sole exception that {@code releaseResources()} can also be invoked
- * from elsewhere during cleanup). Never touches {@code ContextManager}'s active-span stack — only ever tags or
- * finishes {@link #spans} by reference, which is safe to do from any thread.
+ * Finishes the request's exit span through {@link AsyncRequestSpans}, never through the span stack of the current
+ * thread: the response is consumed on the I/O reactor thread, which serves many requests, and for
+ * {@code HttpAsyncClients.classic(...)} the body may be read to the end on the caller's thread.
  */
 public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T> {
 
@@ -44,7 +48,7 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
 
     @Override
     public void consumeResponse(HttpResponse response, EntityDetails entityDetails, HttpContext context,
-        org.apache.hc.core5.concurrent.FutureCallback<T> resultCallback) throws HttpException, IOException {
+        FutureCallback<T> resultCallback) throws HttpException, IOException {
         spans.onResponse(response.getCode());
         if (entityDetails == null) {
             // No body means streamEnd() will never be called for this exchange.
@@ -60,8 +64,7 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
     }
 
     @Override
-    public void streamEnd(java.util.List<? extends org.apache.hc.core5.http.Header> trailers)
-        throws HttpException, IOException {
+    public void streamEnd(List<? extends Header> trailers) throws HttpException, IOException {
         spans.finish();
         consumer.streamEnd(trailers);
     }
@@ -78,25 +81,17 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
     }
 
     @Override
-    public void consume(java.nio.ByteBuffer src) throws IOException {
+    public void consume(ByteBuffer src) throws IOException {
         consumer.consume(src);
     }
 
     @Override
     public void releaseResources() {
-        // Fallback finisher, not a success signal: HttpAsyncMainClientExec#failed calls releaseResources()
-        // *before* reporting the failure, and a suppressed-redirect-with-non-repeatable-entity exchange only
-        // ever calls completed() without a real response. abort() only takes effect if the span is still open —
-        // every normal-completion path above has already finished it by the time release runs, so this is then
-        // a no-op. If the span IS still open here, the exchange ended without a complete response, so it's
-        // correctly marked as an error rather than silently dropped.
+        // Fallback finisher, not a success signal. In the normal case the span was already finished at
+        // streamEnd/consumeResponse, so this does nothing. HttpAsyncMainClientExec#failed releases the consumer
+        // before it reports the failure, and a suppressed redirect with a non-repeatable entity (5.5.x) only
+        // releases it, so a span still open here ended without a complete response and is marked as an error.
         spans.abort();
         consumer.releaseResources();
     }
-
-    // NOTE FOR AYUSH: same caveat as AsyncRequestProducerWrapper — let the IDE fill in any interface method not
-    // listed above (e.g. some httpcore5 versions' AsyncResponseConsumer exposes it slightly differently); every
-    // one you add should be a plain delegate to `consumer` with zero span logic. The five methods above
-    // (consumeResponse, informationResponse, streamEnd, failed, releaseResources) are the only ones that matter
-    // for span lifecycle.
 }

@@ -15,25 +15,8 @@
 # limitations under the License.
 segmentItems:
   - serviceName: httpclient-5.x-scenario
-    segmentSize: ge 4
+    segmentSize: ge 3
     segments:
-      - segmentId: not null
-        spans:
-          - operationName: HEAD:/httpclient-5.x/case/healthcheck
-            parentSpanId: -1
-            spanId: 0
-            spanLayer: Http
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 1
-            isError: false
-            spanType: Entry
-            peer: ''
-            tags:
-              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/case/healthcheck'}
-              - {key: http.method, value: HEAD}
-              - {key: http.status_code, value: '200'}
-            skipAnalysis: 'false'
       - segmentId: not null
         spans:
           - operationName: GET:/httpclient-5.x/back
@@ -51,12 +34,27 @@ segmentItems:
               - {key: http.method, value: GET}
               - {key: http.status_code, value: '200'}
             refs:
-              - {parentEndpoint: /httpclient-5.x/back, networkAddress: '127.0.0.1:8080',
+              - {parentEndpoint: 'GET:/httpclient-5.x/case/asyncGet', networkAddress: '127.0.0.1:8080',
                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                  null, parentService: httpclient-5.x-scenario, traceId: not null}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:
+          - operationName: /httpclient-5.x/back
+            parentSpanId: 0
+            spanId: 1
+            spanLayer: Http
+            startTime: nq 0
+            endTime: nq 0
+            componentId: 26
+            isError: false
+            spanType: Exit
+            peer: 127.0.0.1:8080
+            tags:
+              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/back'}
+              - {key: http.method, value: GET}
+              - {key: http.status_code, value: '200'}
+            skipAnalysis: 'false'
           - operationName: GET:/httpclient-5.x/case/asyncGet
             parentSpanId: -1
             spanId: 0
@@ -75,21 +73,6 @@ segmentItems:
               - {parentEndpoint: GET:/httpclient-5.x/case/get, networkAddress: '127.0.0.1:8080',
                 refType: CrossProcess, parentSpanId: 1, parentTraceSegmentId: not null, parentServiceInstance: not
                  null, parentService: httpclient-5.x-scenario, traceId: not null}
-            skipAnalysis: 'false'
-          - operationName: /httpclient-5.x/back
-            parentSpanId: 0
-            spanId: 1
-            spanLayer: Http
-            startTime: nq 0
-            endTime: nq 0
-            componentId: 26
-            isError: false
-            spanType: Exit
-            peer: 127.0.0.1:8080
-            tags:
-              - {key: url, value: 'http://127.0.0.1:8080/httpclient-5.x/back'}
-              - {key: http.method, value: GET}
-              - {key: http.status_code, value: '200'}
             skipAnalysis: 'false'
       - segmentId: not null
         spans:

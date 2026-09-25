@@ -98,13 +98,13 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
         String path = uri.getPath() == null || uri.getPath().isEmpty() ? "/" : uri.getPath();
         String url = scheme + "://" + peer + path + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
 
-        // If we're already inside another plugin's exit span, createExitSpan reuses that span (nested depth + 1)
-        // instead of creating a new one. We must not treat a reused outer span as ours to detach/finish
-        // asynchronously — that lifecycle belongs to whichever plugin created it.
-        boolean nested = ContextManager.activeSpan() != null && ContextManager.activeSpan().isExit();
-
-        ContextCarrier carrier = new ContextCarrier();
-        AbstractSpan span = ContextManager.createExitSpan(path, carrier, peer);
+        // Inside another plugin's exit span, createExitSpan reuses that span (depth + 1) instead of creating one.
+        // That span belongs to the other plugin, so it must not be turned into an async span here: only propagate.
+        boolean nested = ContextManager.activeSpan().isExit();
+        // Create the span without a carrier and inject afterwards. createExitSpan(op, carrier, peer) injects before
+        // returning, and injection throws for a reused outer exit span without a peer, which would leave the extra
+        // depth on the caller's stack with nothing to stop it.
+        AbstractSpan span = ContextManager.createExitSpan(path, peer);
         try {
             if (!nested) {
                 span.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
@@ -112,20 +112,22 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
                 Tags.HTTP.METHOD.set(span, request.getMethod());
                 SpanLayer.asHttp(span);
             }
+            ContextCarrier carrier = new ContextCarrier();
+            ContextManager.inject(carrier);
             CarrierItem next = carrier.items();
             while (next.hasNext()) {
                 next = next.next();
                 request.setHeader(next.getHeadKey(), next.getHeadValue());
             }
         } finally {
+            // Detach before the request is forwarded: the client may report a failure on this thread before
+            // doExecute returns. prepareForAsync() requires the span to still be the active one.
             if (!nested) {
-                // Detach BEFORE returning control to the channel: the client can report a synchronous failure
-                // back to doExecute's own catch block on this very thread before sendRequest() returns.
                 span.prepareForAsync();
-                ContextManager.stopSpan(span);
+            }
+            ContextManager.stopSpan(span);
+            if (!nested) {
                 spans.start(span);
-            } else {
-                ContextManager.stopSpan(span);
             }
         }
     }
@@ -154,10 +156,4 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
     public void releaseResources() {
         producer.releaseResources();
     }
-
-    // NOTE FOR AYUSH: AsyncRequestProducer's exact method set has drifted slightly across httpcore5 minor
-    // versions (5.0 vs 5.3+). Let your IDE's "implement remaining interface methods" fill in anything missing
-    // here (there should be none beyond the above in 5.0-5.6, but verify against the version this module
-    // actually compiles against) — every one of them should be a plain one-line delegate to `producer`, same
-    // as above. The only method with real logic is sendRequest().
 }

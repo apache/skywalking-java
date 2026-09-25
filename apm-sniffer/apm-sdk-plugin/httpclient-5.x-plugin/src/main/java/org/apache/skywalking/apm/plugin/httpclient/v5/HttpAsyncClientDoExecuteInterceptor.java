@@ -36,8 +36,8 @@ import org.apache.skywalking.apm.plugin.httpclient.v5.wrapper.FutureCallbackWrap
  * overload shared by every async client implementation (Internal*AsyncClient, Minimal*AsyncClient, and the
  * classic-facade adapter), whose argument order/types are identical across HttpClient 5.0 through 5.6.
  *
- * <p>Unlike the previous implementation, this interceptor never stores anything in the {@code HttpContext} and
- * never wraps a callback purely to call a parameterless {@code ContextManager.stopSpan()}. It only:
+ * <p>It does not store anything in the {@code HttpContext} and never touches the span stack of a thread other than
+ * the caller's. It only:
  * <ol>
  *   <li>creates a per-request {@link AsyncRequestSpans} holder, while the caller's context is still active;</li>
  *   <li>wraps the request producer so the exit span is created on the caller thread, synchronously, the moment the

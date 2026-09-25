@@ -67,8 +67,7 @@ public class AsyncRequestSpans {
      * constructed this holder (the {@code doExecute} caller thread).
      */
     public boolean claimCreation() {
-    Thread current = Thread.currentThread();
-    return creator.compareAndSet(current, null);
+        return creator.compareAndSet(Thread.currentThread(), null);
     }
 
     /**

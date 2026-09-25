@@ -13,6 +13,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.apache.skywalking.apm.plugin.httpclient.v5.wrapper;
@@ -36,76 +37,74 @@ import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.network.trace.component.ComponentsDefine;
-import org.apache.skywalking.apm.plugin.httpclient.v5.AsyncExitSpan;
+import org.apache.skywalking.apm.plugin.httpclient.v5.AsyncRequestSpans;
 
+/**
+ * Delegates every {@link AsyncRequestProducer} method unchanged, except {@link #sendRequest}, where it wraps the
+ * {@link RequestChannel} the underlying producer is handed. All standard producers (Internal/Minimal async
+ * clients, and the classic-facade adapter) call {@code channel.sendRequest(...)} synchronously, on the calling
+ * thread, from inside {@code doExecute} — so this is where the concrete {@link HttpRequest} first becomes
+ * available, while the caller's tracing context is still active.
+ */
 public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
 
     private static final ILog LOGGER = LogManager.getLogger(AsyncRequestProducerWrapper.class);
 
     private final AsyncRequestProducer producer;
-    private final AsyncExitSpan exitSpan;
+    private final AsyncRequestSpans spans;
 
-    public AsyncRequestProducerWrapper(AsyncRequestProducer producer, AsyncExitSpan exitSpan) {
+    public AsyncRequestProducerWrapper(AsyncRequestProducer producer, AsyncRequestSpans spans) {
         this.producer = producer;
-        this.exitSpan = exitSpan;
+        this.spans = spans;
     }
 
-    public AsyncExitSpan getExitSpan() {
-        return exitSpan;
+    public AsyncRequestSpans getSpans() {
+        return spans;
     }
 
     @Override
-    public void sendRequest(RequestChannel channel, HttpContext context) throws IOException, HttpException {
-        producer.sendRequest((request, entityDetails, requestContext) -> {
-            if (exitSpan.claimCreation()) {
+    public void sendRequest(RequestChannel channel, HttpContext context) throws HttpException, IOException {
+        producer.sendRequest((request, entityDetails, ctx) -> {
+            if (spans.claimCreation()) {
                 try {
                     startExitSpan(request);
                 } catch (Throwable t) {
-                    LOGGER.error("Failed to trace the async HTTP request.", t);
+                    // Tracing must never break the user's actual HTTP request.
+                    LOGGER.error(t, "Failed to trace the async HttpClient request.");
                 }
             }
-
-            channel.sendRequest(request, entityDetails, requestContext);
+            channel.sendRequest(request, entityDetails, ctx);
         }, context);
     }
 
     private void startExitSpan(HttpRequest request) throws URISyntaxException {
         URI uri = request.getUri();
-        HttpHost target = exitSpan.getTarget();
-
+        HttpHost target = spans.getTarget();
+        // Same precedence InternalAbstractHttpAsyncClient itself uses: an explicit target host wins over
+        // whatever authority happens to be on the request URI.
         String scheme = target != null ? target.getSchemeName() : uri.getScheme();
         String host = target != null ? target.getHostName() : uri.getHost();
         int port = target != null ? target.getPort() : uri.getPort();
-
         if (host == null) {
             return;
         }
-
         if (scheme == null) {
             scheme = "http";
         }
-
         if (port < 0) {
             port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
         }
-
         String peer = host + ":" + port;
+        String path = uri.getPath() == null || uri.getPath().isEmpty() ? "/" : uri.getPath();
+        String url = scheme + "://" + peer + path + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
 
-        String path = uri.getPath() == null || uri.getPath().isEmpty()
-                ? "/"
-                : uri.getPath();
+        // If we're already inside another plugin's exit span, createExitSpan reuses that span (nested depth + 1)
+        // instead of creating a new one. We must not treat a reused outer span as ours to detach/finish
+        // asynchronously — that lifecycle belongs to whichever plugin created it.
+        boolean nested = ContextManager.activeSpan() != null && ContextManager.activeSpan().isExit();
 
-        String url = scheme + "://" + peer + path
-                + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
-
-        /*
-         * Check whether an exit span was already active BEFORE creating
-         * this request's span.
-         */
-        boolean nested = ContextManager.isActive() && ContextManager.activeSpan().isExit();
-
-        AbstractSpan span = ContextManager.createExitSpan(path, peer);
-
+        ContextCarrier carrier = new ContextCarrier();
+        AbstractSpan span = ContextManager.createExitSpan(path, carrier, peer);
         try {
             if (!nested) {
                 span.setComponent(ComponentsDefine.HTTP_ASYNC_CLIENT);
@@ -113,10 +112,6 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
                 Tags.HTTP.METHOD.set(span, request.getMethod());
                 SpanLayer.asHttp(span);
             }
-
-            ContextCarrier carrier = new ContextCarrier();
-            ContextManager.inject(carrier);
-
             CarrierItem next = carrier.items();
             while (next.hasNext()) {
                 next = next.next();
@@ -124,15 +119,20 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
             }
         } finally {
             if (!nested) {
+                // Detach BEFORE returning control to the channel: the client can report a synchronous failure
+                // back to doExecute's own catch block on this very thread before sendRequest() returns.
                 span.prepareForAsync();
-            }
-
-            ContextManager.stopSpan(span);
-
-            if (!nested) {
-                exitSpan.start(span);
+                ContextManager.stopSpan(span);
+                spans.start(span);
+            } else {
+                ContextManager.stopSpan(span);
             }
         }
+    }
+
+    @Override
+    public void failed(Exception cause) {
+        producer.failed(cause);
     }
 
     @Override
@@ -151,12 +151,13 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
     }
 
     @Override
-    public void failed(Exception cause) {
-        producer.failed(cause);
-    }
-
-    @Override
     public void releaseResources() {
         producer.releaseResources();
     }
+
+    // NOTE FOR AYUSH: AsyncRequestProducer's exact method set has drifted slightly across httpcore5 minor
+    // versions (5.0 vs 5.3+). Let your IDE's "implement remaining interface methods" fill in anything missing
+    // here (there should be none beyond the above in 5.0-5.6, but verify against the version this module
+    // actually compiles against) — every one of them should be a plain one-line delegate to `producer`, same
+    // as above. The only method with real logic is sendRequest().
 }

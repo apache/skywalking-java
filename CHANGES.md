@@ -12,6 +12,18 @@ Release Notes.
   A concurrent request could overwrite it before the chain was subscribed, and the outbound `sw8` header then
   carried a context the downstream service joined by mistake. The snapshot is held by a client derived per
   request now (apache/skywalking#14095).
+* Fix the `httpclient-5.x-plugin` async client tracing (apache/skywalking#14097):
+  * `FutureCallback` no longer stops a span. With `HttpAsyncClients.classic(...)` the callback runs on the caller
+    thread, where it used to close the caller's own active span.
+  * The HTTP exit span is now created in the caller's context when the request is sent, detached right away, and
+    finished by reference when the response ends. Nothing is left on the I/O reactor thread's span stack any more,
+    so overlapping requests on one reactor thread no longer nest into or close each other's spans.
+  * The `httpasyncclient/local` span and its cross-thread segment are removed. The HTTP exit span now lives in the
+    caller's own segment.
+  * HttpClient 5.4+ async requests are traced now. Previously the plugin produced no spans for them, because
+    `doExecute` received a `null` `HttpContext` and the request was not yet in the context when `IOSessionImpl#poll`
+    ran.
+  * The `httpclient-5.x-scenario` now tests one version per minor, 5.0 to 5.6.
 * Fix the `NullPointerException` thrown by the `spring-webflux-5.x-webclient` and
   `spring-webflux-6.x-webclient` plugins when `DefaultClientRequestBuilder$BodyInserterRequest#writeTo` runs
   before any exit span exists. Connectors such as `JdkClientHttpConnector` call `writeTo` eagerly at assembly

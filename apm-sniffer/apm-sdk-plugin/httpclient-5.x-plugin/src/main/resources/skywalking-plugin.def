@@ -17,4 +17,3 @@
 httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.MinimalHttpClientInstrumentation
 httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.InternalHttpClientInstrumentation
 httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.HttpAsyncClientInstrumentation
-httpclient-5.x=org.apache.skywalking.apm.plugin.httpclient.v5.define.IOSessionImplInstrumentation

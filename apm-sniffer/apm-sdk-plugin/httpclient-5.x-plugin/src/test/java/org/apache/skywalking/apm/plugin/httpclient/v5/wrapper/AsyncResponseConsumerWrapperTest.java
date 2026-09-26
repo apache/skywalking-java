@@ -156,7 +156,7 @@ public class AsyncResponseConsumerWrapperTest {
         wrapper.streamEnd(Collections.emptyList());
         wrapper.releaseResources();
 
-        // finish() already ran at streamEnd(); releaseResources()'s abort() must not run it a second time nor
+        // finish() already ran at streamEnd(); releaseResources() must not run it a second time nor
         // retroactively mark a successful exchange as an error.
         verify(span, times(1)).asyncFinish();
         verify(span, never()).errorOccurred();
@@ -164,10 +164,32 @@ public class AsyncResponseConsumerWrapperTest {
     }
 
     @Test
-    public void releaseResourcesBeforeFailedStillEndsAsErrorExactlyOnce() {
-        // HttpAsyncMainClientExec#failed calls releaseResources() BEFORE reporting the real failure.
+    public void bodyFailureAfterResponseHeadKeepsStatusErrorAndException() throws Exception {
+        // HttpAsyncMainClientExec#failed / H2AsyncMainClientExec#failed release the consumer BEFORE they report
+        // the cause: onResponse(200) -> releaseResources() -> failed(cause). The span must end once, as an error,
+        // with the exception logged, instead of being finished without a cause by the release.
+        RuntimeException cause = new RuntimeException("connection reset while reading the body");
+        EntityDetails entity = mock(EntityDetails.class);
+
+        wrapper.consumeResponse(response(200), entity, context, resultCallback);
         wrapper.releaseResources();
-        wrapper.failed(new RuntimeException("real cause, arrives after release"));
+
+        verify(span, never()).asyncFinish();
+        verify(delegate).releaseResources();
+
+        wrapper.failed(cause);
+
+        verify(span, times(1)).errorOccurred();
+        verify(span, times(1)).log(cause);
+        verify(span, times(1)).asyncFinish();
+        verify(delegate).failed(cause);
+    }
+
+    @Test
+    public void releaseResourcesWithoutResponseThenFailedEndsExactlyOnce() {
+        // No response head: release ends the span as an error, and a later failed() must not end it again.
+        wrapper.releaseResources();
+        wrapper.failed(new RuntimeException("arrives after release"));
 
         verify(span, times(1)).errorOccurred();
         verify(span, times(1)).asyncFinish();

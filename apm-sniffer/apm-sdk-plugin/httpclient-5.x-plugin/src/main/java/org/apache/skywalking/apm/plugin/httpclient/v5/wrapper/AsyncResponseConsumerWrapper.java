@@ -87,11 +87,13 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
 
     @Override
     public void releaseResources() {
-        // Fallback finisher, not a success signal. In the normal case the span was already finished at
-        // streamEnd/consumeResponse, so this does nothing. HttpAsyncMainClientExec#failed releases the consumer
-        // before it reports the failure, and a suppressed redirect with a non-repeatable entity (5.5.x) only
-        // releases it, so a span still open here ended without a complete response and is marked as an error.
-        spans.abort();
+        // Not a success signal. Normally the span was already finished at streamEnd/consumeResponse and this does
+        // nothing. HttpAsyncMainClientExec#failed and H2AsyncMainClientExec#failed release the consumer before
+        // they report the cause, so once the response head was seen the span stays open here and failed(cause)
+        // right after ends it with the exception logged. Only when no response head was seen does release end the
+        // span as an error, because it can be the only signal (a suppressed redirect with a non-repeatable entity
+        // in 5.5.x never calls failed or completed).
+        spans.release();
         consumer.releaseResources();
     }
 }

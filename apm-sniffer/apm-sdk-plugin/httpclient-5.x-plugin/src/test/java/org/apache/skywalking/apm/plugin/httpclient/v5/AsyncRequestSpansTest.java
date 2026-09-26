@@ -72,19 +72,45 @@ public class AsyncRequestSpansTest {
         // consumeResponse (no error status) -> streamEnd -> releaseResources, the normal successful path.
         spans.onResponse(200);
         spans.finish();
-        spans.abort(); // what releaseResources() calls; must be a no-op once already finished
+        spans.release(); // what releaseResources() calls; must be a no-op once already finished
 
         verify(span, times(1)).asyncFinish();
         verify(span, never()).errorOccurred();
     }
 
     @Test
-    public void releaseResourcesBeforeFailedStillEndsAsError() {
-        // HttpAsyncMainClientExec#failed calls releaseResources() BEFORE reporting the failure. If the span is
-        // still open when releaseResources() runs, the exchange never completed successfully, so it must be
-        // marked an error even though `fail()` with the real cause hasn't been called yet.
+    public void releaseAfterResponseHeadWaitsForFailedAndKeepsTheCause() {
+        // HttpAsyncMainClientExec#failed releases the consumer BEFORE it reports the cause. With the response head
+        // already seen, release must leave the span open so the following fail(cause) still logs the exception.
+        RuntimeException cause = new RuntimeException("body read failed");
         spans.onResponse(200);
-        spans.abort(); // releaseResources() fires first, response never fully arrived
+        spans.release();
+
+        verify(span, never()).asyncFinish();
+
+        spans.fail(cause);
+
+        verify(span, times(1)).errorOccurred();
+        verify(span, times(1)).log(cause);
+        verify(span, times(1)).asyncFinish();
+    }
+
+    @Test
+    public void releaseWithoutAnyResponseEndsAsError() {
+        // No response head (e.g. a suppressed redirect with a non-repeatable entity): release may be the only
+        // signal, so it ends the span as an error.
+        spans.release();
+
+        verify(span, times(1)).errorOccurred();
+        verify(span, never()).log(org.mockito.ArgumentMatchers.any(Throwable.class));
+        verify(span, times(1)).asyncFinish();
+    }
+
+    @Test
+    public void cancellationAfterResponseHeadStillEnds() {
+        spans.onResponse(200);
+        spans.release();
+        spans.abort();
 
         verify(span, times(1)).errorOccurred();
         verify(span, times(1)).asyncFinish();

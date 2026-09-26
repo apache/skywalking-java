@@ -54,6 +54,12 @@ public class AsyncRequestSpans {
     private AbstractSpan span;
     private boolean finished;
 
+    /**
+     * Set once the response head has been handed to the response consumer. From then on the client reports a
+     * failure through {@code failed(cause)}, see {@link #release()}.
+     */
+    private boolean responseStarted;
+
     public AsyncRequestSpans(HttpHost target) {
         this.target = target;
     }
@@ -88,6 +94,8 @@ public class AsyncRequestSpans {
     }
 
     public synchronized void onResponse(int statusCode) {
+        responseStarted = true;
+
         if (span == null || finished) {
             return;
         }
@@ -110,11 +118,31 @@ public class AsyncRequestSpans {
     }
 
     /**
-     * Cancelled, or resources released before the response ever completed (e.g. a redirect exec that declines to
-     * resend a non-repeatable entity and never invokes {@code completed()}). Only takes effect if the span is
-     * still open — the normal-completion paths already finished it earlier, so this is then a no-op.
+     * The exchange was cancelled before it completed. Only takes effect if the span is still open; the
+     * normal-completion paths already finished it earlier, so this is then a no-op.
      */
     public synchronized void abort() {
+        end(true, null);
+    }
+
+    /**
+     * The response consumer released its resources. In the normal case the span was already finished at
+     * {@code streamEnd}/{@code consumeResponse}, so this does nothing.
+     *
+     * <p>If the response head was already seen and the span is still open, the body failed:
+     * {@code HttpAsyncMainClientExec#failed} (and the H2 equivalent) releases the entity consumer first and then
+     * reports the cause through {@code failed(cause)}. Finishing here would drop that exception, so the span is
+     * left open for {@link #fail(Throwable)}.
+     *
+     * <p>If no response head was seen, release may be the only signal we get (e.g. a suppressed redirect with a
+     * non-repeatable entity in 5.5.x never calls {@code failed} or {@code completed}), so the span is ended as
+     * an error here.
+     */
+    public synchronized void release() {
+        if (responseStarted) {
+            return;
+        }
+
         end(true, null);
     }
 

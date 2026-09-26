@@ -31,7 +31,7 @@ metrics based on the tracing data.
   * [Feign](https://github.com/OpenFeign/feign) 9.x -> 13.5
   * [Netflix Spring Cloud Feign](https://github.com/spring-cloud/spring-cloud-openfeign) 1.1.x -> 2.x
   * [Okhttp](https://github.com/square/okhttp) 2.x -> 3.x -> 4.x
-  * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0, 5.1
+  * [Apache httpcomponent HttpClient](http://hc.apache.org/) 2.0 -> 3.1, 4.2, 4.3, 5.0 -> 5.6
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 4.x
   * [Spring RestTemplate](https://github.com/spring-projects/spring-framework) 6.x -> 7.x (Optional²)
   * [Jetty Client](http://www.eclipse.org/jetty/) 9.x -> 11.x

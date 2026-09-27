@@ -50,11 +50,13 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
     public void consumeResponse(HttpResponse response, EntityDetails entityDetails, HttpContext context,
         FutureCallback<T> resultCallback) throws HttpException, IOException {
         spans.onResponse(response.getCode());
+        consumer.consumeResponse(response, entityDetails, context,
+            resultCallback == null ? null : new ResultCallback<>(resultCallback, spans));
         if (entityDetails == null) {
-            // No body means streamEnd() will never be called for this exchange.
+            // No body means streamEnd() will never be called for this exchange. Finish only once the consumer has
+            // processed the response: if it throws, the client reports the cause through failed(cause).
             spans.finish();
         }
-        consumer.consumeResponse(response, entityDetails, context, resultCallback);
     }
 
     @Override
@@ -65,8 +67,11 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
 
     @Override
     public void streamEnd(List<? extends Header> trailers) throws HttpException, IOException {
-        spans.finish();
+        // The consumer decodes the body and builds the result at EOF, and that can fail. Finish as a success only
+        // after it returned normally: a failure it throws reaches failed(cause), and a failure it reports through
+        // the result callback reaches ResultCallback#failed, both of which end the span with the cause.
         consumer.streamEnd(trailers);
+        spans.finish();
     }
 
     @Override
@@ -95,5 +100,38 @@ public class AsyncResponseConsumerWrapper<T> implements AsyncResponseConsumer<T>
         // in 5.5.x never calls failed or completed).
         spans.release();
         consumer.releaseResources();
+    }
+
+    /**
+     * The callback the consumer reports its result through. A failure there (e.g. an {@code EOFException} while
+     * building the response at {@code streamEnd}) ends the span with the cause. Success is left to
+     * {@code streamEnd}/{@code consumeResponse}, so the moment the span finishes does not change.
+     */
+    private static final class ResultCallback<T> implements FutureCallback<T> {
+
+        private final FutureCallback<T> callback;
+        private final AsyncRequestSpans spans;
+
+        ResultCallback(FutureCallback<T> callback, AsyncRequestSpans spans) {
+            this.callback = callback;
+            this.spans = spans;
+        }
+
+        @Override
+        public void completed(T result) {
+            callback.completed(result);
+        }
+
+        @Override
+        public void failed(Exception ex) {
+            spans.fail(ex);
+            callback.failed(ex);
+        }
+
+        @Override
+        public void cancelled() {
+            spans.abort();
+            callback.cancelled();
+        }
     }
 }

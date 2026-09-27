@@ -28,11 +28,13 @@ import org.apache.hc.core5.http.message.BasicHttpRequest;
 import org.apache.hc.core5.http.nio.AsyncRequestProducer;
 import org.apache.hc.core5.http.nio.RequestChannel;
 import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.net.URIAuthority;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
+import org.apache.skywalking.apm.agent.core.context.util.TagValuePair;
 import org.apache.skywalking.apm.agent.test.helper.SegmentHelper;
 import org.apache.skywalking.apm.agent.test.helper.SpanHelper;
 import org.apache.skywalking.apm.agent.test.tools.AgentServiceRule;
@@ -232,6 +234,79 @@ public class AsyncRequestProducerWrapperTest {
         assertEquals("example.org:8080", SpanHelper.getPeer(exit));
         assertEquals(caller.getSpanId(), SpanHelper.getParentSpanId(exit));
         assertFalse(SpanHelper.getErrorOccurred(exit));
+    }
+
+    /**
+     * Without an explicit target the client routes by the request's scheme and authority. {@code service_name} is
+     * routable (e.g. through a custom DNS resolver) but java.net.URI does not parse it as a host, so the destination
+     * must come from the authority, not from {@code URI.getHost()}.
+     */
+    @Test
+    public void routableAuthorityThatUriCannotParseIsStillTraced() throws Exception {
+        AbstractSpan caller = ContextManager.createLocalSpan("caller");
+        HttpRequest request = new BasicHttpRequest("GET", "/hello?a=b");
+        request.setScheme("http");
+        request.setAuthority(new URIAuthority("service_name", 8080));
+        AsyncRequestSpans spans = new AsyncRequestSpans(null);
+        AsyncRequestProducerWrapper wrapper = new AsyncRequestProducerWrapper(syncDelegate(request), spans);
+
+        wrapper.sendRequest(mock(RequestChannel.class), mock(HttpContext.class));
+
+        assertTrue("sw8 propagation header must be injected", request.containsHeader("sw8"));
+        spans.onResponse(200);
+        spans.finish();
+        ContextManager.stopSpan(caller);
+
+        AbstractTracingSpan exit = SegmentHelper.getSpans(segmentStorage.getTraceSegments().get(0)).get(0);
+        assertTrue(exit.isExit());
+        assertEquals("/hello", exit.getOperationName());
+        assertEquals("service_name:8080", SpanHelper.getPeer(exit));
+        assertEquals("http://service_name:8080/hello?a=b", tag(exit, "url"));
+    }
+
+    @Test
+    public void noTargetAndNoAuthorityCreatesNoSpan() throws Exception {
+        AbstractSpan caller = ContextManager.createLocalSpan("caller");
+        HttpRequest request = new BasicHttpRequest("GET", "/hello");
+        RequestChannel realChannel = mock(RequestChannel.class);
+        AsyncRequestSpans spans = new AsyncRequestSpans(null);
+        AsyncRequestProducerWrapper wrapper = new AsyncRequestProducerWrapper(syncDelegate(request), spans);
+
+        wrapper.sendRequest(realChannel, mock(HttpContext.class));
+
+        verify(realChannel).sendRequest(eq(request), any(), any(HttpContext.class));
+        assertFalse(request.containsHeader("sw8"));
+        assertSame(caller, ContextManager.activeSpan());
+        ContextManager.stopSpan(caller);
+    }
+
+    /**
+     * The URL tag must keep the path encoded as it is sent; decoding it would turn %2F, %3F, %23 and %20 into
+     * characters that change what the URL means. The operation name keeps using the decoded path.
+     */
+    @Test
+    public void urlTagKeepsTheEncodedPath() throws Exception {
+        AbstractSpan caller = ContextManager.createLocalSpan("caller");
+        AsyncRequestSpans spans = new AsyncRequestSpans(TARGET);
+        AsyncRequestProducerWrapper wrapper = new AsyncRequestProducerWrapper(
+            syncDelegate(requestTo("http://example.org:8080/a%2Fb%3Fc%23d%20e?q=value")), spans);
+
+        wrapper.sendRequest(mock(RequestChannel.class), mock(HttpContext.class));
+        spans.finish();
+        ContextManager.stopSpan(caller);
+
+        AbstractTracingSpan exit = SegmentHelper.getSpans(segmentStorage.getTraceSegments().get(0)).get(0);
+        assertEquals("http://example.org:8080/a%2Fb%3Fc%23d%20e?q=value", tag(exit, "url"));
+        assertEquals("/a/b?c#d e", exit.getOperationName());
+    }
+
+    private static String tag(AbstractTracingSpan span, String key) {
+        for (TagValuePair pair : SpanHelper.getTags(span)) {
+            if (key.equals(pair.getKey().key())) {
+                return pair.getValue();
+            }
+        }
+        return null;
     }
 
     /**

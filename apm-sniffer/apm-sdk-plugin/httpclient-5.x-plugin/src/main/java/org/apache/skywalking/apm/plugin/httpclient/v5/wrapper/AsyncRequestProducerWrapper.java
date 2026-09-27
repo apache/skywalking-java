@@ -28,6 +28,7 @@ import org.apache.hc.core5.http.nio.AsyncRequestProducer;
 import org.apache.hc.core5.http.nio.DataStreamChannel;
 import org.apache.hc.core5.http.nio.RequestChannel;
 import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.net.URIAuthority;
 import org.apache.skywalking.apm.agent.core.context.CarrierItem;
 import org.apache.skywalking.apm.agent.core.context.ContextCarrier;
 import org.apache.skywalking.apm.agent.core.context.ContextManager;
@@ -78,14 +79,28 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
     }
 
     private void startExitSpan(HttpRequest request) throws URISyntaxException {
-        URI uri = request.getUri();
+        // Resolve the destination the way the client does (InternalAbstractHttpAsyncClient with
+        // RoutingSupport#determineHost): an explicit target wins, otherwise the request's scheme and authority.
+        // The authority is used as is, not re-parsed through java.net.URI, whose getHost() is null for routable
+        // names such as service_name.
         HttpHost target = spans.getTarget();
-        // Same precedence InternalAbstractHttpAsyncClient itself uses: an explicit target host wins over
-        // whatever authority happens to be on the request URI.
-        String scheme = target != null ? target.getSchemeName() : uri.getScheme();
-        String host = target != null ? target.getHostName() : uri.getHost();
-        int port = target != null ? target.getPort() : uri.getPort();
-        if (host == null) {
+        String scheme;
+        String host;
+        int port;
+        if (target != null) {
+            scheme = target.getSchemeName();
+            host = target.getHostName();
+            port = target.getPort();
+        } else {
+            URIAuthority authority = request.getAuthority();
+            if (authority == null) {
+                return;
+            }
+            scheme = request.getScheme();
+            host = authority.getHostName();
+            port = authority.getPort();
+        }
+        if (host == null || host.isEmpty()) {
             return;
         }
         if (scheme == null) {
@@ -95,8 +110,13 @@ public class AsyncRequestProducerWrapper implements AsyncRequestProducer {
             port = "https".equalsIgnoreCase(scheme) ? 443 : 80;
         }
         String peer = host + ":" + port;
+
+        URI uri = request.getUri();
         String path = uri.getPath() == null || uri.getPath().isEmpty() ? "/" : uri.getPath();
-        String url = scheme + "://" + peer + path + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
+        // The URL tag keeps the path as it goes on the wire; the decoded path would turn %2F, %3F, %23 and %20
+        // into /, ?, # and a space and change what the URL means.
+        String rawPath = uri.getRawPath() == null || uri.getRawPath().isEmpty() ? "/" : uri.getRawPath();
+        String url = scheme + "://" + peer + rawPath + (uri.getRawQuery() == null ? "" : "?" + uri.getRawQuery());
 
         // Inside another plugin's exit span, createExitSpan reuses that span (depth + 1) instead of creating one.
         // That span belongs to the other plugin, so it must not be turned into an async span here: only propagate.

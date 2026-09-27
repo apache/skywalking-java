@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.httpclient.v5.wrapper;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.Collections;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.EntityDetails;
@@ -31,9 +33,17 @@ import org.apache.skywalking.apm.plugin.httpclient.v5.AsyncRequestSpans;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -85,7 +95,7 @@ public class AsyncResponseConsumerWrapperTest {
         wrapper.consumeResponse(response, entity, context, resultCallback);
 
         verify(span, never()).asyncFinish();
-        verify(delegate).consumeResponse(response, entity, context, resultCallback);
+        verify(delegate).consumeResponse(eq(response), eq(entity), eq(context), any());
     }
 
     @Test
@@ -97,7 +107,95 @@ public class AsyncResponseConsumerWrapperTest {
         wrapper.consumeResponse(response, null, context, resultCallback);
 
         verify(span, times(1)).asyncFinish();
-        verify(delegate).consumeResponse(response, null, context, resultCallback);
+        verify(delegate).consumeResponse(eq(response), isNull(), eq(context), any());
+    }
+
+    @Test
+    public void consumeResponseWithoutEntityFailingIsNotReportedAsSuccess() throws Exception {
+        HttpResponse response = response(204);
+        IOException cause = new IOException("consumer rejected the response");
+        doThrow(cause).when(delegate).consumeResponse(eq(response), isNull(), eq(context), any());
+
+        try {
+            wrapper.consumeResponse(response, null, context, resultCallback);
+            fail("the consumer's exception must propagate to the client");
+        } catch (IOException expected) {
+            assertSame(cause, expected);
+        }
+        verify(span, never()).asyncFinish();
+
+        wrapper.releaseResources();
+        wrapper.failed(cause);
+
+        verify(span, times(1)).errorOccurred();
+        verify(span, times(1)).log(cause);
+        verify(span, times(1)).asyncFinish();
+    }
+
+    @Test
+    public void streamEndFailureIsNotReportedAsSuccess() throws Exception {
+        // The consumer throws while building the response at EOF. The span must not be finished as a success
+        // first, so the failed(cause) the client reports afterwards still records the error and the exception.
+        EOFException cause = new EOFException("truncated body");
+        doThrow(cause).when(delegate).streamEnd(any());
+        wrapper.consumeResponse(response(200), mock(EntityDetails.class), context, resultCallback);
+
+        try {
+            wrapper.streamEnd(Collections.emptyList());
+            fail("the consumer's exception must propagate to the client");
+        } catch (EOFException expected) {
+            assertSame(cause, expected);
+        }
+        verify(span, never()).asyncFinish();
+
+        wrapper.releaseResources();
+        wrapper.failed(cause);
+
+        verify(span, times(1)).errorOccurred();
+        verify(span, times(1)).log(cause);
+        verify(span, times(1)).asyncFinish();
+    }
+
+    @Test
+    public void streamEndFailureReportedThroughResultCallbackIsAnError() throws Exception {
+        // The consumer reports the EOF failure through the result callback it was given and returns normally.
+        EOFException cause = new EOFException("truncated body");
+        ArgumentCaptor<FutureCallback<Object>> given = ArgumentCaptor.forClass(FutureCallback.class);
+        EntityDetails entity = mock(EntityDetails.class);
+        HttpResponse response = response(200);
+        wrapper.consumeResponse(response, entity, context, resultCallback);
+        verify(delegate).consumeResponse(eq(response), eq(entity), eq(context), given.capture());
+        doAnswer(invocation -> {
+            given.getValue().failed(cause);
+            return null;
+        }).when(delegate).streamEnd(any());
+
+        wrapper.streamEnd(Collections.emptyList());
+
+        verify(span, times(1)).errorOccurred();
+        verify(span, times(1)).log(cause);
+        verify(span, times(1)).asyncFinish();
+        verify(resultCallback).failed(cause);
+    }
+
+    @Test
+    public void resultCallbackSuccessIsPassedThroughAndFinishesAtStreamEnd() throws Exception {
+        ArgumentCaptor<FutureCallback<Object>> given = ArgumentCaptor.forClass(FutureCallback.class);
+        EntityDetails entity = mock(EntityDetails.class);
+        HttpResponse response = response(200);
+        Object result = new Object();
+        wrapper.consumeResponse(response, entity, context, resultCallback);
+        verify(delegate).consumeResponse(eq(response), eq(entity), eq(context), given.capture());
+        doAnswer(invocation -> {
+            given.getValue().completed(result);
+            return null;
+        }).when(delegate).streamEnd(any());
+
+        wrapper.streamEnd(Collections.emptyList());
+
+        verify(resultCallback).completed(result);
+        verify(span, never()).errorOccurred();
+        verify(span, times(1)).asyncFinish();
     }
 
     @Test

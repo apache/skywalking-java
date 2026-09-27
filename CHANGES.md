@@ -23,6 +23,11 @@ Release Notes.
   * HttpClient 5.4+ async requests are traced now. Previously the plugin produced no spans for them, because
     `doExecute` received a `null` `HttpContext` and the request was not yet in the context when `IOSessionImpl#poll`
     ran.
+  * A response that fails after its head, while the body is read or when the consumer builds the result at EOF,
+    now ends the span as an error with the exception logged, instead of as a success or an error without a cause.
+  * The destination is taken from the explicit target or the request authority, as the client routes it, so
+    routable names that `java.net.URI` does not parse as a host (e.g. `service_name`) are traced and propagated.
+  * The `url` tag keeps the path encoded as it was sent (e.g. `%2F` stays `%2F`).
   * The `httpclient-5.x-scenario` now tests one version per minor, 5.0 to 5.6.
 * Fix the `NullPointerException` thrown by the `spring-webflux-5.x-webclient` and
   `spring-webflux-6.x-webclient` plugins when `DefaultClientRequestBuilder$BodyInserterRequest#writeTo` runs

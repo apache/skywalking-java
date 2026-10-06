@@ -86,6 +86,7 @@ jobs:
           - graphql-20plus-scenario
           - spring-kafka-3.x-scenario
           - undertow-2.3.x-scenario
+          - apm-toolkit-logback-scenario
     steps:
       - uses: actions/checkout@v2
         with:

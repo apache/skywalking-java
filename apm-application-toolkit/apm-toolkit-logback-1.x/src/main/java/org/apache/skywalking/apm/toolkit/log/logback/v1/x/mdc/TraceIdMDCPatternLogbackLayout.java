@@ -18,14 +18,17 @@
 
 package org.apache.skywalking.apm.toolkit.log.logback.v1.x.mdc;
 
-import ch.qos.logback.classic.PatternLayout;
+import java.util.Map;
+import org.apache.skywalking.apm.toolkit.log.logback.v1.x.AbstractTraceIdPatternLogbackLayout;
 
 /**
- * Override "X" and "mdc",SuperClass run before Subclass.
+ * Override "X" and "mdc", so "%X{tid}" and "%X{sw_ctx}" print the SkyWalking context. Other MDC keys keep the
+ * default MDC output.
  */
-public class TraceIdMDCPatternLogbackLayout extends PatternLayout {
-    static {
-        defaultConverterMap.put("X", LogbackMDCPatternConverter.class.getName());
-        defaultConverterMap.put("mdc", LogbackMDCPatternConverter.class.getName());
+public class TraceIdMDCPatternLogbackLayout extends AbstractTraceIdPatternLogbackLayout {
+    @Override
+    protected void registerConverters(Map<String, String> rules) {
+        rules.put("X", LogbackMDCPatternConverter.class.getName());
+        rules.put("mdc", LogbackMDCPatternConverter.class.getName());
     }
 }

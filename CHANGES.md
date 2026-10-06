@@ -66,6 +66,13 @@ Release Notes.
   ... Could not find artifact org.apache.skywalking:java-agent:pom:9.7.0` (apache/skywalking#13988).
 * Stop reporting datasource timeout configuration as metrics. The c3p0 `maxIdleTime`, DBCP `maxWaitMillis`
   and HikariCP `connectionTimeout`, `validationTimeout`, `idleTimeout` and `leakDetectionThreshold` gauges are no longer reported.
+* Support logback 1.6.x in `apm-toolkit-logback-1.x` (apache/skywalking#14120). `TraceIdPatternLogbackLayout` and
+  `TraceIdMDCPatternLogbackLayout` failed with `NoSuchFieldError: defaultConverterMap`, because logback 1.6.0 removed
+  `PatternLayout.defaultConverterMap`. The layouts now register their conversion words in the logging context's
+  conversion rule registry when they start, which logback 1.2.x to 1.6.x all read, so the same toolkit artifact keeps
+  working on older logback. Logback 1.5.13 is not supported because of an upstream regression fixed in 1.5.14
+  (qos-ch/logback#885). The words are no longer registered for the whole JVM, so using `%tid` or `%sw_ctx` in
+  other encoders, such as a plain `<encoder><pattern>`, requires declaring them as `<conversionRule>`s.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/263?closed=1)
 

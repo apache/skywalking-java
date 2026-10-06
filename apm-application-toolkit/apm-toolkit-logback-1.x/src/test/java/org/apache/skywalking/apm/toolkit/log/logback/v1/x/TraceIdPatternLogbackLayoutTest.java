@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 
 public class TraceIdPatternLogbackLayoutTest {
@@ -49,9 +50,28 @@ public class TraceIdPatternLogbackLayoutTest {
         layout.start();
 
         assertEquals("fixed|SW_CTX: N/A|fixed", layout.doLayout(event()));
-        // Updated in place, so a rule logback adds to the same registry concurrently is kept.
-        assertSame(userRules, context.getObject(CoreConstants.PATTERN_RULE_REGISTRY));
-        assertEquals(LogbackSkyWalkingContextPatternConverter.class.getName(), userRules.get("sw_ctx"));
+    }
+
+    @Test
+    public void registryIsReplacedNotModified() {
+        LoggerContext context = new LoggerContext();
+        Map<String, String> userRules = new HashMap<>();
+        userRules.put("user", FixedConverter.class.getName());
+        context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, userRules);
+
+        start(new TraceIdPatternLogbackLayout(), context);
+
+        // A layout starting concurrently may be reading the registry it got before.
+        assertEquals(1, userRules.size());
+        @SuppressWarnings("unchecked")
+        Map<String, String> registry = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+        assertNotSame(userRules, registry);
+        assertEquals(FixedConverter.class.getName(), registry.get("user"));
+        assertEquals(LogbackPatternConverter.class.getName(), registry.get("tid"));
+
+        // Nothing is copied once the words are registered.
+        start(new TraceIdPatternLogbackLayout(), context);
+        assertSame(registry, context.getObject(CoreConstants.PATTERN_RULE_REGISTRY));
     }
 
     @Test
@@ -65,6 +85,21 @@ public class TraceIdPatternLogbackLayoutTest {
         assertEquals(LogbackPatternConverter.class.getName(), rules.get("tid"));
         assertEquals(LogbackSkyWalkingContextPatternConverter.class.getName(), rules.get("sw_ctx"));
         assertEquals(4, rules.size());
+    }
+
+    @Test
+    public void convertersStartWithoutHoldingTheContextLock() {
+        LoggerContext context = new LoggerContext();
+        Map<String, String> userRules = new HashMap<>();
+        userRules.put("lock", ContextLockConverter.class.getName());
+        context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, userRules);
+
+        TraceIdPatternLogbackLayout layout = new TraceIdPatternLogbackLayout();
+        layout.setContext(context);
+        layout.setPattern("%tid|%lock");
+        layout.start();
+
+        assertEquals("TID: N/A|unlocked", layout.doLayout(event()));
     }
 
     @Test
@@ -92,6 +127,36 @@ public class TraceIdPatternLogbackLayoutTest {
         @Override
         public String convert(ILoggingEvent event) {
             return "fixed";
+        }
+    }
+
+    /**
+     * Takes the context monitor from another thread while starting, as logback's synchronized context methods do,
+     * e.g. getScheduledExecutorService(). It would block, or deadlock if waited for, while the layout held it.
+     */
+    public static class ContextLockConverter extends ClassicConverter {
+        private boolean unlocked;
+
+        @Override
+        public void start() {
+            Thread thread = new Thread(() -> {
+                synchronized (getContext()) {
+                    // Holds nothing, only proves the monitor is available.
+                }
+            });
+            thread.start();
+            try {
+                thread.join(5000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            unlocked = !thread.isAlive();
+            super.start();
+        }
+
+        @Override
+        public String convert(ILoggingEvent event) {
+            return unlocked ? "unlocked" : "locked";
         }
     }
 }

@@ -31,9 +31,11 @@ import java.util.Map;
  * names, is read by every logback release from 1.2 to 1.6. Logback 1.5.14+ adapts the class names into converter
  * suppliers itself. The static {@code PatternLayout.defaultConverterMap} used before was removed in logback 1.6.0.
  * <p>
- * The words are registered the same way as a {@code <conversionRule>}, so pattern layouts of the context started
- * later can use them too. The registry is cleared when the context is reset, and the layouts register them again
- * when they start.
+ * The words are registered in the context, so pattern layouts of the context started later can use them too. The
+ * registry is cleared when the context is reset, and the layouts register them again when they start. The registry
+ * is replaced by an updated copy, never modified, as layouts starting concurrently may be reading it. On logback
+ * before 1.5.14, which also writes {@code <conversionRule>}s to this registry, a rule logback registers at the same
+ * time as a layout starts in another thread may be lost.
  * <p>
  * Logback 1.5.13 is not supported: it reads this registry as a map of suppliers, which was reverted in 1.5.14.
  */
@@ -51,26 +53,26 @@ public abstract class AbstractTraceIdPatternLogbackLayout extends PatternLayout 
         Map<String, String> rules = new HashMap<>();
         registerConverters(rules);
 
-        // Logback reads the registry while compiling the pattern in super.start(), so starting under the same lock
-        // keeps concurrently started layouts from modifying it during that read.
+        // Layouts starting concurrently, from any class loader, do not lose each other's words. The monitor is only
+        // held for the copy, and released before logback creates and starts the converters.
         synchronized (context) {
-            Map<String, String> registry = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
-            if (registry == null) {
-                registry = new HashMap<>();
+            Map<String, String> existing = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+            if (existing == null || !existing.keySet().containsAll(rules.keySet())) {
+                Map<String, String> registry = existing == null ? new HashMap<>() : new HashMap<>(existing);
+                // Rules already registered, such as user-defined <conversionRule>s, keep their precedence.
+                for (Map.Entry<String, String> rule : rules.entrySet()) {
+                    registry.putIfAbsent(rule.getKey(), rule.getValue());
+                }
                 context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, registry);
             }
-            // Updated in place, as logback does for <conversionRule>. Rules already registered, such as
-            // user-defined <conversionRule>s, keep their precedence.
-            for (Map.Entry<String, String> rule : rules.entrySet()) {
-                registry.putIfAbsent(rule.getKey(), rule.getValue());
-            }
-
-            super.start();
         }
+
+        super.start();
     }
 
     /**
-     * @param rules conversion word to converter class name
+     * Puts the conversion words of this layout into {@code rules}, as conversion word to converter class name.
+     * Subclasses override it to change or add words. Words already registered in the context keep their precedence.
      */
     protected abstract void registerConverters(Map<String, String> rules);
 }

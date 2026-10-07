@@ -55,7 +55,7 @@ public abstract class BaseMeter {
 
     /**
      * Transform the meter to gRPC message bean
-     * @return if dont need to transform or no changed, return null to ignore
+     * @return if no transformation is needed or nothing has changed, return null to ignore
      */
     public abstract MeterData.Builder transform();
 

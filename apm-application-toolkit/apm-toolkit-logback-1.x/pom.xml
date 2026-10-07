@@ -28,8 +28,11 @@
     <artifactId>apm-toolkit-logback-1.x</artifactId>
 
     <properties>
-        <logback-classic.version>1.2.3</logback-classic.version>
+        <!-- Compile against the latest logback, so an API removal fails the build.
+             Older releases are covered by LogbackVersionCompatibilityTest. -->
+        <logback-classic.version>1.6.5</logback-classic.version>
         <logstash.version>6.1</logstash.version>
+        <logback-compat.dir>${project.build.directory}/logback-compat</logback-compat.dir>
     </properties>
 
     <dependencies>
@@ -46,4 +49,118 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Logback releases verified by LogbackVersionCompatibilityTest, each loaded in an isolated class loader. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-logback-compat-versions</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${maven.test.skip}</skip>
+                            <outputDirectory>${logback-compat.dir}</outputDirectory>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>1.2.13</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.2.13</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>1.3.16</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.3.16</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>1.4.14</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.4.14</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>1.5.12</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.5.12</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>1.5.14</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.5.14</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>1.5.38</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.5.38</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-core</artifactId>
+                                    <version>1.6.5</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>ch.qos.logback</groupId>
+                                    <artifactId>logback-classic</artifactId>
+                                    <version>1.6.5</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-api</artifactId>
+                                    <version>1.7.36</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-api</artifactId>
+                                    <version>2.0.19</version>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <logback.compat.dir>${logback-compat.dir}</logback.compat.dir>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

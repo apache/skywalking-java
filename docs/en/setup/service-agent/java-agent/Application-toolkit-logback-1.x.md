@@ -8,6 +8,22 @@
      </dependency>
 ```
 
+# Supported logback versions
+
+The toolkit layouts support logback 1.2.x to 1.6.x in the same artifact, except logback **1.5.13**.
+Using the layouts with logback 1.6.x requires toolkit 9.8.0 or later, as earlier toolkit releases fail on it with
+`NoSuchFieldError: defaultConverterMap`. With an earlier toolkit release, declare the conversion words as
+`<conversionRule>`s and use them in plain encoders instead, see [Print trace ID in your logs](#print-trace-id-in-your-logs).
+
+Logback 1.5.13 has an upstream regression, [qos-ch/logback#885](https://github.com/qos-ch/logback/issues/885).
+The layouts register `%tid`, `%sw_ctx`, `%X` and `%mdc` in the logging context's conversion rule registry
+(`CoreConstants.PATTERN_RULE_REGISTRY`), which holds converter class names in every other release from 1.2 to 1.6.
+Logback 1.5.13 changed the registry to hold converter suppliers, so class names that code puts into it break,
+including this toolkit's and Spring Boot's. On 1.5.13, a layout whose pattern uses one of these words fails to start
+with `ClassCastException: class java.lang.String cannot be cast to class java.util.function.Supplier`, and a
+logback.xml containing it fails to configure. Logback 1.5.14 reverted the change, so upgrade to 1.5.14 or later.
+`<conversionRule>`s declared in logback.xml are not affected.
+
 # Print trace ID in your logs
 
 * set `%tid` in `Pattern` section of logback.xml
@@ -31,6 +47,25 @@
         </encoder>
     </appender>
 ```
+
+* to use `%tid` or `%sw_ctx` in other encoders, such as a plain `<encoder><pattern>`, declare them as conversion rules
+  in logback.xml. Declare `X` with `org.apache.skywalking.apm.toolkit.log.logback.v1.x.mdc.LogbackMDCPatternConverter`
+  in the same way for `%X{tid}`. Logback 1.5.7+ also accepts `class` in place of the deprecated `converterClass`.
+```xml
+    <conversionRule conversionWord="tid"
+                    converterClass="org.apache.skywalking.apm.toolkit.log.logback.v1.x.LogbackPatternConverter"/>
+    <conversionRule conversionWord="sw_ctx"
+                    converterClass="org.apache.skywalking.apm.toolkit.log.logback.v1.x.LogbackSkyWalkingContextPatternConverter"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%tid] [%thread] %-5level %logger{36} -%msg%n</pattern>
+        </encoder>
+    </appender>
+```
+  Before 9.8.0, the layouts registered these words for the whole JVM once their classes were loaded, so other encoders
+  could pick them up by chance, depending on the configuration order. Since 9.8.0, the layouts register them in their
+  logging context when they start, and the conversion rules are the way to use them anywhere else.
 
 
 * Support logback AsyncAppender(MDC also support), No additional configuration is required. Refer to the demo of logback.xml below. For details: [Logback AsyncAppender](https://logback.qos.ch/manual/appenders.html#AsyncAppender)

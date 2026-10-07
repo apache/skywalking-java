@@ -16,19 +16,18 @@
  *
  */
 
-package org.apache.skywalking.apm.toolkit.log.logback.v1.x;
+package test.apache.skywalking.apm.testcase.logback;
 
-import java.util.Map;
+import com.sun.net.httpserver.HttpServer;
+import java.io.IOException;
+import java.net.InetSocketAddress;
 
-/**
- * Based on the logback-component convert register mechanism, register {@link LogbackPatternConverter} as a new
- * convert, match to "tid" and "sw_ctx". You can use "%tid" or "sw_ctx" in logback config file, "Pattern" section.
- * <p>
- */
-public class TraceIdPatternLogbackLayout extends AbstractTraceIdPatternLogbackLayout {
-    @Override
-    protected void registerConverters(Map<String, String> rules) {
-        rules.put("tid", LogbackPatternConverter.class.getName());
-        rules.put("sw_ctx", LogbackSkyWalkingContextPatternConverter.class.getName());
+public class Application {
+
+    public static void main(String[] args) throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        server.createContext("/apm-toolkit-logback-scenario/case/healthCheck", CaseHandler::respond);
+        server.createContext("/apm-toolkit-logback-scenario/case/logback", new CaseHandler());
+        server.start();
     }
 }

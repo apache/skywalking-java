@@ -43,6 +43,13 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
     public final void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
                                    Class<?>[] argumentsTypes, MethodInterceptResult result) {
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) objInst.getSkyWalkingDynamicField();
+        /*
+         * The statement created by PgConnection#prepareStatement(String, String[]) has no dynamic field. It is
+         * wrapped and traced by SWPreparedStatement, see JDBCPrepareStatementWithStringArrayInterceptor.
+         */
+        if (cacheObject == null || cacheObject.getConnectionInfo() == null) {
+            return;
+        }
         ConnectionInfo connectInfo = cacheObject.getConnectionInfo();
         AbstractSpan span = ContextManager.createExitSpan(
             buildOperationName(connectInfo, method.getName(), cacheObject.getStatementName()), connectInfo
@@ -68,7 +75,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
     public final Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments,
                                     Class<?>[] argumentsTypes, Object ret) {
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) objInst.getSkyWalkingDynamicField();
-        if (cacheObject.getConnectionInfo() != null) {
+        if (cacheObject != null && cacheObject.getConnectionInfo() != null) {
             ContextManager.stopSpan();
         }
         return ret;
@@ -78,7 +85,7 @@ public class PreparedStatementExecuteMethodsInterceptor implements InstanceMetho
     public final void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                             Class<?>[] argumentsTypes, Throwable t) {
         StatementEnhanceInfos cacheObject = (StatementEnhanceInfos) objInst.getSkyWalkingDynamicField();
-        if (cacheObject.getConnectionInfo() != null) {
+        if (cacheObject != null && cacheObject.getConnectionInfo() != null) {
             ContextManager.activeSpan().log(t);
         }
     }

@@ -33,8 +33,8 @@ public class RedisCommandCompleteMethodInterceptor implements InstanceMethodsAro
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
-        if (objInst.getSkyWalkingDynamicField() != null) {
-            AbstractSpan span = ((RedisCommandEnhanceInfo) objInst.getSkyWalkingDynamicField()).getSpan();
+        AbstractSpan span = RedisCommandEnhanceInfo.getSpan(objInst);
+        if (span != null) {
             span.asyncFinish();
             objInst.setSkyWalkingDynamicField(null);
         }
@@ -44,8 +44,8 @@ public class RedisCommandCompleteMethodInterceptor implements InstanceMethodsAro
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        if (objInst.getSkyWalkingDynamicField() != null) {
-            AbstractSpan span = ((RedisCommandEnhanceInfo) objInst.getSkyWalkingDynamicField()).getSpan();
+        AbstractSpan span = RedisCommandEnhanceInfo.getSpan(objInst);
+        if (span != null) {
             span.log(t);
         }
     }

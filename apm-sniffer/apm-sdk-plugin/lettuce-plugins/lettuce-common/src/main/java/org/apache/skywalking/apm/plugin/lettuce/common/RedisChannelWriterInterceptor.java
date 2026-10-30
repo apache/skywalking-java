@@ -154,7 +154,7 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         return "UNKNOWN";
     }
 
-    private static RedisCommand<?, ?, ?> getSpanCarrierCommand(Object o) {
+    static RedisCommand<?, ?, ?> getSpanCarrierCommand(Object o) {
         RedisCommand<?, ?, ?> command = null;
         if (o instanceof RedisCommand) {
             command = (RedisCommand<?, ?, ?>) o;

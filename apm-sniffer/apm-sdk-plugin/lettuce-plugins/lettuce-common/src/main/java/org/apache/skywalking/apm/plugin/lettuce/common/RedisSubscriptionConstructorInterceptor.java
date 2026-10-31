@@ -25,7 +25,9 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceC
  * Interceptor for RedisSubscription constructor.
  * <p>
  * This interceptor captures the {@link io.lettuce.core.protocol.RedisCommand} instance
- * at subscription construction time and stores it into SkyWalking dynamic field.
+ * at subscription construction time and stores it into SkyWalking dynamic field. A decorated
+ * command is unwrapped to the command that carries the span, so that the snapshot is found
+ * by {@link RedisChannelWriterInterceptor}.
  * </p>
  */
 public class RedisSubscriptionConstructorInterceptor implements InstanceConstructorInterceptor {
@@ -33,7 +35,7 @@ public class RedisSubscriptionConstructorInterceptor implements InstanceConstruc
     @Override
     public void onConstruct(EnhancedInstance objInst, Object[] allArguments) {
         // allArguments[1] is the RedisCommand passed to the RedisSubscription constructor
-        objInst.setSkyWalkingDynamicField(allArguments[1]);
+        objInst.setSkyWalkingDynamicField(RedisChannelWriterInterceptor.getSpanCarrierCommand(allArguments[1]));
     }
 
 }

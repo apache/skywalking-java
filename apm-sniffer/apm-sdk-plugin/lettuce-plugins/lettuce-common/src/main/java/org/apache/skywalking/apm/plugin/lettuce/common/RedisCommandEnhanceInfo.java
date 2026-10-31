@@ -20,6 +20,7 @@ package org.apache.skywalking.apm.plugin.lettuce.common;
 
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 
 /**
  * RedisCommandEnhanceInfo holds SkyWalking tracing data for Lettuce commands
@@ -41,6 +42,15 @@ class RedisCommandEnhanceInfo {
 
     public AbstractSpan getSpan() {
         return span;
+    }
+
+    /**
+     * @return the span of the command, or null if the command has no span. A reactive command only carries the
+     * snapshot until it is written, so a command cancelled before that has no span to finish.
+     */
+    static AbstractSpan getSpan(EnhancedInstance command) {
+        RedisCommandEnhanceInfo enhanceInfo = (RedisCommandEnhanceInfo) command.getSkyWalkingDynamicField();
+        return enhanceInfo == null ? null : enhanceInfo.getSpan();
     }
 
     public RedisCommandEnhanceInfo setSpan(AbstractSpan span) {

@@ -111,6 +111,20 @@ public class RedisChannelWriterInterceptorTest {
         }
     }
 
+    private static class CancelledWhileSpanIsCreatedCommand<K, V, T> extends MockRedisCommand<K, V, T> {
+        public CancelledWhileSpanIsCreatedCommand(ProtocolKeyword type, CommandOutput<K, V, T> output) {
+            super(type, output);
+        }
+
+        @Override
+        public void setSkyWalkingDynamicField(Object value) {
+            super.setSkyWalkingDynamicField(value);
+            if (value != null) {
+                cancel();
+            }
+        }
+    }
+
     @Before
     public void setUp() {
         LettucePluginConfig.Plugin.Lettuce.TRACE_REDIS_PARAMETERS = true;
@@ -142,6 +156,45 @@ public class RedisChannelWriterInterceptorTest {
     }
 
     @Test
+    public void testDoneCommandHasNoSpan() {
+        MockRedisCommand<?, ?, ?> redisCommand = new MockRedisCommand<>(CommandType.SET, null);
+        redisCommand.cancel();
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{redisCommand}, null, null);
+
+        assertNull(redisCommand.getSkyWalkingDynamicField());
+        assertThat(segmentStorage.getTraceSegments().size(), is(0));
+    }
+
+    @Test
+    public void testCommandCancelledWhileSpanIsCreatedHasItsSpanFinished() {
+        CancelledWhileSpanIsCreatedCommand<?, ?, ?> redisCommand = new CancelledWhileSpanIsCreatedCommand<>(CommandType.SET, null);
+        // The cancellation interceptor found no span, and the command is done by the time the writer has set the span.
+        new RedisCommandCancelMethodInterceptor().afterMethod(redisCommand, null, null, null, null);
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{redisCommand}, null, null);
+
+        assertNull(redisCommand.getSkyWalkingDynamicField());
+        assertThat(segmentStorage.getTraceSegments().size(), is(1));
+        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(segmentStorage.getTraceSegments().get(0));
+        assertThat(spans.size(), is(1));
+        assertThat(SpanHelper.getErrorOccurred(spans.get(0)), is(true));
+    }
+
+    @Test
+    public void testSpanIsTakenByOneTerminalInterceptor() {
+        MockRedisCommand<?, ?, ?> redisCommand = new MockRedisCommand<>(CommandType.SET, null);
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{redisCommand}, null, null);
+        Object enhanceInfo = redisCommand.getSkyWalkingDynamicField();
+
+        redisCommandCompleteMethodInterceptor.afterMethod(redisCommand, null, null, null, null);
+        // A concurrent cancellation read the enhance info before the completion cleared it.
+        redisCommand.setSkyWalkingDynamicField(enhanceInfo);
+        new RedisCommandCancelMethodInterceptor().afterMethod(redisCommand, null, null, null, null);
+
+        assertThat(segmentStorage.getTraceSegments().size(), is(1));
+        assertThat(SpanHelper.getErrorOccurred(SegmentHelper.getSpans(segmentStorage.getTraceSegments().get(0)).get(0)), is(false));
+    }
+
+    @Test
     public void testGetSpanCarrierCommand() throws Exception {
         Command<?, ?, ?> command = new Command<>(CommandType.SET, null, null);
         Method getSpanCarrierCommandMethod = interceptor.getClass()
@@ -159,6 +212,13 @@ public class RedisChannelWriterInterceptorTest {
         RedisCommand<?, ?, ?> last =
             (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, list);
         assertEquals(command, last);
+        Command<?, ?, ?> cancelled = new Command<>(CommandType.SET, null, null);
+        cancelled.cancel();
+        list.add(cancelled);
+        RedisCommand<?, ?, ?> lastNotDone =
+            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, list);
+        assertEquals(command, lastNotDone);
+        list.remove(cancelled);
         RedisCommand<?, ?, ?> nullValue1 =
             (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, (Object) null);
         assertNull(nullValue1);

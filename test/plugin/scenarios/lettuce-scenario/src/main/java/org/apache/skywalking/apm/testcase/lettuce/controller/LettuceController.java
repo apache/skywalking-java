@@ -25,7 +25,14 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.reactive.RedisReactiveCommands;
 import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.codec.StringCodec;
+import io.lettuce.core.output.StatusOutput;
+import io.lettuce.core.protocol.AsyncCommand;
+import io.lettuce.core.protocol.Command;
+import io.lettuce.core.protocol.CommandArgs;
+import io.lettuce.core.protocol.CommandType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,12 +79,23 @@ public class LettuceController {
                 .thenReturn("Success");
 
         result.block();
-        
+
+        // Commands dispatched as a batch are written to the channel and flushed together.
+        AsyncCommand<String, String, String> batchSet0 = setCommand("key2", "value2");
+        AsyncCommand<String, String, String> batchSet1 = setCommand("key3", "value3");
+        connection0.dispatch(Arrays.asList(batchSet0, batchSet1));
+        LettuceFutures.awaitAll(5, TimeUnit.SECONDS, batchSet0, batchSet1);
+
         connection0.close();
         connection1.close();
         connection2.close();
         redisClient.shutdown();
         return "Success";
+    }
+
+    private static AsyncCommand<String, String, String> setCommand(String key, String value) {
+        CommandArgs<String, String> args = new CommandArgs<>(StringCodec.UTF8).addKey(key).addValue(value);
+        return new AsyncCommand<>(new Command<>(CommandType.SET, new StatusOutput<>(StringCodec.UTF8), args));
     }
 
     @RequestMapping("/healthCheck")

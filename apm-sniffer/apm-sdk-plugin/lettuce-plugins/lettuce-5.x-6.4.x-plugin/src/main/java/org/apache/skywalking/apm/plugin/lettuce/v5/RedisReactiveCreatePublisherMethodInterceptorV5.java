@@ -39,7 +39,7 @@ import java.util.function.Function;
  *
  * <p>If the Reactor Context does not already contain a snapshot, this interceptor
  * captures the current active context and writes it into the subscriber context
- * as a fallback propagation mechanism.</p>
+ * as a fallback propagation mechanism. Nothing is captured when no context is active.</p>
  */
 public class RedisReactiveCreatePublisherMethodInterceptorV5 implements InstanceMethodsAroundInterceptorV2 {
 
@@ -54,6 +54,12 @@ public class RedisReactiveCreatePublisherMethodInterceptorV5 implements Instance
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret, MethodInvocationContext context) {
 
         if (!(ret instanceof Mono) && !(ret instanceof Flux)) {
+            return ret;
+        }
+        // Without an active trace there is nothing to capture, and a local span would start a trace of its own.
+        // A snapshot put into the Reactor Context by another plugin, such as spring-webflux, is still continued
+        // when the command is written.
+        if (!ContextManager.isActive()) {
             return ret;
         }
         final AbstractSpan localSpan = ContextManager.createLocalSpan("Lettuce/Reactive/" + method.getName());

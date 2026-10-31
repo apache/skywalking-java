@@ -22,8 +22,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -43,6 +45,7 @@ import org.springframework.kafka.listener.AbstractMessageListenerContainer.AckMo
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -61,6 +64,7 @@ public class CaseController {
 
     private CountDownLatch latch = new CountDownLatch(1);
     private String helloWorld = "helloWorld";
+    private volatile boolean partitionsAssigned = false;
 
     @PostConstruct
     private void setUp() {
@@ -91,6 +95,19 @@ public class CaseController {
         Deserializer<String> stringDeserializer = new StringDeserializer();
         DefaultKafkaConsumerFactory<String, String> factory = new DefaultKafkaConsumerFactory(configs, stringDeserializer, stringDeserializer);
         ContainerProperties props = new ContainerProperties(topicName);
+        // The consumer starts from the latest offset, so the case must not send before partitions are assigned.
+        props.setConsumerRebalanceListener(new ConsumerRebalanceListener() {
+            @Override
+            public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
+            }
+
+            @Override
+            public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
+                if (!partitions.isEmpty()) {
+                    partitionsAssigned = true;
+                }
+            }
+        });
         props.setMessageListener(new AcknowledgingMessageListener<String, String>() {
             @Override
             public void onMessage(ConsumerRecord<String, String> data, Acknowledgment acknowledgment) {
@@ -131,7 +148,10 @@ public class CaseController {
     @RequestMapping("/healthCheck")
     @ResponseBody
     public String healthCheck() {
-        return SUCCESS;
+        if (partitionsAssigned) {
+            return SUCCESS;
+        }
+        throw new RuntimeException("kafka consumer partitions not assigned");
     }
 }
 

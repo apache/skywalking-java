@@ -33,7 +33,7 @@ public class RedisCommandCompleteExceptionallyMethodInterceptor implements Insta
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
-        AbstractSpan span = RedisCommandEnhanceInfo.getSpan(objInst);
+        AbstractSpan span = RedisCommandEnhanceInfo.takeSpan(objInst);
         if (span != null) {
             Throwable t = (Throwable) allArguments[0];
             span.log(t);

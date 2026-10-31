@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.common;
 
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
@@ -37,11 +38,11 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
  */
 class RedisCommandEnhanceInfo {
     
-    private AbstractSpan span;
+    private final AtomicReference<AbstractSpan> span = new AtomicReference<>();
     private ContextSnapshot snapshot;
 
     public AbstractSpan getSpan() {
-        return span;
+        return span.get();
     }
 
     /**
@@ -53,8 +54,22 @@ class RedisCommandEnhanceInfo {
         return enhanceInfo == null ? null : enhanceInfo.getSpan();
     }
 
+    /**
+     * @return the span of the command, which the caller must finish, or null if the command has no span or another
+     * caller has taken it. A command can be cancelled while its write is traced, so more than one caller may try to
+     * finish the span, and only the first one gets it.
+     */
+    static AbstractSpan takeSpan(EnhancedInstance command) {
+        RedisCommandEnhanceInfo enhanceInfo = (RedisCommandEnhanceInfo) command.getSkyWalkingDynamicField();
+        return enhanceInfo == null ? null : enhanceInfo.takeSpan();
+    }
+
+    AbstractSpan takeSpan() {
+        return span.getAndSet(null);
+    }
+
     public RedisCommandEnhanceInfo setSpan(AbstractSpan span) {
-        this.span = span;
+        this.span.set(span);
         return this;
     }
 

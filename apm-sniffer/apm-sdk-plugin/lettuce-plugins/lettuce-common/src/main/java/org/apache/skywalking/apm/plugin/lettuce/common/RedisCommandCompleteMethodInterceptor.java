@@ -33,7 +33,7 @@ public class RedisCommandCompleteMethodInterceptor implements InstanceMethodsAro
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
-        AbstractSpan span = RedisCommandEnhanceInfo.getSpan(objInst);
+        AbstractSpan span = RedisCommandEnhanceInfo.takeSpan(objInst);
         if (span != null) {
             span.asyncFinish();
             objInst.setSkyWalkingDynamicField(null);

@@ -37,7 +37,6 @@ import org.apache.skywalking.apm.util.StringUtil;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @SuppressWarnings("unchecked")
@@ -51,8 +50,15 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
         String peer = (String) objInst.getSkyWalkingDynamicField();
-        RedisCommand<?, ?, ?> spanCarrierCommand = getSpanCarrierCommand(allArguments[0]);
+        RedisCommand<?, ?, ?> writtenCommand = getWrittenCommand(allArguments[0]);
+        RedisCommand<?, ?, ?> spanCarrierCommand = getSpanCarrierCommand(writtenCommand);
         if (spanCarrierCommand == null) {
+            return;
+        }
+        // A command that is already done, such as one cancelled or timed out while its write was delayed, is dropped
+        // by the CommandHandler, or gets no terminal call that reaches the span carrier, so its span would never be
+        // finished.
+        if (isDone(writtenCommand, spanCarrierCommand)) {
             return;
         }
         EnhancedInstance enhancedCommand = (EnhancedInstance) spanCarrierCommand;
@@ -64,10 +70,11 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         }
 
         // command has been handle by another channel writer (cluster or sentinel case)
-        if (redisCommandEnhanceInfo.getSpan() != null) {
+        AbstractSpan existingSpan = redisCommandEnhanceInfo.getSpan();
+        if (existingSpan != null) {
             //set peer in last channel writer (delegate)
             if (peer != null) {
-                redisCommandEnhanceInfo.getSpan().setPeer(peer);
+                existingSpan.setPeer(peer);
             }
             return;
         }
@@ -112,6 +119,17 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         }
         
         enhancedCommand.setSkyWalkingDynamicField(redisCommandEnhanceInfo.setSpan(span));
+
+        // The command may have been cancelled or timed out before the span was set, when its terminal interceptor
+        // had no span to finish.
+        if (isDone(writtenCommand, spanCarrierCommand)) {
+            AbstractSpan unfinishedSpan = redisCommandEnhanceInfo.takeSpan();
+            if (unfinishedSpan != null) {
+                enhancedCommand.setSkyWalkingDynamicField(null);
+                unfinishedSpan.errorOccurred();
+                unfinishedSpan.asyncFinish();
+            }
+        }
     }
 
     private String getArgsKey(RedisCommand<?, ?, ?> redisCommand) {
@@ -141,12 +159,14 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
         RedisCommand<?, ?, ?> redisCommand = getSpanCarrierCommand(allArguments[0]);
-        if (redisCommand instanceof EnhancedInstance && ((EnhancedInstance) redisCommand).getSkyWalkingDynamicField() != null) {
+        if (redisCommand instanceof EnhancedInstance) {
             EnhancedInstance enhancedRedisCommand = (EnhancedInstance) redisCommand;
-            AbstractSpan abstractSpan = ((RedisCommandEnhanceInfo) enhancedRedisCommand.getSkyWalkingDynamicField()).getSpan();
-            enhancedRedisCommand.setSkyWalkingDynamicField(null);
-            abstractSpan.log(t);
-            abstractSpan.asyncFinish();
+            AbstractSpan abstractSpan = RedisCommandEnhanceInfo.takeSpan(enhancedRedisCommand);
+            if (abstractSpan != null) {
+                enhancedRedisCommand.setSkyWalkingDynamicField(null);
+                abstractSpan.log(t);
+                abstractSpan.asyncFinish();
+            }
         }
     }
 
@@ -154,21 +174,41 @@ public class RedisChannelWriterInterceptor implements InstanceMethodsAroundInter
         return "UNKNOWN";
     }
 
-    static RedisCommand<?, ?, ?> getSpanCarrierCommand(Object o) {
-        RedisCommand<?, ?, ?> command = null;
+    /**
+     * @return the written command. For a batch write, it is the last command that is not done, which carries the span
+     * of the whole batch, because a done command is dropped while the others are still sent. A command of the batch
+     * that is cancelled while the batch is being written can still leave it without a span, or with two.
+     */
+    private static RedisCommand<?, ?, ?> getWrittenCommand(Object o) {
         if (o instanceof RedisCommand) {
-            command = (RedisCommand<?, ?, ?>) o;
-        } else if (o instanceof List) {
-            List<?> list = (List<?>) o;
-            command = list.isEmpty() ? null : (RedisCommand<?, ?, ?>) list.get(list.size() - 1);
-        } else if (o instanceof Collection) {
-            Collection<RedisCommand<?, ?, ?>> redisCommands = (Collection<RedisCommand<?, ?, ?>>) o;
-            RedisCommand<?, ?, ?> last = null;
-            for (RedisCommand<?, ?, ?> redisCommand : redisCommands) {
-                last = redisCommand;
-            }
-            command = last;
+            return (RedisCommand<?, ?, ?>) o;
         }
+        if (!(o instanceof Collection)) {
+            return null;
+        }
+        RedisCommand<?, ?, ?> lastCommand = null;
+        RedisCommand<?, ?, ?> lastCommandNotDone = null;
+        boolean anyCommandNotDone = false;
+        for (RedisCommand<?, ?, ?> redisCommand : (Collection<RedisCommand<?, ?, ?>>) o) {
+            lastCommand = redisCommand;
+            if (redisCommand == null || !isDone(redisCommand, getSpanCarrierCommand(redisCommand))) {
+                lastCommandNotDone = redisCommand;
+                anyCommandNotDone = true;
+            }
+        }
+        return anyCommandNotDone ? lastCommandNotDone : lastCommand;
+    }
+
+    /**
+     * The CommandHandler checks the written command, while a wrapper of the span carrier, such as an AsyncCommand
+     * whose cancellation cancels the carrier first, or a ClusterCommand, can look not done after the carrier is.
+     */
+    private static boolean isDone(RedisCommand<?, ?, ?> writtenCommand, RedisCommand<?, ?, ?> spanCarrierCommand) {
+        return writtenCommand.isDone() || spanCarrierCommand != null && spanCarrierCommand.isDone();
+    }
+
+    static RedisCommand<?, ?, ?> getSpanCarrierCommand(Object o) {
+        RedisCommand<?, ?, ?> command = getWrittenCommand(o);
         if (command instanceof DecoratedCommand) {
             while (command instanceof DecoratedCommand) {
                 DecoratedCommand<?, ?, ?> wrapper = (DecoratedCommand<?, ?, ?>) command;

@@ -18,6 +18,7 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.v5.define;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import net.bytebuddy.description.method.MethodDescription;
@@ -50,8 +51,8 @@ public class RedisChannelWriterInstrumentationV5 extends ClassInstanceMethodsEnh
             new InstanceMethodsInterceptPoint() {
                 @Override
                 public ElementMatcher<MethodDescription> getMethodsMatcher() {
-                    return named("write").and(takesArgument(0, named("io.lettuce.core.protocol.RedisCommand")).or(
-                        takesArgument(0, List.class)));
+                    return named("write").and(takesArgument(0, named("io.lettuce.core.protocol.RedisCommand"))
+                        .or(takesArgument(0, Collection.class)));
                 }
 
                 @Override

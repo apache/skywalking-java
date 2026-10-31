@@ -26,6 +26,7 @@ import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.reactive.RedisReactiveCommands;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.codec.StringCodec;
+import io.lettuce.core.output.IntegerOutput;
 import io.lettuce.core.output.StatusOutput;
 import io.lettuce.core.protocol.AsyncCommand;
 import io.lettuce.core.protocol.Command;
@@ -86,6 +87,18 @@ public class LettuceController {
         connection0.dispatch(Arrays.asList(batchSet0, batchSet1));
         LettuceFutures.awaitAll(5, TimeUnit.SECONDS, batchSet0, batchSet1);
 
+        // The error reply of the first command makes the span of the batch an error, while the span ends with the
+        // reply of the last command. Replies come in order, so the first command is done when the last one is.
+        AsyncCommand<String, String, Long> batchIncr = incrCommand("key2");
+        AsyncCommand<String, String, String> batchSet2 = setCommand("key4", "value4");
+        connection0.dispatch(Arrays.asList(batchIncr, batchSet2));
+        if (!LettuceFutures.awaitAll(5, TimeUnit.SECONDS, batchSet2)) {
+            throw new IllegalStateException("The batch is not completed");
+        }
+
+        // A reactive command is completed without an exception on an error reply, which still makes its span an error.
+        reactiveCommands.incr("key2").onErrorResume(e -> Mono.empty()).block();
+
         connection0.close();
         connection1.close();
         connection2.close();
@@ -96,6 +109,11 @@ public class LettuceController {
     private static AsyncCommand<String, String, String> setCommand(String key, String value) {
         CommandArgs<String, String> args = new CommandArgs<>(StringCodec.UTF8).addKey(key).addValue(value);
         return new AsyncCommand<>(new Command<>(CommandType.SET, new StatusOutput<>(StringCodec.UTF8), args));
+    }
+
+    private static AsyncCommand<String, String, Long> incrCommand(String key) {
+        CommandArgs<String, String> args = new CommandArgs<>(StringCodec.UTF8).addKey(key);
+        return new AsyncCommand<>(new Command<>(CommandType.INCR, new IntegerOutput<>(StringCodec.UTF8), args));
     }
 
     @RequestMapping("/healthCheck")

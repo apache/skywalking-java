@@ -18,7 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.common;
 
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
+import io.lettuce.core.output.CommandOutput;
+import io.lettuce.core.protocol.RedisCommand;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -33,9 +34,15 @@ public class RedisCommandCompleteMethodInterceptor implements InstanceMethodsAro
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
-        AbstractSpan span = RedisCommandEnhanceInfo.takeSpan(objInst);
-        if (span != null) {
-            span.asyncFinish();
+        RedisWriteSpan writeSpan = RedisCommandEnhanceInfo.takeWriteSpan(objInst);
+        if (writeSpan != null) {
+            // A reactive command is completed without an exception on an error reply, such as WRONGTYPE, while an
+            // AsyncCommand completes its command exceptionally before.
+            CommandOutput<?, ?, ?> output = ((RedisCommand<?, ?, ?>) objInst).getOutput();
+            if (output != null && output.hasError()) {
+                writeSpan.errorReply(String.valueOf(output.getError()));
+            }
+            writeSpan.finishCommand();
             objInst.setSkyWalkingDynamicField(null);
         }
         return ret;
@@ -44,9 +51,9 @@ public class RedisCommandCompleteMethodInterceptor implements InstanceMethodsAro
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
                                       Class<?>[] argumentsTypes, Throwable t) {
-        AbstractSpan span = RedisCommandEnhanceInfo.getSpan(objInst);
-        if (span != null) {
-            span.log(t);
+        RedisWriteSpan writeSpan = RedisCommandEnhanceInfo.getWriteSpan(objInst);
+        if (writeSpan != null) {
+            writeSpan.log(t);
         }
     }
 }

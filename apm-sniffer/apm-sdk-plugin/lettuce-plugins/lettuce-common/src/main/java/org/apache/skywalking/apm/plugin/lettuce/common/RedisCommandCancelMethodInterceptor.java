@@ -18,8 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.common;
 
-import org.apache.skywalking.apm.agent.core.context.tag.StringTag;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -27,8 +25,6 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInt
 import java.lang.reflect.Method;
 
 public class RedisCommandCancelMethodInterceptor implements InstanceMethodsAroundInterceptor {
-    private static final String CANCEL_SIGNAL_TAG = "signalType";
-    private static final String COMMAND_CANCEL_VALUE = "cancel";
 
     @Override
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, MethodInterceptResult result) {
@@ -36,11 +32,10 @@ public class RedisCommandCancelMethodInterceptor implements InstanceMethodsAroun
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
-        AbstractSpan span = RedisCommandEnhanceInfo.takeSpan(objInst);
-        if (span != null) {
-            span.errorOccurred();
-            span.tag(new StringTag(CANCEL_SIGNAL_TAG), COMMAND_CANCEL_VALUE);
-            span.asyncFinish();
+        RedisWriteSpan writeSpan = RedisCommandEnhanceInfo.takeWriteSpan(objInst);
+        if (writeSpan != null) {
+            writeSpan.cancelled();
+            writeSpan.finishCommand();
             objInst.setSkyWalkingDynamicField(null);
         }
         return ret;
@@ -48,9 +43,9 @@ public class RedisCommandCancelMethodInterceptor implements InstanceMethodsAroun
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-        AbstractSpan span = RedisCommandEnhanceInfo.getSpan(objInst);
-        if (span != null) {
-            span.log(t);
+        RedisWriteSpan writeSpan = RedisCommandEnhanceInfo.getWriteSpan(objInst);
+        if (writeSpan != null) {
+            writeSpan.log(t);
         }
     }
 }

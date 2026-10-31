@@ -13,6 +13,10 @@ Release Notes.
   `Lettuce/BATCH_WRITE` span. Stop the Lettuce plugin from starting a trace of its own for every reactive command
   created without an active trace, and from creating a span that is never finished for a command that is already
   cancelled or timed out when it is written.
+* Share the `Lettuce/BATCH_WRITE` span among all commands of a batch: it ends when the last of them completes, and is an
+  error when any of them fails. A batch of a cluster connection gets one span per slot, as Lettuce writes the commands
+  of each slot as a batch of their own. Mark the span of a reactive Lettuce command as an error when Redis replies with
+  an error, such as `WRONGTYPE`.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/267?closed=1)
 

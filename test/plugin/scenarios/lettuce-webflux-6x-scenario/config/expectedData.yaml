@@ -15,7 +15,9 @@
 # limitations under the License.
 segmentItems:
   - serviceName: lettuce-webflux-6x-scenario
-    segmentSize: nq 0
+    # The health check, the entry, and one segment per Redis command. Creating a reactive command must not
+    # start a trace of its own.
+    segmentSize: 5
     segments:
       - segmentId: not null
         spans:

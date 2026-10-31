@@ -189,6 +189,20 @@ segmentItems:
             spanId: 7
             isError: false
             spanType: Local
+          - operationName: Lettuce/BATCH_WRITE
+            parentSpanId: 0
+            spanId: 9
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.cmd, value: BATCH_WRITE }
           - operationName: GET:/lettuce-scenario/case/lettuce-case
             parentSpanId: -1
             spanId: 0

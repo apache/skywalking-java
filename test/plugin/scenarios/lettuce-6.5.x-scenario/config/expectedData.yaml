@@ -203,6 +203,61 @@ segmentItems:
             tags:
               - { key: cache.type, value: Redis }
               - { key: cache.cmd, value: BATCH_WRITE }
+          - operationName: Lettuce/BATCH_WRITE
+            parentSpanId: 0
+            spanId: 10
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: true
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.cmd, value: BATCH_WRITE }
+            logs:
+              - logEvent:
+                  - { key: event, value: error }
+                  - { key: error.kind, value: io.lettuce.core.RedisCommandExecutionException }
+                  - { key: message, value: not null }
+                  - { key: stack, value: not null }
+          - operationName: Lettuce/Reactive/createMono
+            parentSpanId: 0
+            spanId: 11
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: false
+            spanType: Local
+            skipAnalysis: false
+          - operationName: Lettuce/INCR
+            parentSpanId: 12
+            spanId: 13
+            spanLayer: Cache
+            startTime: not null
+            endTime: not null
+            componentId: 57
+            isError: true
+            spanType: Exit
+            peer: not null
+            skipAnalysis: false
+            tags:
+              - { key: cache.type, value: Redis }
+              - { key: cache.key, value: key2 }
+              - { key: cache.cmd, value: INCR }
+              - { key: cache.op, value: write }
+            logs:
+              - logEvent:
+                  - { key: event, value: error }
+                  - { key: message, value: not null }
+          - operationName: RedisReactive/local
+            parentSpanId: 0
+            spanId: 12
+            isError: false
+            spanType: Local
           - operationName: GET:/lettuce-6.5.x-scenario/case/lettuce-case
             parentSpanId: -1
             spanId: 0

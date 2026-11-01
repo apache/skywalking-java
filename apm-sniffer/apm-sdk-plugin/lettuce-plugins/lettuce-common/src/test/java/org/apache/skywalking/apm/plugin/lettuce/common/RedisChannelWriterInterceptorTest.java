@@ -23,10 +23,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.conf.Config;
+import org.apache.skywalking.apm.agent.core.context.status.StatusCheckService;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
+import org.apache.skywalking.apm.agent.core.context.trace.LogDataEntity;
 import org.apache.skywalking.apm.agent.core.context.trace.SpanLayer;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.context.util.TagValuePair;
@@ -46,7 +50,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import io.lettuce.core.codec.ByteArrayCodec;
+import io.lettuce.core.codec.StringCodec;
 import io.lettuce.core.output.CommandOutput;
+import io.lettuce.core.output.StatusOutput;
+import io.lettuce.core.protocol.AsyncCommand;
 import io.lettuce.core.protocol.Command;
 import io.lettuce.core.protocol.CommandArgs;
 import io.lettuce.core.protocol.CommandType;
@@ -109,6 +116,9 @@ public class RedisChannelWriterInterceptorTest {
         public void setSkyWalkingDynamicField(Object value) {
             this.object = value;
         }
+    }
+
+    private static class IgnoredException extends RuntimeException {
     }
 
     private static class CancelledWhileSpanIsCreatedCommand<K, V, T> extends MockRedisCommand<K, V, T> {
@@ -195,36 +205,126 @@ public class RedisChannelWriterInterceptorTest {
     }
 
     @Test
-    public void testGetSpanCarrierCommand() throws Exception {
-        Command<?, ?, ?> command = new Command<>(CommandType.SET, null, null);
-        Method getSpanCarrierCommandMethod = interceptor.getClass()
-            .getDeclaredMethod("getSpanCarrierCommand", Object.class);
-        getSpanCarrierCommandMethod.setAccessible(true);
+    public void testBatchSpanIsFinishedByItsLastUnfinishedCommand() {
+        MockRedisCommand<?, ?, ?> first = new MockRedisCommand<>(CommandType.SET, null);
+        MockRedisCommand<?, ?, ?> last = new MockRedisCommand<>(CommandType.SET, null);
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{Arrays.asList(first, last)}, null, null);
 
-        RedisCommand<?, ?, ?> redisCommand =
-            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, command);
-        assertEquals(command, redisCommand);
-        List<RedisCommand<?, ?, ?>> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(new Command<>(CommandType.SET, null, null));
+        // The last command is cancelled while the first one still waits for its reply.
+        last.cancel();
+        new RedisCommandCancelMethodInterceptor().afterMethod(last, null, null, null, null);
+        assertThat(segmentStorage.getTraceSegments().size(), is(0));
+
+        redisCommandCompleteMethodInterceptor.afterMethod(first, null, null, null, null);
+        AbstractTracingSpan span = getBatchSpan();
+        assertThat(SpanHelper.getErrorOccurred(span), is(true));
+        assertThat(SpanHelper.getPeer(span), is(PEER));
+    }
+
+    @Test
+    public void testErrorReplyOfEarlierCommandFailsBatchSpan() {
+        MockRedisCommand<String, String, String> errorReply = new MockRedisCommand<>(CommandType.INCR, new StatusOutput<>(StringCodec.UTF8));
+        MockRedisCommand<?, ?, ?> last = new MockRedisCommand<>(CommandType.SET, null);
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{Arrays.asList(errorReply, last)}, null, null);
+
+        // A reactive command is completed without an exception on an error reply.
+        errorReply.getOutput().setError("ERR value is not an integer or out of range");
+        redisCommandCompleteMethodInterceptor.afterMethod(errorReply, null, null, null, null);
+        assertThat(segmentStorage.getTraceSegments().size(), is(0));
+        redisCommandCompleteMethodInterceptor.afterMethod(last, null, null, null, null);
+
+        AbstractTracingSpan span = getBatchSpan();
+        assertThat(SpanHelper.getErrorOccurred(span), is(true));
+        List<LogDataEntity> logs = SpanHelper.getLogs(span);
+        assertThat(logs.size(), is(1));
+        assertThat(logs.get(0).getLogs().get(0).getValue(), is("error"));
+        assertThat(logs.get(0).getLogs().get(1).getValue(), is("ERR value is not an integer or out of range"));
+    }
+
+    @Test
+    public void testFailuresOfBatchCommandsAreLoggedOnce() {
+        MockRedisCommand<?, ?, ?> first = new MockRedisCommand<>(CommandType.SET, null);
+        MockRedisCommand<?, ?, ?> last = new MockRedisCommand<>(CommandType.SET, null);
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{Arrays.asList(first, last)}, null, null);
+
+        // The connection is closed while both commands wait for their replies.
+        new RedisCommandCompleteExceptionallyMethodInterceptor().afterMethod(
+            first, null, new Object[]{new IllegalStateException("closed")}, null, null);
+        new RedisCommandCompleteExceptionallyMethodInterceptor().afterMethod(
+            last, null, new Object[]{new IllegalStateException("closed")}, null, null);
+
+        AbstractTracingSpan span = getBatchSpan();
+        assertThat(SpanHelper.getErrorOccurred(span), is(true));
+        assertThat(SpanHelper.getLogs(span).size(), is(1));
+    }
+
+    @Test
+    public void testIgnoredFirstExceptionDoesNotHideLaterFailure() throws Throwable {
+        StatusCheckService statusCheckService = ServiceManager.INSTANCE.findService(StatusCheckService.class);
+        Config.StatusCheck.IGNORED_EXCEPTIONS = IgnoredException.class.getName();
+        statusCheckService.prepare();
+        try {
+            MockRedisCommand<?, ?, ?> first = new MockRedisCommand<>(CommandType.SET, null);
+            MockRedisCommand<?, ?, ?> last = new MockRedisCommand<>(CommandType.SET, null);
+            interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{Arrays.asList(first, last)}, null, null);
+
+            new RedisCommandCompleteExceptionallyMethodInterceptor().afterMethod(
+                first, null, new Object[]{new IgnoredException()}, null, null);
+            new RedisCommandCompleteExceptionallyMethodInterceptor().afterMethod(
+                last, null, new Object[]{new IllegalStateException("failed")}, null, null);
+
+            AbstractTracingSpan span = getBatchSpan();
+            assertThat(SpanHelper.getErrorOccurred(span), is(true));
+            assertThat(SpanHelper.getLogs(span).size(), is(1));
+        } finally {
+            Config.StatusCheck.IGNORED_EXCEPTIONS = "";
+            statusCheckService.prepare();
         }
-        list.add(command);
-        RedisCommand<?, ?, ?> last =
-            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, list);
-        assertEquals(command, last);
-        Command<?, ?, ?> cancelled = new Command<>(CommandType.SET, null, null);
-        cancelled.cancel();
-        list.add(cancelled);
-        RedisCommand<?, ?, ?> lastNotDone =
-            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, list);
-        assertEquals(command, lastNotDone);
-        list.remove(cancelled);
-        RedisCommand<?, ?, ?> nullValue1 =
-            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, (Object) null);
-        assertNull(nullValue1);
-        list.add(null);
-        RedisCommand<?, ?, ?> nullValue2 =
-            (RedisCommand<?, ?, ?>) getSpanCarrierCommandMethod.invoke(interceptor, list);
-        assertNull(nullValue2);
+    }
+
+    @Test
+    public void testCommandCancelledWhileBatchIsTracedLeavesOneSpan() {
+        MockRedisCommand<?, ?, ?> first = new MockRedisCommand<>(CommandType.SET, null);
+        CancelledWhileSpanIsCreatedCommand<?, ?, ?> last = new CancelledWhileSpanIsCreatedCommand<>(CommandType.SET, null);
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{Arrays.asList(first, last)}, null, null);
+
+        assertNull(last.getSkyWalkingDynamicField());
+        assertThat(segmentStorage.getTraceSegments().size(), is(0));
+        redisCommandCompleteMethodInterceptor.afterMethod(first, null, null, null, null);
+        assertThat(SpanHelper.getErrorOccurred(getBatchSpan()), is(true));
+    }
+
+    @Test
+    public void testDelegateWriterKeepsSpanOfTracedBatch() {
+        MockInstance outerWriter = new MockInstance();
+        MockRedisCommand<?, ?, ?> first = new MockRedisCommand<>(CommandType.SET, null);
+        MockRedisCommand<?, ?, ?> last = new MockRedisCommand<>(CommandType.SET, null);
+        List<RedisCommand<?, ?, ?>> batch = Arrays.asList(first, last);
+        interceptor.beforeMethod(outerWriter, null, new Object[]{batch}, null, null);
+
+        // The last command is cancelled before the outer writer delegates the write.
+        last.cancel();
+        new RedisCommandCancelMethodInterceptor().afterMethod(last, null, null, null, null);
+        interceptor.beforeMethod(mockRedisChannelWriterInstance, null, new Object[]{batch}, null, null);
+
+        redisCommandCompleteMethodInterceptor.afterMethod(first, null, null, null, null);
+        assertThat(SpanHelper.getPeer(getBatchSpan()), is(PEER));
+    }
+
+    @Test
+    public void testGetSpanCarrierCommand() {
+        Command<?, ?, ?> command = new Command<>(CommandType.SET, null, null);
+        assertEquals(command, RedisChannelWriterInterceptor.getSpanCarrierCommand(command));
+        assertEquals(command, RedisChannelWriterInterceptor.getSpanCarrierCommand(new AsyncCommand<>(command)));
+        assertNull(RedisChannelWriterInterceptor.getSpanCarrierCommand(null));
+        assertNull(RedisChannelWriterInterceptor.getSpanCarrierCommand(Collections.singletonList(command)));
+    }
+
+    private AbstractTracingSpan getBatchSpan() {
+        assertThat(segmentStorage.getTraceSegments().size(), is(1));
+        List<AbstractTracingSpan> spans = SegmentHelper.getSpans(segmentStorage.getTraceSegments().get(0));
+        assertThat(spans.size(), is(1));
+        assertThat(spans.get(0).getOperationName(), is("Lettuce/BATCH_WRITE"));
+        return spans.get(0);
     }
 }

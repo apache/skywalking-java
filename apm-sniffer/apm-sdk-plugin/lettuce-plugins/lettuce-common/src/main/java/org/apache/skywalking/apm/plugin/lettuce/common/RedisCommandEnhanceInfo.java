@@ -20,16 +20,15 @@ package org.apache.skywalking.apm.plugin.lettuce.common;
 
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.skywalking.apm.agent.core.context.ContextSnapshot;
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 
 /**
  * RedisCommandEnhanceInfo holds SkyWalking tracing data for Lettuce commands
  * executed in different asynchronous models.
  *
- * <p>The {@link AbstractSpan} is used for non-reactive (blocking) commands
- * that are executed asynchronously, where the span needs to be created
- * at command submission time and finished when the command completes.</p>
+ * <p>The {@link RedisWriteSpan} is the exit span of the write that sent the
+ * command, which is created when the command is written and finished when
+ * the command, and every other command of the same write, completes.</p>
  *
  * <p>The {@link ContextSnapshot} is used for reactive commands, where the
  * tracing context is captured from Reactor {@code Context} and later
@@ -37,39 +36,39 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
  * boundaries.</p>
  */
 class RedisCommandEnhanceInfo {
-    
-    private final AtomicReference<AbstractSpan> span = new AtomicReference<>();
+
+    private final AtomicReference<RedisWriteSpan> writeSpan = new AtomicReference<>();
     private ContextSnapshot snapshot;
 
-    public AbstractSpan getSpan() {
-        return span.get();
+    public RedisWriteSpan getWriteSpan() {
+        return writeSpan.get();
     }
 
     /**
-     * @return the span of the command, or null if the command has no span. A reactive command only carries the
+     * @return the write span of the command, or null if the command has no span. A reactive command only carries the
      * snapshot until it is written, so a command cancelled before that has no span to finish.
      */
-    static AbstractSpan getSpan(EnhancedInstance command) {
+    static RedisWriteSpan getWriteSpan(EnhancedInstance command) {
         RedisCommandEnhanceInfo enhanceInfo = (RedisCommandEnhanceInfo) command.getSkyWalkingDynamicField();
-        return enhanceInfo == null ? null : enhanceInfo.getSpan();
+        return enhanceInfo == null ? null : enhanceInfo.getWriteSpan();
     }
 
     /**
-     * @return the span of the command, which the caller must finish, or null if the command has no span or another
-     * caller has taken it. A command can be cancelled while its write is traced, so more than one caller may try to
-     * finish the span, and only the first one gets it.
+     * @return the write span of the command, whose share of this command the caller must finish, or null if the
+     * command has no span or another caller has taken it. A command can be cancelled while its write is traced, so more
+     * than one caller may try to finish its share, and only the first one gets it.
      */
-    static AbstractSpan takeSpan(EnhancedInstance command) {
+    static RedisWriteSpan takeWriteSpan(EnhancedInstance command) {
         RedisCommandEnhanceInfo enhanceInfo = (RedisCommandEnhanceInfo) command.getSkyWalkingDynamicField();
-        return enhanceInfo == null ? null : enhanceInfo.takeSpan();
+        return enhanceInfo == null ? null : enhanceInfo.takeWriteSpan();
     }
 
-    AbstractSpan takeSpan() {
-        return span.getAndSet(null);
+    RedisWriteSpan takeWriteSpan() {
+        return writeSpan.getAndSet(null);
     }
 
-    public RedisCommandEnhanceInfo setSpan(AbstractSpan span) {
-        this.span.set(span);
+    public RedisCommandEnhanceInfo setWriteSpan(RedisWriteSpan writeSpan) {
+        this.writeSpan.set(writeSpan);
         return this;
     }
 

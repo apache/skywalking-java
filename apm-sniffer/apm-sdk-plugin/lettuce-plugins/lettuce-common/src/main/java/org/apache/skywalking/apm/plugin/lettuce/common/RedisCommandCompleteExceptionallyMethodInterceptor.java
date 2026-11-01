@@ -18,7 +18,6 @@
 
 package org.apache.skywalking.apm.plugin.lettuce.common;
 
-import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedInstance;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceMethodsAroundInterceptor;
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.MethodInterceptResult;
@@ -33,11 +32,11 @@ public class RedisCommandCompleteExceptionallyMethodInterceptor implements Insta
 
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Object ret) {
-        AbstractSpan span = RedisCommandEnhanceInfo.takeSpan(objInst);
-        if (span != null) {
+        RedisWriteSpan writeSpan = RedisCommandEnhanceInfo.takeWriteSpan(objInst);
+        if (writeSpan != null) {
             Throwable t = (Throwable) allArguments[0];
-            span.log(t);
-            span.asyncFinish();
+            writeSpan.log(t);
+            writeSpan.finishCommand();
             objInst.setSkyWalkingDynamicField(null);
         }
         return ret;
@@ -45,9 +44,9 @@ public class RedisCommandCompleteExceptionallyMethodInterceptor implements Insta
 
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes, Throwable t) {
-        AbstractSpan span = RedisCommandEnhanceInfo.getSpan(objInst);
-        if (span != null) {
-            span.log(t);
+        RedisWriteSpan writeSpan = RedisCommandEnhanceInfo.getWriteSpan(objInst);
+        if (writeSpan != null) {
+            writeSpan.log(t);
         }
     }
 }

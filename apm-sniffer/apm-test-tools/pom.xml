@@ -32,7 +32,7 @@
     <url>http://maven.apache.org</url>
 
     <properties>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.2</junit.version>
     </properties>
     <dependencies>
         <dependency>

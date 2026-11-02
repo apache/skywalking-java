@@ -27,6 +27,9 @@ Release Notes.
   message to add its headers, and now adds them to the copy of the message that the client sends.
 * Test the `rocketMQ-5.x` plugin with rocketmq-client 5.5, and the `rocketMQ-client-java-5.x` plugin with
   rocketmq-client-java 5.0, 5.1 and 5.2.
+* Bump the netty shaded into the agent from `4.1.124.Final` to `4.1.139.Final` (with netty-tcnative-boringssl-static
+  `2.0.70.Final` → `2.0.84.Final`, the version netty `4.1.139.Final` is built with) to clear the netty-codec,
+  netty-codec-http, netty-codec-http2, netty-handler and netty-handler-proxy CVEs.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/267?closed=1)
 

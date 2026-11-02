@@ -44,21 +44,21 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v7
       with:
         submodules: true
 
-    - uses: actions/setup-java@v2
+    - uses: actions/setup-java@v6
       with:
         distribution: temurin
         java-version: 17
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
 
     - run: ./mvnw -q -Dmaven.test.skip=true clean install || ./mvnw -q -Dmaven.test.skip=true clean install
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@v4

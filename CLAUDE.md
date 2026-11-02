@@ -168,7 +168,7 @@ Use Lombok annotations for boilerplate code:
 ## Testing
 
 ### Test Frameworks
-- JUnit 4.12 for unit tests
+- JUnit 4.13.2 for unit tests
 - Mockito 5.0.0 for mocking
 
 ### Test Categories

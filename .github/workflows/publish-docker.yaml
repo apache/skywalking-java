@@ -64,19 +64,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           submodules: true
 
       # Development images are compiled from the branch.
       - name: Cache local Maven repository
         if: env.RELEASE_TAG == ''
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-publish-docker-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-publish-docker-
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v6
         if: env.RELEASE_TAG == ''
         with:
           distribution: temurin
@@ -113,7 +113,7 @@ jobs:
           # The Makefile passes this directory to the Dockerfile as ARG DIST.
           test -d skywalking-agent
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         name: Upload Agent
         with:
           name: skywalking-agent
@@ -135,7 +135,7 @@ jobs:
         # images keep the existing JRE-only set.
         base: ${{ github.event.inputs.version && fromJSON('["alpine","java8","java11","java17","java21","java25"]') || fromJSON('["java8","java11","java17","java21","java25"]') }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           submodules: true
       # The workflow file necessarily comes from the default branch on a
@@ -152,7 +152,7 @@ jobs:
           git checkout "refs/tags/v${VERSION}"
           git submodule update --init --depth 1
           git --no-pager log -1 --format='building from %h %d'
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: skywalking-agent
           path: skywalking-agent
@@ -200,7 +200,7 @@ jobs:
           docker info
           echo "DOCKER_API_VERSION=$(docker version --format '{{.Server.APIVersion}}')" >> "$GITHUB_ENV"
       - name: Log in to the Container registry
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:
           registry: ${{ env.DOCKER_REGISTRY }}
           username: ${{ env.DOCKER_USERNAME }}

@@ -31,7 +31,7 @@ runs:
   using: "composite"
   steps:
     - name: Check License
-      uses: apache/skywalking-eyes@a63f4afcc287dfb3727ecc45a4afc55a5e69c15f
+      uses: apache/skywalking-eyes@a196742f472feaffafea537ce5a2a4c3c53a8de4 # v0.9.0
     - name: Add checkstyle-plugin
       shell: bash
       run: |
@@ -39,12 +39,12 @@ runs:
         sed -i "/<\/sourceDirectories>/i <sourceDirectory>scenarios\/""${{ inputs.test_case }}""<\/sourceDirectory>" test/plugin/pom.xml
         echo "::endgroup::"
     - name: Cache local Maven repository
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-agent-test-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-maven-agent-test-
-    - uses: actions/setup-java@v2
+    - uses: actions/setup-java@v6
       with:
         distribution: temurin
         java-version: 17
@@ -56,12 +56,12 @@ runs:
         ./mvnw -q --batch-mode clean package -Dmaven.test.skip || \
         ./mvnw -q --batch-mode clean package -Dmaven.test.skip
         echo "::endgroup::"
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       name: Upload Agent
       with:
         name: skywalking-agent
         path: skywalking-agent
-    - uses: actions/setup-java@v2
+    - uses: actions/setup-java@v6
       with:
         distribution: temurin
         java-version: 8
@@ -90,7 +90,7 @@ runs:
         docker save -o test-containers/skywalking-agent-test-tomcat-1.0.0.tgz skywalking/agent-test-tomcat:1.0.0
         ls -la test-containers/
         echo "::endgroup::"
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       name: Upload Test Containers
       with:
         name: test-tools

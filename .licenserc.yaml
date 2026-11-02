@@ -33,6 +33,7 @@ header:
     - 'docker/.env'
     - 'dist'
     - 'licenses'
+    - 'dist-material/licenses'
     - 'dist-material/release-docs'
     - '**/*.md'
     - '**/*.json'

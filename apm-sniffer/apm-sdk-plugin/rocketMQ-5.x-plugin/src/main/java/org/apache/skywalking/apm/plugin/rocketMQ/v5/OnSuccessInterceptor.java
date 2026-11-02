@@ -34,6 +34,11 @@ import org.apache.skywalking.apm.plugin.rocketMQ.v5.define.SendCallBackEnhanceIn
 /**
  * {@link OnSuccessInterceptor} create local span when the method {@link org.apache.rocketmq.client.producer.SendCallback#onSuccess(SendResult)}
  * execute.
+ * <p>
+ * {@link MessageSendInterceptor} attaches the {@link SendCallBackEnhanceInfo} to the callback passed to {@link
+ * org.apache.rocketmq.client.impl.MQClientAPIImpl}. A callback invoked by that callback, such as the user callback that
+ * {@code DefaultMQProducerImpl$BackpressureSendCallBack} wraps since rocketmq-client 5.1.4, usually has none. It runs
+ * inside the span of the outer callback, so all three methods skip it, which keeps the span stack balanced.
  */
 public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
 
@@ -43,6 +48,9 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
     public void beforeMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         MethodInterceptResult result) throws Throwable {
         SendCallBackEnhanceInfo enhanceInfo = (SendCallBackEnhanceInfo) objInst.getSkyWalkingDynamicField();
+        if (enhanceInfo == null) {
+            return;
+        }
         AbstractSpan activeSpan = ContextManager.createLocalSpan(CALLBACK_OPERATION_NAME_PREFIX + enhanceInfo.getTopicId() + "/Producer/Callback");
         activeSpan.setComponent(ComponentsDefine.ROCKET_MQ_PRODUCER);
         SendStatus sendStatus = ((SendResult) allArguments[0]).getSendStatus();
@@ -56,6 +64,9 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public Object afterMethod(EnhancedInstance objInst, Method method, Object[] allArguments, Class<?>[] argumentsTypes,
         Object ret) throws Throwable {
+        if (objInst.getSkyWalkingDynamicField() == null) {
+            return ret;
+        }
         ContextManager.stopSpan();
         return ret;
     }
@@ -63,6 +74,9 @@ public class OnSuccessInterceptor implements InstanceMethodsAroundInterceptor {
     @Override
     public void handleMethodException(EnhancedInstance objInst, Method method, Object[] allArguments,
         Class<?>[] argumentsTypes, Throwable t) {
+        if (objInst.getSkyWalkingDynamicField() == null) {
+            return;
+        }
         ContextManager.activeSpan().log(t);
     }
 }

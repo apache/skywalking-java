@@ -16,4 +16,8 @@
 
 # lists your version here (Contains only the last version number of each minor version.)
 
-5.4.0
+# The first column is the version of the apache/rocketmq broker image, rocketmq.client.version is the version of
+# rocketmq-client-java under test.
+5.3.3,rocketmq.client.version=5.0.8
+5.3.4,rocketmq.client.version=5.1.0
+5.4.0,rocketmq.client.version=5.2.2

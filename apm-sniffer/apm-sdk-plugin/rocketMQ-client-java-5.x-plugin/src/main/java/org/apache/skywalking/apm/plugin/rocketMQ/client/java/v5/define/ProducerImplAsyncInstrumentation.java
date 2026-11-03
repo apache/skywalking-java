@@ -60,7 +60,7 @@ public class ProducerImplAsyncInstrumentation extends ClassInstanceMethodsEnhanc
 
                     @Override
                     public boolean isOverrideArgs() {
-                        return true;
+                        return false;
                     }
                 }
         };

@@ -24,10 +24,9 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.EnhancedI
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.InstanceConstructorInterceptor;
 import org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5.define.ConsumerEnhanceInfos;
 
-import java.util.Map;
-
 /**
- * {@link PushConsumerImplInterceptor} create exit span when the method {@link org.apache.rocketmq.client.java.impl.consumer.PushConsumerImpl#PushConsumerImpl(ClientConfiguration, String, Map, MessageListener, int, int, int)} execute.
+ * {@link PushConsumerImplInterceptor} passes the endpoints of the {@link ClientConfiguration} to the {@link
+ * MessageListener} when a {@link org.apache.rocketmq.client.java.impl.consumer.PushConsumerImpl} is constructed.
  */
 public class PushConsumerImplInterceptor implements InstanceConstructorInterceptor {
 

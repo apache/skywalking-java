@@ -20,3 +20,5 @@ rocketMQ-client-java-5.x=org.apache.skywalking.apm.plugin.rocketMQ.client.java.v
 rocketMQ-client-java-5.x=org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5.define.SimpleConsumerImplInstrumentation
 rocketMQ-client-java-5.x=org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5.define.ProducerImplAsyncInstrumentation
 rocketMQ-client-java-5.x=org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5.define.SimpleConsumerImplAsyncInstrumentation
+rocketMQ-client-java-5.x=org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5.define.PublishingMessageImplInstrumentation
+rocketMQ-client-java-5.x=org.apache.skywalking.apm.plugin.rocketMQ.client.java.v5.define.MessageImplInstrumentation

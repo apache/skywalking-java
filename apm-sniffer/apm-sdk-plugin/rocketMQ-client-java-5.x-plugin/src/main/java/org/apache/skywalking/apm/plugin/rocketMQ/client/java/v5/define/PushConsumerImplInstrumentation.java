@@ -25,7 +25,8 @@ import org.apache.skywalking.apm.agent.core.plugin.interceptor.InstanceMethodsIn
 import org.apache.skywalking.apm.agent.core.plugin.interceptor.enhance.ClassInstanceMethodsEnhancePluginDefine;
 import org.apache.skywalking.apm.agent.core.plugin.match.ClassMatch;
 
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 import static org.apache.skywalking.apm.agent.core.plugin.match.NameMatch.byName;
 
 public class PushConsumerImplInstrumentation extends ClassInstanceMethodsEnhancePluginDefine {
@@ -43,7 +44,11 @@ public class PushConsumerImplInstrumentation extends ClassInstanceMethodsEnhance
                 new ConstructorInterceptPoint() {
                     @Override
                     public ElementMatcher<MethodDescription> getConstructorMatcher() {
-                        return takesArguments(7);
+                        // The builder calls the 7-argument constructor up to 5.0.7, the 8-argument one in 5.0.8, and
+                        // the 9-argument one since 5.1.0. The shorter ones delegate to the longest one, so a direct
+                        // call of a shorter one is intercepted twice and sets the same info twice.
+                        return takesArgument(0, named("org.apache.rocketmq.client.apis.ClientConfiguration"))
+                            .and(takesArgument(3, named("org.apache.rocketmq.client.apis.consumer.MessageListener")));
                     }
 
                     @Override

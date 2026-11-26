@@ -33,6 +33,10 @@ Release Notes.
 * Bump the netty shaded into the agent from `4.1.124.Final` to `4.1.139.Final` (with netty-tcnative-boringssl-static
   `2.0.70.Final` → `2.0.84.Final`, the version netty `4.1.139.Final` is built with) to clear the netty-codec,
   netty-codec-http, netty-codec-http2, netty-handler and netty-handler-proxy CVEs.
+* Pack the source and binary release archives with GNU tar on Linux. The 9.8.0 archives were packed on macOS and
+  carry macOS extended attributes, which made GNU tar print
+  `Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'` for every entry
+  (apache/skywalking#14271).
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/267?closed=1)
 

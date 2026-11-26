@@ -55,7 +55,7 @@ Run `./tools/releasing/release.sh` without arguments to see all available comman
 
 ### Pre-flight checks
 Before starting, the script verifies:
-- Required tools are installed (git, gpg, svn, shasum, mvn, java, tar, gh)
+- Required tools are installed (git, gpg, svn, shasum, mvn, java, tar, gh, docker), and the Docker daemon is running
 - GPG signing works **without password prompt** (critical for maven release)
 - Maven settings contain Apache server credentials
 - Git working tree is clean
@@ -76,8 +76,11 @@ Then run `gpgconf --kill gpg-agent` and `gpg --sign /dev/null` to cache it.
 4. **upload** — upload to Apache SVN `dist/dev` (prompts for SVN credentials)
 5. **email vote** — print vote email template with pre-filled version, commit ID, submodule commit, and checksums
 
-Source and binary packaging uses `COPYFILE_DISABLE=1` to prevent macOS `tar` from
-generating AppleDouble metadata, and excludes existing `._*` and `.DS_Store` files.
+**stage** packs the source and binary tarballs with GNU tar in a Linux container, not with the
+host's `tar`, so a release made on macOS carries no macOS metadata (extended-attribute headers or
+AppleDouble `._*` entries). It then unpacks each tarball with GNU tar in the same image, and
+stops before signing if tar prints any warning or finds a `._*` entry. The Maven build and the
+signing run on your machine.
 
 Before the long build starts, **prepare** asks for the GitHub milestone ID of the next
 development version, which it writes into the reset `CHANGES.md`. Look up the

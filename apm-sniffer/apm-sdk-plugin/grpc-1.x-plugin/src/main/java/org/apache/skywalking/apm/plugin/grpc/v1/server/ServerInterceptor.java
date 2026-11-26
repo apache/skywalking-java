@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.grpc.v1.server;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.grpc.Context;
 import io.grpc.Contexts;
 import io.grpc.Metadata;
@@ -55,16 +57,19 @@ public class ServerInterceptor implements io.grpc.ServerInterceptor {
         span.setLayer(SpanLayer.RPC_FRAMEWORK);
         ContextSnapshot contextSnapshot = ContextManager.capture();
         AbstractSpan asyncSpan = span.prepareForAsync();
+        // onCancel and close can both finish this entry span. Only the first one should call asyncFinish.
+        final AtomicBoolean entrySpanFinished = new AtomicBoolean();
 
         ServerCall.Listener<REQUEST> listener = Contexts.interceptCall(
             Context.current(),
-                new TracingServerCall<>(call, contextSnapshot, asyncSpan),
+                new TracingServerCall<>(call, contextSnapshot, asyncSpan, entrySpanFinished),
                 headers,
                 (serverCall, metadata) -> new TracingServerCallListener<>(
                         handler.startCall(serverCall, metadata),
                         serverCall.getMethodDescriptor(),
                         contextSnapshot,
-                        asyncSpan
+                        asyncSpan,
+                        entrySpanFinished
                 )
         );
         ContextManager.stopSpan(asyncSpan);

@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.grpc.v1.server;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.grpc.ForwardingServerCall;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
@@ -39,14 +41,27 @@ public class TracingServerCall<REQUEST, RESPONSE> extends ForwardingServerCall.S
     private final String operationPrefix;
     private final ContextSnapshot contextSnapshot;
     private final AbstractSpan parentEntrySpan;
+    private final AtomicBoolean entrySpanFinished;
 
     protected TracingServerCall(ServerCall<REQUEST, RESPONSE> delegate,
                                 final ContextSnapshot contextSnapshot,
-                                final AbstractSpan parentEntrySpan) {
+                                final AbstractSpan parentEntrySpan,
+                                final AtomicBoolean entrySpanFinished) {
         super(delegate);
         this.operationPrefix = OperationNameFormatUtil.formatOperationName(delegate.getMethodDescriptor()) + SERVER;
         this.contextSnapshot = contextSnapshot;
         this.parentEntrySpan = parentEntrySpan;
+        this.entrySpanFinished = entrySpanFinished;
+    }
+
+    /**
+     * {@code onCancel} and {@code close} can both finish the async entry span. The second
+     * {@link AbstractSpan#asyncFinish()} throws and, in {@code close}, used to skip {@code stopSpan}.
+     */
+    static void finishParentEntrySpan(AbstractSpan parentEntrySpan, AtomicBoolean entrySpanFinished) {
+        if (entrySpanFinished.compareAndSet(false, true)) {
+            parentEntrySpan.asyncFinish();
+        }
     }
 
     @Override
@@ -102,9 +117,9 @@ public class TracingServerCall<REQUEST, RESPONSE> extends ForwardingServerCall.S
                 break;
         }
         Tags.RPC_RESPONSE_STATUS_CODE.set(span, status.getCode().name());
-        parentEntrySpan.asyncFinish();
 
         try {
+            finishParentEntrySpan(parentEntrySpan, entrySpanFinished);
             super.close(status, trailers);
         } catch (Throwable t) {
             ContextManager.activeSpan().log(t);

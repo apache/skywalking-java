@@ -5,6 +5,9 @@ Release Notes.
 9.9.0
 ------------------
 
+* Fix the gRPC server plugin leaking the trace context on an executor thread when `close` runs after
+  `onCancel`. Both paths async-finish the same entry span, and the second `asyncFinish` threw before
+  `stopSpan` (apache/skywalking#14268).
 * Fix the `NullPointerException` thrown by the `postgresql-8.x` plugin when executing statements prepared with
   `Statement.RETURN_GENERATED_KEYS` or column names (apache/skywalking#14138).
 * Fix the `NullPointerException` thrown by the Lettuce plugin and the lost trace context of reactive commands when

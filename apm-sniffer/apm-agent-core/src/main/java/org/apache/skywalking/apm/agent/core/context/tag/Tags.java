@@ -236,9 +236,10 @@ public final class Tags {
     public static final StringTag GEN_AI_RESPONSE_FINISH_REASONS = new StringTag(39, "gen_ai.response.finish_reasons");
 
     /**
-     * GEN_AI_STREAM_TTFR represents the time to first response (TTFR) for streaming operations.
+     * GEN_AI_RESPONSE_TIME_TO_FIRST_CHUNK represents the time from the start of the call to the first chunk of a
+     * streaming response, in seconds.
      */
-    public static final StringTag GEN_AI_SERVER_TIME_TO_FIRST_TOKEN = new StringTag(40, "gen_ai.server.time_to_first_token");
+    public static final StringTag GEN_AI_RESPONSE_TIME_TO_FIRST_CHUNK = new StringTag(40, "gen_ai.response.time_to_first_chunk");
 
     /**
      * GEN_AI_INPUT_MESSAGES represents the chat history provided to the model as an input.

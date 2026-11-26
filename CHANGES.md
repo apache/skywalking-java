@@ -30,6 +30,11 @@ Release Notes.
 * Bump the netty shaded into the agent from `4.1.124.Final` to `4.1.139.Final` (with netty-tcnative-boringssl-static
   `2.0.70.Final` → `2.0.84.Final`, the version netty `4.1.139.Final` is built with) to clear the netty-codec,
   netty-codec-http, netty-codec-http2, netty-handler and netty-handler-proxy CVEs.
+* Report the time to first token of a streaming call of the `spring-ai-1.x` plugin in the
+  `gen_ai.response.time_to_first_chunk` tag, in seconds, the span attribute the OpenTelemetry GenAI semantic conventions
+  define for it, instead of in `gen_ai.server.time_to_first_token`, in milliseconds, a name the conventions give to a
+  metric. `Tags.GEN_AI_SERVER_TIME_TO_FIRST_TOKEN` is renamed to `Tags.GEN_AI_RESPONSE_TIME_TO_FIRST_CHUNK`. An OAP that
+  reads only the previous tag shows no time to first token for the calls this agent traces.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/267?closed=1)
 

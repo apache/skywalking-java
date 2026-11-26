@@ -18,6 +18,8 @@
 
 package org.apache.skywalking.apm.plugin.grpc.v1.server;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.grpc.ForwardingServerCallListener;
 import io.grpc.MethodDescriptor;
 import io.grpc.ServerCall;
@@ -37,15 +39,18 @@ public class TracingServerCallListener<REQUEST> extends ForwardingServerCallList
     private final String operationPrefix;
     private final ContextSnapshot contextSnapshot;
     private final AbstractSpan parentEntrySpan;
+    private final AtomicBoolean entrySpanFinished;
 
     protected TracingServerCallListener(ServerCall.Listener<REQUEST> delegate, MethodDescriptor<REQUEST, ?> descriptor,
                                         final ContextSnapshot contextSnapshot,
-                                        final AbstractSpan parentEntrySpan) {
+                                        final AbstractSpan parentEntrySpan,
+                                        final AtomicBoolean entrySpanFinished) {
         super(delegate);
         this.methodType = descriptor.getType();
         this.operationPrefix = OperationNameFormatUtil.formatOperationName(descriptor) + SERVER;
         this.contextSnapshot = contextSnapshot;
         this.parentEntrySpan = parentEntrySpan;
+        this.entrySpanFinished = entrySpanFinished;
     }
 
     @Override
@@ -82,7 +87,7 @@ public class TracingServerCallListener<REQUEST> extends ForwardingServerCallList
             throw t;
         } finally {
             ContextManager.stopSpan();
-            parentEntrySpan.asyncFinish();
+            TracingServerCall.finishParentEntrySpan(parentEntrySpan, entrySpanFinished);
         }
     }
 

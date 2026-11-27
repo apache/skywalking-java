@@ -166,6 +166,8 @@ cmd_preflight() {
             failed=1
         fi
     done
+    # stage packs and checks the release tarballs in a Linux container, after the long Maven build.
+    bash "${SCRIPT_DIR}/linux-tar.sh" check
 
     # Java version
     local java_version
@@ -425,7 +427,7 @@ cmd_stage() {
 
     # Source tar
     info "Creating source tar..."
-    COPYFILE_DISABLE=1 tar czf "${product_dir}-src.tgz" \
+    bash "${SCRIPT_DIR}/linux-tar.sh" pack "${SCRIPT_DIR}" czf "${product_dir}-src.tgz" \
         --exclude .git \
         --exclude .DS_Store \
         --exclude '._*' \
@@ -433,6 +435,7 @@ cmd_stage() {
         --exclude .gitignore \
         --exclude .gitmodules \
         "${product_dir}"
+    bash "${SCRIPT_DIR}/linux-tar.sh" verify "${product_dir}-src.tgz"
 
     gpg --armor --detach-sig "${product_dir}-src.tgz"
     shasum -a 512 "${product_dir}-src.tgz" > "${product_dir}-src.tgz.sha512"
@@ -440,8 +443,13 @@ cmd_stage() {
     # Binary tar
     info "Creating binary tar..."
     cd "${product_dir}"
-    export TAG="${version}"
-    make dist
+    make build
+    local bin_tar="${PRODUCT_NAME}-${version}.tgz"
+    bash "${SCRIPT_DIR}/linux-tar.sh" pack "$(pwd)" czf "${bin_tar}" --exclude '._*' --exclude .DS_Store skywalking-agent
+    bash "${SCRIPT_DIR}/linux-tar.sh" verify "${bin_tar}"
+
+    gpg --armor --detach-sig "${bin_tar}"
+    shasum -a 512 "${bin_tar}" > "${bin_tar}.sha512"
 
     echo ""
     info "Release ${version} staged."

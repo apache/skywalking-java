@@ -26,12 +26,6 @@ CLI_VERSION ?= 0.13.0 # CLI version inside agent image should always use an Apac
 build:
 	./mvnw --batch-mode clean package -Dmaven.test.skip=true
 
-.PHONY: dist
-dist: build
-	COPYFILE_DISABLE=1 tar czf apache-skywalking-java-agent-$(TAG).tgz --exclude '._*' --exclude .DS_Store $(AGENT_PACKAGE)
-	gpg --armor --detach-sig apache-skywalking-java-agent-$(TAG).tgz
-	shasum -a 512 apache-skywalking-java-agent-$(TAG).tgz > apache-skywalking-java-agent-$(TAG).tgz.sha512
-
 # Docker build
 
 base.all := alpine java8 java11 java17 java21 java25

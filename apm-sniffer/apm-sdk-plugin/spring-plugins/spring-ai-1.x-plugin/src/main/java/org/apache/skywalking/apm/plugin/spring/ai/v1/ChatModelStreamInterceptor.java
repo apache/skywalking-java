@@ -161,7 +161,8 @@ public class ChatModelStreamInterceptor implements InstanceMethodsAroundIntercep
             return;
         }
         if (state.firstResponseReceived.compareAndSet(false, true)) {
-            Tags.GEN_AI_SERVER_TIME_TO_FIRST_TOKEN.set(span, String.valueOf(System.currentTimeMillis() - state.startTime));
+            Tags.GEN_AI_RESPONSE_TIME_TO_FIRST_CHUNK.set(
+                span, String.valueOf((System.currentTimeMillis() - state.startTime) / 1000.0));
         }
     }
 

@@ -37,6 +37,11 @@ Release Notes.
   carry macOS extended attributes, which made GNU tar print
   `Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'` for every entry
   (apache/skywalking#14271).
+* Report the time to first token of a streaming call of the `spring-ai-1.x` plugin in the
+  `gen_ai.response.time_to_first_chunk` tag, in seconds, the span attribute the OpenTelemetry GenAI semantic conventions
+  define for it, instead of in `gen_ai.server.time_to_first_token`, in milliseconds, a name the conventions give to a
+  metric. `Tags.GEN_AI_SERVER_TIME_TO_FIRST_TOKEN` is renamed to `Tags.GEN_AI_RESPONSE_TIME_TO_FIRST_CHUNK`. An OAP that
+  reads only the previous tag shows no time to first token for the calls this agent traces.
 
 All issues and pull requests are [here](https://github.com/apache/skywalking/milestone/267?closed=1)
 
